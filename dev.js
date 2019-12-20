@@ -3,8 +3,25 @@ const tinylr = require('tiny-lr');
 const sirv = require('sirv');
 const compress = require('compression')();
 const gaze = require('gaze');
-const buildCSS = require('./dev-utils/build-css')
-const watchJS = require('./dev-utils/watch-js')
+const buildCSS = require('./dev-utils/build-css');
+const watchJS = require('./dev-utils/watch-js');
+const express = require('express')
+const router = express.Router()
+
+// Need a way to get mocks into the renderer
+
+function render (template) {
+  return function (req, res) {
+    return res.render(template, {req})
+  }
+}
+
+router.get('/library', render('library.html'))
+router.get('/login', render('login.html'))
+router.get('/logout', render('lotout.html'))
+router.get('/publication/new', render('publication-new.html'))
+router.get('/publication/:id', render('publication.html'))
+router.get('/', render('front.html'))
  
 const js = sirv('js', {
   maxAge: 31536000, 
@@ -19,6 +36,7 @@ const lrserver = tinylr()
 
 
 app
+  .use(router)
   .use(compress)
   .use('/js', js)
   .use('/css', css)
