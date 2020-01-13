@@ -16,11 +16,29 @@ function render (template) {
   }
 }
 
+// Edit workspace and delete should be client side modes.
+
+// List/Square and sorting are query properties.
+
+// Library fake data - all workspaces
 router.get('/library', render('library.html'))
+// Library fake data - in a workspace
+router.get('/library/:workspace', render('library.html'))
+// Library fake data - purple workspaces
+router.get('/library/:workspace/', render('library.html'))
+// Fake user, fake library, fake workspace
+router.get('/library/new', render('library-publication-new.html'))
+router.get('/library/:workspace/new', render('library-publication-new.html'))
+// Fake publication
+router.get('/library/:workspace/:id', render('library-publication.html'))
+// Empty user
 router.get('/login', render('login.html'))
-router.get('/logout', render('lotout.html'))
-router.get('/publication/new', render('publication-new.html'))
-router.get('/publication/:id', render('publication.html'))
+// Fake user
+router.get('/logout', render('logout.html'))
+// Fake user
+router.get('/profile', render('profile.html'))
+// Fake user
+router.get('/settings', render('settings.html'))
 router.get('/', render('front.html'))
  
 const js = sirv('js', {
