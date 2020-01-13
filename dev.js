@@ -24,8 +24,8 @@ function render (template) {
 router.get('/library', render('library.html'))
 // Library fake data - in a workspace
 router.get('/library/:workspace', render('library.html'))
-// Library fake data - purple workspaces
-router.get('/library/:workspace/', render('library.html'))
+// Library fake data - in a workspace - search in query param
+router.get('/library/:workspace/search', render('library.html'))
 // Fake user, fake library, fake workspace
 router.get('/library/new', render('library-publication-new.html'))
 router.get('/library/:workspace/new', render('library-publication-new.html'))
