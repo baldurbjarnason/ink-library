@@ -31,6 +31,19 @@ router.get('/library/new', render('library-publication-new.html'))
 router.get('/library/:workspace/new', render('library-publication-new.html'))
 // Fake publication
 router.get('/library/:workspace/:id', render('library-publication.html'))
+
+// Notes fake data - all workspaces
+router.get('/notes', render('notes.html'))
+// notes fake data - in a workspace
+router.get('/notes/:workspace', render('notes.html'))
+// notes fake data - in a workspace - search in query param
+router.get('/notes/:workspace/search', render('notes.html'))
+// Fake user, fake notes, fake workspace
+router.get('/notes/new', render('notes-publication-new.html'))
+router.get('/notes/:workspace/new', render('notes-publication-new.html'))
+// Fake publication
+router.get('/notes/:workspace/:id', render('notes-publication.html'))
+
 // Empty user
 router.get('/login', render('login.html'))
 // Fake user
