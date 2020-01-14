@@ -1,4 +1,6 @@
-
+<script>
+  import {send, receive} from './_crossfade.js';
+</script>
 <style>
 :root {
   --color: red;
@@ -9,4 +11,4 @@ h1 {
 }
 </style>
 
-<h1>Front</h1>
+<h1 out:send="{{key: 'h1'}}" in:receive="{{key: 'h1'}}">Front</h1>
