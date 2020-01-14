@@ -24,7 +24,6 @@
   },
   "postcss": {
     "plugins": {
-      "postcss-custom-properties": {},
       "autoprefixer": {},
       "postcss-easy-import": {},
       "postcss-calc": {},

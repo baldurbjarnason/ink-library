@@ -30,8 +30,9 @@
 }
 :root {
   --reader-font-size: 1.1rem;
-  --reader-paragraph-spacing: 1rem;
-  --reader-left-margin: 2.5rem;
+  --base: 1.25rem;
+  --reader-paragraph-spacing: var(--base);
+  --reader-left-margin: calc(var(--base) * 2);
   --reader-text-color: #000;
   --reader-min-column-width: 12rem;
   --reader-max-column-width: 36rem;
@@ -43,7 +44,7 @@
 @media (max-width: 820px) {
   :root {
     --reader-font-size: 1rem;
-    --reader-paragraph-spacing: 1rem;
+    --base: 1rem;
     --reader-left-margin: 2rem;
   }
 }

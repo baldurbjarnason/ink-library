@@ -5,12 +5,16 @@
   const { page, session } = stores();
 
   export let segment;
-  $: console.log('segment is: ', segment)
   let query
   let params
   $: if ($page) {
     query = $page.query;
-    params = $page.params;
+    params = Object.assign({}, $page.params);
+    if (segment) {
+      params.segment = segment
+    } else {
+      params.segment = 'front'
+    }
   }
 </script>
 
@@ -18,17 +22,23 @@
   @import '../../styles/**/*.css';
 	main {
 		position: relative;
-		max-width: 56em;
 		background-color: white;
 		padding: 2em;
-		margin: 0 auto;
+		margin: 0;
 		box-sizing: border-box;
-	}
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: calc(var(--base) * 4) 0.25fr 1fr;
+    min-height: 100vh;
+  }
 </style>
 
+<div class="grid">
 <Nav {query} {params} />
 <Sidebar {query} {params} />
 
 <main>
 	<slot></slot>
 </main>
+</div>
