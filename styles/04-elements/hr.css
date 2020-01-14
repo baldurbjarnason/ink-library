@@ -1,0 +1,8 @@
+
+hr {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+  border: none;
+  border-bottom: 1px solid #aaa;
+}

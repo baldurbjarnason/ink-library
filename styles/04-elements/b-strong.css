@@ -1,0 +1,7 @@
+
+b,
+strong,
+b > *,
+strong > * {
+  font-weight: 600;
+}

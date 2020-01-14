@@ -1,0 +1,5 @@
+/* This fixes a contenteditable edge case in Firefox */
+*[contenteditable]:empty:before
+{
+    content: "\feff"; /* ZERO WIDTH NO-BREAK SPACE */
+}

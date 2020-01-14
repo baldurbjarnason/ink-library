@@ -1,0 +1,16 @@
+
+p,
+ol,
+ul,
+dl,
+blockquote,
+figure,
+table,
+hr,
+section,
+article,
+details,
+figcaption {
+  margin-top: var(--reader-paragraph-spacing);
+  margin-bottom: var(--reader-paragraph-spacing);
+}
