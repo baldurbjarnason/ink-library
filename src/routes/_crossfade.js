@@ -2,7 +2,6 @@ import { quintOut } from 'svelte/easing';
 import { crossfade } from 'svelte/transition';
 const [send, receive] = crossfade({
     duration: d => {
-        console.log(Math.sqrt(d * 300))
         return Math.sqrt(d * 300)
     },
     fallback(node, params) {

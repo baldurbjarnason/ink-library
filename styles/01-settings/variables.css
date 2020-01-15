@@ -1,4 +1,14 @@
 
+/* Workspaces */
+:root {
+  --research-workspace: #E74951;
+  --teaching-workspace: #6D73E0;
+  --public-workspace: #0184CE;
+  --personal-workspace: #00AAAA;
+  --all-workspace: #002230;
+  --all-workspace-selected: #193C4A;
+}
+
 :root {
   --rc-darker: #2e9595;
   --rc-dark: #32a5a5;

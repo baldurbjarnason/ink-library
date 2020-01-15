@@ -7,11 +7,14 @@ nav {
   background: white;
   box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.03); 
   position: sticky;
+  top: 0;
   z-index: 1;
 
-    display: flex;
-    flex-direction: column;
-    justify-content:  flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content:  flex-start;
+
+  max-height: 100vh;
 }
 ul {
   list-style: none;
