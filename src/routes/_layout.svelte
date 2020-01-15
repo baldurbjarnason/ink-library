@@ -29,13 +29,13 @@
   }
   .grid {
     display: grid;
-    grid-template-columns: calc(var(--base) * 4) 0.25fr 1fr;
+    grid-template-columns: calc(var(--base) * 4) calc(var(--base) * 12) 1fr;
     min-height: 100vh;
   }
 </style>
 
 <div class="grid">
-<Nav {query} {params} />
+<Nav {params} />
 <Sidebar {query} {params} />
 
 <main>

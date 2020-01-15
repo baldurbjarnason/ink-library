@@ -12,5 +12,7 @@ h6 {
 
 h1 {
   font-size: 2em;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
