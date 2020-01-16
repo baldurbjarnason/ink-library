@@ -1,6 +1,7 @@
 <script>
   import { flip } from 'svelte/animate';
   import {send, receive} from '../routes/_crossfade.js';
+  import { fly } from 'svelte/transition';
   export let params
   export let data = []
   let tags
@@ -172,7 +173,8 @@ h2 {
 }
 </style>
 
-<div class="workspaces">
+{#if workspace}
+<div class="workspaces" transition:fly|local={{x: -250}}>
 <ul class="tabs">
   <li><a href="/library/all" class="all-tab" class:selected={workspace === 'all'}>
   {#if workspace === 'all'}
@@ -204,7 +206,6 @@ h2 {
   <span class="visually-hidden">Personal</span></a></li>
 </ul>
 <div class="Sidebar {workspace}">
-{#if workspace}
 <h2>{#if workspace === 'all'}
   All workspaces
   {:else if workspace === "research"}
@@ -225,6 +226,8 @@ h2 {
     </span></a></li>
   {/each}
   </ul>
+</div>
+</div>
+{:else}
+   <div></div>
 {/if}
-</div>
-</div>
