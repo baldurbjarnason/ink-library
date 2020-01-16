@@ -1,6 +1,5 @@
 /* eslint-env browser, serviceworker */
 import { timestamp, files, shell, routes } from "@sapper/service-worker";
-console.log(routes)
 
 const ASSETS = `cache${timestamp}`;
 

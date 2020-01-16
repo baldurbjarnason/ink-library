@@ -54,8 +54,8 @@
     background-color: var(--active);
   }
   .Button:focus {
-    border-color: var(--link);
-    background-color: var(--link);
+    outline: none;
+    box-shadow: 0 0 0 3px #68d6d499;
   }
 </style>
 

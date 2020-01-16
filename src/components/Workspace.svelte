@@ -17,6 +17,6 @@
 
 <nav class="Toolbar">
   <span class="new-button"><Button>+ New</Button></span>
-  <Search>Search...</Search>
+  <Search />
   <ItemToggle />
 </nav>
