@@ -41,8 +41,7 @@
 		box-sizing: border-box;
   }
   .content {
-    padding-top: calc(var(--base) * 2);
-    padding-left: calc(var(--base) * 2);
+    padding: calc(var(--base) * 2);
   }
   .grid {
     display: grid;
