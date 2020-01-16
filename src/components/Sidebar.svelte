@@ -92,8 +92,9 @@ li a:hover .linkText {
   color: var(--link);
 }
 h2 {
-  font-size: var(--font-size);
+  font-size: 0.9rem;
   padding-left: var(--base);
+  font-weight: 600;
 }
 .tabs {
   display: flex;

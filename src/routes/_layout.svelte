@@ -34,25 +34,43 @@
 </script>
 <style global>
   @import '../../styles/**/*.css';
-	main {
+	main, .content {
 		position: relative;
-		background-color: white;
-		padding: 2em;
+		padding: 0;
 		margin: 0;
 		box-sizing: border-box;
+  }
+  .content {
+    padding-top: calc(var(--base) * 2);
+    padding-left: calc(var(--base) * 2);
   }
   .grid {
     display: grid;
     grid-template-columns: calc(var(--base) * 4) calc(var(--base) * 14) 1fr;
     min-height: 100vh;
   }
+  :root {
+    --workspace-color: var(--all-workspace);
+  }
+  .content.personal {
+    --workspace-color: var(--personal-workspace);
+  }
+  .content.public {
+    --workspace-color: var(--public-workspace);
+  }
+  .content.teaching {
+    --workspace-color: var(--teaching-workspace);
+  }
+  .content.research {
+    --workspace-color: var(--research-workspace);
+  }
 </style>
 
-<div class="grid">
+<main class="grid">
 <Nav {params} />
 <Sidebar {params} {data} />
 
-<main>
+<div class="content {params.workspace}">
 	<slot></slot>
-</main>
 </div>
+</main>

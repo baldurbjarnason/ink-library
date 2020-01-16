@@ -1,2 +1,5 @@
+<script>
+  import Workspace from '../../../components/Workspace.svelte'
+</script>
 
-<h1>Workspace</h1>
+<Workspace></Workspace>
