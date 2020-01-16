@@ -1,6 +1,7 @@
 <script>
   import Button from './Button.svelte'
   import Search from './Search.svelte'
+  import ItemToggle from './ItemToggle.svelte'
 </script>
 
 <style>
@@ -14,8 +15,8 @@
   
 </style>
 
-<div class="Toolbar">
+<nav class="Toolbar">
   <span class="new-button"><Button>+ New</Button></span>
   <Search>Search...</Search>
-  <Button>UI Toggle</Button>
-</div>
+  <ItemToggle />
+</nav>

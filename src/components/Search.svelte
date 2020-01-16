@@ -25,7 +25,7 @@
     white-space: nowrap;
     text-decoration: none;
     font-weight: 300;
-    color: #888;
+    color: var(--workspace-color);
     border-radius: 50px;
     -ms-touch-action: manipulation;
     touch-action: manipulation;
@@ -42,7 +42,7 @@
   .Button:visited:hover,
   .Button:link:visited:hover {
     color: white !important;
-    background-color: var(--rc-dark);
+    background-color: var(--workspace-color);
     box-shadow: none;
     text-decoration: none;
   }
@@ -56,7 +56,7 @@
     background-color: var(--link);
   }
   .Button svg {
-    color: var(--all-workspace);
+    color: var(--workspace-color);
     margin-left: calc(var(--base) * 1.25);
     transform: translateY(1px);
   }
