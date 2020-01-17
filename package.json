@@ -28,7 +28,6 @@
       "postcss-easy-import": {},
       "postcss-calc": {},
       "cssnano": {}
-      
     }
   },
   "jest": {
