@@ -3,7 +3,7 @@
   import {send, receive} from '../routes/_crossfade.js';
   import { fly } from 'svelte/transition';
   export let params
-  export let data = []
+  export let collections = []
   let tags
   let workspace
   $: if (params) {
@@ -15,9 +15,9 @@
       workspace = null
     }
     if (workspace !== 'all') {
-      tags = data.filter(tag => tag.json.workspace === workspace)
+      tags = collections.filter(tag => tag.json.workspace === workspace)
     } else {
-      tags = data
+      tags = collections
     }
   }
 </script>
@@ -26,6 +26,8 @@
 .Sidebar {
   padding: var(--base) 0;
   border-radius: 0px 15px 0px 0px;
+  height: calc(100vh - 41px);
+  overflow-y: auto;
 }
 .Sidebar.all {
   background-color: var(--all-workspace);
@@ -103,6 +105,7 @@ h2 {
   padding: 0;
   margin: 0;
   padding-right: 13px;
+  height: 41px;
 }
 .tabs a {
   display: block;
