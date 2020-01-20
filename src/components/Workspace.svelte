@@ -11,6 +11,7 @@
   display: flex;
   height: 82px;
   padding-top: 41px;
+  padding-bottom: calc(var(--base) * 0.25);
   top: 0;
   position: sticky;
   background-color: var(--main-background-color);
