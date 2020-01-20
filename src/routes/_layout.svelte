@@ -57,6 +57,7 @@
   }
   .content {
     padding: calc(var(--base) * 2);
+    padding-top: 0;
   }
   .grid {
     display: grid;

@@ -2,14 +2,18 @@
   import Button from './Button.svelte'
   import Search from './Search.svelte'
   import ItemToggle from './ItemToggle.svelte'
-  import { library } from '../stores';
-  $: console.log($library)
+  import List from './workspace/List.svelte'
 </script>
 
 <style>
 
 .Toolbar {
   display: flex;
+  height: 82px;
+  padding-top: 41px;
+  top: 0;
+  position: sticky;
+  background-color: var(--main-background-color);
 }
 .new-button {
   margin: 0 auto 0 0;
@@ -22,3 +26,4 @@
   <Search />
   <ItemToggle />
 </nav>
+<List />

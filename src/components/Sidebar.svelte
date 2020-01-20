@@ -175,6 +175,11 @@ h2 {
   background-color: var(--personal-workspace);
   box-shadow: 1.5px 1.5px 4px rgba(0, 165, 106, 0.4);
 }
+.workspaces {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+}
 </style>
 
 {#if workspace}
