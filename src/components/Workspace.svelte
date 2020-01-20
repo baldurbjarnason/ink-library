@@ -2,6 +2,8 @@
   import Button from './Button.svelte'
   import Search from './Search.svelte'
   import ItemToggle from './ItemToggle.svelte'
+  import { library } from '../stores';
+  $: console.log($library)
 </script>
 
 <style>

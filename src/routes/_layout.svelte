@@ -1,9 +1,11 @@
 <script>
+  import { library as libraryStore } from '../stores';
 	import Nav from '../components/Nav.svelte';
 	import Sidebar from '../components/Sidebar.svelte';
   import { stores } from "@sapper/app";
   const { page, session } = stores();
-  export let data;
+  export let collections;
+  export let library;
   export let segment;
   let query
   let params
@@ -16,20 +18,33 @@
       params.segment = 'front'
     }
   }
+  $: if (library) {
+    libraryStore.set(library)
+  }
 </script>
 
 <script context="module">
 	export async function preload(page, session) {
-    let data
+    let collections
+    let library
     if (page.path.startsWith('/library')) {
       try {
         const res = await this.fetch(`/api/collections`);
-        data = await res.json();
+        collections = await res.json();
+        let url
+        if (page.query) {
+          url = `/api/library?${new URLSearchParams(page.query).toString()}`
+        } else {
+          url = `/api/library`
+        }
+        const libraryResult = await this.fetch(url)
+        library = await libraryResult.json()
       } catch {
-        data = {}
+        collections = {}
+        library = {}
       }
     }
-		return { data };
+		return { collections, library };
 	}
 </script>
 <style global>
@@ -67,7 +82,7 @@
 
 <main class="grid">
 <Nav {params} />
-<Sidebar {params} {data} />
+<Sidebar {params} {collections} />
 
 <div class="content {params.workspace}">
 	<slot></slot>
