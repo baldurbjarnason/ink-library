@@ -21,7 +21,7 @@
 
 <style>
   :root {
-    --list-template-columns: 60px 1fr 1fr 0.5fr 0.5fr 0.3fr;
+    --list-template-columns: 60px 1fr 1fr 0.5fr 0.5fr 2rem;
     --item-font-size: 0.7rem;
     --list-grid-gap: calc(var(--base) * 0.5);
   }
@@ -52,6 +52,9 @@
     top: 82px;
     background-color: var(--main-background-color);
     padding: calc(var(--base) * 0.25) 0;
+  }
+  .Header :global(button.Button) {
+    margin-left: -70%;
   }
 </style>
 

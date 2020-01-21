@@ -18,7 +18,7 @@
     grid-gap: calc(var(--base) * 0.5);
     margin: 2px;
     border-radius: 15px;
-    padding: calc(var(--base) * 0.25);
+    padding: calc(var(--base) * 0.25) calc(var(--base) * 0.5) calc(var(--base) * 0.25) calc(var(--base) * 0.25);
     min-width: 600px;
   }
   .Image {
