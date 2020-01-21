@@ -1,0 +1,58 @@
+<script>
+  export let item = {
+    tags: []
+  }
+</script>
+
+<style>
+.hash {
+  font-size:  var(--item-font-size);
+  color: white;
+}
+.hash.teaching {
+  color: var(--teaching-workspace);
+}
+.hash.personal {
+  color: var(--personal-workspace);
+}
+.hash.public {
+  color: var(--public-workspace);
+}
+.hash.research {
+  color: var(--research-workspace);
+}
+ul {
+  margin: 0;
+  padding: calc(var(--base) * 0.5) 0;
+}
+li {
+  list-style: none;
+  font-size:  var(--item-font-size);
+  padding: 0;
+}
+a:link {
+  display: block;
+  padding: 0;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 0px 50px 50px 0px;
+}
+.linkText {
+  color: #333;
+}
+
+li a:hover {
+  color: #333;
+}
+li a:hover .linkText {
+  color: var(--link);
+}
+</style>
+
+<ul>
+{#each item.tags as tag (tag.id)}
+  <li><a href="/library/all/{encodeURIComponent(tag.name)}"><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
+    {tag.name}
+  </span></a></li>
+{/each}
+</ul>

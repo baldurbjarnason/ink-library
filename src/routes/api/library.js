@@ -3,6 +3,36 @@ import {collections} from './collections.js'
 
 const workspaces = ['all', 'research', 'teaching', 'public', 'personal']
 
+const publicationTypes = [
+  'Publication',
+  'Article',
+  'Blog',
+  'Book',
+  'Chapter',
+  'Collection',
+  'Comment',
+  'Conversation',
+  'Course',
+  'Dataset',
+  'Drawing',
+  'Episode',
+  'Manuscript',
+  'Map',
+  'MediaObject',
+  'MusicRecordig',
+  'Painting',
+  'Photograph',
+  'Play',
+  'Poster',
+  'PublicationIssue',
+  'PublicationVolume',
+  'Review',
+  'ShortStory',
+  'Thesis',
+  'VisualArtwork',
+  'WebContent'
+]
+
 function friendlyName (type) {
   const index = Math.floor(Math.random() * Math.floor(friendlyWords[type].length));
   const word = friendlyWords[type][index].charAt(0).toUpperCase() + friendlyWords[type][index].slice(1)
@@ -19,7 +49,9 @@ const library = {
 }
 for (let index = 0; index < 100; index++) {
   const tagNo = Math.floor(Math.random() * Math.floor(5));
+  const pubType = Math.floor(Math.random() * Math.floor(publicationTypes.length));
   const item = {
+    type: publicationTypes[pubType],
     name: `${friendlyName('predicates')} ${friendlyName('predicates')} ${friendlyName('objects')} ${friendlyName('collections')}`,
     id: `https://example.com/${index}`,
     json: {
@@ -33,7 +65,8 @@ for (let index = 0; index < 100; index++) {
       href: "/img/placeholder-cover.jpg",
       rel: ["cover"]
     }],
-    tags:[]
+    tags:[],
+    updated: "05/12/2019"
   };
   for (let index = 0; index < tagNo; index++) {
     const tagIndex = Math.floor(Math.random() * Math.floor(collections.length));
