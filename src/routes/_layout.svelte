@@ -67,6 +67,11 @@
   }
 </style>
 
+
+<svelte:head>
+  <title>Library – {params.workspace || 'all'} – Rebus Ink</title>
+</svelte:head>
+
 <main class="grid">
 <Nav {params} />
 <Sidebar {params} {collections} />
