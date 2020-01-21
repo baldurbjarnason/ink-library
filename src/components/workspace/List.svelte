@@ -72,7 +72,7 @@
     <div><HeaderArrows /> Stacks</div>
     <div><HeaderArrows /> Type</div>
     <div><HeaderArrows /> Modified</div>
-    <div>&nbsp;</div>
+    <div><SmallButton>Select</SmallButton></div>
     </div>
     <div class="Items">
     {#each items as item}
