@@ -82,9 +82,9 @@
     position: absolute;
     background-color: white;
     top: calc(var(--base) * 0.5);
-    left: calc(var(--base) * 0.5);
-    right: calc(var(--base) * 0.5);
-    height: calc(var(--base) * 4);
+    left: 0;
+    right: 0;
+    height: calc(var(--base) * 5);
     z-index: 2;
     border-radius: 15px;
   }

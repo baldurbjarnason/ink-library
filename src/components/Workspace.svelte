@@ -15,6 +15,8 @@
   top: 0;
   position: sticky;
   background-color: var(--main-background-color);
+
+  z-index: 2;
 }
 .new-button {
   margin: 0 auto 0 0;
