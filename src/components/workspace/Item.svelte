@@ -35,6 +35,9 @@
     font-size: var(--item-font-size);
     font-weight: 600;
     padding: calc(var(--base) * 0.5) 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .ItemEntry {
     font-size: var(--item-font-size);
@@ -44,11 +47,23 @@
   .ItemEntry span {
     margin: auto 0;
   }
+  .Author {
+    color: var(--medium);
+    font-weight: 300;
+    font-style: italic;
+  }
 </style>
 
 <div class="Item">
   <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
-  <div class="Name">{item.name}</div>
+  <div class="Name"><span class="title">{item.name}</span>
+  <div class="Authors">
+  {#each item.author as author}
+     <span class="Author">{author.name}</span>
+  {/each}
+  </div>
+  <!-- Need to add authors! -->
+  </div>
   <div class="Stacks">
     <ItemStacks {item} />
   </div>
