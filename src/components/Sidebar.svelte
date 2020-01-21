@@ -1,11 +1,19 @@
 <script>
-  import { flip } from 'svelte/animate';
+  // import { flip } from 'svelte/animate';
   import {send, receive} from '../routes/_crossfade.js';
   import { fly } from 'svelte/transition';
+  import { stores } from "@sapper/app";
+  const { page, session } = stores();
   export let params
   export let collections = []
   let tags
   let workspace
+  let queryText
+  $: if ($page.query) {
+    queryText = '?' + new URLSearchParams($page.query).toString()
+  } else {
+    queryText = ""
+  }
   $: if (params) {
     if (params.workspace) {
       workspace = params.workspace
@@ -185,29 +193,29 @@ h2 {
 {#if workspace}
 <div class="workspaces" transition:fly|local={{x: -250}}>
 <ul class="tabs">
-  <li><a href="/library/all" class="all-tab" class:selected={workspace === 'all'}>
+  <li><a href="/library/all{queryText}" class="all-tab" class:selected={workspace === 'all'}>
   {#if workspace === 'all'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
   <span class="visually-hidden">All</span> </a></li>
-  <li><a href="/library/research" class="research-tab" class:selected={workspace === 'research'}>
+  <li><a href="/library/research{queryText}" class="research-tab" class:selected={workspace === 'research'}>
   
   {#if workspace === 'research'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
     <span class="visually-hidden">Research</span></a></li>
-  <li><a href="/library/teaching" class="teaching-tab" class:selected={workspace === 'teaching'}>
+  <li><a href="/library/teaching{queryText}" class="teaching-tab" class:selected={workspace === 'teaching'}>
   
   {#if workspace === 'teaching'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}<span class="visually-hidden">Teaching</span></a></li>
-  <li><a href="/library/public" class="public-tab" class:selected={workspace === 'public'}>
+  <li><a href="/library/public{queryText}" class="public-tab" class:selected={workspace === 'public'}>
 
   {#if workspace === 'public'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
   <span class="visually-hidden">Public scholarships</span></a></li>
-  <li><a href="/library/personal" class="personal-tab" class:selected={workspace === 'personal'}>
+  <li><a href="/library/personal{queryText}" class="personal-tab" class:selected={workspace === 'personal'}>
 
   {#if workspace === 'personal'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
@@ -230,7 +238,7 @@ h2 {
 {/if}</h2>
   <ul>
   {#each tags as tag (tag.id)}
-    <li animate:flip="{{duration: 200}}"><a href="/library/{workspace}/{encodeURIComponent(tag.name)}" class:selected={params.collection === tag.name}><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
+    <li><a href="/library/{workspace}/{encodeURIComponent(tag.name)}{queryText}" class:selected={params.collection === tag.name}><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
       {tag.name}
     </span></a></li>
   {/each}
