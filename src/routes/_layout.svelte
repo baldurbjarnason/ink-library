@@ -5,7 +5,6 @@
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   export let collections;
-  export let library;
   export let segment;
   let query
   let params
@@ -18,9 +17,6 @@
       params.segment = 'front'
     }
   }
-  $: if (library) {
-    libraryStore.set(library)
-  }
 </script>
 
 <script context="module">
@@ -31,20 +27,11 @@
       try {
         const res = await this.fetch(`/api/collections`);
         collections = await res.json();
-        let url
-        if (page.query) {
-          url = `/api/library?${new URLSearchParams(page.query).toString()}`
-        } else {
-          url = `/api/library`
-        }
-        const libraryResult = await this.fetch(url)
-        library = await libraryResult.json()
       } catch {
         collections = {}
-        library = {}
       }
     }
-		return { collections, library };
+		return { collections };
 	}
 </script>
 <style global>

@@ -43,5 +43,11 @@ for (let index = 0; index < 100; index++) {
 }
 export async function get(req, res, next) {
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(library));
+  const result = Object.assign({}, library)
+  if (req.query.stack) {
+    result.items = library.items.filter(item => item.tags.map(tag => tag.name).indexOf(req.query.stack) !== -1)
+  } else if (req.query.workspace) {
+    result.items = library.items.filter(item => item.tags.map(tag => tag.json.workspace).indexOf(req.query.workspace) !== -1)
+  }
+  res.end(JSON.stringify(result));
 }

@@ -1,6 +1,10 @@
 <script>
   import {library} from '../../stores'
   import Item from './Item.svelte'
+  let items
+  $: if ($library) {
+    items = $library.items
+  }
 </script>
 
 <style>
@@ -8,7 +12,7 @@
 </style>
 
 <!-- markup (zero or more items) goes here -->
-{#each $library.items as item,i (item.id)}
+{#each items as item}
    <!-- content here -->
    <div><Item {item} /></div>
 {/each}
