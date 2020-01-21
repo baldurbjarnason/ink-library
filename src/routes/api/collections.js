@@ -1,6 +1,6 @@
 import friendlyWords from 'friendly-words'
 
-const workspaces = ['all', 'research', 'teaching', 'public', 'personal']
+const workspaces = ['research', 'teaching', 'public', 'personal']
 
 function friendlyName (type) {
   const index = Math.floor(Math.random() * Math.floor(friendlyWords[type].length));

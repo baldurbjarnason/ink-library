@@ -14,13 +14,12 @@
     background-color: white;
     min-height: calc(var(--base) * 4);
     display: grid;
-    grid-template-columns: 60px 1fr 0.75fr 0.5fr 0.5fr 0.3fr;
-    grid-gap: calc(var(--base) * 0.25);
+    grid-template-columns: var(--list-template-columns);
+    grid-gap: calc(var(--base) * 0.5);
     margin: 2px;
     border-radius: 15px;
     padding: calc(var(--base) * 0.25);
     min-width: 600px;
-    --item-font-size: 0.7rem;
   }
   .Image {
     padding: calc(var(--base) * 0.25) 0;
@@ -43,7 +42,7 @@
     display: flex;
   }
   .ItemEntry span {
-    margin: auto;
+    margin: auto 0;
   }
 </style>
 

@@ -34,7 +34,7 @@ a:link {
   display: block;
   padding: 0;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
   border-radius: 0px 50px 50px 0px;
 }
 .linkText {
