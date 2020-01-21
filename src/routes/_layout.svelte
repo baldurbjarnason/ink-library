@@ -23,13 +23,12 @@
 	export async function preload(page, session) {
     let collections
     let library
-    if (page.path.startsWith('/library')) {
-      try {
-        const res = await this.fetch(`/api/collections`);
-        collections = await res.json();
-      } catch {
-        collections = {}
-      }
+
+    try {
+      const res = await this.fetch(`/api/collections`);
+      collections = await res.json();
+    } catch {
+      collections = {}
     }
 		return { collections };
 	}
