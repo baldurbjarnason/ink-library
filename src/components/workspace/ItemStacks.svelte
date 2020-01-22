@@ -2,6 +2,7 @@
   export let item = {
     tags: []
   }
+  export let selected
 </script>
 
 <style>
@@ -40,6 +41,9 @@ a:link {
 .linkText {
   color: #333;
 }
+.selected .linkText {
+  color: white;
+}
 
 li a:hover {
   color: #333;
@@ -51,7 +55,7 @@ li a:hover .linkText {
 
 <ul>
 {#each item.tags as tag (tag.id)}
-  <li><a href="/library/all/{encodeURIComponent(tag.name)}"><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
+  <li class:selected><a href="/library/all/{encodeURIComponent(tag.name)}"><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
     {tag.name}
   </span></a></li>
 {/each}

@@ -2,6 +2,8 @@
   import ItemStacks from './ItemStacks.svelte'
   import ReadButton from './ReadButton.svelte'
   export let item = {}
+  export let selecting
+  let selected = false
   let cover = {}
   $: if (item.resources) {
     cover = item.resources.find(resource => resource.rel.indexOf('cover') !== -1)
@@ -20,6 +22,8 @@
     border-radius: 15px;
     padding: calc(var(--base) * 0.25) calc(var(--base) * 0.5) calc(var(--base) * 0.25) calc(var(--base) * 0.25);
     min-width: 600px;
+    position: relative;
+    transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 250ms cubic-bezier(0.075, 0.82, 0.165, 1), transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
   }
   .Image {
     padding: calc(var(--base) * 0.25) 0;
@@ -44,7 +48,7 @@
     font-weight: 300;
     display: flex;
   }
-  .ItemEntry span {
+  .ItemEntry span, .ItemEntry label {
     margin: auto 0;
   }
   .Author {
@@ -52,9 +56,61 @@
     font-weight: 300;
     font-style: italic;
   }
+  .selected .Author {
+    color: white;
+  }
+  .selecting {
+    box-shadow: 0 0 0 2px var(--light);
+  }
+  .selecting label::before {
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .selected {
+    box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.05);
+    transform: translate(-5px, -5px);
+    color: white;
+    background-color: var(--workspace-color);
+  }
+  @supports(-webkit-appearance: none) {
+    input[type="checkbox"] {
+      -webkit-appearance: none;
+      width: 0.75rem;
+      height: 0.75rem;
+      border: 2px solid  var(--workspace-color);
+      border-radius: 4px;
+    }
+    .selected input[type="checkbox"] {
+      border-color: white;
+    }
+    input[type="checkbox"]:checked {
+      position: relative;
+      /* Do a bug fix to keep iOS from adding dark background. */
+      background: none;
+    }
+    input[type="checkbox"]:checked::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -0.2rem;
+      margin-top: -0.2rem;
+      content: "";
+      width: .4rem;
+      height: .4rem;
+      background-color: var(--workspace-color);
+      border-radius: 2px;
+    }
+    .selected input[type="checkbox"]:checked::after {
+      background-color: white;
+    }
+}
 </style>
 
-<div class="Item">
+<div class="Item" class:selecting class:selected>
   <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
   <div class="Name"><span class="title">{item.name}</span>
   <div class="Authors">
@@ -65,9 +121,13 @@
   <!-- Need to add authors! -->
   </div>
   <div class="Stacks">
-    <ItemStacks {item} />
+    <ItemStacks {item} {selected} />
   </div>
   <div class="ItemEntry"><span>{item.type}</span></div>
   <div class="ItemEntry"><span>{item.updated}</span></div>
-  <div class="ItemEntry"><span><ReadButton {item} /></span></div>
+  <div class="ItemEntry">{#if selecting}
+    <label><span class="visually-hidden">Select this item</span><input type="checkbox" bind:checked={selected}></label>
+  {:else}
+    <span><ReadButton {item} /></span>
+  {/if}</div>
 </div>

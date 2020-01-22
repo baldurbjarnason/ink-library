@@ -1,8 +1,8 @@
 <script>
-  export let click
-  export let href
-  export let hidden
-  export let disabled
+  export let click = null
+  export let href = null
+  export let hidden = false
+  export let disabled = false
 </script>
 
 <style>

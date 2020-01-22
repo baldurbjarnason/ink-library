@@ -8,6 +8,7 @@
   import SortButton from './SortButton.svelte'
   import { stores } from "@sapper/app";
   const { page, session } = stores();
+  let selecting = false
   let items
   $: if ($library) {
     items = $library.items
@@ -43,6 +44,7 @@
   .Cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-gap: var(--base);
   }
   .CardHeader {
     display: flex;
@@ -62,11 +64,15 @@
   {#if query["list-style"] === 'card'}
     <div class="CardHeader">
     <div><label>Sort By: <SortSelect /></label></div>
-    <div><SmallButton>Select</SmallButton></div>
+    <div>{#if selecting}
+      <SmallButton click={() => selecting = false}>Done</SmallButton>
+    {:else}
+      <SmallButton click={() => selecting = true}>Select</SmallButton>
+    {/if}</div>
     </div>
     <div class="Cards">
     {#each items as item}
-        <Card {item} />
+        <Card {item} {selecting} />
     {/each}
     </div>
   {:else}
@@ -76,11 +82,15 @@
     <div>Stacks</div>
     <div><SortButton {query} type="type" path={$page.path}>Type</SortButton></div>
     <div><SortButton {query} type="modified" path={$page.path}>Modified</SortButton></div>
-    <div><SmallButton>Select</SmallButton></div>
+    <div>{#if selecting}
+      <SmallButton click={() => selecting = false}>Done</SmallButton>
+    {:else}
+      <SmallButton click={() => selecting = true}>Select</SmallButton>
+    {/if}</div>
     </div>
     <div class="Items">
     {#each items as item}
-        <Item {item} />
+        <Item {item} {selecting} />
     {/each}
     </div>
   {/if}
