@@ -63,7 +63,7 @@
 
   {#if query["list-style"] === 'card'}
     <div class="CardHeader">
-    <div><label>Sort By: <SortSelect /></label></div>
+    <div><label>Sort By: <SortSelect {query} path={$page.path} /></label></div>
     <div>{#if selecting}
       <SmallButton click={() => selecting = false}>Done</SmallButton>
     {:else}

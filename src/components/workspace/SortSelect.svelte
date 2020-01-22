@@ -1,5 +1,27 @@
 <script>
-  // your script goes here
+  import { goto } from "@sapper/app";
+  let sort
+  export let query
+  export let path
+  $: if (sort) {
+    sortItems(sort)
+  }
+  function sortItems (type) {
+    if (type.includes('added')) return
+    let dir
+    if (type.includes('asc')) {
+      dir = 'asc'
+    } else if (type.includes('desc')) {
+      dir = 'desc'
+    }
+    const config = Object.assign({}, query, {sortBy: type.split('-')[0], dir})
+    const url = `${path}?${new URLSearchParams(config).toString()}`
+    if (query.sortBy !== config.sortBy && config.sortBy !== 'added') {
+      goto(url)
+    } else if (config.sortBy === 'added' && query.dir !== config.dir) {
+      goto(url)
+    }
+  }
 </script>
 
 <style>
@@ -13,11 +35,11 @@
     display: inline-block;
     color: var(--dark);
     padding:calc(var(--base) * 0.25) 0;
-    max-width: 15rem;
     box-sizing: border-box;
     margin: 0;
     border: none;
     border-radius: 2px;
+    padding-right: 1.5rem;
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
@@ -39,11 +61,10 @@
   }
 </style>
 
-<label for=""><select name="" id="">
-<option value="title-asc">Title, A-Z</option>
+<label for=""><select name="" id="" bind:value={sort}>
 <option value="title-desc">Title, Z-A</option>
 <option value="type-asc">Type, A-Z</option>
 <option value="type-desc">Type, Z-A</option>
 <option value="modified-asc">Modified, oldest first</option>
-<option value="modified-desc">Type, newest first</option>
+<option value="modified-desc">Modified, newest first</option>
 </select></label>
