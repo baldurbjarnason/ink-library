@@ -82,5 +82,14 @@ export async function get(req, res, next) {
   } else if (req.query.workspace) {
     result.items = library.items.filter(item => item.tags.map(tag => tag.json.workspace).indexOf(req.query.workspace) !== -1)
   }
+  if (req.query.sortBy === "title" && req.query.dir === 'desc') {
+    result.items = Array.from(result.items).sort((a, b) => {
+      return b.name.localeCompare(a.name);
+    })
+  } else if (req.query.sortBy === "title") {
+    result.items = Array.from(result.items).sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    })
+  }
   res.end(JSON.stringify(result));
 }

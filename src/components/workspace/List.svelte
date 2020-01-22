@@ -5,6 +5,7 @@
   import HeaderArrows from './HeaderArrows.svelte'
   import SmallButton from '../SmallButton.svelte'
   import SortSelect from './SortSelect.svelte'
+  import SortButton from './SortButton.svelte'
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   let items
@@ -28,7 +29,7 @@
   .Header {
     display: grid;
     grid-template-columns: var(--list-template-columns);
-    padding: calc(var(--base) * 0.5);
+    padding: calc(var(--base) * 0.25);
     grid-gap: var(--list-grid-gap);
     font-size: var(--item-font-size);
     position: sticky;
@@ -71,10 +72,10 @@
   {:else}
     <div class="Header">
     <div>&nbsp;</div>
-    <div><HeaderArrows /> Title</div>
-    <div><HeaderArrows /> Stacks</div>
-    <div><HeaderArrows /> Type</div>
-    <div><HeaderArrows /> Modified</div>
+    <div><SortButton {query} type="title" path={$page.path}>Title</SortButton></div>
+    <div>Stacks</div>
+    <div><SortButton {query} type="type" path={$page.path}>Type</SortButton></div>
+    <div><SortButton {query} type="modified" path={$page.path}>Modified</SortButton></div>
     <div><SmallButton>Select</SmallButton></div>
     </div>
     <div class="Items">
