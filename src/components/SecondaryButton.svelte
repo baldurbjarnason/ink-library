@@ -27,7 +27,7 @@
     white-space: nowrap;
     text-decoration: none;
     font-weight: 500;
-    color: #F05657;
+    color: var(--workspace-color);
     border-radius: 15px;
     -ms-touch-action: manipulation;
     touch-action: manipulation;
@@ -35,7 +35,7 @@
     background-color: transparent;
     text-decoration: none !important;
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
-    border: 2px solid #F05657;
+    border: 2px solid var(--workspace-color);
   }
 
   .Button:hover,
@@ -44,7 +44,7 @@
   .Button:visited:hover,
   .Button:link:visited:hover {
     color: white !important;
-    background-color: #F05657;
+    background-color: var(--workspace-color);
     box-shadow: none;
     text-decoration: none;
   }

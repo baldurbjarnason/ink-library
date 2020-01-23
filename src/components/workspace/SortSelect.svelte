@@ -61,7 +61,7 @@
   }
 </style>
 
-<label for=""><select name="" id="" bind:value={sort}>
+<label><select name="sort-select" id="sort-select" bind:value={sort}>
 <option value="title-desc">Title, Z-A</option>
 <option value="type-asc">Type, A-Z</option>
 <option value="type-desc">Type, Z-A</option>

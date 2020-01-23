@@ -1,7 +1,7 @@
 <script>
   import {library, selectedItems} from '../../stores'
+  import Footer from './Footer.svelte'
   import Button from '../Button.svelte'
-  import RiskyButton from '../RiskyButton.svelte'
   import Card from './Card.svelte'
   import Item from './Item.svelte'
   import HeaderArrows from './HeaderArrows.svelte'
@@ -39,6 +39,7 @@
     position: sticky;
     top: 82px;
     background-color: var(--main-background-color);
+    z-index: 1;
   }
   .Header > div {
     display: flex;
@@ -58,32 +59,10 @@
     top: 82px;
     background-color: var(--main-background-color);
     padding: calc(var(--base) * 0.25) 0;
+    z-index: 1;
   }
   .Header :global(button.Button) {
     margin-left: -70%;
-  }
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    padding: var(--base) calc(var(--base)* 2);
-    align-items: center;
-    font-size: var(--item-font-size);
-    position: sticky;
-    bottom: 0;
-    background-color: var(--main-background-color);
-    margin: 0 calc(var(--base)* -2);
-    box-shadow: 0px -7px 15px rgba(0, 0, 0, 0.1);
-  }
-  .FooterButtons {
-    display: grid;
-    grid-gap: calc(var(--base)* 2);
-    grid-template-columns: 1fr 1fr;
-  }
-  .FooterNumber {
-    font-size: 1rem;
-    font-style: italic;
-    color: var(--medium);
-    font-weight: 300;
   }
 </style>
 
@@ -121,11 +100,5 @@
     </div>
   {/if}
   {#if selecting}
-    <div class="footer"><span class="FooterNumber">
-      {$selectedItems.size} {#if $selectedItems.size === 1}
-         item
-      {:else}
-        items
-      {/if} selected
-    </span> <span class="FooterButtons"><RiskyButton>Delete</RiskyButton> <Button>Edit</Button></span></div>
+    <Footer />
   {/if}
