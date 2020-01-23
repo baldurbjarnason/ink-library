@@ -7,6 +7,7 @@
   let open = false
   let input
   let newToggle
+  let expanded = false
   function click () {
     open = !open;
   }
@@ -52,11 +53,62 @@
   .NewBox input:focus {
     outline: none;
   }
+  .NewBox input::placeholder {
+    color: white;
+  }
   .NewBox:focus-within {
     box-shadow: 0 0 0 3px var(--workspace-color);
   }
   .new-button {
     margin: 0 auto 0 0;
+  }
+  .Expander{
+    font-family: var(--sans-fonts);
+    font-size: 0.9rem;
+    flex: 0 1 auto;
+    line-height: 1;
+
+    display: inline-block;
+
+    padding: var(--base);
+
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-align: center;
+    white-space: nowrap;
+    text-decoration: none;
+    font-weight: 500;
+    color: white;
+    border-radius: 15px;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    /* transition: box-shadow 0.15s ease-in-out; */
+    background-color: transparent;
+    text-decoration: none !important;
+    transition: transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
+    border: none;
+  }
+
+  .Expander:hover svg{
+    color: white !important;
+    fill: rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+    text-decoration: none;
+  }
+
+  .Expander:active,
+  .Expander:link:active {
+    background-color: var(--active);
+  }
+  .Expander:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px #68d6d499;
+  }
+  .Expander.expanded {
+    transform: rotate(180deg);
   }
 </style>
 
@@ -65,12 +117,26 @@
   <form method="get" id="newform" class="newForm" action="">
 <label class="visually-hidden" id="new-label" for="new-input">New item:</label>
 <Closer click={close} dark={true} />
-<input type="title" required="" name="s" id="title-input" class="title-field" value="" placeholder="Publication Title" bind:this={input}>
+<input type="title" required="" name="s" id="new-input" class="title-field" value="" placeholder="Publication Title" bind:this={input}>
 
   <WhiteButton click={(ev) => {
     ev.preventDefault()
     close()
   }}>Create</WhiteButton>
+  <button type="button" class="Expander" class:expanded on:click={() => {
+    expanded = !expanded
+  }}>
+  <svg width="36" height="36" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="1" y="-1" width="37" height="37" rx="14" transform="matrix(1 0 0 -1 0 37)" stroke="currentColor" stroke-width="2"/>
+<rect x="12" y="17.4141" width="2" height="10" rx="1" transform="rotate(-45 12 17.4141)" fill="currentColor"/>
+<rect x="24.7285" y="16" width="2" height="10" rx="1" transform="rotate(45 24.7285 16)" fill="currentColor"/>
+</svg>
+</button>
+
+{#if expanded}
+   <div class="MoreItems">
+   </div>
+{/if}
 </form>
 </div>
 <span></span>

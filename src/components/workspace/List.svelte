@@ -61,7 +61,7 @@
     z-index: 1;
   }
   .Header :global(button.Button) {
-    margin-left: -70%;
+    margin-left: -80%;
   }
 </style>
 

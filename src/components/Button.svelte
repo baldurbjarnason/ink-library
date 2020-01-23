@@ -72,6 +72,7 @@
 {:else}
   <button
     class="Button"
+    type="button"
     {hidden}
     {disabled}
     on:click={click}>
