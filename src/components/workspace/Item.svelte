@@ -1,9 +1,18 @@
 <script>
+  import {addSelected, removeSelected} from '../../stores'
   import ItemStacks from './ItemStacks.svelte'
   import ReadButton from './ReadButton.svelte'
   export let item = {}
   export let selecting
   let selected = false
+  $: if (!selecting && selected) {
+    selected = false
+  }
+  $: if (selected && item.id) {
+    addSelected(item)
+  } else {
+    removeSelected(item)
+  }
   let cover = {}
   $: if (item.resources) {
     cover = item.resources.find(resource => resource.rel.indexOf('cover') !== -1)

@@ -1,9 +1,18 @@
 <script>
   import ItemStacks from './ItemStacks.svelte'
   import ReadButton from './ReadButton.svelte'
+  import {addSelected, removeSelected} from '../../stores'
   export let item = {}
   export let selecting
   let selected = false
+  $: if (!selecting && selected) {
+    selected = false
+  }
+  $: if (selected && item.id) {
+    addSelected(item)
+  } else {
+    removeSelected(item)
+  }
   let cover = {}
   $: if (item.resources) {
     cover = item.resources.find(resource => resource.rel.indexOf('cover') !== -1)
@@ -50,10 +59,15 @@
     color: white;
   }
   .Top {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1rem 1fr 1fr;
     border-bottom: 0.5px solid var(--light);
     padding: calc(var(--base) * 0.5);
+    align-items: center;
+    grid-gap: 0.125rem;
+  }
+  .Top label {
+    display: flex;
   }
   .CardMain {
     display: grid;
@@ -95,6 +109,7 @@
       height: 0.75rem;
       border: 2px solid  var(--workspace-color);
       border-radius: 4px;
+      margin: 0;
     }
     .selected input[type="checkbox"] {
       border-color: white;
@@ -118,14 +133,17 @@
       background-color: white;
     }
 }
+.Modified {
+  text-align: right;
+}
 </style>
 
 <div class="Item" class:selecting class:selected>
   <div class="Top">{#if selecting}
     <label><span class="visually-hidden">Select this item</span><input type="checkbox" bind:checked={selected}></label>
   {:else}
-    <span>{item.type}</span>
-  {/if}<span>Modified:  <strong>{item.updated}</strong></span></div>
+    <span>&nbsp;</span>
+  {/if}<span>{item.type}</span> <span class="Modified">Modified:  <strong>{item.updated}</strong></span></div>
   <div class="CardMain">
     <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
     <div class="Name"><span class="title">{item.name}</span>
