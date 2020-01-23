@@ -1,5 +1,5 @@
 <script>
-  import Button from './Button.svelte'
+  import NewItem from './workspace/NewItem.svelte'
   import Search from './Search.svelte'
   import ItemToggle from './ItemToggle.svelte'
   import List from './workspace/List.svelte'
@@ -18,14 +18,11 @@
 
   z-index: 2;
 }
-.new-button {
-  margin: 0 auto 0 0;
-}
   
 </style>
 
 <nav class="Toolbar">
-  <span class="new-button"><Button>+ New</Button></span>
+  <NewItem />
   <Search />
   <ItemToggle />
 </nav>

@@ -1,6 +1,8 @@
 <script>
-  export let click
-  export let dark = false
+  export let click = null
+  export let href = null
+  export let hidden = false
+  export let disabled = false
 </script>
 
 <style>
@@ -14,8 +16,8 @@
 
     display: inline-block;
 
-    padding: 0.5rem;
-    margin: auto calc(var(--base) * 0.5);
+    padding: 0.65rem 2.5rem 0.7rem;
+
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -30,7 +32,7 @@
     -ms-touch-action: manipulation;
     touch-action: manipulation;
     /* transition: box-shadow 0.15s ease-in-out; */
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.9);
     text-decoration: none !important;
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: none;
@@ -42,7 +44,7 @@
   .Button:visited:hover,
   .Button:link:visited:hover {
     color: white !important;
-    background-color: var(--workspace-color);
+    background-color: var(--rc-dark);
     box-shadow: none;
     text-decoration: none;
   }
@@ -52,17 +54,27 @@
     background-color: var(--active);
   }
   .Button:focus {
-    border-color: var(--link);
-    background-color: var(--link);
+    outline: none;
+    box-shadow: 0 0 0 3px #68d6d499;
   }
 </style>
 
 
-<button type="Button" class="Button" on:click={click} class:dark>
-<svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle opacity="0.7" cx="14.1426" cy="15" r="10" transform="rotate(45 14.1426 15)" fill={dark ? 'white' : 'currentColor'}/>
-<rect x="16.9707" y="10.7573" width="2" height="10" rx="1" transform="rotate(45 16.9707 10.7573)" fill="{dark ? 'black' : 'white'}"/>
-<rect x="18.3848" y="17.8286" width="2" height="10" rx="1" transform="rotate(135 18.3848 17.8286)" fill="{dark ? 'black' : 'white'}"/>
-</svg>
-
-</button>
+{#if href}
+  <a
+    class="Button"
+    {hidden}
+    {disabled}
+    {href}
+    on:click={click}>
+    <slot />
+  </a>
+{:else}
+  <button
+    class="Button"
+    {hidden}
+    {disabled}
+    on:click={click}>
+    <slot />
+  </button>
+{/if}

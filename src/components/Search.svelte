@@ -112,7 +112,6 @@
   }
 </style>
 
-<!-- markup (zero or more items) goes here -->
 {#if open}
   <div class="SearchBox" out:send="{{key: 'search-box'}}" in:receive="{{key: 'search-box'}}">
   <form role="search" method="get" id="searchform" class="SearchForm" action="">
