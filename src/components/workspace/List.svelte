@@ -15,7 +15,6 @@
   $: if ($library) {
     items = $library.items
   }
-  $: console.log($selectedItems);
   let query = {}
   let params = {}
   $: if ($page) {
@@ -100,5 +99,7 @@
     </div>
   {/if}
   {#if selecting}
-    <Footer />
+    <Footer endSelection={() => {
+      selecting = false
+    }} />
   {/if}

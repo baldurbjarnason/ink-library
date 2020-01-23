@@ -7,6 +7,7 @@
   import ChooseWorkspaces from './ChooseWorkspaces.svelte'
   import Input from './Input.svelte'
   let editing = false
+  export let endSelection = function () {}
 </script>
 
 <style>
@@ -56,6 +57,7 @@
         editing = false
       }}>Cancel</SecondaryButton> <Button click={() => {
         editing = false
+        endSelection()
       }}>Save</Button></span>
   {:else}
       <span class="FooterNumber">
