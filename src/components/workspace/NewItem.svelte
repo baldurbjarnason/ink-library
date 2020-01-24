@@ -2,7 +2,7 @@
   import Button from '../Button.svelte'
   import WhiteButton from './WhiteButton.svelte'
   import {send, receive} from '../../routes/_crossfade.js';
-  import ChooseWorkspaces from './ChooseWorkspaces.svelte'
+  import AddWorkspace from './AddWorkspace.svelte'
   import Input from './Input.svelte'
   import TypeSelect from './TypeSelect.svelte'
   import Closer from '../Closer.svelte';
@@ -106,7 +106,6 @@
     text-decoration: none !important;
     transition: transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: none;
-    margin-right: var(--base);
   }
 
   .Expander:hover svg{
@@ -154,8 +153,9 @@
    <div class="MoreItems">
     <div class="Wide"><Input placeholder="https://www.example.com/path/to/item" dark={true} name="new-url">Add url:</Input></div>
     <div><TypeSelect dark={true}>Select type:</TypeSelect></div>
-    <div><ChooseWorkspaces>Change workspace:</ChooseWorkspaces></div>
+    <div><AddWorkspace>Add workspace:</AddWorkspace></div>
     <div class="Wide"><Input placeholder="First Author, Second Author..." dark={true} name="new-authors">Add authors:</Input></div>
+    <div class="Wide"><Input placeholder="First Collection, Second Collection..." dark={true} name="new-collections">Add collection:</Input></div>
    </div>
 {/if}
 </form>
