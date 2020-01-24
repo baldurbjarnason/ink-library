@@ -2,6 +2,9 @@
   import Button from '../Button.svelte'
   import WhiteButton from './WhiteButton.svelte'
   import {send, receive} from '../../routes/_crossfade.js';
+  import ChooseWorkspaces from './ChooseWorkspaces.svelte'
+  import Input from './Input.svelte'
+  import TypeSelect from './TypeSelect.svelte'
   import Closer from '../Closer.svelte';
 	import { afterUpdate, tick } from 'svelte';
   let open = false
@@ -31,15 +34,28 @@
     top: calc(var(--base) * 0.5);
     left: 0;
     right: 0;
-    height: calc(var(--base) * 5);
+    min-height: calc(var(--base)*5.3);
     z-index: 2;
     border-radius: 15px;
-    padding-right: var(--base);
   }
   .NewBox form {
-    display: flex;
+    display: -webkit-box;
+    display: grid;
+    grid-template-columns: min-content 1fr min-content min-content;
     align-items: center;
     height: 100%;
+    grid-template-rows: calc(var(--base)*5.3) auto;
+  }
+  .NewBox .MoreItems {
+    grid-column: 1 / -1;
+    padding: var(--base);
+    grid-gap: var(--base);
+    border-top: 1px solid white;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .Wide {
+    grid-column: 1 / -1;
   }
   .NewBox input {
     flex: 1 1 100%;
@@ -57,7 +73,7 @@
     color: white;
   }
   .NewBox:focus-within {
-    box-shadow: 0 0 0 3px var(--workspace-color);
+    box-shadow: 0 0 0 3px white;
   }
   .new-button {
     margin: 0 auto 0 0;
@@ -90,6 +106,7 @@
     text-decoration: none !important;
     transition: transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: none;
+    margin-right: var(--base);
   }
 
   .Expander:hover svg{
@@ -135,6 +152,10 @@
 
 {#if expanded}
    <div class="MoreItems">
+    <div class="Wide"><Input placeholder="https://www.example.com/path/to/item" dark={true} name="new-url">Add url:</Input></div>
+    <div><TypeSelect dark={true}>Select type:</TypeSelect></div>
+    <div><ChooseWorkspaces>Change workspace:</ChooseWorkspaces></div>
+    <div class="Wide"><Input placeholder="First Author, Second Author..." dark={true} name="new-authors">Add authors:</Input></div>
    </div>
 {/if}
 </form>
