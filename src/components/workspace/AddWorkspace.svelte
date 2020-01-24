@@ -7,8 +7,9 @@
   @supports(-webkit-appearance: none) {
     input[type="radio"] {
       -webkit-appearance: none;
-      width: 15px;
-      height: 15px;
+      width: 17px;
+      height: 17px;
+      border:1px solid rgba(255,255,255, 0.75);
       background-color: var(--workspace-color);
       border-radius: 100%;
       margin: 0;
@@ -16,22 +17,22 @@
     input[value="research"] {
       background-color: var(--research-workspace);
       color: var(--research-workspace);
-      box-shadow: 0 0 0 2px var(--research-workspace), 1px 1px 5px #C32324;
+      /* box-shadow: 0 0 0 2px var(--research-workspace); */
     }
     input[value="public"] {
       background-color: var(--public-workspace);
       color: var(--public-workspace);
-      box-shadow: 0 0 0 2px var(--public-workspace), 1px 1px 5px #316FB7;;
+      /* box-shadow: 0 0 0 2px var(--public-workspace); */
     }
     input[value="teaching"] {
       background-color: var(--teaching-workspace);
       color: var(--teaching-workspace);
-      box-shadow: 0 0 0 2px var(--teaching-workspace), 1px 1px 5px rgba(147, 99, 210, 0.6);
+      /* box-shadow: 0 0 0 2px var(--teaching-workspace); */
     }
     input[value="personal"] {
       background-color: var(--personal-workspace);
       color: var(--personal-workspace);
-      box-shadow: 0 0 0 2px var(--personal-workspace), 1px 1px 5px #00A56A;
+      /* box-shadow: 0 0 0 2px var(--personal-workspace); */
     }
     .selected input[type="radio"] {
       border-color: white;
@@ -40,7 +41,8 @@
       position: relative;
       /* Do a bug fix to keep iOS from adding dark background. */
       background-color: white;
-      box-shadow: 0 0 0 3px currentColor, inset 0 0 0 1px currentColor;
+      border-color: white;
+      box-shadow: inset 0 0 0 3px currentColor;
     }
     /* input[type="radio"]:checked::after {
       content: " ";
@@ -75,7 +77,7 @@
     border-radius: 15px;
     border-color: transparent;
     color: #fff;
-    background-color: #193C4A;
+    background-color: rgba(255,255,255, 0.125);
     justify-content: space-between;
   }
   label {

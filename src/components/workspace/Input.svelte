@@ -2,6 +2,7 @@
   export let name
   export let placeholder = ""
   export let dark = false
+  export let type = "text"
 </script>
 
 <style>
@@ -24,7 +25,7 @@
   .dark input {
     border-color: transparent;
     color: #fff;
-    background-color: #193C4A;
+    background-color: rgba(255,255,255, 0.125);
   }
   input:focus {
     outline: none;
@@ -33,10 +34,13 @@
   .dark input:focus {
     box-shadow: 0 0 2px 2px white;
   }
+  .dark input::placeholder {
+    color: rgba(255,255,255,0.8);
+  }
 </style>
 
 <label class:dark>
 <div class="LabelText">
   <slot></slot>
 </div>
-<input type="text" name={name} id={name} {placeholder}></label>
+<input {type} name={name} id={name} {placeholder}></label>

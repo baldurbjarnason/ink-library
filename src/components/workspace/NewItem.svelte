@@ -151,7 +151,7 @@
 
 {#if expanded}
    <div class="MoreItems">
-    <div class="Wide"><Input placeholder="https://www.example.com/path/to/item" dark={true} name="new-url">Add url:</Input></div>
+    <div class="Wide"><Input placeholder="https://www.example.com/path/to/item" dark={true} name="new-url" type="url">Add url:</Input></div>
     <div><TypeSelect dark={true}>Select type:</TypeSelect></div>
     <div><AddWorkspace>Add workspace:</AddWorkspace></div>
     <div class="Wide"><Input placeholder="First Author, Second Author..." dark={true} name="new-authors">Add authors:</Input></div>
