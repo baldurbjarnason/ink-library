@@ -54,7 +54,7 @@ li a:hover .linkText {
 </style>
 
 <ul>
-{#each item.tags as tag (tag.id)}
+{#each item.tags as tag}
   <li class:selected><a href="/library/all/{encodeURIComponent(tag.name)}"><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
     {tag.name}
   </span></a></li>
