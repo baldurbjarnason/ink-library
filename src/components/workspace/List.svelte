@@ -77,6 +77,8 @@
     <div class="Cards">
     {#each items as item}
         <Card {item} {selecting} />
+        {:else}
+          <div>Loading...</div>
     {/each}
     </div>
   {:else}
@@ -95,6 +97,8 @@
     <div class="Items">
     {#each items as item}
         <Item {item} {selecting} />
+        {:else}
+          <div>No Items</div>
     {/each}
     </div>
   {/if}

@@ -1,5 +1,5 @@
 <script>
-  import { library as libraryStore } from '../stores';
+  import { library as libraryStore, page as pageStore } from '../stores';
 	import Nav from '../components/Nav.svelte';
 	import Sidebar from '../components/Sidebar.svelte';
   import { stores } from "@sapper/app";
@@ -9,6 +9,7 @@
   let query
   let params
   $: if ($page) {
+    pageStore.set($page)
     query = $page.query;
     params = Object.assign({}, $page.params);
     if (segment) {

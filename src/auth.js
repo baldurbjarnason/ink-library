@@ -99,7 +99,7 @@ export function setup (app) {
       res.redirect(req.session.returnTo || "/");
     });
   } else {
-    console.log('basic')
+    // console.log('basic')
     passport.use(
       new httpStrategies.BasicStrategy((username, password, callback) => {
         console.log('using basic')
