@@ -5,6 +5,8 @@ import csurf from "csurf";
 import { setup as authSetup } from "./auth.js";
 // import dotenv from "dotenv";
 import session from "express-session";
+import fs from "fs"
+const accessTemplate = fs.readFileSync('pages/access.html', 'utf8')
 // import firesession from 'firestore-store'
 
 const { NODE_ENV } = process.env;
@@ -50,10 +52,20 @@ export function setup(sapper, options = {}) {
   if (dev) {
     app.use(
       compression({ threshold: 0 }),
-      sirv("dev-static", { dev }),
       sirv("static", { dev })
     );
   }
+  app.get("/access", (req, res, next) => {
+    const html = accessTemplate.replace('{RETURN_TO}', req.query.returnTo || '%2F')
+    return res.send(html)
+  })
+  app.use((req, res, next) => {
+    if (req.user) {
+      return next()
+    } else {
+      res.redirect(`/access?returnTo=${encodeURIComponent(req.path)}`)
+    }
+  })
   app.use(
     "/",
     (req, res, next) => {

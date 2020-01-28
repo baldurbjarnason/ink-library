@@ -87,7 +87,7 @@ a.selected .marker {
     <img src="/favicon.png" alt="Front Page">
     </a></li></ul>
   <ul class="menu">
-    <li><a href="/library" class:selected={params.segment === "library"}>
+    <li><a href="/library/all/all" class:selected={params.segment === "library"}>
     {#if params.segment === "library"}       
       <span class="marker" out:send="{{key: 'nav-marker'}}" in:receive="{{key: 'nav-marker'}}"></span>
     {/if}
