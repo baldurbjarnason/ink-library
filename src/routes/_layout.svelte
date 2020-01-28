@@ -9,7 +9,6 @@
   let query
   let params
   $: if ($session && process.browser) {
-    console.log($session)
     const res = fetch(`/api/collections`)
       .then(res => res.json())
       .then(result => {

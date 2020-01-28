@@ -56,7 +56,6 @@ async function deserialise(user) {
     try {
       user.profile = await getProfile(user)
     } catch (err) {
-      console.log(err.response.statusCode)
       if (err.response.statusCode === 404) {
         try {
           await got.post(`${process.env.API_SERVER}readers`, {

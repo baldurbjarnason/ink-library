@@ -56,7 +56,7 @@ export function setup(sapper, options = {}) {
     );
   }
   app.get("/access", (req, res, next) => {
-    const html = accessTemplate.replace('{RETURN_TO}', req.query.returnTo || '/')
+    const html = accessTemplate.replace('{RETURN_TO}', req.query.returnTo || '%2F')
     return res.send(html)
   })
   app.use((req, res, next) => {

@@ -91,6 +91,16 @@
     box-shadow: 0 0 0 3px var(--workspace-color), 0 0 0 20px #f0f0f0;
   }
 }
+.Empty {
+  text-align: center;
+  color: #C4CDD1;
+}
+code {
+  background-color: transparent;
+    color: #C4CDD1;
+    font-size: 4rem;
+    margin: auto;
+}
 </style>
 
   {#if query["list-style"] === 'card'}
@@ -109,7 +119,11 @@
         {#each items as item}
             <Card {item} {selecting} />
             {:else}
-              <div>No Items</div>
+              <div class="Empty">
+              <pre aria-hidden="true"><code> ̄\_(ツ)_/ ̄</code></pre>
+                <p>
+                  No publications...
+                </p></div>
         {/each}
     {/if}
     </div>
@@ -133,7 +147,11 @@
         {#each items as item}
             <Item {item} {selecting} />
             {:else}
-              <div>No Items</div>
+              <div class="Empty">
+              <pre aria-hidden="true"><code> ̄\_(ツ)_/ ̄</code></pre>
+                <p>
+                  No publications...
+                </p></div>
         {/each}
     {/if}
     </div>

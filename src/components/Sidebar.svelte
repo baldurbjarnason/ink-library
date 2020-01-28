@@ -85,7 +85,7 @@ li {
   font-size: 0.8rem;
   padding-right: calc(var(--base) * .5);
 }
-.Sidebar a:link {
+.Sidebar a:link, .Sidebar .empty {
   display: block;
   padding: calc(var(--base) * 0.25) var(--base);
   text-decoration: none;
@@ -237,10 +237,12 @@ h2 {
   {workspace}
 {/if}</h2>
   <ul>
-  {#each tags as tag (tag.id)}
+  {#each tags as tag}
     <li><a href="/library/{workspace}/{encodeURIComponent(tag.name)}{queryText}" class:selected={params.collection === tag.name}><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
       {tag.name}
     </span></a></li>
+    {:else}
+      <li><span class="empty">No collections...</span></li>
   {/each}
   </ul>
 </div>
