@@ -50,10 +50,16 @@ export function setup(sapper, options = {}) {
   if (dev) {
     app.use(
       compression({ threshold: 0 }),
-      sirv("dev-static", { dev }),
       sirv("static", { dev })
     );
   }
+  app.use((req, res, next) => {
+    if (req.user) {
+      return next()
+    } else {
+      res.redirect(`/login?returnTo=${encodeURIComponent(req.path)}`)
+    }
+  })
   app.use(
     "/",
     (req, res, next) => {

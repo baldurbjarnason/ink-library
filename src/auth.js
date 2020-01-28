@@ -1,7 +1,7 @@
 
 import passport from "passport";
 import jwt from "jsonwebtoken";
-// import got from "got";
+import got from "got";
 import httpStrategies from "passport-http";
 import debugSetup from "debug";
 import Auth0Strategy from "passport-auth0";
@@ -21,6 +21,14 @@ function generateToken(user) {
   });
 }
 
+async function getProfile (user) {
+  const response = await got(`${process.env.API_SERVER}whoami`, {
+    headers: {
+      Authorization: `Bearer ${user.token}`
+    }
+  });
+  return response.body;
+}
 
 async function deserialise(user) {
   if (!user.token) {
@@ -44,20 +52,32 @@ async function deserialise(user) {
       }
     );
   }
-  // if (!user.profile || user.profile.status === 404) {
-  //   try {
-  //     const response = await got(`${process.env.API_SERVER}whoami`, {
-  //       headers: {
-  //         Authorization: `Bearer ${user.token}`
-  //       },
-  //       json: true
-  //     });
-  //     const { id, outbox } = response.body;
-  //     user.profile = { id, outbox };
-  //   } catch (err) {
-  //     user.profile = { status: err.statusCode };
-  //   }
-  // }
+  if (!user.profile || !user.profile.id) {
+    try {
+      user.profile = await getProfile(user)
+    } catch (err) {
+      console.log(err.response.statusCode)
+      if (err.response.statusCode === 404) {
+        try {
+          await got.post(`${process.env.API_SERVER}readers`, {
+            headers: {
+              "content-type": "application/ld+json",
+              Authorization: `Bearer ${user.token}`
+            },
+            body: JSON.stringify({
+              type: "Person",
+              summary: `Reader profile`
+            })
+          });
+          user.profile = await getProfile(user)
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        user.profile = { status: err.response.statusCode };
+      }
+    }
+  }
   return user;
 }
 

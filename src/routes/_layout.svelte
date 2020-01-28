@@ -4,10 +4,22 @@
 	import Sidebar from '../components/Sidebar.svelte';
   import { stores } from "@sapper/app";
   const { page, session } = stores();
-  export let collections;
+  let collections;
   export let segment;
   let query
   let params
+  $: if ($session && process.browser) {
+    console.log($session)
+    const res = fetch(`/api/collections`)
+      .then(res => res.json())
+      .then(result => {
+        collections = result
+      })
+      .catch(err => {
+        console.error(err)
+        collections = []
+      })
+  }
   $: if ($page) {
     pageStore.set($page)
     query = $page.query;
@@ -20,20 +32,6 @@
   }
 </script>
 
-<script context="module">
-	export async function preload(page, session) {
-    let collections
-    let library
-
-    try {
-      const res = await this.fetch(`/api/collections`);
-      collections = await res.json();
-    } catch {
-      collections = {}
-    }
-		return { collections };
-	}
-</script>
 <style global>
   @import '../../styles/**/*.css';
 	main, .content {
