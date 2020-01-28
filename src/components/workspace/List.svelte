@@ -94,6 +94,7 @@
 .Empty {
   text-align: center;
   color: #C4CDD1;
+  grid-column: 1 / -1;
 }
 code {
   background-color: transparent;
