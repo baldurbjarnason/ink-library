@@ -1,8 +1,10 @@
 
 import {page} from './page'
-import { derived } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 
-export const library = derived(page, ($page, set) => {
+export const refreshDate = writable(Date.now())
+
+export const library = derived([page, refreshDate], ([$page, $refreshDate], set) => {
   set({type: 'loading', items: []})
   if (!process.browser || !$page.path || !$page.path.startsWith('/library')) return
   const query = Object.assign({}, $page.query)

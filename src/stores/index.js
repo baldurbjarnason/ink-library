@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 export {page} from './page'
 
-export {library} from './library'
+export {library, refreshDate} from './library'
 
 export const selectedItems = writable(new Set())
 

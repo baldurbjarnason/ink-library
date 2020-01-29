@@ -6,7 +6,9 @@
   import Input from './Input.svelte'
   import TypeSelect from './TypeSelect.svelte'
   import Closer from '../Closer.svelte';
-	import { afterUpdate, tick } from 'svelte';
+  import { afterUpdate, tick } from 'svelte';
+  import {refreshDate} from '../../stores';
+  import {getToken} from '../../getToken'
   let open = false
   let input
   let newToggle
@@ -24,6 +26,26 @@
       input.focus();
     }
   })
+  async function submit (event) {
+    event.preventDefault();
+    close();
+    const { target } = event;
+    try {
+      await fetch(target.action, {
+        method: "POST",
+        credentials: "include",
+        headers: { 
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Accept": "text/javascript",
+          "csrf-token": getToken()
+          },
+        body: new URLSearchParams(new FormData(target))
+      })
+      $refreshDate = Date.now()
+    } catch (err) {
+      console.error(err)
+    }
+  }
 </script>
 
 <style>
@@ -130,15 +152,13 @@
 
 {#if open}
   <div class="NewBox" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}">
-  <form method="get" id="newform" class="newForm" action="">
+  <form id="newform" class="newForm" action="/api/create-publication" on:submit={submit}>
 <label class="visually-hidden" id="new-label" for="new-input">New item:</label>
 <Closer click={close} dark={true} />
-<input type="title" required="" name="s" id="new-input" class="title-field" value="" placeholder="Publication Title" bind:this={input}>
+<input type="hidden" name="type" value="Publication">
+<input type="title" required="" name="name" id="new-input" class="title-field" value="" placeholder="Publication Title" bind:this={input}  autocomplete="off">
 
-  <WhiteButton click={(ev) => {
-    ev.preventDefault()
-    close()
-  }}>Create</WhiteButton>
+  <WhiteButton>Create</WhiteButton>
   <button type="button" class="Expander" class:expanded on:click={() => {
     expanded = !expanded
   }}>
