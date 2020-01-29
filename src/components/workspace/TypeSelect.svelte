@@ -85,7 +85,6 @@
   <slot></slot>
 </div>
 <select name="pubType" id="select-pubType">
-  <option value="None">None</option>
 {#each types as type}
   <option value="{type}">{type}</option>
 {/each}
