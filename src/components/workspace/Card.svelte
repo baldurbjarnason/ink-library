@@ -13,6 +13,7 @@
   } else {
     removeSelected(item)
   }
+  let cover
   $: if (item.resources) {
     cover = item.resources.find(resource => resource.rel.indexOf('cover') !== -1)
     if (!cover) {
@@ -153,13 +154,13 @@
     <label><span class="visually-hidden">Select this item</span><input type="checkbox" bind:checked={selected}></label>
   {:else}
     <span>&nbsp;</span>
-  {/if}<span>{item.type}</span> <span class="Modified">Modified:  <strong>{item.updated}</strong></span></div>
+  {/if}<span>{item.type}</span> <span class="Modified">Modified:  <strong>{new Date(item.updated).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</strong></span></div>
   <div class="CardMain">
     <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
     <div class="Name"><span class="title">{item.name}</span>
       <div class="Authors">
-      {#each item.author as author}
-        <span class="Author">{author.name}</span>
+      {#each item.author as author, i}
+        <span class="Author">{author.name}{#if i !== item.author.length - 1}, {/if}</span>
       {/each}
       </div>
     </div>

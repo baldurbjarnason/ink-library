@@ -134,11 +134,10 @@
   <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
   <div class="Name"><span class="title">{item.name}</span>
   <div class="Authors">
-  {#each item.author as author}
-     <span class="Author">{author.name}</span>
+  {#each item.author as author, i}
+     <span class="Author">{author.name}{#if i !== item.author.length - 1}, {/if}</span>
   {/each}
   </div>
-  <!-- Need to add authors! -->
   </div>
   <div class="Stacks">
     <ItemStacks {item} {selected} />
