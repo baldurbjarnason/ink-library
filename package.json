@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "autoprefixer": "^9.7.3",
+    "connect-redis": "^4.0.3",
     "cssnano": "^4.1.10",
     "csurf": "^1.10.0",
     "debug": "^4.1.1",
@@ -68,6 +69,7 @@
     "postcss-custom-properties": "^9.0.2",
     "postcss-easy-import": "^3.0.0",
     "postcss-reporter": "^6.0.1",
+    "redis": "^2.8.0",
     "universal-base64url": "^1.1.0"
   },
   "devDependencies": {
@@ -81,6 +83,7 @@
     "@testing-library/svelte": "^1.11.0",
     "babel-jest": "^24.9.0",
     "compression": "^1.7.4",
+    "dotenv": "^8.2.0",
     "faker": "^4.1.0",
     "friendly-words": "^1.1.10",
     "healthier": "3.2.0",

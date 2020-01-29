@@ -5,12 +5,25 @@ import csurf from "csurf";
 import { setup as authSetup } from "./auth.js";
 // import dotenv from "dotenv";
 import session from "express-session";
+import makeStore from 'connect-redis'
 import fs from "fs"
-const accessTemplate = fs.readFileSync('pages/access.html', 'utf8')
-// import firesession from 'firestore-store'
 
 const { NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
+if (dev) {
+  require('dotenv').config()
+}
+const accessTemplate = fs.readFileSync('pages/access.html', 'utf8')
+const redis = require('redis')
+// import firesession from 'firestore-store'
+
+const RedisStore = makeStore(session)
+const client = redis.createClient({
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+  password: process.env.REDIS_PASSWORD
+})
+
 if (dev) {
   // const result = dotenv.config();
   // if (result.error) {
@@ -29,6 +42,7 @@ export function setup(sapper, options = {}) {
   app.set("trust proxy", true);
 
   const sessionMiddleware = session({
+    store: new RedisStore({ client }),
     secret: process.env.COOKIE_KEY || 'randome stuff',
     resave: true,
     rolling: true,
