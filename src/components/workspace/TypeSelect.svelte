@@ -84,7 +84,7 @@
 <div class="LabelText">
   <slot></slot>
 </div>
-<select name="type-select" id="type-select">
+<select name="pubType" id="select-pubType">
   <option value="None">None</option>
 {#each types as type}
   <option value="{type}">{type}</option>

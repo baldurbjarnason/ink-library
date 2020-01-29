@@ -11,8 +11,9 @@ export async function post(req, res, next) {
       }
     })
   }
+  const type = req.body.pubType || 'Publication'
   const body = {
-    type: 'Publication',
+    type,
     author,
     name: req.body.name
   }
