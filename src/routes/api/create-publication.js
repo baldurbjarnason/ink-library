@@ -12,9 +12,17 @@ export async function post(req, res, next) {
     })
   }
   const type = req.body.pubType || 'Publication'
+  let links
+  if (req.body.newURL) {
+    links = [{
+      rel: "alternate",
+      url: req.body.newURL
+    }]
+  }
   const body = {
     type,
     author,
+    links,
     name: req.body.name
   }
   console.log(JSON.stringify(body))

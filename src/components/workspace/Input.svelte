@@ -43,4 +43,4 @@
 <div class="LabelText">
   <slot></slot>
 </div>
-<input {type} name={name} id="input-{name}" {placeholder}></label>
+<input {type} name={name} id="input-{name}" {placeholder} autocomplete="off"></label>
