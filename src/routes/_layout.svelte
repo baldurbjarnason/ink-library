@@ -68,6 +68,7 @@
 
 <svelte:head>
   <title>Library – {params.workspace || 'all'} – Rebus Ink</title>
+    <meta name="csrftoken" content={$session.csrfToken}>
 </svelte:head>
 
 <main class="grid">

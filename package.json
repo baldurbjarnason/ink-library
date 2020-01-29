@@ -54,6 +54,7 @@
     "connect-redis": "^4.0.3",
     "cssnano": "^4.1.10",
     "csurf": "^1.10.0",
+    "date-fns": "^2.9.0",
     "debug": "^4.1.1",
     "document-register-element": "^1.14.3",
     "express": "^4.17.1",

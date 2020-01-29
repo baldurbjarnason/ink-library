@@ -13,9 +13,19 @@
   } else {
     removeSelected(item)
   }
-  let cover = {}
   $: if (item.resources) {
     cover = item.resources.find(resource => resource.rel.indexOf('cover') !== -1)
+    if (!cover) {
+      cover = {
+        href: "/img/placeholder-cover.jpg",
+        rel: ["cover"]
+      }
+    }
+  } else {
+    cover = {
+      href: "/img/placeholder-cover.jpg",
+      rel: ["cover"]
+    }
   }
 </script>
 
