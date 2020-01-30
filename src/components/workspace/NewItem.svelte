@@ -36,7 +36,7 @@
         credentials: "include",
         headers: { 
           "Content-Type": "application/x-www-form-urlencoded",
-          "Accept": "text/javascript",
+          "Accept": "application/json",
           "csrf-token": getToken()
           },
         body: new URLSearchParams(new FormData(target))
