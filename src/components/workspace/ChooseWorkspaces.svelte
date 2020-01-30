@@ -79,8 +79,8 @@
     <slot></slot>
   </div>
 <div class="Checks">
-  <label><span class="visually-hidden">Research</span><input type="checkbox" value="research"></label>
-  <label><span class="visually-hidden">Teaching</span><input type="checkbox" value="teaching"></label>
-  <label><span class="visually-hidden">Public</span><input type="checkbox" value="public"></label>
-  <label><span class="visually-hidden">Personal</span><input type="checkbox" value="personal"></label>
+  <label><span class="visually-hidden">Research</span><input name="chooseWorkspace" type="checkbox" value="research"></label>
+  <label><span class="visually-hidden">Teaching</span><input name="chooseWorkspace" type="checkbox" value="teaching"></label>
+  <label><span class="visually-hidden">Public</span><input name="chooseWorkspace" type="checkbox" value="public"></label>
+  <label><span class="visually-hidden">Personal</span><input name="chooseWorkspace" type="checkbox" value="personal"></label>
 </div>
