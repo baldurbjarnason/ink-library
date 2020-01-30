@@ -64,16 +64,16 @@ a.selected .marker {
   border-radius: 0px 5px 5px 0px;
   background-color: var(--link);
 }
-.avatar {
+/* .avatar {
   border-radius: 100%;
-}
+} */
 .profile {
   margin-top: auto;
 }
-.profile img {
+/* .profile img {
   width: 30px;
   height: 30px;
-}
+} */
 .menu {
   margin-top: calc(var(--base) * 2);
 }
