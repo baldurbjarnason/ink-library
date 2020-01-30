@@ -156,7 +156,7 @@
 <label class="visually-hidden" id="new-label" for="new-input">New item:</label>
 <Closer click={close} dark={true} />
 <input type="hidden" name="type" value="Publication">
-<input type="title" required="" name="name" id="new-input" class="title-field" value="" placeholder="Publication Title" bind:this={input}  autocomplete="off">
+<input type="title" required name="name" id="new-input" class="title-field" value="" placeholder="Publication Title" bind:this={input}  autocomplete="off">
 
   <WhiteButton>Create</WhiteButton>
   <button type="button" class="Expander" class:expanded on:click={() => {

@@ -1,7 +1,6 @@
 import got from "got";
 
 export async function post(req, res, next) {
-  console.log(req.body)
   let author
   if (req.body.author) {
     author = req.body.author.split(',').map(name => {
@@ -25,7 +24,6 @@ export async function post(req, res, next) {
     links,
     name: req.body.name
   }
-  console.log(JSON.stringify(body))
   if (typeof req.body !== "string") {
     req.body = JSON.stringify(req.body);
   }
