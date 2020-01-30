@@ -1,5 +1,5 @@
 <script>
-  import {library, selectedItems} from '../../stores'
+  import {library, clearSelected} from '../../stores'
   import Footer from './Footer.svelte'
   import Button from '../Button.svelte'
   import Card from './Card.svelte'
@@ -160,5 +160,6 @@ code {
   {#if selecting}
     <Footer endSelection={() => {
       selecting = false
+      clearSelected()
     }} />
   {/if}

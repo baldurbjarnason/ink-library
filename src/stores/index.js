@@ -17,3 +17,6 @@ export function removeSelected (item) {
     return set
   })
 }
+export function clearSelected () {
+  selectedItems.set(new Set())
+}
