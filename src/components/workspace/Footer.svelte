@@ -48,11 +48,11 @@
     <div><TypeSelect>Change type:</TypeSelect></div>
     <div><ChooseWorkspaces>Change workspace:</ChooseWorkspaces></div>
       <span class="FooterNumber">
-        {$selectedItems.size} {#if $selectedItems.size === 1}
+        Editing {$selectedItems.size} {#if $selectedItems.size === 1}
            item
         {:else}
           items
-        {/if} selected
+        {/if}
       </span> <span class="FooterButtons"><SecondaryButton click={() => {
         editing = false
       }}>Cancel</SecondaryButton> <Button click={() => {
@@ -61,11 +61,9 @@
       }}>Save</Button></span>
   {:else}
       <span class="FooterNumber">
-        {$selectedItems.size} {#if $selectedItems.size === 1}
-           item
-        {:else}
-          items
-        {/if} selected
+        <SecondaryButton click={() => {
+        endSelection()
+      }}>Cancel</SecondaryButton>
       </span> <span class="FooterButtons"><RiskyButton>Delete</RiskyButton> <Button click={() => {
         editing = true
       }}>Edit</Button></span>
