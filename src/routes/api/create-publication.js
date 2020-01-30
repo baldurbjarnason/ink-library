@@ -24,9 +24,7 @@ export async function post(req, res, next) {
     links,
     name: req.body.name
   }
-  if (typeof req.body !== "string") {
-    req.body = JSON.stringify(req.body);
-  }
+  console.log(req.body)
   if (req.user && req.user.profile) {
     try {
       const response = await got.post(`${process.env.API_SERVER}publications`, {
@@ -36,6 +34,15 @@ export async function post(req, res, next) {
         },
         body: JSON.stringify(body)
       }).json();
+      // Check workspace, if there is one, add
+      if (req.body.addWorkspace !== 'all') {
+        await got.put(`${response.id}tags/${req.body.addWorkspace}`, {
+          headers: {
+            "content-type": "application/ld+json",
+            Authorization: `Bearer ${req.user.token}`
+          }
+        }).json();
+      }
       return res.json(response);
     } catch (err) {
       console.log(err);

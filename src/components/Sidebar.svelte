@@ -4,8 +4,8 @@
   import { fly } from 'svelte/transition';
   import { stores } from "@sapper/app";
   const { page, session } = stores();
+  import {collections} from '../stores'
   export let params
-  export let collections = []
   let tags
   let workspace
   let queryText
@@ -14,7 +14,7 @@
   } else {
     queryText = ""
   }
-  $: if (params) {
+  $: if (params && $collections) {
     if (params.workspace) {
       workspace = params.workspace
     } else if (params.segment === 'library') {
@@ -22,10 +22,11 @@
     } else {
       workspace = null
     }
+    // Need to figure out a better way to filter collections by workspace
     if (workspace !== 'all') {
-      tags = collections.filter(tag => tag.json.workspace === workspace)
+      tags = $collections.filter(tag => tag.json.workspace === workspace)
     } else {
-      tags = collections
+      tags = $collections
     }
   }
 </script>
@@ -198,40 +199,40 @@ h2 {
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
   <span class="visually-hidden">All</span> </a></li>
-  <li><a href="/library/research/all{queryText}" class="research-tab" class:selected={workspace === 'research'}>
+  <li><a href="/library/Research/all{queryText}" class="research-tab" class:selected={workspace === 'Research'}>
   
-  {#if workspace === 'research'}
+  {#if workspace === 'Research'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
     <span class="visually-hidden">Research</span></a></li>
-  <li><a href="/library/teaching/all{queryText}" class="teaching-tab" class:selected={workspace === 'teaching'}>
+  <li><a href="/library/Teaching/all{queryText}" class="teaching-tab" class:selected={workspace === 'Teaching'}>
   
-  {#if workspace === 'teaching'}
+  {#if workspace === 'Teaching'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}<span class="visually-hidden">Teaching</span></a></li>
-  <li><a href="/library/public/all{queryText}" class="public-tab" class:selected={workspace === 'public'}>
+  <li><a href="/library/Public+Scholarship/all{queryText}" class="public-tab" class:selected={workspace === 'Public Scholarship'}>
 
-  {#if workspace === 'public'}
+  {#if workspace === 'Public Scholarship'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
   <span class="visually-hidden">Public scholarships</span></a></li>
-  <li><a href="/library/personal/all{queryText}" class="personal-tab" class:selected={workspace === 'personal'}>
+  <li><a href="/library/Personal/all{queryText}" class="personal-tab" class:selected={workspace === 'Personal'}>
 
-  {#if workspace === 'personal'}
+  {#if workspace === 'Personal'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
   <span class="visually-hidden">Personal</span></a></li>
 </ul>
-<div class="Sidebar {workspace}">
+<div class="Sidebar {workspace.split(' ')[0].toLowerCase()}">
 <h2>{#if workspace === 'all'}
   All workspaces
-  {:else if workspace === "research"}
+  {:else if workspace === "Research"}
     Research
-  {:else if workspace === "public"}
+  {:else if workspace === "Public Scholarship"}
     Public scholarship
-  {:else if workspace === "teaching"}
+  {:else if workspace === "Teaching"}
     Teaching
-  {:else if workspace === "personal"}
+  {:else if workspace === "Personal"}
     Personal
 {:else}
   {workspace}

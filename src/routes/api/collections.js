@@ -7,5 +7,5 @@ export async function get(req, res, next) {
       Authorization: `Bearer ${req.user.token}`
     }
   }).json();
-  res.json(response.filter(tag => tag.tagType !== 'mode'));
+  res.json(response);
 }

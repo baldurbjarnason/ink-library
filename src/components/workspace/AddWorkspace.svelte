@@ -1,5 +1,7 @@
 <script>
   // your script goes here
+  import {workspaces} from '../../stores'
+  $: console.log($workspaces)
 </script>
 
 <style>
@@ -14,22 +16,27 @@
       border-radius: 100%;
       margin: 0;
     }
-    input[value="research"] {
+    input[value="all"] {
+      background-color: var(--all-workspace);
+      color: var(--all-workspace);
+      /* box-shadow: 0 0 0 2px var(--research-workspace); */
+    }
+    input.Research {
       background-color: var(--research-workspace);
       color: var(--research-workspace);
       /* box-shadow: 0 0 0 2px var(--research-workspace); */
     }
-    input[value="public"] {
+    input.Public {
       background-color: var(--public-workspace);
       color: var(--public-workspace);
       /* box-shadow: 0 0 0 2px var(--public-workspace); */
     }
-    input[value="teaching"] {
+    input.Teaching {
       background-color: var(--teaching-workspace);
       color: var(--teaching-workspace);
       /* box-shadow: 0 0 0 2px var(--teaching-workspace); */
     }
-    input[value="personal"] {
+    input.Personal {
       background-color: var(--personal-workspace);
       color: var(--personal-workspace);
       /* box-shadow: 0 0 0 2px var(--personal-workspace); */
@@ -88,8 +95,9 @@
     <slot></slot>
   </div>
 <div class="Checks">
-  <label><span class="visually-hidden">Research</span><input type="radio" value="research" name="add-workspace"></label>
-  <label><span class="visually-hidden">Teaching</span><input type="radio" value="teaching" name="add-workspace"></label>
-  <label><span class="visually-hidden">Public</span><input type="radio" value="public" name="add-workspace"></label>
-  <label><span class="visually-hidden">Personal</span><input type="radio" value="personal" name="add-workspace"></label>
+  <label><span class="visually-hidden">No Workspace</span><input type="radio" class="All" value="all" name="addWorkspace" checked></label>
+  <label><span class="visually-hidden">Research</span><input type="radio" class="Research" value="{$workspaces.find(space => space.name === 'Research').id}" name="addWorkspace"></label>
+  <label><span class="visually-hidden">Teaching</span><input type="radio" class="Teaching" value="{$workspaces.find(space => space.name === 'Teaching').id}" name="addWorkspace"></label>
+  <label><span class="visually-hidden">Public</span><input type="radio" class="Public" value="{$workspaces.find(space => space.name === 'Public Scholarships').id}" name="addWorkspace"></label>
+  <label><span class="visually-hidden">Personal</span><input type="radio" class="Personal" value="{$workspaces.find(space => space.name === 'Personal').id}" name="addWorkspace"></label>
 </div>
