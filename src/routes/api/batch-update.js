@@ -81,7 +81,6 @@ export async function post(req, res, next) {
     }
     return res.json(responses)
     // if change collection, add pub to collection one by one.
-    // if change type/add author create change objects for PATCH
   }
 }
 

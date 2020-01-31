@@ -7,8 +7,9 @@
   import TypeSelect from './TypeSelect.svelte'
   import Closer from '../Closer.svelte';
   import { afterUpdate, tick } from 'svelte';
-  import {refreshDate} from '../../stores';
+  import {refreshDate, refreshCollections} from '../../stores';
   import {getToken} from '../../getToken'
+  export let workspace
   let open = false
   let input
   let newToggle
@@ -30,20 +31,45 @@
     event.preventDefault();
     close();
     const { target } = event;
-    try {
-      await fetch(target.action, {
-        method: "POST",
-        credentials: "include",
-        headers: { 
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Accept": "application/json",
-          "csrf-token": getToken()
-          },
-        body: new URLSearchParams(new FormData(target))
-      })
-      $refreshDate = Date.now()
-    } catch (err) {
-      console.error(err)
+    const newInput = window.document.getElementById('new-input').value
+    console.log(newInput)
+    if (newInput[0] === "#") {
+      const value = workspace === 'all' ? newInput.slice(1) : `${workspace}/${newInput.slice(1)}`
+      try {
+        await fetch('/api/create-collection', {
+          method: "POST",
+          credentials: "include",
+          headers: { 
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "csrf-token": getToken()
+            },
+          body: JSON.stringify({
+            type: 'Tag',
+            tagType: 'reader:Stack',
+            name: value
+          })
+        })
+        $refreshCollections = Date.now()
+      } catch (err) {
+        console.error(err)
+      }
+    } else {
+      try {
+        await fetch(target.action, {
+          method: "POST",
+          credentials: "include",
+          headers: { 
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json",
+            "csrf-token": getToken()
+            },
+          body: new URLSearchParams(new FormData(target))
+        })
+        $refreshDate = Date.now()
+      } catch (err) {
+        console.error(err)
+      }
     }
   }
 </script>

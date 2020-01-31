@@ -24,9 +24,26 @@
     }
     // Need to figure out a better way to filter collections by workspace
     if (workspace !== 'all') {
-      tags = $collections.filter(tag => tag.json.workspace === workspace)
+      tags = $collections.filter(tag => tag.name.split('/')[0] === workspace)
     } else {
       tags = $collections
+    }
+  }
+  const spaces = ['Research', 'Public_Scholarship', 'Teaching', 'Personal']
+  function getWorkspace (name) {
+    const space = name.split('/')[0].replace(' ', '_')
+    if (spaces.includes(space)) {
+      return space.toLowerCase()
+    } else {
+      return ''
+    }
+  }
+  function getName (name) {
+    const space = name.split('/')[0].replace(' ', '_')
+    if (spaces.includes(space)) {
+      return name.replace(space + '/', '')
+    } else {
+      return name
     }
   }
 </script>
@@ -69,7 +86,7 @@
 .Sidebar.all .hash.personal {
   color: var(--personal-workspace);
 }
-.Sidebar.all .hash.public {
+.Sidebar.all .hash.public_scholarship {
   color: var(--public-workspace);
 }
 .Sidebar.all .hash.research {
@@ -239,8 +256,8 @@ h2 {
 {/if}</h2>
   <ul>
   {#each tags as tag}
-    <li><a href="/library/{workspace}/{encodeURIComponent(tag.name)}{queryText}" class:selected={params.collection === tag.name}><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
-      {tag.name}
+    <li><a href="/library/{workspace}/{encodeURIComponent(tag.name)}{queryText}" class:selected={params.collection === tag.name}><span class="hash {getWorkspace(tag.name)}">#</span> <span class="linkText">
+      {getName(tag.name)}
     </span></a></li>
     {:else}
       <li><span class="empty">No collections...</span></li>
