@@ -28,6 +28,7 @@
   'VisualArtwork',
   'WebContent']
   export let dark = false
+  export let noDefault = false
 </script>
 
 <style>
@@ -84,8 +85,10 @@
 <div class="LabelText">
   <slot></slot>
 </div>
-<select name="type-select" id="type-select">
-  <option value="None">None</option>
+<select name="pubType" id="select-pubType">
+{#if noDefault}
+  <option value="none">None</option>
+{/if}
 {#each types as type}
   <option value="{type}">{type}</option>
 {/each}

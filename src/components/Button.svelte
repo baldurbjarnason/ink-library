@@ -3,6 +3,7 @@
   export let href = null
   export let hidden = false
   export let disabled = false
+  export let type = 'button'
 </script>
 
 <style>
@@ -72,7 +73,7 @@
 {:else}
   <button
     class="Button"
-    type="button"
+    {type}
     {hidden}
     {disabled}
     on:click={click}>

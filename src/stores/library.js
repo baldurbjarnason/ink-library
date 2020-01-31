@@ -1,8 +1,11 @@
 
 import {page} from './page'
-import { derived } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 
-export const library = derived(page, ($page, set) => {
+export const refreshDate = writable(Date.now())
+export const searchStore = writable()
+
+export const library = derived([page, refreshDate, searchStore], ([$page, $refreshDate, $searchStore], set) => {
   set({type: 'loading', items: []})
   if (!process.browser || !$page.path || !$page.path.startsWith('/library')) return
   const query = Object.assign({}, $page.query)
@@ -11,6 +14,15 @@ export const library = derived(page, ($page, set) => {
   } else if ($page.params.workspace && $page.params.workspace !== 'all') {
     query.workspace = $page.params.workspace
   }
+  
+  if ($searchStore) {
+    query.search = $searchStore
+  } else if ($page.query.search) {
+    query.search = $page.query.search
+  } else {
+    query.search = ''
+  }
+
   let url
   if (query) {
     url = `/api/library?${new URLSearchParams(query).toString()}`

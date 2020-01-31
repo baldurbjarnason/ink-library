@@ -1,13 +1,59 @@
 <script>
-  import {library, selectedItems} from '../../stores'
+  import {library, selectedItems, refreshDate} from '../../stores'
   import RiskyButton from '../RiskyButton.svelte'
   import SecondaryButton from '../SecondaryButton.svelte'
   import Button from '../Button.svelte'
   import TypeSelect from './TypeSelect.svelte'
   import ChooseWorkspaces from './ChooseWorkspaces.svelte'
   import Input from './Input.svelte'
+  import {getToken} from '../../getToken'
   let editing = false
   export let endSelection = function () {}
+
+  async function submit (event) {
+    event.preventDefault();
+    editing = false
+    const { target } = event;
+    const body = Object.fromEntries(new URLSearchParams(new FormData(target)).entries())
+    body.items = Array.from($selectedItems)
+    endSelection()
+    try {
+      await fetch(target.action, {
+        method: "POST",
+        credentials: "include",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "csrf-token": getToken()
+          },
+        body: JSON.stringify(body)
+      })
+      $refreshDate = Date.now()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  async function remove (event) {
+    event.preventDefault();
+    editing = false
+    const body = {action: 'delete', items: Array.from($selectedItems)}
+    endSelection()
+    try {
+      await fetch("/api/batch-update", {
+        method: "POST",
+        credentials: "include",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "csrf-token": getToken()
+          },
+        body: JSON.stringify(body)
+      })
+      $refreshDate = Date.now()
+    } catch (err) {
+      console.error(err)
+    }
+  }
 </script>
 
 <style>
@@ -41,33 +87,28 @@
   }
 </style>
 
-<div class="Footer" class:editing>
+<form class="Footer" class:editing action="/api/batch-update" on:submit={submit}>
   {#if editing}
-    <div><Input placeholder="#collection01, #collection02">Add collections:</Input></div>
-    <div><Input placeholder="First Author, Second Author">Add authors:</Input></div>
-    <div><TypeSelect>Change type:</TypeSelect></div>
+    <div><Input placeholder="#collection01, #collection02" name="updateAddCollections">Add collections:</Input></div>
+    <div><Input placeholder="First Author, Second Author" name="updateAddAuthors">Add authors:</Input></div>
+    <div><TypeSelect noDefault={true}>Change type:</TypeSelect></div>
     <div><ChooseWorkspaces>Change workspace:</ChooseWorkspaces></div>
       <span class="FooterNumber">
-        {$selectedItems.size} {#if $selectedItems.size === 1}
+        Editing {$selectedItems.size} {#if $selectedItems.size === 1}
            item
         {:else}
           items
-        {/if} selected
+        {/if}
       </span> <span class="FooterButtons"><SecondaryButton click={() => {
         editing = false
-      }}>Cancel</SecondaryButton> <Button click={() => {
-        editing = false
-        endSelection()
-      }}>Save</Button></span>
+      }}>Cancel</SecondaryButton> <Button type="submit">Save</Button></span>
   {:else}
       <span class="FooterNumber">
-        {$selectedItems.size} {#if $selectedItems.size === 1}
-           item
-        {:else}
-          items
-        {/if} selected
-      </span> <span class="FooterButtons"><RiskyButton>Delete</RiskyButton> <Button click={() => {
+        <SecondaryButton click={() => {
+        endSelection()
+      }}>Cancel</SecondaryButton>
+      </span> <span class="FooterButtons"><RiskyButton click={remove}>Delete</RiskyButton> <Button click={() => {
         editing = true
       }}>Edit</Button></span>
   {/if}
-</div>
+</form>

@@ -4,21 +4,9 @@
 	import Sidebar from '../components/Sidebar.svelte';
   import { stores } from "@sapper/app";
   const { page, session } = stores();
-  let collections;
   export let segment;
   let query
   let params
-  $: if ($session && process.browser) {
-    const res = fetch(`/api/collections`)
-      .then(res => res.json())
-      .then(result => {
-        collections = result
-      })
-      .catch(err => {
-        console.error(err)
-        collections = []
-      })
-  }
   $: if ($page) {
     pageStore.set($page)
     query = $page.query;
@@ -68,11 +56,12 @@
 
 <svelte:head>
   <title>Library – {params.workspace || 'all'} – Rebus Ink</title>
+    <meta name="csrftoken" content={$session.csrfToken}>
 </svelte:head>
 
 <main class="grid">
 <Nav {params} />
-<Sidebar {params} {collections} />
+<Sidebar {params} />
 
 <div class="content {params.workspace}">
 	<slot></slot>

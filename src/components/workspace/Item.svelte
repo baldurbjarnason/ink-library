@@ -16,6 +16,17 @@
   let cover = {}
   $: if (item.resources) {
     cover = item.resources.find(resource => resource.rel.indexOf('cover') !== -1)
+    if (!cover) {
+      cover = {
+        href: "/img/placeholder-cover.jpg",
+        rel: ["cover"]
+      }
+    }
+  } else {
+    cover = {
+      href: "/img/placeholder-cover.jpg",
+      rel: ["cover"]
+    }
   }
 </script>
 
@@ -123,17 +134,16 @@
   <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
   <div class="Name"><span class="title">{item.name}</span>
   <div class="Authors">
-  {#each item.author as author}
-     <span class="Author">{author.name}</span>
+  {#each item.author as author, i}
+     <span class="Author">{author.name}{#if i !== item.author.length - 1}, {/if}</span>
   {/each}
   </div>
-  <!-- Need to add authors! -->
   </div>
   <div class="Stacks">
     <ItemStacks {item} {selected} />
   </div>
   <div class="ItemEntry"><span>{item.type}</span></div>
-  <div class="ItemEntry"><span>{item.updated}</span></div>
+  <div class="ItemEntry"><span>{new Date(item.updated).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</span></div>
   <div class="ItemEntry">{#if selecting}
     <label><span class="visually-hidden">Select this item</span><input type="checkbox" bind:checked={selected}></label>
   {:else}

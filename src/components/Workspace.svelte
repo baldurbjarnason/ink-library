@@ -3,6 +3,7 @@
   import Search from './Search.svelte'
   import ItemToggle from './ItemToggle.svelte'
   import List from './workspace/List.svelte'
+  export let workspace
 </script>
 
 <style>
@@ -22,7 +23,7 @@
 </style>
 
 <nav class="Toolbar">
-  <NewItem />
+  <NewItem {workspace} />
   <Search />
   <ItemToggle />
 </nav>

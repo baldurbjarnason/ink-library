@@ -26,8 +26,8 @@ async function getProfile (user) {
     headers: {
       Authorization: `Bearer ${user.token}`
     }
-  });
-  return response.body;
+  }).json();
+  return response;
 }
 
 async function deserialise(user) {

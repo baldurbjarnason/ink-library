@@ -5,4 +5,4 @@
   const { page, session } = stores();
 </script>
 
-<Workspace></Workspace>
+<Workspace workspace={$page.params.workspace}></Workspace>

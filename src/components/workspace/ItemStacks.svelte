@@ -54,8 +54,9 @@ li a:hover .linkText {
 </style>
 
 <ul>
-{#each item.tags as tag}
-  <li class:selected><a href="/library/all/{encodeURIComponent(tag.name)}"><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
+{#each item.tags.filter(tag => tag.tagType !== 'mode') as tag}
+<!-- We need to figure out a way to check the workspace of a tag -->
+  <li class:selected><a href="/library/all/{encodeURIComponent(tag.name)}"><span class="hash">#</span> <span class="linkText">
     {tag.name}
   </span></a></li>
 {/each}

@@ -4,17 +4,11 @@
   import { fly } from 'svelte/transition';
   import { stores } from "@sapper/app";
   const { page, session } = stores();
+  import {collections} from '../stores'
   export let params
-  export let collections = []
   let tags
   let workspace
-  let queryText
-  $: if ($page.query && Object.keys($page.query).length !== 0) {
-    queryText = '?' + new URLSearchParams($page.query).toString()
-  } else {
-    queryText = ""
-  }
-  $: if (params) {
+  $: if (params && $collections) {
     if (params.workspace) {
       workspace = params.workspace
     } else if (params.segment === 'library') {
@@ -22,10 +16,28 @@
     } else {
       workspace = null
     }
+    // Need to figure out a better way to filter collections by workspace
     if (workspace !== 'all') {
-      tags = collections.filter(tag => tag.json.workspace === workspace)
+      tags = $collections.filter(tag => tag.name.split('/')[0] === workspace)
     } else {
-      tags = collections
+      tags = $collections
+    }
+  }
+  const spaces = ['Research', 'Public_Scholarship', 'Teaching', 'Personal']
+  function getWorkspace (name) {
+    const space = name.split('/')[0].replace(' ', '_')
+    if (spaces.includes(space)) {
+      return space.toLowerCase()
+    } else {
+      return ''
+    }
+  }
+  function getName (name) {
+    const space = name.split('/')[0].replace(' ', '_')
+    if (spaces.includes(space)) {
+      return name.replace(space + '/', '')
+    } else {
+      return name
     }
   }
 </script>
@@ -68,7 +80,7 @@
 .Sidebar.all .hash.personal {
   color: var(--personal-workspace);
 }
-.Sidebar.all .hash.public {
+.Sidebar.all .hash.public_scholarship {
   color: var(--public-workspace);
 }
 .Sidebar.all .hash.research {
@@ -193,53 +205,53 @@ h2 {
 {#if workspace}
 <div class="workspaces" transition:fly|local={{x: -250}}>
 <ul class="tabs">
-  <li><a href="/library/all/all{queryText}" class="all-tab" class:selected={workspace === 'all'}>
+  <li><a href="/library/all/all" class="all-tab" class:selected={workspace === 'all'}>
   {#if workspace === 'all'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
   <span class="visually-hidden">All</span> </a></li>
-  <li><a href="/library/research/all{queryText}" class="research-tab" class:selected={workspace === 'research'}>
+  <li><a href="/library/Research/all" class="research-tab" class:selected={workspace === 'Research'}>
   
-  {#if workspace === 'research'}
+  {#if workspace === 'Research'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
     <span class="visually-hidden">Research</span></a></li>
-  <li><a href="/library/teaching/all{queryText}" class="teaching-tab" class:selected={workspace === 'teaching'}>
+  <li><a href="/library/Teaching/all" class="teaching-tab" class:selected={workspace === 'Teaching'}>
   
-  {#if workspace === 'teaching'}
+  {#if workspace === 'Teaching'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}<span class="visually-hidden">Teaching</span></a></li>
-  <li><a href="/library/public/all{queryText}" class="public-tab" class:selected={workspace === 'public'}>
+  <li><a href="/library/Public+Scholarship/all" class="public-tab" class:selected={workspace === 'Public Scholarship'}>
 
-  {#if workspace === 'public'}
+  {#if workspace === 'Public Scholarship'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
   <span class="visually-hidden">Public scholarships</span></a></li>
-  <li><a href="/library/personal/all{queryText}" class="personal-tab" class:selected={workspace === 'personal'}>
+  <li><a href="/library/Personal/all" class="personal-tab" class:selected={workspace === 'Personal'}>
 
-  {#if workspace === 'personal'}
+  {#if workspace === 'Personal'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
   <span class="visually-hidden">Personal</span></a></li>
 </ul>
-<div class="Sidebar {workspace}">
+<div class="Sidebar {workspace.split(' ')[0].toLowerCase()}">
 <h2>{#if workspace === 'all'}
   All workspaces
-  {:else if workspace === "research"}
+  {:else if workspace === "Research"}
     Research
-  {:else if workspace === "public"}
+  {:else if workspace === "Public Scholarship"}
     Public scholarship
-  {:else if workspace === "teaching"}
+  {:else if workspace === "Teaching"}
     Teaching
-  {:else if workspace === "personal"}
+  {:else if workspace === "Personal"}
     Personal
 {:else}
   {workspace}
 {/if}</h2>
   <ul>
   {#each tags as tag}
-    <li><a href="/library/{workspace}/{encodeURIComponent(tag.name)}{queryText}" class:selected={params.collection === tag.name}><span class="hash {tag.json.workspace.replace(' ', '_')}">#</span> <span class="linkText">
-      {tag.name}
+    <li><a href="/library/{workspace}/{encodeURIComponent(tag.name)}" class:selected={params.collection === tag.name}><span class="hash {getWorkspace(tag.name)}">#</span> <span class="linkText">
+      {getName(tag.name)}
     </span></a></li>
     {:else}
       <li><span class="empty">No collections...</span></li>
