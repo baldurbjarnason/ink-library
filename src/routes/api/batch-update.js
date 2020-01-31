@@ -52,16 +52,40 @@ export async function post(req, res, next) {
         console.log(err)
         responses = responses.concat(err.response.body)
       }
+      let patch
+      if (req.body.pubType !== 'none') {
+        patch = {
+          type: req.body.pubType
+        }
+      }
+      if (req.body.updateAddAuthors) {
+        patch = Object.assign({}, patch, {
+          author: req.body.updateAddAuthors.split(',').map(author => author.trim())
+        })
+      }
+      if (patch) {
+        try {
+          const response = await got.patch(id, {
+            headers: {
+              "content-type": "application/ld+json",
+              Authorization: `Bearer ${req.user.token}`
+            },
+            json: patch
+          }).json();
+          responses = responses.concat(response)
+        } catch (err) {
+          console.log(err)
+          responses = responses.concat(err.response.body)
+        }
+      }
     }
     return res.json(responses)
-    // if change workspace, add pub to workspace one by one.
     // if change collection, add pub to collection one by one.
     // if change type/add author create change objects for PATCH
   }
 }
 
 function addWorkspace (workspace, id, token) {
-  console.log(workspace, id, token)
   return got.put(`${id}tags/${workspace}`, {
     headers: {
       "content-type": "application/ld+json",
