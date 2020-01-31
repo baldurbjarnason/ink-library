@@ -1,7 +1,6 @@
 <script>
   // your script goes here
   import {workspaces} from '../../stores'
-  $: console.log($workspaces)
 </script>
 
 <style>

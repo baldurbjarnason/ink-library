@@ -1,5 +1,5 @@
 <script>
-  // your script goes here
+  import {workspaces} from '../../stores'
 </script>
 
 <style>
@@ -13,19 +13,19 @@
       border-radius: 100%;
       margin: 0;
     }
-    input[value="research"] {
+    input.Research {
       background-color: var(--research-workspace);
       box-shadow: 0 0 0 2px var(--research-workspace), 1px 1px 5px #C32324;
     }
-    input[value="public"] {
+    input.Public {
       background-color: var(--public-workspace);
       box-shadow: 0 0 0 2px var(--public-workspace), 1px 1px 5px #316FB7;;
     }
-    input[value="teaching"] {
+    input.Teaching {
       background-color: var(--teaching-workspace);
       box-shadow: 0 0 0 2px var(--teaching-workspace), 1px 1px 5px rgba(147, 99, 210, 0.6);
     }
-    input[value="personal"] {
+    input.Personal {
       background-color: var(--personal-workspace);
       box-shadow: 0 0 0 2px var(--personal-workspace), 1px 1px 5px #00A56A;
     }
@@ -79,8 +79,8 @@
     <slot></slot>
   </div>
 <div class="Checks">
-  <label><span class="visually-hidden">Research</span><input name="chooseWorkspace" type="checkbox" value="research"></label>
-  <label><span class="visually-hidden">Teaching</span><input name="chooseWorkspace" type="checkbox" value="teaching"></label>
-  <label><span class="visually-hidden">Public</span><input name="chooseWorkspace" type="checkbox" value="public"></label>
-  <label><span class="visually-hidden">Personal</span><input name="chooseWorkspace" type="checkbox" value="personal"></label>
+  <label><span class="visually-hidden">Research</span><input name="chooseWorkspace-research" class="Research" type="checkbox" value="{$workspaces.find(space => space.name === 'Research').id}"></label>
+  <label><span class="visually-hidden">Teaching</span><input name="chooseWorkspace-teaching" class="Teaching" type="checkbox" value="{$workspaces.find(space => space.name === 'Teaching').id}"></label>
+  <label><span class="visually-hidden">Public</span><input name="chooseWorkspace-public" class="Public" type="checkbox" value="{$workspaces.find(space => space.name === 'Public Scholarships').id}"></label>
+  <label><span class="visually-hidden">Personal</span><input name="chooseWorkspace-personal" class="Personal" type="checkbox" value="{$workspaces.find(space => space.name === 'Personal').id}"></label>
 </div>

@@ -91,7 +91,7 @@
   {#if editing}
     <div><Input placeholder="#collection01, #collection02" name="updateAddCollections">Add collections:</Input></div>
     <div><Input placeholder="First Author, Second Author" name="updateAddAuthors">Add authors:</Input></div>
-    <div><TypeSelect>Change type:</TypeSelect></div>
+    <div><TypeSelect noDefault={true}>Change type:</TypeSelect></div>
     <div><ChooseWorkspaces>Change workspace:</ChooseWorkspaces></div>
       <span class="FooterNumber">
         Editing {$selectedItems.size} {#if $selectedItems.size === 1}

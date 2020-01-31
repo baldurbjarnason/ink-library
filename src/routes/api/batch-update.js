@@ -25,13 +25,47 @@ export async function post(req, res, next) {
       }
     }
     return res.json(responses)
+  } else {
+    console.log(req.body)
+    // Check workspace, if there is one, add
+    const ids = req.body.items.map(item => item.id)
+    let responses = []
+    for (const id of ids) {
+      try {
+        if (req.body["chooseWorkspace-public"]) {
+          const response = await addWorkspace(req.body["chooseWorkspace-public"], id, req.user.token);
+          responses = responses.concat(response)
+        }
+        if (req.body["chooseWorkspace-teaching"]) {
+          const response = await addWorkspace(req.body["chooseWorkspace-teaching"], id, req.user.token);
+          responses = responses.concat(response)
+        }
+        if (req.body["chooseWorkspace-research"]) {
+          const response = await addWorkspace(req.body["chooseWorkspace-research"], id, req.user.token);
+          responses = responses.concat(response)
+        }
+        if (req.body["chooseWorkspace-personal"]) {
+          const response = await addWorkspace(req.body["chooseWorkspace-personal"], id, req.user.token);
+          responses = responses.concat(response)
+        }
+      } catch (err) {
+        console.log(err)
+        responses = responses.concat(err.response.body)
+      }
+    }
+    return res.json(responses)
+    // if change workspace, add pub to workspace one by one.
+    // if change collection, add pub to collection one by one.
+    // if change type/add author create change objects for PATCH
   }
-  // If delete, delete ids one by one.
-  // If update, update id one by one.
-  // const response = await got(`${process.env.API_SERVER}tags`, {
-  //   headers: {
-  //     Authorization: `Bearer ${req.user.token}`
-  //   }
-  // }).json();
-  res.json({type: 'success'});
+}
+
+function addWorkspace (workspace, id, token) {
+  console.log(workspace, id, token)
+  return got.put(`${id}tags/${workspace}`, {
+    headers: {
+      "content-type": "application/ld+json",
+      Authorization: `Bearer ${token}`
+    }
+  }).json();
 }
