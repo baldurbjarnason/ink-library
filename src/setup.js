@@ -13,6 +13,26 @@ const dev = NODE_ENV === "development";
 if (dev) {
   require('dotenv').config()
 }
+
+// Uncomment these lines to set up cors for your bucket
+// const {Storage} = require('@google-cloud/storage');
+// const storage = new Storage();
+
+// const bucket = storage
+//   .bucket(process.env.GOOGLE_STORAGE_BUCKET)
+
+// const corsConfiguration = [
+//   {
+//     "origin": ["*"],
+//     "responseHeader": ["Content-Type"],
+//     "method": ["GET", "HEAD", "DELETE", "PUT"],
+//     "maxAgeSeconds": 3600
+//   }
+// ]
+// bucket.setCorsConfiguration(corsConfiguration)
+//   .then(result => console.log(result))
+//   .catch(err => console.error(err))
+
 const accessTemplate = fs.readFileSync('pages/access.html', 'utf8')
 const redis = require('redis')
 // import firesession from 'firestore-store'
