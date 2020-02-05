@@ -1,5 +1,7 @@
 import got from "got";
 
+// We need to take uploadURL, uploadType, storageId and uploadPublication and turn it into a link type
+// Access URL is `/api/stored-${file}` where file is storageId
 export async function post(req, res, next) {
   let author
   if (req.body.author) {
@@ -17,6 +19,12 @@ export async function post(req, res, next) {
       rel: "alternate",
       url: req.body.newURL
     }]
+  } else if (req.body.storageId) {
+    links = [{
+      rel: "alternate",
+      url: `/api/stored-${req.body.storageId}`
+    }]
+    // if publication add another alternate with a publication manifest media type.
   }
   const body = {
     type,

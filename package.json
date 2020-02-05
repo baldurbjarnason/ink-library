@@ -14,7 +14,8 @@
     "prepublishOnly": "npm run lint",
     "snapshots": "TAP_SNAPSHOT=1 npm run test && prettier --write --plugin-search-dir=. '**/*.{js,json,css,yml,svelte}'",
     "test": "jest src",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "deploy-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs10 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize"
   },
   "snowpack": {
     "webDependencies": [
@@ -50,6 +51,7 @@
     ]
   },
   "dependencies": {
+    "@google-cloud/storage": "^4.3.0",
     "autoprefixer": "^9.7.3",
     "connect-redis": "^4.0.3",
     "cssnano": "^4.1.10",
@@ -61,7 +63,9 @@
     "express-session": "^1.17.0",
     "got": "^10.0.1",
     "inert-polyfill": "^0.2.5",
+    "ink-engine": "git+https://github.com/RebusFoundation/ink-engine.git",
     "jsonwebtoken": "^8.5.1",
+    "mime": "^2.4.4",
     "passport": "^0.4.1",
     "passport-auth0": "^1.3.1",
     "passport-http": "^0.3.0",
@@ -71,6 +75,8 @@
     "postcss-easy-import": "^3.0.0",
     "postcss-reporter": "^6.0.1",
     "redis": "^2.8.0",
+    "sharp": "^0.24.0",
+    "short-uuid": "^3.1.1",
     "universal-base64url": "^1.1.0"
   },
   "devDependencies": {

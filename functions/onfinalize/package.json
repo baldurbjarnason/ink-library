@@ -1,0 +1,59 @@
+{
+  "name": "ink-library",
+  "version": "0.1.0",
+  "description": "The ink library frontend",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "dev": "SECRETORKEY=kick-opossum-snowiness ISSUER=auth.reader-api.test API_SERVER=http://localhost:8080/ sapper dev",
+    "build": "sapper build --legacy && snowpack --dest static/web_modules/ --optimize",
+    "export": "sapper export --legacy",
+    "start": "node __sapper__/build",
+    "snowpack": "snowpack --dest static/web_modules/ --babel",
+    "lint": "healthier && prettier --write --plugin-search-dir=. '**/*.{js,json,css,yml,svelte}'",
+    "pretest": "npm run lint",
+    "prepublishOnly": "npm run lint",
+    "snapshots": "TAP_SNAPSHOT=1 npm run test && prettier --write --plugin-search-dir=. '**/*.{js,json,css,yml,svelte}'",
+    "test": "jest src",
+    "test:watch": "npm run test -- --watch",
+    "deploy-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs10 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize"
+  },
+  "snowpack": {
+    "webDependencies": [
+      "intersection-observer",
+      "inert-polyfill"
+    ]
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {},
+      "postcss-easy-import": {},
+      "postcss-calc": {},
+      "cssnano": {}
+    }
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.svelte$": "svelte-jester"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "svelte"
+    ]
+  },
+  "engines": {
+    "node": "10"
+  },
+  "healthier": {
+    "ignore": [
+      "__sapper__",
+      "rollup.config.js"
+    ]
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^4.3.0",
+    "compressible": "^2.0.18",
+    "ink-engine": "git+https://github.com/baldurbjarnason/ink-engine.git",
+    "sharp": "^0.24.0"
+  }
+}

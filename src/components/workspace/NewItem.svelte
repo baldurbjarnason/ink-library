@@ -4,6 +4,7 @@
   import {send, receive} from '../../routes/_crossfade.js';
   import AddWorkspace from './AddWorkspace.svelte'
   import Input from './Input.svelte'
+  import FileInput from './FileInput.svelte'
   import TypeSelect from './TypeSelect.svelte'
   import Closer from '../Closer.svelte';
   import { afterUpdate, tick } from 'svelte';
@@ -197,7 +198,8 @@
 
 {#if expanded}
    <div class="MoreItems">
-    <div class="Wide"><Input placeholder="https://www.example.com/path/to/item" dark={true} name="newURL" type="url">Add url:</Input></div>
+    <div><Input placeholder="https://www.example.com/path/to/item" dark={true} name="newURL" type="url">Add url:</Input></div>
+    <div><FileInput dark={true} name="newFile" type="file">Add file:</FileInput></div>
     <div><TypeSelect dark={true}>Select type:</TypeSelect></div>
     <div><AddWorkspace>Add workspace:</AddWorkspace></div>
     <div class="Wide"><Input placeholder="First Author, Second Author..." dark={true} name="author">Add authors:</Input></div>
