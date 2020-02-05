@@ -4,15 +4,15 @@ const engine = require("ink-engine");
 const os = require("os");
 const formats = require("ink-engine/src/formats");
 const sharp = require("sharp");
+const compressible = require('compressible')
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
+const uploadBucket = storage.bucket(process.env.PUBLICATION_BUCKET)
 
 const THUMBSIZE = 400;
 
 module.exports.triggerWrapper = triggerWrapper;
 
-// Test by mocking the admin, bucket, and file endpoints.
-// This setup needs to take a done callback that knows what to do with the book and what to do if there is an error.
 function triggerWrapper(object, context, done) {
   return onFinalize(object, context, done)
     .then(() => done())
@@ -48,13 +48,14 @@ async function onFinalize(object, context, done) {
       type: "LinkedResource",
       rel: ["alternate"],
       url: `https://storage.googleapis.com/${fileBucket}/${filePath}`,
-      encodingFormat: "contentType"
+      encodingFormat: contentType
     });
     extract({contents: JSON.stringify(book)}, Object.assign({ url: "index.json" }, book), {contentType: "application/json"})
   }
   async function extract(file, resource, metadata) {
     // Should also generate thumbnails of all images.
     let thumb;
+    let gzip = resource.encodingFormat && compressible(resource.encodingFormat)
     if (
       resource.encodingFormat &&
       resource.encodingFormat.includes("image")
@@ -63,16 +64,18 @@ async function onFinalize(object, context, done) {
         .resize(THUMBSIZE, THUMBSIZE, { fit: "inside" })
         .jpeg({ quality: 60 })
         .toBuffer();
+      gzip = false
     }
     const filename = path.join(targetPath, resource.url);
-    const storageFile = bucket.file(filename);
+    const storageFile = uploadBucket.file(filename);
     await storageFile.save(file.contents, {
       metadata,
+      gzip,
       resumable: false
     });
     if (thumb) {
       const thumbname = path.join(thumbnailPath, resource.url);
-      const storageThumb = bucket.file(thumbname);
+      const storageThumb = uploadBucket.file(thumbname);
       await storageThumb.save(thumb, {
         metadata,
         resumable: false
