@@ -202,8 +202,8 @@
     <div><FileInput dark={true} name="newFile" type="file">Add file:</FileInput></div>
     <div><TypeSelect dark={true}>Select type:</TypeSelect></div>
     <div><AddWorkspace>Add workspace:</AddWorkspace></div>
-    <div class="Wide"><Input placeholder="First Author, Second Author..." dark={true} name="author">Add authors:</Input></div>
-    <div class="Wide"><Input placeholder="First Collection, Second Collection..." dark={true} name="new-collections">Add collection:</Input></div>
+    <div><Input placeholder="First Author, Second Author..." dark={true} name="author">Add authors:</Input></div>
+    <div><Input placeholder="First Collection, Second Collection..." dark={true} name="new-collections">Add collection:</Input></div>
    </div>
 {/if}
 </form>
