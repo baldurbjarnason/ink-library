@@ -24,3 +24,5 @@ export const workspaces = derived(tags, ($tags, set) => {
 export const collections = derived(tags, ($tags, set) => {
   set($tags.filter(tag => tag.tagType !== 'mode'))
 })
+
+export const addingWorkspace = writable("all")

@@ -3,6 +3,8 @@
   export let placeholder = ""
   export let dark = false
   export let type = "text"
+  export let list = false
+  export let change = () => {}
 </script>
 
 <style>
@@ -43,4 +45,4 @@
 <div class="LabelText">
   <slot></slot>
 </div>
-<input {type} name={name} id="input-{name}" {placeholder} autocomplete="off"></label>
+<input {type} name={name} id="input-{name}" {placeholder} autocomplete="off" {list} on:change={change}></label>

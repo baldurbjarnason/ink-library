@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 export {page} from './page'
 
 export {library, refreshDate, searchStore} from './library'
-export {collections, workspaces, tags, refreshCollections} from './collections'
+export {collections, workspaces, tags, refreshCollections, addingWorkspace} from './collections'
 
 export const selectedItems = writable(new Set())
 

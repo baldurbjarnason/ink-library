@@ -1,8 +1,6 @@
 <script>
   export let click
   export let dark = false
-  export let small = false
-  export let value = null
 </script>
 
 <style>
@@ -57,22 +55,10 @@
     border-color: var(--link);
     background-color: var(--link);
   }
-  .Button.small {
-    margin: auto 0.25rem;
-    padding: 0;
-    display: inline-flex;
-  }
-  .Button.small svg {
-    width: 15px;
-    height: 15px;
-  }
 </style>
 
 
-<button type="Button" class="Button" on:click={(event) => {
-  event.data = Object.assign({}, event.data, {value})
-  return click(event)
-}} class:dark class:small>
+<button type="Button" class="Button" on:click={click} class:dark>
 <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle opacity="0.7" cx="14.1426" cy="15" r="10" transform="rotate(45 14.1426 15)" fill={dark ? 'white' : 'currentColor'}/>
 <rect x="16.9707" y="10.7573" width="2" height="10" rx="1" transform="rotate(45 16.9707 10.7573)" fill="{dark ? 'black' : 'white'}"/>
