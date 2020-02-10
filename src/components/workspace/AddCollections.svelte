@@ -1,5 +1,5 @@
 <script>
-  import {collections, addingWorkspace, addedCollections} from '../../stores'
+  import {collections, addingWorkspace, addedCollections, addedWorkspaces, workspaces} from '../../stores'
   import Closer from '../Closer.svelte';
   import Input from './Input.svelte'
   export let dark = false;
@@ -14,17 +14,33 @@
       filteredCollections = $collections.map(collection => collection.name)
     }
   }
+  const spaces = ['Research', 'Public_Scholarship', 'Teaching', 'Personal']
+  function getWorkspace (name) {
+    const space = name.split('/')[0].replace(' ', '_')
+    if (spaces.includes(space)) {
+      return space.toLowerCase()
+    } else {
+      return ''
+    }
+  }
+  // When addedCollections changes, need to update addedWorkspaces which is added to the request later on.
   function change (event) {
     if (filteredCollections.includes(event.target.value)) {
       currentCollections = Array.from(new Set(currentCollections.concat(event.target.value)))
       event.target.value = ""
       $addedCollections = currentCollections.map(name => collectionId(name))
+      $addedWorkspaces = Array.from(new Set(currentCollections.map(name => getWorkspace(name)))).map(name => {
+        return $workspaces.find(item => getWorkspace(item.name) === name)
+      })
     }
   }
   function removeTag (event) {
     const removedCollection = event.data.value
     currentCollections = currentCollections.filter(collection => collection !== removedCollection)
     $addedCollections = currentCollections.map(name => collectionId(name))
+    $addedWorkspaces = Array.from(new Set(currentCollections.map(name => getWorkspace(name)))).map(name => {
+      return $workspaces.find(item => getWorkspace(item.name) === name)
+    })
   }
   function collectionId (name) {
     return $collections.find(tag => tag.name === name).id
