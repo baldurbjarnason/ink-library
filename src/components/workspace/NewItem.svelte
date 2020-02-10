@@ -46,8 +46,7 @@
             "csrf-token": getToken()
             },
           body: JSON.stringify({
-            type: 'Tag',
-            tagType: 'reader:Stack',
+            type: 'stack',
             name: value
           })
         })

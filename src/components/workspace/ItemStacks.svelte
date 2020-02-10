@@ -71,7 +71,7 @@ li a:hover .linkText {
 </style>
 
 <ul>
-{#each item.tags.filter(tag => tag.tagType !== 'mode') as tag}
+{#each item.tags.filter(tag => tag.type !== 'workspace') as tag}
 <!-- We need to figure out a way to check the workspace of a tag -->
   <li class:selected><a href="/library/all/{encodeURIComponent(tag.name)}"><span class="hash {getWorkspace(tag.name)}">#</span> <span class="linkText">
     {getName(tag.name)}

@@ -19,10 +19,10 @@ export const tags = derived(refreshCollections, ($refreshCollections, set) => {
     })
 })
 export const workspaces = derived(tags, ($tags, set) => {
-  set($tags.filter(tag => tag.tagType === 'mode'))
+  set($tags.filter(tag => tag.type === 'workspace'))
 })
 export const collections = derived(tags, ($tags, set) => {
-  set($tags.filter(tag => tag.tagType !== 'mode'))
+  set($tags.filter(tag => tag.type !== 'workspace'))
 })
 
 export const addingWorkspace = writable("all")
