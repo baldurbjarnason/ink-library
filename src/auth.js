@@ -6,18 +6,15 @@ import httpStrategies from "passport-http";
 import debugSetup from "debug";
 import Auth0Strategy from "passport-auth0";
 const debug = debugSetup("vonnegut:auth");
-const STRATEGY = process.env.PASSPORT_STRATEGY || 'basic';
-const SECRETORKEY = process.env.SECRETORKEY || 'this is a secret'
-const AUDIENCE = process.env.AUDIENCE || 'this is an audience'
-const ISSUER = process.env.ISSUER || 'this is an issuer'
+const AUDIENCE = process.env.AUDIENCE || ""
 
 function generateToken(user) {
   const expiresIn = "30m";
-  return jwt.sign({ sub: user.id }, SECRETORKEY, {
+  return jwt.sign({ sub: user.id }, process.env.SECRETORKEY, {
     algorithm: "HS256",
     expiresIn,
     audience: AUDIENCE,
-    issuer: ISSUER
+    issuer: process.env.ISSUER
   });
 }
 
@@ -36,11 +33,11 @@ async function deserialise(user) {
   } else if (user.token) {
     jwt.verify(
       user.token,
-      SECRETORKEY,
+      process.env.SECRETORKEY,
       {
         algorithm: "HS256",
         audience: AUDIENCE,
-        issuer: ISSUER
+        issuer: process.env.ISSUER
       },
       (err, decoded) => {
         if (err && err.name === "TokenExpiredError") {
@@ -134,7 +131,7 @@ export function setup (app) {
 
   app.use(
     "/login",
-    passport.authenticate(STRATEGY),
+    passport.authenticate(process.env.PASSPORT_STRATEGY),
     function(req, res, next) {
       res.redirect(req.query.returnTo || "/");
     }
