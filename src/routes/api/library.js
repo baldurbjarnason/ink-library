@@ -8,7 +8,7 @@ export async function get(req, res, next) {
   if (req.query.stack) {
     query.append('stack', req.query.stack)
   } else if (req.query.workspace) {
-    query.append('stack', req.query.workspace)
+    query.append('workspace', req.query.workspace)
   }
   if (req.query.search) {
     query.append('search', req.query.search)
