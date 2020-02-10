@@ -1,5 +1,5 @@
 <script>
-  import {library, selectedItems, refreshDate} from '../../stores'
+  import {library, selectedItems, refreshDate, collections, addingWorkspace, addedCollections} from '../../stores'
   import RiskyButton from '../RiskyButton.svelte'
   import SecondaryButton from '../SecondaryButton.svelte'
   import Button from '../Button.svelte'
@@ -7,6 +7,7 @@
   import ChooseWorkspaces from './ChooseWorkspaces.svelte'
   import Input from './Input.svelte'
   import {getToken} from '../../getToken'
+  import AddCollections from './AddCollections.svelte'
   let editing = false
   export let endSelection = function () {}
 
@@ -16,6 +17,7 @@
     const { target } = event;
     const body = Object.fromEntries(new URLSearchParams(new FormData(target)).entries())
     body.items = Array.from($selectedItems)
+    body.addedCollections = $addedCollections
     endSelection()
     try {
       await fetch(target.action, {
@@ -89,10 +91,11 @@
 
 <form class="Footer" class:editing action="/api/batch-update" on:submit={submit}>
   {#if editing}
-    <div><Input placeholder="#collection01, #collection02" name="updateAddCollections">Add collections:</Input></div>
     <div><Input placeholder="First Author, Second Author" name="updateAddAuthors">Add authors:</Input></div>
     <div><TypeSelect noDefault={true}>Change type:</TypeSelect></div>
     <div><ChooseWorkspaces>Change workspace:</ChooseWorkspaces></div>
+    <AddCollections />
+   <span></span>
       <span class="FooterNumber">
         Editing {$selectedItems.size} {#if $selectedItems.size === 1}
            item

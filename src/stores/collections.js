@@ -26,3 +26,5 @@ export const collections = derived(tags, ($tags, set) => {
 })
 
 export const addingWorkspace = writable("all")
+
+export const addedCollections = writable([])

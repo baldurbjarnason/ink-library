@@ -47,11 +47,13 @@
   .Cards {
     position: relative;
     display: grid;
+    min-height: 100vh;
     grid-template-columns: 1fr 1fr;
     grid-gap: var(--base);
   }
   .Items {
     position: relative;
+    min-height: 100vh;
   }
   .CardHeader {
     display: flex;

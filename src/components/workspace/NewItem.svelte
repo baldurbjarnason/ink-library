@@ -7,8 +7,9 @@
   import FileInput from './FileInput.svelte'
   import TypeSelect from './TypeSelect.svelte'
   import Closer from '../Closer.svelte';
+  import AddCollections from './AddCollections.svelte'
   import { afterUpdate, tick } from 'svelte';
-  import {refreshDate, refreshCollections, collections, addingWorkspace} from '../../stores';
+  import {refreshDate, refreshCollections, collections, addingWorkspace, addedCollections} from '../../stores';
   import {getToken} from '../../getToken'
   export let workspace
   let open = false
@@ -56,42 +57,23 @@
       }
     } else {
       try {
+        const body = Object.fromEntries(new URLSearchParams(new FormData(target)).entries())
+        body.addedCollections = $addedCollections
         await fetch(target.action, {
           method: "POST",
           credentials: "include",
           headers: { 
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
             "Accept": "application/json",
             "csrf-token": getToken()
             },
-          body: new URLSearchParams(new FormData(target))
+          body: JSON.stringify(body)
         })
         $refreshDate = Date.now()
       } catch (err) {
         console.error(err)
       }
     }
-  }
-  let currentCollections = []
-  let filteredCollections = $collections.map(collection => collection.name)
-  $: if ($addingWorkspace) {
-    if ($addingWorkspace !== 'all') {
-      filteredCollections = $collections.map(collection => collection.name)
-        .filter(collection => collection.startsWith($addingWorkspace))
-      currentCollections = currentCollections.filter(collection => collection.startsWith($addingWorkspace))
-    } else {
-      filteredCollections = $collections.map(collection => collection.name)
-    }
-  }
-  function change (event) {
-    if (filteredCollections.includes(event.target.value)) {
-      currentCollections = Array.from(new Set(currentCollections.concat(event.target.value)))
-      event.target.value = ""
-    }
-  }
-  function removeTag (event) {
-    const removedCollection = event.data.value
-    currentCollections = currentCollections.filter(collection => collection !== removedCollection)
   }
 </script>
 
@@ -123,9 +105,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
-  .Wide {
+  /* .Wide {
     grid-column: 1 / -1;
-  }
+  } */
   .NewBox input {
     flex: 1 1 100%;
     font-family: var(--sans-fonts);
@@ -195,23 +177,6 @@
   .Expander.expanded {
     transform: rotate(180deg);
   }
-  .Tag {
-    width: 100%;
-    font-size: 0.7rem;
-    padding: calc(var(--base) * 0.25);
-    margin-right: calc(var(--base) * 0.25);
-    border-radius: 5px;
-    color: white;
-    background-color: rgba(255,255,255, 0.2);
-    text-transform: uppercase;
-    display: inline-flex;
-    align-items: center;
-  }
-  .Tags {
-    display: grid;
-    grid-gap: calc(var(--base) * 0.25);
-    grid-template-columns: repeat(auto-fit,minmax(100px,max-content));
-  }
 </style>
 
 {#if open}
@@ -240,22 +205,7 @@
     <div><TypeSelect dark={true}>Select type:</TypeSelect></div>
     <div><AddWorkspace>Add workspace:</AddWorkspace></div>
     <div><Input placeholder="First Author, Second Author..." dark={true} name="author">Add authors:</Input></div>
-    <!-- On change: check if value is in data list, then add. Tag needs a remove button. -->
-    <div><Input placeholder="Collection Name" dark={true} name="new-collections" list="collections-datalist" {change}>Add collection:</Input>
-    <datalist id="collections-datalist">
-    {#each filteredCollections as collection}
-      <option value="{collection}">
-    {/each}
-    </datalist>
-    </div>
-   <div class="Wide Tags">
-    {#each currentCollections as collection}
-      <span class="Tag">
-        <input type="hidden" name="addCollection[]" value={collection}>
-         {collection} <Closer dark={true} value={collection} click={removeTag} small={true} />
-      </span>
-    {/each}
-   </div>
+    <AddCollections dark={true} />
    </div>
 {/if}
 </form>

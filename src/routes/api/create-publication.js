@@ -51,6 +51,16 @@ export async function post(req, res, next) {
           }
         }).json();
       }
+      if (req.body.addedCollections) {
+        for (const id of req.body.addedCollections) {
+          await got.put(`${response.id}tags/${id}`, {
+            headers: {
+              "content-type": "application/ld+json",
+              Authorization: `Bearer ${req.user.token}`
+            }
+          }).json();
+        }
+      }
       return res.json(response);
     } catch (err) {
       console.log(err);
