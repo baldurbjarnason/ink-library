@@ -9,7 +9,7 @@
   import Closer from '../Closer.svelte';
   import AddCollections from './AddCollections.svelte'
   import { afterUpdate, tick } from 'svelte';
-  import {refreshDate, refreshCollections, collections, addingWorkspace, addedCollections} from '../../stores';
+  import {refreshDate, refreshCollections, collections, addingWorkspace, addedCollections, addedWorkspaces} from '../../stores';
   import {getToken} from '../../getToken'
   export let workspace
   let open = false
@@ -58,6 +58,7 @@
       try {
         const body = Object.fromEntries(new URLSearchParams(new FormData(target)).entries())
         body.addedCollections = $addedCollections
+        body.addedWorkspaces = $addedWorkspaces
         await fetch(target.action, {
           method: "POST",
           credentials: "include",

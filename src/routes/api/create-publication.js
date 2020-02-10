@@ -51,6 +51,16 @@ export async function post(req, res, next) {
           }
         }).json();
       }
+      if (req.body.addedWorkspaces && req.body.addedWorkspaces !== 'all') {
+        for (const workspace of req.body.addedWorkspaces) {
+          await got.put(`${response.id}tags/${workspace.id}`, {
+            headers: {
+              "content-type": "application/ld+json",
+              Authorization: `Bearer ${req.user.token}`
+            }
+          }).json();
+        }
+      }
       if (req.body.addedCollections && req.body.addedCollections.length !== 0) {
         for (const id of req.body.addedCollections) {
           await got.put(`${response.id}tags/${id}`, {

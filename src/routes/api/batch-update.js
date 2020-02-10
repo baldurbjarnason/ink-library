@@ -55,6 +55,16 @@ export async function post(req, res, next) {
             responses = responses.concat(response)
           }
         }
+        if (req.body.addedWorkspaces && req.body.addedWorkspaces !== 'all') {
+          for (const workspace of req.body.addedWorkspaces) {
+            await got.put(`${id}tags/${workspace.id}`, {
+              headers: {
+                "content-type": "application/ld+json",
+                Authorization: `Bearer ${req.user.token}`
+              }
+            }).json();
+          }
+        }
       } catch (err) {
         console.log(err)
         responses = responses.concat(err.response.body)

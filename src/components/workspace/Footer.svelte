@@ -1,5 +1,5 @@
 <script>
-  import {library, selectedItems, refreshDate, collections, addingWorkspace, addedCollections} from '../../stores'
+  import {library, selectedItems, refreshDate, collections, addingWorkspace, addedCollections, addedWorkspaces} from '../../stores'
   import RiskyButton from '../RiskyButton.svelte'
   import SecondaryButton from '../SecondaryButton.svelte'
   import Button from '../Button.svelte'
@@ -18,6 +18,7 @@
     const body = Object.fromEntries(new URLSearchParams(new FormData(target)).entries())
     body.items = Array.from($selectedItems)
     body.addedCollections = $addedCollections
+    body.addedWorkspaces = $addedWorkspaces
     endSelection()
     try {
       await fetch(target.action, {
