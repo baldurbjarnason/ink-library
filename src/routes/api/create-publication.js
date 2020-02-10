@@ -43,7 +43,7 @@ export async function post(req, res, next) {
         body: JSON.stringify(body)
       }).json();
       // Check workspace, if there is one, add
-      if (req.body.addWorkspace !== 'all') {
+      if (req.body.addWorkspace && req.body.addWorkspace !== 'all') {
         await got.put(`${response.id}tags/${req.body.addWorkspace}`, {
           headers: {
             "content-type": "application/ld+json",
@@ -51,7 +51,7 @@ export async function post(req, res, next) {
           }
         }).json();
       }
-      if (req.body.addedCollections) {
+      if (req.body.addedCollections && req.body.addedCollections.length !== 0) {
         for (const id of req.body.addedCollections) {
           await got.put(`${response.id}tags/${id}`, {
             headers: {
