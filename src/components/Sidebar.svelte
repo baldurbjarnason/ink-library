@@ -9,7 +9,9 @@
   let tags
   let workspace
   $: if (params && $collections) {
-    if (params.workspace) {
+    if (params.publicationId) {
+      workspace = null
+    } else if (params.workspace) {
       workspace = params.workspace
     } else if (params.segment === 'library') {
       workspace = 'all'
@@ -259,6 +261,4 @@ h2 {
   </ul>
 </div>
 </div>
-{:else}
-   <div></div>
 {/if}

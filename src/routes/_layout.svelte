@@ -7,6 +7,7 @@
   export let segment;
   let query
   let params
+  let publication = false
   $: if ($page) {
     pageStore.set($page)
     query = $page.query;
@@ -15,6 +16,9 @@
       params.segment = segment
     } else {
       params.segment = 'front'
+    }
+    if (params.publicationId) {
+      publication = true
     }
   }
 </script>
@@ -51,6 +55,9 @@
   .content.research {
     --workspace-color: var(--research-workspace);
   }
+  .content.publication {
+    grid-column: 2 / -1;
+  }
 </style>
 
 
@@ -59,11 +66,11 @@
     <meta name="csrftoken" content={$session.csrfToken}>
 </svelte:head>
 
-<main class="grid">
+<main class="grid" class:publication>
 <Nav {params} />
 <Sidebar {params} />
 
-<div class="content {params.workspace}">
+<div class="content {params.workspace}" class:publication>
 	<slot></slot>
 </div>
 </main>

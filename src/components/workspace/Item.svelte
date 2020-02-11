@@ -128,11 +128,19 @@
       background-color: white;
     }
 }
+.Item a {
+  color: var(--workspace-color);
+  text-decoration: none;
+}
+.Item a:hover {
+  color: var(--hover);
+  text-decoration: underline;
+}
 </style>
 
 <div class="Item" class:selecting class:selected>
   <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
-  <div class="Name"><span class="title">{item.name}</span>
+  <div class="Name"><a href="{window.location.pathname}/{item.shortId}" class="title">{item.name}</a>
   <div class="Authors">
   {#each item.author as author, i}
      <span class="Author">{author.name}{#if i !== item.author.length - 1}, {/if}</span>
