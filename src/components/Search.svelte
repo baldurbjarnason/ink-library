@@ -86,6 +86,9 @@
     margin-left: calc(var(--base) * 1.25);
     transform: translateY(1px);
   }
+  .Button:hover svg {
+    color: white;
+  }
   .SearchBox {
     position: absolute;
     background-color: white;
