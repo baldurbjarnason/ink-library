@@ -2,7 +2,7 @@
   export let item = {
     tags: []
   }
-  export let selected
+  export let selected = false
   const spaces = ['Research', 'Public_Scholarship', 'Teaching', 'Personal']
   function getWorkspace (name) {
     const space = name.split('/')[0].replace(' ', '_')

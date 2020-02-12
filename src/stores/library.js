@@ -12,7 +12,7 @@ export const library = derived([page, refreshDate, searchStore], ([$page, $refre
   if ($page.params.collection && $page.params.collection !== "all") {
     query.stack = $page.params.collection
   } else if ($page.params.workspace && $page.params.workspace !== 'all') {
-    query.workspace = $page.params.workspace
+    query.workspace = $page.params.workspace.replace('_', ' ')
   }
   
   if ($searchStore) {

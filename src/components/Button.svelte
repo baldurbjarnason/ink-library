@@ -17,7 +17,7 @@
 
     display: inline-block;
 
-    padding: 0.65rem 2.5rem 0.7rem;
+    padding: 0.65rem 2.5rem 0.6rem;
 
     cursor: pointer;
     -webkit-user-select: none;

@@ -1,8 +1,7 @@
 <script>
   export let click = null
   export let href = null
-  export let hidden = false
-  export let disabled = false
+  export let dark = false
 </script>
 
 <style>
@@ -10,13 +9,13 @@
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
-    font-size: 0.9rem;
+    font-size:  var(--item-font-size);
     flex: 0 1 auto;
     line-height: 1;
 
     display: inline-block;
 
-    padding: 0.65rem 2.5rem 0.6rem;
+    padding: 0.65rem var(--base) 0.6rem;
 
     cursor: pointer;
     -webkit-user-select: none;
@@ -28,14 +27,14 @@
     text-decoration: none;
     font-weight: 500;
     color: var(--workspace-color);
-    border-radius: 15px;
     -ms-touch-action: manipulation;
     touch-action: manipulation;
     /* transition: box-shadow 0.15s ease-in-out; */
-    background-color: transparent;
+    background: #FFFFFF;
+    border-radius: 7px;
     text-decoration: none !important;
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
-    border: 2px solid var(--workspace-color);
+    border: 1px solid transparent;
   }
 
   .Button:hover,
@@ -44,7 +43,7 @@
   .Button:visited:hover,
   .Button:link:visited:hover {
     color: white !important;
-    background-color: var(--workspace-color);
+    background-color: var(--rc-dark);
     box-shadow: none;
     text-decoration: none;
   }
@@ -57,25 +56,27 @@
     outline: none;
     box-shadow: 0 0 0 3px #68d6d499;
   }
+  .Button.dark {
+    background-color: transparent;
+    border-color: white;
+    color: white;
+  }
 </style>
 
 
 {#if href}
   <a
     class="Button"
-    {hidden}
-    {disabled}
     {href}
-    on:click={click}>
+    on:click={click}
+    class:dark>
     <slot />
   </a>
 {:else}
   <button
     class="Button"
-    type="button"
-    {hidden}
-    {disabled}
-    on:click={click}>
+    on:click={click}
+    class:dark>
     <slot />
   </button>
 {/if}
