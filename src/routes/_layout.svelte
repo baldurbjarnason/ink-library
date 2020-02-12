@@ -43,16 +43,16 @@
   :root {
     --workspace-color: var(--all-workspace);
   }
-  .content.personal {
+  .content.Personal {
     --workspace-color: var(--personal-workspace);
   }
-  .content.public {
+  .content.Public_Scholarship {
     --workspace-color: var(--public-workspace);
   }
-  .content.teaching {
+  .content.Teaching {
     --workspace-color: var(--teaching-workspace);
   }
-  .content.research {
+  .content.Research {
     --workspace-color: var(--research-workspace);
   }
   .content.publication {
