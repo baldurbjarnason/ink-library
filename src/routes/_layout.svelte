@@ -9,7 +9,6 @@
   let params
   let publication = false
   $: if ($page) {
-    console.log($page)
     pageStore.set($page)
     query = $page.query;
     params = Object.assign({}, $page.params);

@@ -66,6 +66,7 @@
     "got": "^10.0.1",
     "inert-polyfill": "^0.2.5",
     "ink-engine": "git+https://github.com/RebusFoundation/ink-engine.git",
+    "iso-639-1": "^2.1.0",
     "jsonwebtoken": "^8.5.1",
     "mime": "^2.4.4",
     "passport": "^0.4.1",

@@ -1,6 +1,7 @@
 
 import got from "got";
 import friendlyWords from 'friendly-words';
+import ISO6391 from 'iso-639-1'
 
 function friendlyName (type) {
   const index = Math.floor(Math.random() * Math.floor(friendlyWords[type].length));
@@ -25,7 +26,18 @@ export async function get(req, res, next) {
       Authorization: `Bearer ${req.user.token}`
     }
   }).json();
-  response.keywords = keywords()
-  console.log(response.keywords)
+  response.keywords = keywords();
+  if (!response.inLanguage) {
+    response.inLanguage = ['en', 'en-gb', 'is']
+  }
+  if (response.inLanguage) {
+    response.inLanguage = [].concat(response.inLanguage).map(code => {
+      return {
+        code,
+        english: ISO6391.getName(code),
+        native: ISO6391.getNativeName(code)
+      }
+    })
+  }
   res.json(response);
 }
