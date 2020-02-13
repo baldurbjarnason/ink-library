@@ -9,6 +9,7 @@
   let params
   let publication = false
   $: if ($page) {
+    console.log($page)
     pageStore.set($page)
     query = $page.query;
     params = Object.assign({}, $page.params);
@@ -17,10 +18,12 @@
     } else {
       params.segment = 'front'
     }
-    if (params.publicationId) {
-      publication = true
-    }
   }
+  $: if ($page.params && $page.params.publicationId) {
+      publication = true
+    } else {
+      publication = false
+    }
 </script>
 
 <style global>

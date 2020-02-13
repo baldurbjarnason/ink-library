@@ -5,6 +5,7 @@
   import ItemStacks from '../workspace/ItemStacks.svelte';
   import NavButton from './NavButton.svelte';
   import Card from './Card.svelte';
+  import Keyword from './Keyword.svelte';
   import Tab from './Tab.svelte';
   let workspace
   $: if ($page.params.workspace) {
@@ -24,6 +25,11 @@
       href: "/img/placeholder-cover.jpg",
       rel: ["cover"]
     }
+  }
+  let url
+  $: if ($publication && $publication.links) {
+    const link = $publication.links.find(link => link.rel === 'alternate')
+    url = link.url
   }
 </script>
 <!-- What we need here is a grid with a top bar followed by a three column central view (middle being the main). Top bar has a tab switcher between workspaces and a return to workspace link. Ignore related to begin with. -->
@@ -54,7 +60,6 @@
     display: grid;
     grid-template-columns: 1fr calc(var(--base) * 7);
     grid-template-areas: ". ReaderLink"
-    ". ReaderLink"
     ". ReaderLink";
     grid-column-gap: var(--gap);
     grid-template-rows: 1.5rem 1fr 1.5rem;
@@ -124,6 +129,10 @@
     font-size: calc(var(--item-font-size) * 0.65);
     vertical-align: text-bottom;
     margin-right: 0.25rem;
+  }
+
+  .Keywords {
+    padding: var(--base) 0;
   }
 
 
@@ -210,12 +219,13 @@
       <a href="/library/{$page.params.workspace}/{$page.params.collection}" class="Return"><span aria-hidden="true" class="Chevron">&lt;</span> {$page.params.workspace === 'all' ? 'All workspaces' : $page.params.workspace.replace('_', ' ')}</a>
     </div>
     <h1>{$publication.name}</h1>
-    <div class="CurrentWorkspace">{$page.params.workspace === 'all' ? 'All workspaces' : $page.params.workspace.replace('_', ' ')}</div>
     <div class="ReaderLink">
-    <span class="Read">Unread</span>
-    <span class="Read">At beginning</span>
-      <NavButton href="/">Read</NavButton>
-      <NavButton href="/" dark={true}>Restart Reading</NavButton>
+    {#if url}
+      <span class="Read">Unread</span>
+      <span class="Read">At beginning</span>
+        <NavButton href="{url}">Read</NavButton>
+        <NavButton href="{url}" dark={true}>Restart Reading</NavButton>
+    {/if}
     </div>
     </div>
 
@@ -269,7 +279,13 @@
         <dd>{$publication.type.split(/(?=[A-Z])/).join(' ')}</dd>
       </dl>
     </Card>
-    <Card><h2>Keywords</h2></Card>
+    <Card><h2>Keywords</h2>
+    <div class="Keywords">
+    {#each $publication.keywords as keyword}
+       <Keyword {keyword} />
+    {/each}
+    </div>
+    </Card>
   </div>
 
   <div class="CenterBox">
