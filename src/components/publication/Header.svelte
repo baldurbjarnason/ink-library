@@ -13,6 +13,21 @@
     const link = $publication.links.find(link => link.rel === 'alternate')
     url = link.url
   }
+  function getPosition (publication) {
+    if (publication.position && publication.position.description) {
+      return publication.position.description
+    } else {
+      return ""
+    }
+  }
+  function getReadDate (publication) {
+    if (!publication.status) {
+      return new Date($publication.updated).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })
+    } else {
+      return new Date($publication.published).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })
+    }
+
+  }
 </script>
 
 <style>
@@ -44,6 +59,13 @@
   }
   .Read {
     font-size:  var(--item-font-size);
+  }
+  .ReadStatus {
+    font-weight: 400;
+    margin-right: 0.75rem;
+  }
+  .ReadDate {
+    font-weight: 700;
   }
 
   h1 {
@@ -153,8 +175,11 @@
   <h1>{$publication.name}</h1>
   <div class="ReaderLink">
   {#if url}
-    <span class="Read">Unread</span>
-    <span class="Read">At beginning</span>
+    <div class="Read">
+      <span class="ReadStatus">{$publication.status || "New"}</span>
+      <span class="ReadDate">{getReadDate($publication)}</span>
+    </div>
+    <span class="Read">{getPosition($publication)}</span>
       <NavButton href="{url}">Read</NavButton>
       <NavButton href="{url}" dark={true}>Restart Reading</NavButton>
   {/if}
