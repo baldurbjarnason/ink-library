@@ -8,6 +8,10 @@
   $: if ($page.params.workspace) {
     workspace = $page.params.workspace
   }
+  let usedWorkspaces
+  $: if ($publication.tags) {
+    usedWorkspaces = $publication.tags.filter(item => item.type === 'workspace').map(item => item.name)
+  }
   let url
   $: if ($publication && $publication.links) {
     const link = $publication.links.find(link => link.rel === 'alternate')
@@ -26,7 +30,6 @@
     } else {
       return new Date($publication.published).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })
     }
-
   }
 </script>
 
@@ -191,28 +194,13 @@
     <Tab {workspace} />
   {/if}
   <span class="visually-hidden">All</span> </a></li>
-  <li><a href="/library/Research/all/{$page.params.publicationId}" class="research-tab" class:selected={workspace === 'Research'}>
-  
-  {#if workspace === 'Research'}
-    <Tab {workspace} />
-  {/if}
-    <span class="visually-hidden">Research</span></a></li>
-  <li><a href="/library/Teaching/all/{$page.params.publicationId}" class="teaching-tab" class:selected={workspace === 'Teaching'}>
-  
-  {#if workspace === 'Teaching'}
-    <Tab {workspace} />
-  {/if}<span class="visually-hidden">Teaching</span></a></li>
-  <li><a href="/library/Public_Scholarship/all/{$page.params.publicationId}" class="public-tab" class:selected={workspace === 'Public_Scholarship'}>
-
-  {#if workspace === 'Public_Scholarship'}
-    <Tab {workspace} />
-  {/if}
-  <span class="visually-hidden">Public scholarships</span></a></li>
-  <li><a href="/library/Personal/all/{$page.params.publicationId}" class="personal-tab" class:selected={workspace === 'Personal'}>
-
-  {#if workspace === 'Personal'}
-    <Tab {workspace} />
-  {/if}
-  <span class="visually-hidden">Personal</span></a></li>
+  {#each usedWorkspaces as space}
+    <li><a href="/library/{space}/all/{$page.params.publicationId}" class="research-tab" class:selected={workspace === space}>
+    
+    {#if workspace === space}
+      <Tab {workspace} />
+    {/if}
+      <span class="visually-hidden">{space}</span></a></li>
+  {/each}
 </ul>
 </div>
