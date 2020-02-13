@@ -1,5 +1,21 @@
 
 import got from "got";
+import friendlyWords from 'friendly-words';
+
+function friendlyName (type) {
+  const index = Math.floor(Math.random() * Math.floor(friendlyWords[type].length));
+  const word = friendlyWords[type][index].charAt(0).toUpperCase() + friendlyWords[type][index].slice(1)
+  return word
+}
+
+function keywords () {
+  const number = Math.floor(Math.random() * Math.floor(16));
+  const result = []
+  for (let index = 0; index < number; index++) {
+    result.push(`${friendlyName('predicates')} ${friendlyName('objects')}`)
+  }
+  return result
+}
 
 // This needs to filter by workspace
 export async function get(req, res, next) {
@@ -9,5 +25,7 @@ export async function get(req, res, next) {
       Authorization: `Bearer ${req.user.token}`
     }
   }).json();
+  response.keywords = keywords()
+  console.log(response.keywords)
   res.json(response);
 }
