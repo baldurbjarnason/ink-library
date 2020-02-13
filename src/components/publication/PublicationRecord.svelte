@@ -64,7 +64,7 @@
     <Card><h2>Description</h2>
     
     <div class="Description">
-      <p>We have filler text here.</p>
+      <p>{$publication.description || ""}</p>
     </div>
     
     </Card>
