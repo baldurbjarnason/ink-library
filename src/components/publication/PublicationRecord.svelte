@@ -10,6 +10,7 @@
   import Header from './Header.svelte';
   import Metadata from './Metadata.svelte';
   import Note from './Note.svelte';
+  import ToC from './ToC.svelte';
 
 </script>
 <!-- What we need here is a grid with a top bar followed by a three column central view (middle being the main). Top bar has a tab switcher between workspaces and a return to workspace link. Ignore related to begin with. -->
@@ -69,7 +70,9 @@
     </div>
     
     </Card>
-    <Card><h2>Table of Contents</h2></Card>
+    <Card><h2>Table of Contents</h2>
+      <ToC />
+    </Card>
   </div>
   <div class="RightBox">
     <Card><h2>Stacks</h2>
