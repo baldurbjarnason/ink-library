@@ -9,6 +9,7 @@
   import Tab from './Tab.svelte';
   import Header from './Header.svelte';
   import Metadata from './Metadata.svelte';
+  import Note from './Note.svelte';
 
 </script>
 <!-- What we need here is a grid with a top bar followed by a three column central view (middle being the main). Top bar has a tab switcher between workspaces and a return to workspace link. Ignore related to begin with. -->
@@ -74,7 +75,11 @@
     <Card><h2>Stacks</h2>
     
     <ItemStacks item={$publication} />
-    </Card><Card><h2>Notes</h2></Card>
+    </Card><Card><h2>Notes</h2>
+    {#each $publication.replies as note}
+      <Note {note} />
+    {/each}
+    </Card>
   </div>
   
   <pre><code>{JSON.stringify($publication, null, 2)}</code></pre> 

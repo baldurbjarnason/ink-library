@@ -9,14 +9,26 @@ function friendlyName (type) {
   return word
 }
 
-function keywords () {
-  const number = Math.floor(Math.random() * Math.floor(16));
-  const result = []
+function note () {
+  const number = Math.floor(Math.random() * Math.floor(100));
+  const result = {type: "TextualBody", purpose: "commenting"}
+  const body = []
   for (let index = 0; index < number; index++) {
-    result.push(`${friendlyName('predicates')} ${friendlyName('objects')}`)
+    body.push(`${friendlyName('predicates')} ${friendlyName('objects')}`)
   }
+  result.value = body.join(' ')
   return result
 }
+function notes () {
+  const result = []
+  for (let index = 0; index < 10; index++) {
+    result.push({body: [note()]})
+  }
+  return result
+
+}
+
+// Make a list of fake notes: motivation, lang, id, body
 
 // This needs to filter by workspace
 export async function get(req, res, next) {
@@ -26,7 +38,6 @@ export async function get(req, res, next) {
       Authorization: `Bearer ${req.user.token}`
     }
   }).json();
-  response.keywords = keywords();
   if (!response.inLanguage) {
     response.inLanguage = ['en', 'en-gb', 'is']
   }
@@ -39,5 +50,7 @@ export async function get(req, res, next) {
       }
     })
   }
+  response.keywords = response.keywords || []
+  response.replies = notes()
   res.json(response);
 }
