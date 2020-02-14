@@ -48,7 +48,7 @@
 </script>
 
 <style>
-  .Tag {
+  .Collection {
     width: 100%;
     font-size: 0.7rem;
     padding: calc(var(--base) * 0.25);
@@ -65,7 +65,7 @@
     grid-gap: calc(var(--base) * 0.25);
     grid-template-columns: repeat(auto-fit,minmax(100px,max-content));
   }
-  .dark .Tag{
+  .dark .Collection{
     color: white;
     background-color: rgba(255,255,255, 0.2);
   }
@@ -81,7 +81,7 @@
   </div>
   <div class="Wide Tags" class:dark>
   {#each currentCollections as collection, i}
-    <span class="Tag">
+    <span class="Collection">
         {collection} <Closer {dark} value={collection} click={removeTag} small={true} />
     </span>
   {/each}
