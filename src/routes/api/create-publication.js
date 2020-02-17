@@ -22,7 +22,12 @@ export async function post(req, res, next) {
   } else if (req.body.storageId) {
     links = [{
       rel: "alternate",
-      url: `/api/stored-${req.body.storageId}`
+      encodingFormat: "application/json",
+      url: `/api/stored/${req.body.storageId}`
+    }, {
+      rel: "contents",
+      encodingFormat: "application/json",
+      url: `/api/toc/${req.body.storageId}`
     }]
     // if publication add another alternate with a publication manifest media type.
   }
