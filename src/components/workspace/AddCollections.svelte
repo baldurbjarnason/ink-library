@@ -14,7 +14,7 @@
       filteredCollections = $collections.map(collection => collection.name)
     }
   }
-  const spaces = ['Research', 'Public_Scholarship', 'Teaching', 'Personal']
+  const spaces = ['Research', 'Public_Scholarships', 'Teaching', 'Personal']
   function getWorkspace (name) {
     const space = name.split('/')[0].replace(' ', '_')
     if (spaces.includes(space)) {

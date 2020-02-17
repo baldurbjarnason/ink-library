@@ -66,7 +66,7 @@
       </svg>
     </span>
   {/if}
-  {#if workspace === 'Public_Scholarship'}
+  {#if workspace === 'Public_Scholarships'}
     <span class="Tab"  out:send="{{key: 'publication-tabs-marker'}}" in:receive="{{key: 'publication-tabs-marker'}}">
       <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="Curve">
         <path d="M12 4.96552C5.2 4.96552 3.16667 12.3218 3 16L0 0L12 4.96552Z" fill="currentColor"/>

@@ -48,7 +48,7 @@
   .content.Personal {
     --workspace-color: var(--personal-workspace);
   }
-  .content.Public_Scholarship {
+  .content.Public_Scholarships {
     --workspace-color: var(--public-workspace);
   }
   .content.Teaching {

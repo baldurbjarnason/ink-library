@@ -3,7 +3,7 @@
     tags: []
   }
   export let selected = false
-  const spaces = ['Research', 'Public_Scholarship', 'Teaching', 'Personal']
+  const spaces = ['Research', 'Public_Scholarships', 'Teaching', 'Personal']
   function getWorkspace (name) {
     const space = name.split('/')[0].replace(' ', '_')
     if (spaces.includes(space)) {
@@ -33,7 +33,7 @@
 .hash.personal {
   color: var(--personal-workspace);
 }
-.hash.public_scholarship {
+.hash.public_scholarships {
   color: var(--public-workspace);
 }
 .hash.research {

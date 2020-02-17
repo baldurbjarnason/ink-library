@@ -10,7 +10,7 @@
   }
   let usedWorkspaces
   $: if ($publication.tags) {
-    usedWorkspaces = $publication.tags.filter(item => item.type === 'workspace').map(item => item.name)
+    usedWorkspaces = $publication.tags.filter(item => item.type === 'workspace').map(item => item.name.replace(' ', '_'))
   }
   let url
   $: if ($publication && $publication.links) {
@@ -197,12 +197,11 @@
   {/if}
   <span class="visually-hidden">All</span> </a></li>
   {#each usedWorkspaces as space}
-    <li><a href="/library/{space}/all/{$page.params.publicationId}" class="research-tab" class:selected={workspace === space}>
-    
+    <li><a href="/library/{space}/all/{$page.params.publicationId}" class="{space.split('_')[0].toLowerCase()}-tab" class:selected={workspace === space}>
     {#if workspace === space}
       <Tab {workspace} />
     {/if}
-      <span class="visually-hidden">{space}</span></a></li>
+      <span class="visually-hidden">{space.replace('_', ' ')}</span></a></li>
   {/each}
 </ul>
 </div>
