@@ -7,26 +7,47 @@
     margin: 0;
     padding-left: var(--base);
   }
+  details {
+    margin: 0;
+    padding: 0;
+  }
   details > summary {
     cursor: pointer;
     list-style: none;
-    background-color: transparent;
     background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22square%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M15%2018l-6-6%206-6%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: right 0.7em top 50%;
     background-size: 12px auto;
+    border-radius: 8px;
+    background-color: #f0f0f0;
   }
   details[open] > summary {
     background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22square%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: right 0.7em top 50%;
     background-size: 12px auto;
+    background-color: transparent
   }
   details > summary::-webkit-details-marker {
     display: none;
   }
   li {
-    margin: calc(var(--base) * 0.5) 0;
+    padding: calc(var(--base) * 0.25) 0;
+    margin: 0;
+  }
+  ol {
+    counter-reset: section;                
+    list-style-type: none;
+  }
+  li {
+    counter-increment: section;  
+  }
+  .Level {
+    display: block;
+    padding: 0.25rem;
+  }
+  li .Level::before {          
+    content: counters(section, ".") ". ";   
   }
   /* Level 1 */
   ol > li {
@@ -58,127 +79,127 @@
   <ol>
     <li>
     <details open>
-      <summary><span>Level 1</span></summary>
+      <summary><span class="Level">Level 1</span></summary>
       <ol>
         <li>
           <details open>
-            <summary><span>Level 2</span></summary>
+            <summary><span class="Level">Level 2</span></summary>
             <ol>
               <li><details open>
                 <summary>
-                  <span>Level 3</span>
+                  <span class="Level">Level 3</span>
                 </summary>
                 <ol>
-                  <li><span>Level 4</span></li>
-                  <li><span>Level 4</span></li>
+                  <li><span class="Level">Level 4</span></li>
+                  <li><span class="Level">Level 4</span></li>
                 </ol>
               </details>
               </li>
-              <li><span>Level 3</span></li>
+              <li><span class="Level">Level 3</span></li>
             </ol>
           </details>
         </li>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
       </ol>
     </details>
     </li>
     <li>
-      Level 1
+      <span class="Level">Level 1</span>
       <ol>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
       </ol>
     </li>
     <li>
-      Level 1
+      <span class="Level">Level 1</span>
       <ol>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
       </ol>
     </li>
     <li>
-      Level 1
+      <span class="Level">Level 1</span>
       <ol>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
       </ol>
     </li>
     <li>
-      Level 1
+      <span class="Level">Level 1</span>
       <ol>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
       </ol>
     </li>
     <li>
-      Level 1
+      <span class="Level">Level 1</span>
       <ol>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
         <li>
-          <span>Level 2</span>
+          <span class="Level">Level 2</span>
           <ol>
-            <li><span>Level 3</span></li>
-            <li><span>Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
+            <li><span class="Level">Level 3</span></li>
           </ol>
         </li>
       </ol>
