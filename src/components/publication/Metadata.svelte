@@ -83,6 +83,7 @@
     <dd>{$publication.genre}</dd>
   {/if}
 
+{#if $publication.type !== 'loading'}
 
   {#if $publication.inLanguage && $publication.inLanguage.length === 1}
       <dt>Language</dt>
@@ -152,4 +153,5 @@
 
   <dt>Type</dt>
   <dd>{$publication.type.split(/(?=[A-Z])/).join(' ')}</dd>
+{/if}
 </dl>

@@ -4,7 +4,9 @@
   let url
   $: if (item && item.links) {
     const link = item.links.find(link => link.rel === 'alternate')
-    url = link.url
+    if (link) {
+      url = link.url
+    }
   }
 </script>
 

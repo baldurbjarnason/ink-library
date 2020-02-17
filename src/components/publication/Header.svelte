@@ -15,7 +15,9 @@
   let url
   $: if ($publication && $publication.links) {
     const link = $publication.links.find(link => link.rel === 'alternate')
-    url = link.url
+    if (link) {
+      url = link.url
+    }
   }
   function getPosition (publication) {
     if (publication.position && publication.position.description) {
