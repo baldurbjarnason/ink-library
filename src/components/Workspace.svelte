@@ -2,6 +2,7 @@
   import NewItem from './workspace/NewItem.svelte'
   import Search from './Search.svelte'
   import ItemToggle from './ItemToggle.svelte'
+  import WorkspaceMenu from './WorkspaceMenu.svelte'
   import List from './workspace/List.svelte'
   export let workspace
 </script>
@@ -19,8 +20,18 @@
 
   z-index: 2;
 }
-  
+  @media (max-width: 720px) {
+    .Toolbar {
+      height: calc(var(--base) * 6);
+      padding: calc(var(--base) * 1.5) calc(var(--base) * 2);
+      position: relative;
+      top: 0;
+      background-color: transparent;
+    }
+  }
 </style>
+
+<WorkspaceMenu {workspace} />
 
 <nav class="Toolbar">
   <NewItem {workspace} />

@@ -177,6 +177,27 @@
   .Expander.expanded {
     transform: rotate(180deg);
   }
+  @media (max-width: 720px) {
+    .new-button {
+      position: fixed;
+      right: var(--base);
+      bottom: 70px;
+    }
+    .new-button :global(.Button) {
+      box-shadow: 3px 1px 7px rgba(0, 0, 0, 0.2);
+      padding: .65rem;
+      border-radius: 100%;
+      height: 42px;
+      width: 42px;
+    }
+    .NewButtonLabel {
+      display: none;
+    }
+    .NewButtonPlus {
+      font-size: 2rem;
+      line-height: 1rem;
+    }
+  }
 </style>
 
 {#if open}
@@ -213,5 +234,7 @@
 <span></span>
 {:else}
   <span class="new-button" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}"
-    bind:this={newToggle}><Button click={click}>+ New</Button></span>
+    bind:this={newToggle}><Button click={click}><span class="NewButtonPlus">+</span><span class="NewButtonLabel">
+      New
+    </span></Button></span>
 {/if}

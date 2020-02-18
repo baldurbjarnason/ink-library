@@ -23,6 +23,12 @@
     } else {
       publication = false
     }
+  let menu = true
+  $: if (segment === 'library' && $page.query && $page.query.returnTo) {
+    menu = true
+  } else {
+    menu = false
+  }
 </script>
 
 <style global>
@@ -42,6 +48,12 @@
     grid-template-columns: calc(var(--base) * 4) calc(var(--base) * 14) 1fr;
     min-height: 100vh;
   }
+  @media (max-width: 720px) {
+    .grid {
+      display: flex;
+      flex-direction: column;
+    }
+  }
   :root {
     --workspace-color: var(--all-workspace);
   }
@@ -60,6 +72,15 @@
   .content.publication {
     grid-column: 2 / -1;
   }
+  @media (max-width: 720px) {
+    .grid {
+      display: flex;
+      flex-direction: column;
+    }
+    .content {
+      padding: 0;
+    }
+  }
 </style>
 
 
@@ -69,8 +90,10 @@
 </svelte:head>
 
 <main class="grid" class:publication>
-<Nav {params} />
-<Sidebar {params} />
+{#if !menu}
+  <Nav {params} />
+  <Sidebar {params} />
+{/if}
 
 <div class="content {params.workspace}" class:publication>
 	<slot></slot>

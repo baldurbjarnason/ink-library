@@ -202,6 +202,11 @@ h2 {
   top: 0;
   max-height: 100vh;
 }
+@media (max-width: 720px) {
+  .workspaces {
+    display: none;
+  }
+}
 </style>
 
 {#if workspace}

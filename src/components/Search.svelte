@@ -150,10 +150,17 @@
     border: none;
 
   }
+  @media (max-width: 720px) {
+    .Button {
+      width: 100%;
+      display: inline-flex;
+      justify-content: space-between;
+    }
+  }
 </style>
 
 {#if open}
-  <div class="SearchBox" out:send="{{key: 'search-box'}}" in:receive="{{key: 'search-box'}}">
+  <div class="SearchBox" out:send|local="{{key: 'search-box'}}" in:receive|local="{{key: 'search-box'}}">
   <form role="search" method="get" id="searchform" class="SearchForm" action="">
 <label class="visually-hidden" id="search-label" for="search-input">Search:</label>
 <Closer click={close} />
@@ -168,7 +175,7 @@
 </div>
 <span></span>
 {:else}
-<button out:send="{{key: 'search-box'}}" in:receive="{{key: 'search-box'}}"
+<button out:send|local="{{key: 'search-box'}}" in:receive|local="{{key: 'search-box'}}"
     class="Button"
     on:click={click}
     bind:this={searchToggle}>

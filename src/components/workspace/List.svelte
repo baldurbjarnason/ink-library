@@ -104,6 +104,15 @@ code {
     font-size: 4rem;
     margin: auto;
 }
+@media (max-width: 720px) {
+  .Header, .CardHeader {
+    display: none;
+  }
+  .Items, .Cards {
+    padding: 0 var(--base);
+  }
+}
+
 </style>
 
   {#if query["list-style"] === 'card'}

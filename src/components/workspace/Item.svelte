@@ -129,12 +129,20 @@
     }
 }
 .Item a {
-  color: var(--workspace-color);
+  color: black;
   text-decoration: none;
 }
 .Item a:hover {
   color: var(--hover);
   text-decoration: underline;
+}
+@media (max-width: 720px) {
+  .Item {
+    min-width: auto;
+  }
+  .Stacks, .ItemEntry {
+    display: none;
+  }
 }
 </style>
 

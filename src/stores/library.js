@@ -6,8 +6,10 @@ export const refreshDate = writable(Date.now())
 export const searchStore = writable()
 
 export const library = derived([page, refreshDate, searchStore], ([$page, $refreshDate, $searchStore], set) => {
+  if (!process.browser) return
+  if (!$page.path || !$page.path.startsWith('/library')) return
+  if ($page.query.returnTo) return
   set({type: 'loading', items: []})
-  if (!process.browser || !$page.path || !$page.path.startsWith('/library')) return
   const query = Object.assign({}, $page.query)
   if ($page.params.collection && $page.params.collection !== "all") {
     query.stack = $page.params.collection
@@ -41,4 +43,4 @@ export const library = derived([page, refreshDate, searchStore], ([$page, $refre
       console.error(err)
     })
 
-})
+}, {type: 'loading', items: []})

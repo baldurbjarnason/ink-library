@@ -17,6 +17,6 @@
 </style>
 
 
-<div class="Card" transition:scale="{{delay: 250, duration: 350, easing: elasticInOut }}">
+<div class="Card" transition:scale|local="{{delay: 250, duration: 350, easing: elasticInOut }}">
   <slot></slot>
 </div>
