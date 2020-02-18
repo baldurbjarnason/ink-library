@@ -23,3 +23,22 @@ export const publication = derived([publicationId, refreshPublication], ([$publi
       console.error(err)
     })
 })
+
+export const contents = derived(publication, ($publication, set) => {
+  set({type: 'loading', children: []})
+  if (!process.browser || !$publication.links) return
+  const contentsLink = $publication.links.find(link => link.rel === "contents")
+  if (!contentsLink) return
+  const url = contentsLink.url
+  return window.fetch(url)
+    .then(res => {
+      return res.json()
+    })
+    .then(contents => {
+      set(contents)
+    })
+    .catch(err => {
+      set({type: 'failed'})
+      console.error(err)
+    })
+})

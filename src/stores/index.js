@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 export {page} from './page'
-export {publication} from './publication'
+export {publication, contents} from './publication'
 
 export {library, refreshDate, searchStore} from './library'
 export {collections, workspaces, tags, refreshCollections, addingWorkspace, addedCollections, addedWorkspaces} from './collections'

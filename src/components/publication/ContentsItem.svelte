@@ -38,9 +38,9 @@
 </style>
 
 <li>
-  {#if item.children}
+  {#if item.children && item.children.length}
     <details open>
-      <summary><span class="Level">{item.name}</span></summary>
+      <summary><span class="Level">{item.label}</span></summary>
       <ol>
         {#each item.children as item}
            <svelte:self {item} />
@@ -48,6 +48,6 @@
       </ol>
     </details>
   {:else}
-    <span class="Level">{item.name}</span>
+    <span class="Level">{item.label}</span>
   {/if}
 </li>

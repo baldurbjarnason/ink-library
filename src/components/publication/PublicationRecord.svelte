@@ -70,7 +70,7 @@
     </div>
     
     </Card>
-    <Card><h2>Table of Contents</h2>
+    <Card>
       <ToC />
     </Card>
   </div>
@@ -84,7 +84,5 @@
     {/each}
     </Card>
   </div>
-  
-  <pre><code>{JSON.stringify($publication, null, 2)}</code></pre> 
 {/if}
 </div>

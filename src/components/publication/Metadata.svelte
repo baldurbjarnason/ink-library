@@ -49,6 +49,11 @@
     margin: 0;
     padding: 0;
   }
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+  }
 </style>
 
 <h2>Information</h2>
