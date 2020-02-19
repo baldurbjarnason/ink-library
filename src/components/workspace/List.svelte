@@ -104,9 +104,18 @@ code {
     font-size: 4rem;
     margin: auto;
 }
+.MobileHeader {
+  display: none;
+}
 @media (max-width: 720px) {
   .Header, .CardHeader {
     display: none;
+  }
+  .MobileHeader {
+    display: flex;
+    padding: calc(var(--base) * 0.25) var(--base);
+    justify-content: space-between;
+    align-items: center;
   }
   .Items, .Cards {
     padding: 0 var(--base) 60px;
@@ -117,7 +126,7 @@ code {
 
   {#if query["list-style"] === 'card'}
     <div class="CardHeader">
-    <div><label>Sort By: <SortSelect {query} path={$page.path} /></label></div>
+    <div><SortSelect {query} path={$page.path}>Sort By: </SortSelect></div>
     <div>{#if selecting}
       <SmallButton click={() => selecting = false}>Done</SmallButton>
     {:else}
@@ -140,6 +149,14 @@ code {
     {/if}
     </div>
   {:else}
+    <div class="MobileHeader">
+      <div><SortSelect {query} path={$page.path}>Sort By: </SortSelect></div>
+      <div>{#if selecting}
+        <SmallButton click={() => selecting = false}>Done</SmallButton>
+      {:else}
+        <SmallButton click={() => selecting = true}>Select</SmallButton>
+      {/if}</div>
+    </div>
     <div class="Header">
     <div>&nbsp;</div>
     <div><SortButton {query} type="title" path={$page.path}>Title</SortButton></div>
