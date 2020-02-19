@@ -14,6 +14,12 @@
     border-radius: 15px;
     margin: var(--base) 0;
   }
+  @media (max-width: 720px) {
+    .Card {
+      background-color: transparent;
+      box-shadow: none;
+    }
+  }
 </style>
 
 

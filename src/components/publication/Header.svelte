@@ -25,7 +25,6 @@
     if (!previous && workspace !== "all") {
       previous = "all"
     }
-    console.log(next)
   }
   let url
   $: if ($publication && $publication.links) {
@@ -53,17 +52,19 @@
 <style>
   .Header {
     grid-column: 1 / -1;
+    --item-font-size: 0.8rem;
+    --reader-font-size: 0.8rem;
   }
   .HeaderContent {
     background-color: var(--workspace-color);
     color: white;
-    padding: calc(var(--base)*1.5) var(--gap);
+    padding: calc(var(--base)*1.5) var(--base);
     border-radius: 0 0 15px 0 ;
     display: grid;
     grid-template-columns: 1fr calc(var(--base) * 7);
     grid-template-areas: ". ReaderLink"
     ". ReaderLink";
-    grid-column-gap: var(--gap);
+    grid-column-gap: var(--base);
     grid-template-rows: 1.5rem 1fr 1.5rem;
   }
   .HeaderContent.not-all {
@@ -252,6 +253,7 @@
 </style>
 
 
+{#if $publication.type !== "loading"}
 <div class="Header" transition:fly|local="{{duration: 250, y: -250, easing: elasticInOut }}">
   <div class="HeaderContent {workspace !== 'all' && 'not-all'}">
   <div class="ReturnLink">
@@ -310,3 +312,4 @@
   {/each}
 </ul>
 </div>
+{/if}
