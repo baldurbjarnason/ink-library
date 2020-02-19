@@ -211,10 +211,10 @@
     height: 29px;
   }
   .NewBox .MoreItems {
-    max-height: 56vh;
+    max-height: 55vh;
     grid-template-columns: 1fr;
     overflow-y: auto;
-    padding-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 }
 </style>

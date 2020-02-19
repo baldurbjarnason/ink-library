@@ -109,7 +109,7 @@ code {
     display: none;
   }
   .Items, .Cards {
-    padding: 0 var(--base);
+    padding: 0 var(--base) 60px;
   }
 }
 
