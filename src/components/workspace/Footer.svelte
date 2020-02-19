@@ -88,6 +88,12 @@
     grid-template-columns: 1fr 1fr;
     grid-gap: var(--base);
   }
+  @media (max-width: 720px) {
+    .Footer {
+      bottom: 53px;
+      z-index: 10;
+    }
+  }
 </style>
 
 <form class="Footer" class:editing action="/api/batch-update" on:submit={submit}>
