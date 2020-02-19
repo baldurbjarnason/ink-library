@@ -13,6 +13,10 @@
     counter-reset: section;                
     list-style-type: none;
   }
+  .ToC ol {
+    padding: 0;
+    margin-top: var(--base);
+  }
   .ToC :global(li) {
     counter-increment: section;  
   }
