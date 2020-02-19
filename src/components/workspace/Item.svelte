@@ -139,7 +139,7 @@
 @media (max-width: 720px) {
   .Item {
     min-width: auto;
-    grid-template-columns: 60px 1fr 2rem;
+    grid-template-columns: 60px 1fr 1rem;
   }
   .Stacks, .ItemEntry {
     display: none;

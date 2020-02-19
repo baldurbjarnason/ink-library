@@ -93,6 +93,24 @@
       bottom: 53px;
       z-index: 10;
     }
+    .Footer.editing {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: var(--base);
+      padding: var(--base);
+      left: 0;
+      max-width: 100vw;
+      overflow-y: auto;
+      max-height: calc(100vh - 53px);
+    }
+    .FooterButtons {
+      display: grid;
+      grid-gap: 0.5rem;
+      grid-template-columns: 0.75fr 1fr;
+    }
+    .editing .FooterButtons {
+      padding-bottom: 1rem;
+    }
   }
 </style>
 
