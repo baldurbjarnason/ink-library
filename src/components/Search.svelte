@@ -156,6 +156,17 @@
       display: inline-flex;
       justify-content: space-between;
     }
+    .SearchBox input {
+      font-size: 120%;
+    }
+    .SearchBox {
+      left: 0.5rem;
+      right: 0.5rem;
+    }
+    .svgButton svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 </style>
 
