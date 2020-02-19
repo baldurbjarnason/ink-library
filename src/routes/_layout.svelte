@@ -80,6 +80,9 @@
     .content {
       padding: 0;
     }
+    .grid.publication .content {
+      background-color: var(--workspace-color);
+    }
   }
 </style>
 

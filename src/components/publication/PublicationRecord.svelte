@@ -42,6 +42,12 @@
   .Keywords {
     padding: var(--base) 0;
   }
+  @media (max-width: 720px) {
+    .Publication {
+      grid-template-columns: 1fr;
+      grid-row-gap: 0;
+    }
+  }
 </style>
 
 <div class="Publication">

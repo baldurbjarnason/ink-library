@@ -12,6 +12,21 @@
   $: if ($publication.tags) {
     usedWorkspaces = $publication.tags.filter(item => item.type === 'workspace').map(item => item.name.replace(' ', '_'))
   }
+  let next
+  let previous
+  $: if (workspace && usedWorkspaces) {
+    if (workspace === "all") {
+      next = usedWorkspaces[0]
+      previous = null
+    } else {
+      next = usedWorkspaces[usedWorkspaces.indexOf(workspace) + 1]
+      previous = usedWorkspaces[usedWorkspaces.indexOf(workspace) - 1]
+    }
+    if (!previous && workspace !== "all") {
+      previous = "all"
+    }
+    console.log(next)
+  }
   let url
   $: if ($publication && $publication.links) {
     const link = $publication.links.find(link => link.rel === 'alternate')
@@ -169,6 +184,71 @@
   background-color: var(--personal-workspace);
   box-shadow: 1.5px 1.5px 4px rgba(0, 165, 106, 0.4);
 }
+.MobileRead {
+  display: none;
+}
+@media (max-width: 720px) {
+  .HeaderContent {
+    grid-template-areas: none;
+    grid-template-rows: 1.5rem 1fr;
+    grid-template-columns: 1rem 1fr 1rem;
+    padding: calc(var(--base)*1.5);
+  }
+  h1 {
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: var(--base);
+  }
+  .ReaderLink {
+    display: none;
+  }
+  .MobileRead {
+    display: flex;
+    align-items: center;
+    text-align: right;
+    justify-content: flex-end;
+  }
+  .MobileRead a {
+    color: white !important;
+    text-decoration: none;
+    padding: 0.25rem;
+    border-radius: 8px;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+  }
+  .MobileRead a:hover {
+    color: var(--workspace-color) !important;
+    background-color: white;
+  }
+  .ReturnLink {
+    display: flex;
+    align-items: center;
+    grid-column: 1 / 3;
+  }
+  .tabs {
+    margin: auto;
+    padding: 0;
+    height: auto;
+  }
+  .tabs li a:before {
+    background-color: white;
+    box-shadow: none;
+    width: calc(var(--base) * 0.45);
+    height: calc(var(--base) * 0.45);
+  }
+  .tabs li a :global(.Tab) {
+    display: none;
+  }
+  .tabs a:not(.selected):before {
+    opacity: 0.5;
+  }
+  .tabs li {
+    padding-right: 0;
+  }
+  .tabs a {
+    padding: calc(var(--base) * 0.35);
+  }
+}
 </style>
 
 
@@ -177,6 +257,20 @@
   <div class="ReturnLink">
     <a href="/library/{$page.params.workspace}/{$page.params.collection}" class="Return"><span aria-hidden="true" class="Chevron">&lt;</span> {$page.params.workspace === 'all' ? 'All workspaces' : $page.params.workspace.replace('_', ' ')}</a>
   </div>
+  {#if url}
+    <div class="MobileRead"><a href="{url}">Read</a></div>
+  {/if}
+
+    <div class="MobileRead">
+  {#if previous}
+      <a href="/library/{previous}/all/{$page.params.publicationId}">
+        <svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(180)">
+    <rect x="6.36395" y="8.48529" width="9" height="2" rx="0.999999" transform="rotate(-135 6.36395 8.48529)" fill="currentColor"/>
+    <rect x="0.292877" y="12.364" width="9" height="2" rx="0.999999" transform="rotate(-45 0.292877 12.364)" fill="currentColor"/>
+    </svg>
+      </a>
+  {/if}
+    </div>
   <h1>{$publication.name}</h1>
   <div class="ReaderLink">
   {#if url}
@@ -189,6 +283,17 @@
       <NavButton href="{url}" dark={true}>Restart Reading</NavButton>
   {/if}
   </div>
+  {#if next}
+    <div class="MobileRead">
+      <a href="/library/{next}/all/{$page.params.publicationId}">
+        <svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6.36395" y="8.48529" width="9" height="2" rx="0.999999" transform="rotate(-135 6.36395 8.48529)" fill="currentColor"/>
+    <rect x="0.292877" y="12.364" width="9" height="2" rx="0.999999" transform="rotate(-45 0.292877 12.364)" fill="currentColor"/>
+    </svg>
+      </a>
+    </div>
+  {/if}
+    
   </div>
 <ul class="tabs">
   <li><a href="/library/all/all/{$page.params.publicationId}" class="all-tab" class:selected={workspace === 'all'}>
