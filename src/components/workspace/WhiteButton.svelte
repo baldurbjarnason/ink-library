@@ -57,6 +57,13 @@
     outline: none;
     box-shadow: 0 0 0 3px #68d6d499;
   }
+  @media (max-width: 720px) {
+    .Button {
+      font-size: 0.7rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
 </style>
 
 

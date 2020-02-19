@@ -79,6 +79,11 @@
     background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2213%22%20height%3D%228%22%20viewBox%3D%220%200%2013%208%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M6.5%208L0.00480908%200.5L12.9952%200.500001L6.5%208Z%22%20fill%3D%22%23FFFFFF%22%2F%3E%3C%2Fsvg%3E"),
       linear-gradient(to bottom, transparent 0%, transparent 100%);
   }
+@media (max-width: 720px) {
+  .LabelText {
+    font-size: 0.85rem;
+  }
+}
 </style>
 
 <label class:dark>

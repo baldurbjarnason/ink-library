@@ -92,6 +92,11 @@
   label {
     display: flex;
   }
+@media (max-width: 720px) {
+  .LabelText {
+    font-size: 0.85rem;
+  }
+}
 </style>
   <div class="LabelText">
     <slot></slot>

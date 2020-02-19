@@ -39,6 +39,11 @@
   .dark input::placeholder {
     color: rgba(255,255,255,0.8);
   }
+@media (max-width: 720px) {
+  .LabelText {
+    font-size: 0.85rem;
+  }
+}
 </style>
 
 <label class:dark>

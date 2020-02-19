@@ -198,6 +198,25 @@
       line-height: 1rem;
     }
   }
+
+@media (max-width: 720px) {
+  .NewBox input {
+    font-size: 100%;
+  }
+  .Expander {
+    padding: 0.25rem;
+  }
+  .Expander svg {
+    width: 29px;
+    height: 29px;
+  }
+  .NewBox .MoreItems {
+    max-height: 56vh;
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+    padding-bottom: 1rem;
+  }
+}
 </style>
 
 {#if open}

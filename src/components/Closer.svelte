@@ -66,6 +66,15 @@
     width: 15px;
     height: 15px;
   }
+@media (max-width: 720px) {
+  .Button {
+    padding: 0.25rem;
+  }
+  .Button svg {
+    width: 20px;
+    height: 20px;
+  }
+}
 </style>
 
 
