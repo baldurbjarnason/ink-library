@@ -19,6 +19,8 @@
     body.items = Array.from($selectedItems)
     body.addedCollections = $addedCollections
     body.addedWorkspaces = $addedWorkspaces
+    $addedWorkspaces = []
+    $addedCollections = []
     endSelection()
     try {
       await fetch(target.action, {

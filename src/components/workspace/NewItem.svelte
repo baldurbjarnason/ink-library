@@ -59,6 +59,8 @@
         const body = Object.fromEntries(new URLSearchParams(new FormData(target)).entries())
         body.addedCollections = $addedCollections
         body.addedWorkspaces = $addedWorkspaces
+        $addedWorkspaces = []
+        $addedCollections = []
         await fetch(target.action, {
           method: "POST",
           credentials: "include",
