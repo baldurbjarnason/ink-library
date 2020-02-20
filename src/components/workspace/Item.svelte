@@ -96,6 +96,9 @@
     color: white;
     background-color: var(--workspace-color);
   }
+  .Item.selected a {
+    color: white;
+  }
   @supports(-webkit-appearance: none) {
     input[type="checkbox"] {
       -webkit-appearance: none;

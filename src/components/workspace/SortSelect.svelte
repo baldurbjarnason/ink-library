@@ -10,7 +10,6 @@
     selectedOption = `${$page.query.orderBy}-${$page.query.dir}`
   }
   function sortItems (type) {
-    if (type.includes('added')) return
     let dir
     if (type.includes('asc')) {
       dir = 'asc'
@@ -19,9 +18,8 @@
     }
     const config = Object.assign({}, query, {orderBy: type.split('-')[0], dir})
     const url = `${path}?${new URLSearchParams(config).toString()}`
-    if (query.orderBy !== config.orderBy && config.orderBy !== 'added') {
-      goto(url)
-    } else if (config.orderBy === 'added' && query.dir !== config.dir) {
+    console.log(url)
+    if (query.orderBy !== config.orderBy || query.dir !== config.dir) {
       goto(url)
     }
   }
@@ -31,7 +29,7 @@
     } else if (event.target.value.includes("type")) {
       event.target.style.width = `11ch`
     } else if (event.target.value.includes("modified")) {
-      event.target.style.width = `20ch`
+      event.target.style.width = `23ch`
     } else if (event.target.value.includes("added")) {
       event.target.style.width = `18ch`
     }
@@ -89,8 +87,8 @@
 <label>
 <slot></slot>
 <select name="sort-select" id="sort-select" on:change={changed} bind:this={selectElement}>
+<option value="modified-asc" selected={selectedOption === "modified-asc"}>Date Modified, newest first</option>
+<option value="modified-desc" selected={selectedOption === "modified-desc"}>Date Modified, oldest first</option>
 <option value="title-asc" selected={selectedOption === "title-asc"}>Title, A-Z</option>
 <option value="title-desc" selected={selectedOption === "title-desc"}>Title, Z-A</option>
-<option value="modified-asc" selected={selectedOption === "modified-asc"}>Date Added, oldest first</option>
-<option value="modified-desc" selected={selectedOption === "modified-desc"}>Date Added, newest first</option>
 </select></label>

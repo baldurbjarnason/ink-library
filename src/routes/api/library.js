@@ -11,6 +11,8 @@ export async function get(req, res, next) {
   if (req.query.orderBy === "modified") {
     query.delete('orderBy')
   }
+  query.delete('list-style')
+  query.delete('dir')
   url = `${url}?${query.toString()}`
   const response = await got(url, {
     headers: {
