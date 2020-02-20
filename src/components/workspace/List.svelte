@@ -161,7 +161,7 @@ code {
     <div>&nbsp;</div>
     <div><SortButton {query} type="title" path={$page.path}>Title</SortButton></div>
     <div>Stacks</div>
-    <div><SortButton {query} type="type" path={$page.path}>Type</SortButton></div>
+    <div>Type</div>
     <div><SortButton {query} type="modified" path={$page.path}>Modified</SortButton></div>
     <div>{#if selecting}
       <SmallButton click={() => selecting = false}>Done</SmallButton>

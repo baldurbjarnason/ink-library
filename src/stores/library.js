@@ -21,8 +21,6 @@ export const library = derived([page, refreshDate, searchStore], ([$page, $refre
     query.search = $searchStore
   } else if ($page.query.search) {
     query.search = $page.query.search
-  } else {
-    query.search = ''
   }
 
   let url
