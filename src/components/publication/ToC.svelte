@@ -56,7 +56,7 @@
 
 <div class="ToC">
 {#if $contents.type !== "loading"}
-<h2>{$contents.heading}</h2>
+<h2>{$contents.heading || "Table of Contents"}</h2>
 <ol>
   {#each $contents.children as item}
     <ContentsItem {item} />
