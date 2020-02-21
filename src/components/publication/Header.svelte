@@ -195,11 +195,6 @@
     grid-template-columns: 1rem 1fr 1rem;
     padding: calc(var(--base)*1.5);
   }
-  .Header {
-    position: sticky;
-    top: 0;
-    z-index: -1;
-  }
   h1 {
     margin-top: 1rem;
     font-weight: 600;

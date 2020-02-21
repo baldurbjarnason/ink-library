@@ -1,21 +1,6 @@
 
 <script>
   import {publication, workspaces, page} from '../../stores'
-  let cover = {}
-  $: if ($publication.resources) {
-    cover = $publication.resources.find(resource => resource.rel.indexOf('cover') !== -1)
-    if (!cover) {
-      cover = {
-        href: "/img/placeholder-cover.jpg",
-        rel: ["cover"]
-      }
-    }
-  } else {
-    cover = {
-      href: "/img/placeholder-cover.jpg",
-      rel: ["cover"]
-    }
-  }
   function languages (lang) {
     if (lang.english === "English") {
       return 'English'
@@ -28,13 +13,6 @@
 </script>
 
 <style>
-  .Image {
-    max-width: 100%;
-    height: auto;
-    box-shadow: 3px 3px 10px rgba(192, 192, 192, 0.3);
-    border-radius: 15px;
-    margin: var(--base) 0;
-  }
   .Metadata {
     font-size:  var(--item-font-size);
     margin: 0;
@@ -56,8 +34,7 @@
   }
 </style>
 
-<h2>Information</h2>
-<img src="{cover.href}" alt="Cover for {$publication.name}" class="Image">
+<h2>About</h2>
 <dl class="Metadata">
   {#if $publication.numberOfPages}
     <dt>Pages</dt>

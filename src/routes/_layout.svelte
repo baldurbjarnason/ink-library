@@ -82,7 +82,6 @@
     }
     .grid.publication .content {
       background-color: var(--workspace-color);
-      z-index: -2;
     }
   }
 </style>

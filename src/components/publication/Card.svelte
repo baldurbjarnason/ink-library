@@ -1,6 +1,8 @@
 <script>
 	import { scale } from 'svelte/transition';
   import { elasticInOut } from 'svelte/easing';
+  export let id
+  export let tab
 </script>
 
 <style>
@@ -12,7 +14,12 @@
     padding: calc(var(--base)*1.5) var(--gap);
     box-shadow: 5px 5px 50px rgba(0, 0, 0, 0.05);
     border-radius: 15px;
-    margin: var(--base) 0;
+    position: relative;
+  }
+  .Card::before {
+    content: "";
+    position: absolute;
+    top:-4rem;
   }
   @media (max-width: 720px) {
     .Card {
@@ -23,6 +30,6 @@
 </style>
 
 
-<div class="Card" transition:scale|local="{{delay: 250, duration: 350, easing: elasticInOut }}">
+<div class="Card {tab}Tab" transition:scale|local="{{delay: 250, duration: 350, easing: elasticInOut }}" {id}>
   <slot></slot>
 </div>
