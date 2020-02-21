@@ -5,7 +5,7 @@
   export let type
   export let selected
   let url
-  $: if (query.sortBy === type) {
+  $: if (query.orderBy === type) {
     selected = true;
   } else {
     selected = false
@@ -21,8 +21,8 @@
     }
   }
   function sortQuery (type) {
-    const config = Object.assign({}, query, {sortBy: type})
-    if (query.sortBy === type) {
+    const config = Object.assign({}, query, {orderBy: type})
+    if (query.orderBy === type) {
       config.dir = flipDirection(query.dir)
     } else {
       config.dir = 'asc'

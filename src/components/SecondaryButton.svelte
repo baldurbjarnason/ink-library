@@ -16,7 +16,7 @@
 
     display: inline-block;
 
-    padding: 0.65rem 2.5rem 0.7rem;
+    padding: 0.65rem 2.5rem 0.6rem;
 
     cursor: pointer;
     -webkit-user-select: none;
@@ -56,6 +56,13 @@
   .Button:focus {
     outline: none;
     box-shadow: 0 0 0 3px #68d6d499;
+  }
+  @media (max-width: 720px) {
+    .Button {
+      padding: 0.5rem 1rem;
+      border: none;
+      color: var(--action);
+    }
   }
 </style>
 

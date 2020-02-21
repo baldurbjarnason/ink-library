@@ -22,7 +22,12 @@ export async function post(req, res, next) {
   } else if (req.body.storageId) {
     links = [{
       rel: "alternate",
-      url: `/api/stored-${req.body.storageId}`
+      encodingFormat: "application/json",
+      url: `/api/stored/${req.body.storageId}`
+    }, {
+      rel: "contents",
+      encodingFormat: "application/json",
+      url: `/api/toc/${req.body.storageId}`
     }]
     // if publication add another alternate with a publication manifest media type.
   }
@@ -43,13 +48,33 @@ export async function post(req, res, next) {
         body: JSON.stringify(body)
       }).json();
       // Check workspace, if there is one, add
-      if (req.body.addWorkspace !== 'all') {
+      if (req.body.addWorkspace && req.body.addWorkspace !== 'all') {
         await got.put(`${response.id}tags/${req.body.addWorkspace}`, {
           headers: {
             "content-type": "application/ld+json",
             Authorization: `Bearer ${req.user.token}`
           }
         }).json();
+      }
+      if (req.body.addedWorkspaces && req.body.addedWorkspaces !== 'all') {
+        for (const workspace of req.body.addedWorkspaces) {
+          await got.put(`${response.id}tags/${workspace.id}`, {
+            headers: {
+              "content-type": "application/ld+json",
+              Authorization: `Bearer ${req.user.token}`
+            }
+          }).json();
+        }
+      }
+      if (req.body.addedCollections && req.body.addedCollections.length !== 0) {
+        for (const id of req.body.addedCollections) {
+          await got.put(`${response.id}tags/${id}`, {
+            headers: {
+              "content-type": "application/ld+json",
+              Authorization: `Bearer ${req.user.token}`
+            }
+          }).json();
+        }
       }
       return res.json(response);
     } catch (err) {

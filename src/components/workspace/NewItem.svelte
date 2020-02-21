@@ -7,8 +7,9 @@
   import FileInput from './FileInput.svelte'
   import TypeSelect from './TypeSelect.svelte'
   import Closer from '../Closer.svelte';
+  import AddCollections from './AddCollections.svelte'
   import { afterUpdate, tick } from 'svelte';
-  import {refreshDate, refreshCollections} from '../../stores';
+  import {refreshDate, refreshCollections, collections, addingWorkspace, addedCollections, addedWorkspaces} from '../../stores';
   import {getToken} from '../../getToken'
   export let workspace
   let open = false
@@ -33,7 +34,6 @@
     close();
     const { target } = event;
     const newInput = window.document.getElementById('new-input').value
-    console.log(newInput)
     if (newInput[0] === "#") {
       const value = workspace === 'all' ? newInput.slice(1) : `${workspace}/${newInput.slice(1)}`
       try {
@@ -46,8 +46,7 @@
             "csrf-token": getToken()
             },
           body: JSON.stringify({
-            type: 'Tag',
-            tagType: 'reader:Stack',
+            type: 'stack',
             name: value
           })
         })
@@ -57,15 +56,20 @@
       }
     } else {
       try {
+        const body = Object.fromEntries(new URLSearchParams(new FormData(target)).entries())
+        body.addedCollections = $addedCollections
+        body.addedWorkspaces = $addedWorkspaces
+        $addedWorkspaces = []
+        $addedCollections = []
         await fetch(target.action, {
           method: "POST",
           credentials: "include",
           headers: { 
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
             "Accept": "application/json",
             "csrf-token": getToken()
             },
-          body: new URLSearchParams(new FormData(target))
+          body: JSON.stringify(body)
         })
         $refreshDate = Date.now()
       } catch (err) {
@@ -103,9 +107,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
-  .Wide {
+  /* .Wide {
     grid-column: 1 / -1;
-  }
+  } */
   .NewBox input {
     flex: 1 1 100%;
     font-family: var(--sans-fonts);
@@ -175,6 +179,46 @@
   .Expander.expanded {
     transform: rotate(180deg);
   }
+  @media (max-width: 720px) {
+    .new-button {
+      position: fixed;
+      right: var(--base);
+      bottom: 70px;
+    }
+    .new-button :global(.Button) {
+      box-shadow: 3px 1px 7px rgba(0, 0, 0, 0.2);
+      padding: .65rem;
+      border-radius: 100%;
+      height: 42px;
+      width: 42px;
+    }
+    .NewButtonLabel {
+      display: none;
+    }
+    .NewButtonPlus {
+      font-size: 2rem;
+      line-height: 1rem;
+    }
+  }
+
+@media (max-width: 720px) {
+  .NewBox input {
+    font-size: 100%;
+  }
+  .Expander {
+    padding: 0.25rem;
+  }
+  .Expander svg {
+    width: 29px;
+    height: 29px;
+  }
+  .NewBox .MoreItems {
+    max-height: 55vh;
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+    margin-bottom: 2rem;
+  }
+}
 </style>
 
 {#if open}
@@ -202,8 +246,8 @@
     <div><FileInput dark={true} name="newFile" type="file">Add file:</FileInput></div>
     <div><TypeSelect dark={true}>Select type:</TypeSelect></div>
     <div><AddWorkspace>Add workspace:</AddWorkspace></div>
-    <div class="Wide"><Input placeholder="First Author, Second Author..." dark={true} name="author">Add authors:</Input></div>
-    <div class="Wide"><Input placeholder="First Collection, Second Collection..." dark={true} name="new-collections">Add collection:</Input></div>
+    <div><Input placeholder="First Author, Second Author..." dark={true} name="author">Add authors:</Input></div>
+    <AddCollections dark={true} />
    </div>
 {/if}
 </form>
@@ -211,5 +255,7 @@
 <span></span>
 {:else}
   <span class="new-button" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}"
-    bind:this={newToggle}><Button click={click}>+ New</Button></span>
+    bind:this={newToggle}><Button click={click}><span class="NewButtonPlus">+</span><span class="NewButtonLabel">
+      New
+    </span></Button></span>
 {/if}

@@ -2,13 +2,30 @@
   export let item = {
     tags: []
   }
-  export let selected
+  export let selected = false
+  const spaces = ['Research', 'Public_Scholarships', 'Teaching', 'Personal']
+  function getWorkspace (name) {
+    const space = name.split('/')[0].replace(' ', '_')
+    if (spaces.includes(space)) {
+      return space.toLowerCase()
+    } else {
+      return ''
+    }
+  }
+  function getName (name) {
+    const space = name.split('/')[0].replace(' ', '_')
+    if (spaces.includes(space)) {
+      return name.replace(space + '/', '')
+    } else {
+      return name
+    }
+  }
 </script>
 
 <style>
 .hash {
   font-size:  var(--item-font-size);
-  color: white;
+  color: black;
 }
 .hash.teaching {
   color: var(--teaching-workspace);
@@ -16,7 +33,7 @@
 .hash.personal {
   color: var(--personal-workspace);
 }
-.hash.public {
+.hash.public_scholarships {
   color: var(--public-workspace);
 }
 .hash.research {
@@ -54,10 +71,10 @@ li a:hover .linkText {
 </style>
 
 <ul>
-{#each item.tags.filter(tag => tag.tagType !== 'mode') as tag}
+{#each item.tags.filter(tag => tag.type !== 'workspace') as tag}
 <!-- We need to figure out a way to check the workspace of a tag -->
-  <li class:selected><a href="/library/all/{encodeURIComponent(tag.name)}"><span class="hash">#</span> <span class="linkText">
-    {tag.name}
+  <li class:selected><a href="/library/all/{encodeURIComponent(tag.name)}"><span class="hash {getWorkspace(tag.name)}">#</span> <span class="linkText">
+    {getName(tag.name)}
   </span></a></li>
 {/each}
 </ul>

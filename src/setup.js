@@ -88,6 +88,11 @@ export function setup(sapper, options = {}) {
       compression({ threshold: 0 }),
       sirv("static", { dev })
     );
+  } else {
+    app.use(
+      compression({ threshold: 0 }),
+      sirv("static")
+    );
   }
   app.get("/access", (req, res, next) => {
     const html = accessTemplate.replace('{RETURN_TO}', req.query.returnTo || '%2F')

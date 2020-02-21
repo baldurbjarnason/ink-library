@@ -1,13 +1,14 @@
 {
   "name": "ink-library",
   "version": "0.1.0",
+  "main": "index.js",
   "description": "The ink library frontend",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "SECRETORKEY=kick-opossum-snowiness ISSUER=auth.reader-api.test API_SERVER=http://localhost:8080/ sapper dev",
     "build": "sapper build --legacy && snowpack --dest static/web_modules/ --optimize",
     "export": "sapper export --legacy",
-    "start": "node __sapper__/build",
+    "start": "node index.js",
     "snowpack": "snowpack --dest static/web_modules/ --babel",
     "lint": "healthier && prettier --write --plugin-search-dir=. '**/*.{js,json,css,yml,svelte}'",
     "pretest": "npm run lint",
@@ -15,7 +16,8 @@
     "snapshots": "TAP_SNAPSHOT=1 npm run test && prettier --write --plugin-search-dir=. '**/*.{js,json,css,yml,svelte}'",
     "test": "jest src",
     "test:watch": "npm run test -- --watch",
-    "deploy-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs10 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize"
+    "deploy-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs10 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize",
+    "deploy-dev": "npm run build && gcloud app deploy app-dev.yaml --project fb-ink-dev"
   },
   "snowpack": {
     "webDependencies": [
@@ -64,6 +66,7 @@
     "got": "^10.0.1",
     "inert-polyfill": "^0.2.5",
     "ink-engine": "git+https://github.com/RebusFoundation/ink-engine.git",
+    "iso-639-1": "^2.1.0",
     "jsonwebtoken": "^8.5.1",
     "mime": "^2.4.4",
     "passport": "^0.4.1",

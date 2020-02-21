@@ -1,6 +1,9 @@
 <script>
   // your script goes here
-  import {workspaces} from '../../stores'
+  import {workspaces, addingWorkspace} from '../../stores'
+  function change (event) {
+    $addingWorkspace = event.target.dataset.name
+  }
 </script>
 
 <style>
@@ -89,14 +92,19 @@
   label {
     display: flex;
   }
+@media (max-width: 720px) {
+  .LabelText {
+    font-size: 0.85rem;
+  }
+}
 </style>
   <div class="LabelText">
     <slot></slot>
   </div>
 <div class="Checks">
-  <label><span class="visually-hidden">No Workspace</span><input type="radio" class="All" value="all" name="addWorkspace" checked></label>
-  <label><span class="visually-hidden">Research</span><input type="radio" class="Research" value="{$workspaces.find(space => space.name === 'Research').id}" name="addWorkspace"></label>
-  <label><span class="visually-hidden">Teaching</span><input type="radio" class="Teaching" value="{$workspaces.find(space => space.name === 'Teaching').id}" name="addWorkspace"></label>
-  <label><span class="visually-hidden">Public</span><input type="radio" class="Public" value="{$workspaces.find(space => space.name === 'Public Scholarships').id}" name="addWorkspace"></label>
-  <label><span class="visually-hidden">Personal</span><input type="radio" class="Personal" value="{$workspaces.find(space => space.name === 'Personal').id}" name="addWorkspace"></label>
+  <label><span class="visually-hidden">No Workspace</span><input type="radio" class="All" value="all" name="addWorkspace" checked data-name="all" on:change={change}></label>
+  <label><span class="visually-hidden">Research</span><input type="radio" class="Research" value="{$workspaces.find(space => space.name === 'Research').id}" name="addWorkspace" data-name="Research" on:change={change}></label>
+  <label><span class="visually-hidden">Teaching</span><input type="radio" class="Teaching" value="{$workspaces.find(space => space.name === 'Teaching').id}" name="addWorkspace" data-name="Teaching" on:change={change}></label>
+  <label><span class="visually-hidden">Public</span><input type="radio" class="Public" value="{$workspaces.find(space => space.name === 'Public Scholarships').id}" name="addWorkspace" data-name="Public Scholarships" on:change={change}></label>
+  <label><span class="visually-hidden">Personal</span><input type="radio" class="Personal" value="{$workspaces.find(space => space.name === 'Personal').id}" name="addWorkspace" data-name="Personal" on:change={change}></label>
 </div>

@@ -6,21 +6,21 @@ export const refreshDate = writable(Date.now())
 export const searchStore = writable()
 
 export const library = derived([page, refreshDate, searchStore], ([$page, $refreshDate, $searchStore], set) => {
+  if (!process.browser) return
+  if (!$page.path || !$page.path.startsWith('/library')) return
+  if ($page.query.returnTo) return
   set({type: 'loading', items: []})
-  if (!process.browser || !$page.path || !$page.path.startsWith('/library')) return
   const query = Object.assign({}, $page.query)
   if ($page.params.collection && $page.params.collection !== "all") {
     query.stack = $page.params.collection
   } else if ($page.params.workspace && $page.params.workspace !== 'all') {
-    query.workspace = $page.params.workspace
+    query.workspace = $page.params.workspace.replace('_', ' ')
   }
   
   if ($searchStore) {
     query.search = $searchStore
   } else if ($page.query.search) {
     query.search = $page.query.search
-  } else {
-    query.search = ''
   }
 
   let url
@@ -41,4 +41,4 @@ export const library = derived([page, refreshDate, searchStore], ([$page, $refre
       console.error(err)
     })
 
-})
+}, {type: 'loading', items: []})

@@ -136,6 +136,11 @@
       box-shadow: 0 0 0 6px #f9f9f9, 0 0 0 4px #eee, 0 0 0 2px #ccc;
     }
   }
+@media (max-width: 720px) {
+  .LabelText {
+    font-size: 0.85rem;
+  }
+}
 </style>
 <!-- This needs to react when changed and set the upload text to the file name. And when a file is selected it needs to fetch an upload url and upload the file. Once this is done we save the upload file url and the content type to hidden inputs.
 

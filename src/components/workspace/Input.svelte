@@ -3,6 +3,8 @@
   export let placeholder = ""
   export let dark = false
   export let type = "text"
+  export let list = false
+  export let change = () => {}
 </script>
 
 <style>
@@ -37,10 +39,15 @@
   .dark input::placeholder {
     color: rgba(255,255,255,0.8);
   }
+@media (max-width: 720px) {
+  .LabelText {
+    font-size: 0.85rem;
+  }
+}
 </style>
 
 <label class:dark>
 <div class="LabelText">
   <slot></slot>
 </div>
-<input {type} name={name} id="input-{name}" {placeholder} autocomplete="off"></label>
+<input {type} name={name} id="input-{name}" {placeholder} autocomplete="off" {list} on:change={change}></label>

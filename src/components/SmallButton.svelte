@@ -10,7 +10,7 @@
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
-    font-size: 0.6rem;
+    font-size: var(--item-font-size);
     flex: 0 1 auto;
     line-height: 1;
 
@@ -27,7 +27,6 @@
     white-space: nowrap;
     text-decoration: none;
     font-weight: 600;
-    text-transform: uppercase;
     color: white;
     border-radius: 5px;
     -ms-touch-action: manipulation;
@@ -38,7 +37,10 @@
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: 1px solid var(--workspace-color);
     background-color: white;
-    color: var(--workspace-color);
+    color: var(--action);
+    padding: 0;
+    border: none;
+    background-color: transparent;
   }
 
   .Button:hover,
@@ -46,20 +48,16 @@
   .Button:link:visited:hover,
   .Button:visited:hover,
   .Button:link:visited:hover {
-    color: white !important;
-    background-color: var(--rc-dark);
-    box-shadow: none;
-    text-decoration: none;
+    color: var(--hover) !important;
   }
 
   .Button:active,
   .Button:link:active {
-    background-color: var(--active);
+    color: var(--active);
   }
-  .Button:focus {
-    outline: none;
+  /* .Button:focus {
     box-shadow: 0 0 0 3px #68d6d499;
-  }
+  } */
 </style>
 
 

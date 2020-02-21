@@ -7,6 +7,7 @@
   export let segment;
   let query
   let params
+  let publication = false
   $: if ($page) {
     pageStore.set($page)
     query = $page.query;
@@ -16,6 +17,17 @@
     } else {
       params.segment = 'front'
     }
+  }
+  $: if ($page.params && $page.params.publicationId) {
+      publication = true
+    } else {
+      publication = false
+    }
+  let menu = true
+  $: if (segment === 'library' && $page.query && $page.query.returnTo) {
+    menu = true
+  } else {
+    menu = false
   }
 </script>
 
@@ -36,20 +48,41 @@
     grid-template-columns: calc(var(--base) * 4) calc(var(--base) * 14) 1fr;
     min-height: 100vh;
   }
+  @media (max-width: 720px) {
+    .grid {
+      display: flex;
+      flex-direction: column;
+    }
+  }
   :root {
     --workspace-color: var(--all-workspace);
   }
-  .content.personal {
+  .content.Personal {
     --workspace-color: var(--personal-workspace);
   }
-  .content.public {
+  .content.Public_Scholarships {
     --workspace-color: var(--public-workspace);
   }
-  .content.teaching {
+  .content.Teaching {
     --workspace-color: var(--teaching-workspace);
   }
-  .content.research {
+  .content.Research {
     --workspace-color: var(--research-workspace);
+  }
+  .content.publication {
+    grid-column: 2 / -1;
+  }
+  @media (max-width: 720px) {
+    .grid {
+      display: flex;
+      flex-direction: column;
+    }
+    .content {
+      padding: 0;
+    }
+    .grid.publication .content {
+      background-color: var(--workspace-color);
+    }
   }
 </style>
 
@@ -59,11 +92,13 @@
     <meta name="csrftoken" content={$session.csrfToken}>
 </svelte:head>
 
-<main class="grid">
-<Nav {params} />
-<Sidebar {params} />
+<main class="grid" class:publication>
+{#if !menu}
+  <Nav {params} />
+  <Sidebar {params} />
+{/if}
 
-<div class="content {params.workspace}">
+<div class="content {params.workspace}" class:publication>
 	<slot></slot>
 </div>
 </main>

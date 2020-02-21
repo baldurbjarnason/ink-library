@@ -86,6 +86,11 @@
     display: flex;
     padding: 0 0 0 var(--base);
   }
+@media (max-width: 720px) {
+  .Toggles {
+    display: none;
+  }
+}
 </style>
 
 <!-- markup (zero or more items) goes here -->

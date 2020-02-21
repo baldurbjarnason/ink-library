@@ -9,6 +9,7 @@
 import got from "got";
 
 export async function post(req, res, next) {
+  if (!req.body.items) return
   if (req.body.action === "delete") {
     const ids = req.body.items.map(item => item.id)
     let responses = []
@@ -47,6 +48,22 @@ export async function post(req, res, next) {
         if (req.body["chooseWorkspace-personal"]) {
           const response = await addWorkspace(req.body["chooseWorkspace-personal"], id, req.user.token);
           responses = responses.concat(response)
+        }
+        if (req.body.addedCollections) {
+          for (const tag of req.body.addedCollections) {
+            const response = await addWorkspace(tag, id, req.user.token);
+            responses = responses.concat(response)
+          }
+        }
+        if (req.body.addedWorkspaces && req.body.addedWorkspaces !== 'all') {
+          for (const workspace of req.body.addedWorkspaces) {
+            await got.put(`${id}tags/${workspace.id}`, {
+              headers: {
+                "content-type": "application/ld+json",
+                Authorization: `Bearer ${req.user.token}`
+              }
+            }).json();
+          }
         }
       } catch (err) {
         console.log(err)

@@ -9,7 +9,9 @@
   let tags
   let workspace
   $: if (params && $collections) {
-    if (params.workspace) {
+    if (params.publicationId) {
+      workspace = null
+    } else if (params.workspace) {
       workspace = params.workspace
     } else if (params.segment === 'library') {
       workspace = 'all'
@@ -23,7 +25,7 @@
       tags = $collections
     }
   }
-  const spaces = ['Research', 'Public_Scholarship', 'Teaching', 'Personal']
+  const spaces = ['Research', 'Public_Scholarships', 'Teaching', 'Personal']
   function getWorkspace (name) {
     const space = name.split('/')[0].replace(' ', '_')
     if (spaces.includes(space)) {
@@ -80,7 +82,7 @@
 .Sidebar.all .hash.personal {
   color: var(--personal-workspace);
 }
-.Sidebar.all .hash.public_scholarship {
+.Sidebar.all .hash.public_scholarships {
   color: var(--public-workspace);
 }
 .Sidebar.all .hash.research {
@@ -200,6 +202,11 @@ h2 {
   top: 0;
   max-height: 100vh;
 }
+@media (max-width: 720px) {
+  .workspaces {
+    display: none;
+  }
+}
 </style>
 
 {#if workspace}
@@ -221,9 +228,9 @@ h2 {
   {#if workspace === 'Teaching'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}<span class="visually-hidden">Teaching</span></a></li>
-  <li><a href="/library/Public+Scholarship/all" class="public-tab" class:selected={workspace === 'Public Scholarship'}>
+  <li><a href="/library/Public_Scholarships/all" class="public-tab" class:selected={workspace === 'Public_Scholarships'}>
 
-  {#if workspace === 'Public Scholarship'}
+  {#if workspace === 'Public_Scholarships'}
     <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
   {/if}
   <span class="visually-hidden">Public scholarships</span></a></li>
@@ -234,13 +241,13 @@ h2 {
   {/if}
   <span class="visually-hidden">Personal</span></a></li>
 </ul>
-<div class="Sidebar {workspace.split(' ')[0].toLowerCase()}">
+<div class="Sidebar {workspace.split('_')[0].toLowerCase()}">
 <h2>{#if workspace === 'all'}
   All workspaces
   {:else if workspace === "Research"}
     Research
-  {:else if workspace === "Public Scholarship"}
-    Public scholarship
+  {:else if workspace === "Public_Scholarships"}
+    Public scholarships
   {:else if workspace === "Teaching"}
     Teaching
   {:else if workspace === "Personal"}
@@ -259,6 +266,4 @@ h2 {
   </ul>
 </div>
 </div>
-{:else}
-   <div></div>
 {/if}

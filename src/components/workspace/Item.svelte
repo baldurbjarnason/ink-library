@@ -96,6 +96,9 @@
     color: white;
     background-color: var(--workspace-color);
   }
+  .Item.selected a {
+    color: white;
+  }
   @supports(-webkit-appearance: none) {
     input[type="checkbox"] {
       -webkit-appearance: none;
@@ -128,11 +131,31 @@
       background-color: white;
     }
 }
+.Item a {
+  color: black;
+  text-decoration: none;
+}
+.Item a:hover {
+  color: var(--hover);
+  text-decoration: underline;
+}
+@media (max-width: 720px) {
+  .Item {
+    min-width: auto;
+    grid-template-columns: 60px 1fr 1rem;
+  }
+  .Stacks, .ItemEntry {
+    display: none;
+  }
+  .ItemEntry.Last {
+    display: flex;
+  }
+}
 </style>
 
 <div class="Item" class:selecting class:selected>
   <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
-  <div class="Name"><span class="title">{item.name}</span>
+  <div class="Name"><a href="{window.location.pathname}/{item.shortId}" class="title">{item.name}</a>
   <div class="Authors">
   {#each item.author as author, i}
      <span class="Author">{author.name}{#if i !== item.author.length - 1}, {/if}</span>
@@ -144,9 +167,14 @@
   </div>
   <div class="ItemEntry"><span>{item.type}</span></div>
   <div class="ItemEntry"><span>{new Date(item.updated).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</span></div>
-  <div class="ItemEntry">{#if selecting}
+  <div class="ItemEntry Last">{#if selecting}
     <label><span class="visually-hidden">Select this item</span><input type="checkbox" bind:checked={selected}></label>
   {:else}
-    <span><ReadButton {item} /></span>
+    <span><a href="{window.location.pathname}/{item.shortId}" class="Arrow">
+      <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4.94971" y="6.46447" width="7" height="2" rx="0.999999" transform="rotate(-135 4.94971 6.46447)" fill="#3988C0"/>
+  <rect y="8.58579" width="7" height="2" rx="0.999999" transform="rotate(-45 0 8.58579)" fill="#3988C0"/>
+  </svg>
+    </a></span>
   {/if}</div>
 </div>
