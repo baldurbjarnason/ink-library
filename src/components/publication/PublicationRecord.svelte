@@ -28,12 +28,14 @@
   /* your styles go here */
   .Publication {
     --gap: var(--base);
+    --item-font-size: 0.8rem;
+    --reader-font-size: 0.8rem;
+  }
+  .Publication .Wrapper {
     display: grid;
     grid-template-columns: minmax(0,.5fr) 1fr .6fr;
     grid-row-gap: var(--base);
     grid-column-gap: var(--gap);
-    --item-font-size: 0.8rem;
-    --reader-font-size: 0.8rem;
   }
   /* @media (max-width: 1100px) {
     .Publication {
@@ -56,12 +58,15 @@
     display: none;
   }
   @media (max-width: 720px) {
-    .Publication {
+    .Publication .Wrapper {
       grid-template-columns: 1fr;
       grid-row-gap: 0;
+    }
+    .Publication {
       background-color: white;
       margin-top: 1rem;
       border-radius: 40px 40px 0px 0px;
+      z-index: 1;
     }
     .MobileTabs {
       display: flex;
@@ -113,41 +118,43 @@
      <span class="Border" out:send="{{key: 'mobile-tabs-marker'}}" in:receive="{{key: 'mobile-tabs-marker'}}"></span>
   {/if}</a></li>
 </ul>
-
-  <div class="LeftBox">
-    <Card>
-      <Metadata />
-    </Card>
-    <Card><h2>Keywords</h2>
-    <div class="Keywords">
-    {#each $publication.keywords as keyword}
-       <Keyword {keyword} />
-    {/each}
+<div class="Wrapper">
+  
+    <div class="LeftBox">
+      <Card>
+        <Metadata />
+      </Card>
+      <Card><h2>Keywords</h2>
+      <div class="Keywords">
+      {#each $publication.keywords as keyword}
+         <Keyword {keyword} />
+      {/each}
+      </div>
+      </Card>
     </div>
-    </Card>
-  </div>
-
-  <div class="CenterBox">
-    <Card><h2>Description</h2>
-    
-    <div class="Description">
-      <p>{$publication.description || ""}</p>
+  
+    <div class="CenterBox">
+      <Card><h2>Description</h2>
+      
+      <div class="Description">
+        <p>{$publication.description || ""}</p>
+      </div>
+      
+      </Card>
+      <Card>
+        <ToC />
+      </Card>
     </div>
-    
-    </Card>
-    <Card>
-      <ToC />
-    </Card>
-  </div>
-  <div class="RightBox">
-    <Card><h2>Stacks</h2>
-    
-    <ItemStacks item={$publication} />
-    </Card><Card><h2>Notes</h2>
-    {#each $publication.replies as note}
-      <Note {note} />
-    {/each}
-    </Card>
-  </div>
+    <div class="RightBox">
+      <Card><h2>Stacks</h2>
+      
+      <ItemStacks item={$publication} />
+      </Card><Card><h2>Notes</h2>
+      {#each $publication.replies as note}
+        <Note {note} />
+      {/each}
+      </Card>
+    </div>
+</div>
 {/if}
 </div>
