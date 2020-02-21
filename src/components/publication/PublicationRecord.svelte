@@ -1,5 +1,5 @@
 <script>
-  import {onMount} from 'svelte';
+  import {onMount, afterUpdate} from 'svelte';
   import {publication, workspaces, page} from '../../stores'
   import {send, receive} from './crossfade.js';
 	import { fly } from 'svelte/transition';
@@ -14,15 +14,22 @@
   import Cover from './Cover.svelte';
   import Note from './Note.svelte';
   import ToC from './ToC.svelte';
-  let hash = "#About"
+  let hash = "#Description"
+  let scroll = false
   onMount(() => {
-    hash = window.location.hash || "#About"
+    hash = window.location.hash || "#Description"
     console.log(hash)
   });
   function hashchange () {
     hash = window.location.hash
-    console.log(hash)
+    scroll = true
   }
+  afterUpdate(() => {
+    const element = document.querySelector(hash)
+    if (element && scroll) {
+      element.scrollIntoView({behavior: "smooth"})
+    }
+  });
 </script>
 <!-- What we need here is a grid with a top bar followed by a three column central view (middle being the main). Top bar has a tab switcher between workspaces and a return to workspace link. Ignore related to begin with. -->
 <style>
@@ -44,23 +51,23 @@
                          ". ToC Notes"
                          ". ToC Notes";
   }
-  :global(#About) {
+  :global(#AboutCard) {
     grid-area: About;
   }
-  :global(#Description) {
+  :global(#DescriptionCard) {
     grid-area: Description;
   }
-  :global(#Stacks) {
+  :global(#StacksCard) {
     grid-area: Stacks;
   }
-  :global(#ToC) {
+  :global(#ToCCard) {
     grid-area: ToC;
     height: min-content;
   }
-  :global(#Keywords) {
+  :global(#KeywordsCard) {
     grid-area: Keywords;
   }
-  :global(#Notes) {
+  :global(#NotesCard) {
     grid-area: Notes;
     height: min-content;
   }
@@ -84,14 +91,14 @@
   .MobileTabs {
     display: none;
   }
-  :global(#Description .Cover) {
+  :global(#DescriptionCard .Cover) {
     display: none;
   }
   @media (max-width: 720px) {
-    :global(#About .Cover) {
+    :global(#AboutCard .Cover) {
       display: none;
     }
-    :global(#Description .Cover) {
+    :global(#DescriptionCard .Cover) {
       display: block;
     }
     .Publication .Wrapper {
@@ -143,7 +150,7 @@
     .Publication .Wrapper :global(.Card) {
       display: none;
     }
-    .Publication.AboutTabSelected :global(.AboutTab), .Publication.ToCTabSelected :global(.ToCTab), .Publication.StacksTabSelected :global(.StacksTab), .Publication.NotesTabSelected :global(.NotesTab)   {
+    .Publication.DescriptionTabSelected :global(.AboutTab), .Publication.ToCTabSelected :global(.ToCTab), .Publication.StacksTabSelected :global(.StacksTab), .Publication.NotesTabSelected :global(.NotesTab)   {
       display: flex;
     }
   }
@@ -153,8 +160,8 @@
 <div class="Publication {hash.replace('#', '')}TabSelected">
 {#if $publication.type !== "loading"}
 <ul class="MobileTabs">
-  <li><a href="{$page.path}#About" class:selected={hash === "#About"}>About
-  {#if hash === "#About"}
+  <li><a href="{$page.path}#Description" class:selected={hash === "#Description"}>About
+  {#if hash === "#Description"}
      <span class="Border" out:send="{{key: 'mobile-tabs-marker'}}" in:receive="{{key: 'mobile-tabs-marker'}}"></span>
   {/if}
   </a></li>
