@@ -16,7 +16,8 @@
     border-radius: 15px;
     position: relative;
   }
-  .Card::before {
+  .Target {
+    display: block;
     content: "";
     position: absolute;
     top:-4rem;
@@ -30,6 +31,7 @@
 </style>
 
 
-<div class="Card {tab}Tab" transition:scale|local="{{delay: 250, duration: 350, easing: elasticInOut }}" {id}>
+<div class="Card {tab}Tab" transition:scale|local="{{delay: 250, duration: 350, easing: elasticInOut }}"  id="{id}Card">
+<span class="Target" {id}></span>
   <slot></slot>
 </div>
