@@ -4,7 +4,7 @@
   function languages (lang) {
     if (lang.english === "English") {
       return 'English'
-    } if (!lang.english && !lang.native) {
+    } if (!lang.english && !lang.native && lang.code) {
       return lang.code
     } else {
       return [lang.native, lang.english].filter(item => item).join(' / ')
@@ -68,6 +68,8 @@
   {/if}
   {#each $publication._inLanguage as language}
     <dd>{languages(language)}</dd>
+    {:else}
+      Unknown
   {/each}
 
   {#if $publication.author && $publication.author.length === 1}
