@@ -2,13 +2,15 @@
 import {page} from './page'
 import { derived, writable } from 'svelte/store';
 
-export const refreshPublication = writable(Date.now())
+export const refreshPublication = writable({id: null, time: Date.now()})
 
 const publicationId = derived(page, ($page) => $page.params.publicationId)
 
 export const publication = derived([publicationId, refreshPublication], ([$publicationId, $refreshPublication], set) => {
-  set({type: 'loading', items: [], 
-  tags: []})
+  if (!$refreshPublication.id || $refreshPublication.id !== $publicationId) {
+    set({type: 'loading', items: [], 
+    tags: [], keywords: [], replies: []})
+  }
   if (!process.browser || !$publicationId) return
   const url = `/api/publication/${$publicationId}`
   return window.fetch(url)
@@ -25,7 +27,6 @@ export const publication = derived([publicationId, refreshPublication], ([$publi
 })
 
 export const contents = derived(publication, ($publication, set) => {
-  set({type: 'loading', children: []})
   if (!process.browser || !$publication.links) return
   const contentsLink = $publication.links.find(link => link.rel === "contents")
   if (!contentsLink) return
@@ -49,4 +50,4 @@ export const contents = derived(publication, ($publication, set) => {
       set({type: 'failed'})
       console.error(err)
     })
-})
+}, {type: 'loading', children: []})
