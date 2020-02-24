@@ -35,8 +35,8 @@
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: 1px solid currentColor;
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: calc(var(--base)*1.25);
+    right: var(--gap);
   }
   .Button:hover {
     color: var(--hover);

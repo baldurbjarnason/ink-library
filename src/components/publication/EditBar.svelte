@@ -47,8 +47,9 @@
   .EditBar {
     display: flex;
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+
+    top: calc(var(--base)*1.25);
+    right: var(--gap);
     width: min-content;
     justify-content: space-between;
   }
