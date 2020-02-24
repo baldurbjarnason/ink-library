@@ -32,7 +32,15 @@ export const contents = derived(publication, ($publication, set) => {
   const url = contentsLink.url
   return window.fetch(url)
     .then(res => {
-      return res.json()
+      if (res.ok) {
+        return res.json()
+      } else {
+        return {
+          type: 404,
+          heading: "",
+          children: []
+        }
+      }
     })
     .then(contents => {
       set(contents)
