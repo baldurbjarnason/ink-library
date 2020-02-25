@@ -37,12 +37,17 @@
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: 1px solid transparent;
     margin-left: 1rem;
+    background-color: var(--workspace-color);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    text-transform: uppercase;
+    font-weight: 400;
   }
   .Button:hover {
-    color: var(--hover);
+    background-color: var(--hover);
   }
   .Button:active {
-    color: var(--active);
+    background-color: var(--active);
   }
   .EditBar {
     display: flex;
@@ -57,9 +62,5 @@
 
 <div class="EditBar">
 <SmallButton click={cancel}>Cancel</SmallButton>
-<button class="Button" aria-label="{label}" type="button" on:click={save}>
-  <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect y="0.500031" width="24" height="24" rx="5" fill="currentColor"/>
-<path d="M16.1667 5H6.16667C5.25 5 4.5 5.75 4.5 6.66667V18.3333C4.5 19.25 5.25 20 6.16667 20H17.8333C18.75 20 19.5 19.25 19.5 18.3333V8.33333L16.1667 5ZM12 18.3333C10.625 18.3333 9.5 17.2083 9.5 15.8333C9.5 14.4583 10.625 13.3333 12 13.3333C13.375 13.3333 14.5 14.4583 14.5 15.8333C14.5 17.2083 13.375 18.3333 12 18.3333ZM14.5 10H6.16667V6.66667H14.5V10Z" fill="white"/>
-</svg>
+<button class="Button" aria-label="{label}" type="button" on:click={save}>Save
 </button></div>

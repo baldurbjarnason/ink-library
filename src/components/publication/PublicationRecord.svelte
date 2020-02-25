@@ -24,7 +24,6 @@
   let scroll = false
   onMount(() => {
     hash = window.location.hash || "#Description"
-    console.log(hash)
   });
   function hashchange () {
     hash = window.location.hash
