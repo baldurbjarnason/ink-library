@@ -2,14 +2,11 @@
 <script>
   import {publication, workspaces, page} from '../../stores'
   export let form
-  function languages (lang) {
-    if (lang.english === "English") {
-      return 'English'
-    } if (!lang.english && !lang.native && lang.code) {
-      return lang.code
-    } else {
-      return [lang.native, lang.english].filter(item => item).join(' / ')
-    }
+  let languages
+  if ($publication.inLanguage) {
+    languages = [].concat($publication.inLanguage)
+  } else {
+    languages = []
   }
   function submit (event) {
     event.preventDefault();
@@ -21,6 +18,13 @@
     'Hardcover',
     'Paperback'
   ]
+  function validateLang (event) {
+    const valid = event.target.checkValidity()
+    if (!valid) {
+      event.target.setCustomValidity("We don't recognise that as a language, sorry")
+      event.target.reportValidity()
+    }
+  }
 </script>
 
 <style>
@@ -73,11 +77,10 @@
      {:else if  $publication._inLanguage}
       <label>Languages</label>
   {/if}
-  {#each $publication._inLanguage as language}
-    <dd>{languages(language)}</dd>
-    {:else}
-      Unknown
+  {#each languages as language, index}
+    <input name="inLanguage[{index}]" type="text" value="{language}">
   {/each}
+    <input name="inLanguage[{languages.length + 1}]" type="text" minlength="2" maxlength="2" pattern="ab|aa|af|ak|sq|am|ar|an|hy|as|av|ae|ay|az|bm|ba|eu|be|bn|bh|bi|bs|br|bg|my|ca|km|ch|ce|ny|zh|cu|cv|kw|co|cr|hr|cs|da|dv|nl|dz|en|eo|et|ee|fo|fj|fi|fr|ff|gd|gl|lg|ka|de|ki|el|kl|gn|gu|ht|ha|he|hz|hi|ho|hu|is|io|ig|id|ia|ie|iu|ik|ga|it|ja|jv|kn|kr|ks|kk|rw|kv|kg|ko|kj|ku|ky|lo|la|lv|lb|li|ln|lt|lu|mk|mg|ms|ml|mt|gv|mi|mr|mh|ro|mn|na|nv|nd|ng|ne|se|no|nb|nn|ii|oc|oj|or|om|os|pi|pa|ps|fa|pl|pt|qu|rm|rn|ru|sm|sg|sa|sc|sr|sn|sd|si|sk|sl|so|st|nr|es|su|sw|ss|sv|tl|ty|tg|ta|tt|te|th|bo|ti|to|ts|tn|tr|tk|tw|ug|uk|ur|uz|ve|vi|vo|wa|cy|fy|wo|xh|yi|yo|za|zu" on:change={validateLang}>
 
   {#if $publication.author && $publication.author.length === 1}
       <label>Author</label>

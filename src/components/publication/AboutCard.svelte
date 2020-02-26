@@ -11,11 +11,15 @@
     const entries = Array.from(new URLSearchParams(new FormData(formElement)).entries()).filter(entry => entry[1])
     if (entries.length !== 0) {
       const body = Object.fromEntries(entries)
+      let inLanguage = []
       for (const prop in body) {
         if (prop === 'wordCount' || prop === 'numberOfPages') {
           body[prop] = parseInt(body[prop], 10)
+        } else if (prop.startsWith('inLanguage')) {
+          inLanguage = inLanguage.concat(body[prop])
         }
       }
+      body.inLanguage = inLanguage
       const pub = Object.assign({}, $publication, body)
       await window.fetch(`/api/publication/${$publication.shortId}`, {
         method: 'PUT',
