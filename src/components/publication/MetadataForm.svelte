@@ -73,71 +73,37 @@
 {#if $publication.type !== 'loading'}
 
   {#if $publication._inLanguage && $publication._inLanguage.length === 1}
-      <label>Language</label>
+      <label for="language-input">Language</label>
      {:else if  $publication._inLanguage}
-      <label>Languages</label>
+      <label for="language-input">Languages</label>
   {/if}
   {#each languages as language, index}
-    <input name="inLanguage[{index}]" type="text" value="{language}">
-  {/each}
-    <input name="inLanguage[{languages.length + 1}]" type="text" minlength="2" maxlength="2" pattern="ab|aa|af|ak|sq|am|ar|an|hy|as|av|ae|ay|az|bm|ba|eu|be|bn|bh|bi|bs|br|bg|my|ca|km|ch|ce|ny|zh|cu|cv|kw|co|cr|hr|cs|da|dv|nl|dz|en|eo|et|ee|fo|fj|fi|fr|ff|gd|gl|lg|ka|de|ki|el|kl|gn|gu|ht|ha|he|hz|hi|ho|hu|is|io|ig|id|ia|ie|iu|ik|ga|it|ja|jv|kn|kr|ks|kk|rw|kv|kg|ko|kj|ku|ky|lo|la|lv|lb|li|ln|lt|lu|mk|mg|ms|ml|mt|gv|mi|mr|mh|ro|mn|na|nv|nd|ng|ne|se|no|nb|nn|ii|oc|oj|or|om|os|pi|pa|ps|fa|pl|pt|qu|rm|rn|ru|sm|sg|sa|sc|sr|sn|sd|si|sk|sl|so|st|nr|es|su|sw|ss|sv|tl|ty|tg|ta|tt|te|th|bo|ti|to|ts|tn|tr|tk|tw|ug|uk|ur|uz|ve|vi|vo|wa|cy|fy|wo|xh|yi|yo|za|zu" on:change={validateLang}>
-
-  {#if $publication.author && $publication.author.length === 1}
-      <label>Author</label>
-     {:else if  $publication.author && $publication.author.length !== 0}
-      <label>Authors</label>
-  {/if}
-  {#each $publication.author as author}
-    <dd>{author.name}</dd>
-  {/each}
-
-  {#if $publication.editor && $publication.editor.length === 1}
-      <label>Editor</label>
-     {:else if  $publication.editor && $publication.editor.length !== 0}
-      <label>Editors</label>
-  {/if}
-  {#each $publication.editor as editor}
-    <dd>{editor.name}</dd>
+    <input id="language-input" name="inLanguage[{index}]" type="text" value="{language}" minlength="2" maxlength="2" pattern="ab|aa|af|ak|sq|am|ar|an|hy|as|av|ae|ay|az|bm|ba|eu|be|bn|bh|bi|bs|br|bg|my|ca|km|ch|ce|ny|zh|cu|cv|kw|co|cr|hr|cs|da|dv|nl|dz|en|eo|et|ee|fo|fj|fi|fr|ff|gd|gl|lg|ka|de|ki|el|kl|gn|gu|ht|ha|he|hz|hi|ho|hu|is|io|ig|id|ia|ie|iu|ik|ga|it|ja|jv|kn|kr|ks|kk|rw|kv|kg|ko|kj|ku|ky|lo|la|lv|lb|li|ln|lt|lu|mk|mg|ms|ml|mt|gv|mi|mr|mh|ro|mn|na|nv|nd|ng|ne|se|no|nb|nn|ii|oc|oj|or|om|os|pi|pa|ps|fa|pl|pt|qu|rm|rn|ru|sm|sg|sa|sc|sr|sn|sd|si|sk|sl|so|st|nr|es|su|sw|ss|sv|tl|ty|tg|ta|tt|te|th|bo|ti|to|ts|tn|tr|tk|tw|ug|uk|ur|uz|ve|vi|vo|wa|cy|fy|wo|xh|yi|yo|za|zu" on:change={validateLang}>
+    {:else}
+      <input id="language-input" name="inLanguage[{languages.length + 1}]" type="text" minlength="2" maxlength="2" pattern="ab|aa|af|ak|sq|am|ar|an|hy|as|av|ae|ay|az|bm|ba|eu|be|bn|bh|bi|bs|br|bg|my|ca|km|ch|ce|ny|zh|cu|cv|kw|co|cr|hr|cs|da|dv|nl|dz|en|eo|et|ee|fo|fj|fi|fr|ff|gd|gl|lg|ka|de|ki|el|kl|gn|gu|ht|ha|he|hz|hi|ho|hu|is|io|ig|id|ia|ie|iu|ik|ga|it|ja|jv|kn|kr|ks|kk|rw|kv|kg|ko|kj|ku|ky|lo|la|lv|lb|li|ln|lt|lu|mk|mg|ms|ml|mt|gv|mi|mr|mh|ro|mn|na|nv|nd|ng|ne|se|no|nb|nn|ii|oc|oj|or|om|os|pi|pa|ps|fa|pl|pt|qu|rm|rn|ru|sm|sg|sa|sc|sr|sn|sd|si|sk|sl|so|st|nr|es|su|sw|ss|sv|tl|ty|tg|ta|tt|te|th|bo|ti|to|ts|tn|tr|tk|tw|ug|uk|ur|uz|ve|vi|vo|wa|cy|fy|wo|xh|yi|yo|za|zu" on:change={validateLang}>
   {/each}
 
 
-  {#if $publication.illustrator && $publication.illustrator.length === 1}
-      <label>Illustrator</label>
-     {:else if  $publication.illustrator && $publication.illustrator.length !== 0}
-      <label>Illustrators</label>
-  {/if}
-  {#each $publication.illustrator as illustrator}
-    <dd>{illustrator.name}</dd>
-  {/each}
+<label for="input-author">Authors (comma separated)</label>
+<input id="input-author" name="_author" type="text" value="{[].concat($publication.author).map(author => author.name).join(', ')}" placeholder="First Author, Second Author">
+
+<label for="input-editor">Editors (comma separated)</label>
+<input id="input-editor" name="_editor" type="text" value="{[].concat($publication.editor).map(editor => editor.name).join(', ')}" placeholder="First Editor, Second Editor">
 
 
-  {#if $publication.publisher && $publication.publisher.length === 1}
-      <label>Publisher</label>
-     {:else if  $publication.publisher && $publication.publisher.length !== 0}
-      <label>Publishers</label>
-  {/if}
-  {#each $publication.publisher as publisher}
-    <dd>{publisher.name}</dd>
-  {/each}
+<label for="input-illustrator">Illustrators (comma separated)</label>
+<input id="input-illustrator" name="_illustrator" type="text" value="{[].concat($publication.illustrator).map(illustrator => illustrator.name).join(', ')}" placeholder="First illustrator, Second illustrator">
 
-  {#if $publication.translator && $publication.translator.length === 1}
-      <label>Translator</label>
-     {:else if $publication.translator && $publication.translator.length !== 0}
-      <label>Translators</label>
-  {/if}
-  {#each $publication.translator as translator}
-    <dd>{translator.name}</dd>
-  {/each}
 
-  {#if ($publication.creator && $publication.creator.length !== 0) || ($publication.contributor && $publication.contributor.length !== 0)}
-      <label>Other contributions</label>
-  {/if}
-  {#each $publication.creator as creator}
-    <dd>{creator.name}</dd>
-  {/each}
-  {#each $publication.contributor as contributor}
-    <dd>{contributor.name}</dd>
-  {/each}
+<label for="input-publisher">Publishers (comma separated)</label>
+<input id="input-publisher" name="_publisher" type="text" value="{[].concat($publication.publisher).map(publisher => publisher.name).join(', ')}" placeholder="First Publisher, Second Publisher">
+
+<label for="input-translator">Translators (comma separated)</label>
+<input id="input-translator" name="_translator" type="text" value="{[].concat($publication.translator).map(translator => translator.name).join(', ')}" placeholder="First translator, Second translator">
+
+<label for="input-creator">Creators (comma separated)</label>
+<input id="input-creator" name="_creator" type="text" value="{[].concat($publication.creator).map(creator => creator.name).join(', ')}" placeholder="First creator, Second creator">
+
 
   <label>Type</label>
   <dd>{$publication.type.split(/(?=[A-Z])/).join(' ')}</dd>

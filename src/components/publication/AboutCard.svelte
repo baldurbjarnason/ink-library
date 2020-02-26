@@ -12,15 +12,25 @@
     if (entries.length !== 0) {
       const body = Object.fromEntries(entries)
       let inLanguage = []
+      const newEntries = {}
+      let author
       for (const prop in body) {
         if (prop === 'wordCount' || prop === 'numberOfPages') {
           body[prop] = parseInt(body[prop], 10)
         } else if (prop.startsWith('inLanguage')) {
           inLanguage = inLanguage.concat(body[prop])
+        } else if (prop.startsWith('_') && body[prop]) {
+          newEntries[prop.replace('_', '')] = body[prop].split(',').map(item => item.trim()).map(name => {
+            return {
+              type: 'Person',
+              name
+            }
+          })
         }
       }
+      body.author = author
       body.inLanguage = inLanguage
-      const pub = Object.assign({}, $publication, body)
+      const pub = Object.assign({}, $publication, body, newEntries)
       await window.fetch(`/api/publication/${$publication.shortId}`, {
         method: 'PUT',
         credentials: "include",
