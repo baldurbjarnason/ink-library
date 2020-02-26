@@ -11,7 +11,7 @@
       return [lang.native, lang.english].filter(item => item).join(' / ')
     }
   }
-  async function submit (event) {
+  function submit (event) {
     event.preventDefault();
   }
   const bookFormats = [
@@ -44,7 +44,7 @@
   }
 </style>
 
-  <form id="newform" class="Metadata" action="/api/create-publication" on:submit={submit} bind:this={form}>
+  <form id="newform" class="Metadata" action="/api/publication/{$publication.shortId}" on:submit={submit} bind:this={form}>
   <label for="numberOfPages">Pages</label>
   <input name="numberOfPages" type="text" value="{$publication.numberOfPages || ''}">
   <label for="wordCount">Word Count</label>
