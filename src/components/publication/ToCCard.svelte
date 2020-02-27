@@ -3,7 +3,7 @@
   import Cover from './Cover.svelte'
   import ToC from './ToC.svelte'
   import ToCEdit from './ToCEdit.svelte'
-  import {publication, refreshPublication} from '../../stores'
+  import {publication, refreshPublication, contents} from '../../stores'
   import {getToken} from '../../getToken'
   let editing = false
   let text
@@ -41,7 +41,7 @@
 </style>
 
 
-  <Card id="ToC" tab="ToC" bind:editing={editing} {save}>
+  <Card id="ToC" tab="ToC" bind:editing={editing} save={$contents ? false: save}>
   {#if editing}
       <ToCEdit bind:text={text} />
   {:else}
