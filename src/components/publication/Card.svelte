@@ -6,7 +6,7 @@
   export let id
   export let tab
   export let editing = false
-  export let save = () => {}
+  export let save = false
   export let cancel = () => {
     editing = false
   }
@@ -40,12 +40,14 @@
 
 <div class="Card {tab}Tab" transition:scale|local="{{delay: 250, duration: 350, easing: elasticInOut }}"  id="{id}Card">
 <span class="Target" {id}></span>
-{#if editing}
-   <EditBar label="Save {id}" {save} {cancel}/>
-{:else}
-  <EditButton label="Edit {id}" click={event => {
-    editing = true
-  }} />
+{#if save}
+  {#if editing}
+    <EditBar label="Save {id}" {save} {cancel}/>
+  {:else}
+    <EditButton label="Edit {id}" click={event => {
+      editing = true
+    }} />
+  {/if}
 {/if}
   <slot></slot>
 </div>
