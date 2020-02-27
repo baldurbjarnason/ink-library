@@ -1,6 +1,7 @@
 <script>
   export let keyword
   export let index
+  let removed = false
 </script>
 
 <style>
@@ -71,10 +72,14 @@
   }
 </style>
 
-<span class="Keyword">{keyword} <button class="Button" aria-label="Remove keywords"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+{#if !removed}
+<span class="Keyword">{keyword} <button class="Button" aria-label="Remove keywords" on:click={(event) => {
+  removed = true
+}}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="7.77808" cy="7.77817" r="5" transform="rotate(45 7.77808 7.77817)" fill="white" stroke="#E74951"/>
 <rect x="9.5459" y="5.30328" width="1" height="6" rx="0.5" transform="rotate(45 9.5459 5.30328)" fill="#E74951"/>
 <rect x="10.2529" y="9.54596" width="1" height="6" rx="0.5" transform="rotate(135 10.2529 9.54596)" fill="#E74951"/>
 </svg>
 </button></span>
-<input type="hidden" name="keyword[{index}]" value="{keyword}" />
+  <input type="hidden" name="keyword[{index}]" value="{keyword}" />
+{/if}
