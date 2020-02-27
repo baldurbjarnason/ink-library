@@ -27,7 +27,18 @@ export const publication = derived([publicationId, refreshPublication], ([$publi
 })
 
 export const contents = derived(publication, ($publication, set) => {
-  if (!process.browser || !$publication.links) return
+  if ($publication.json && $publication.json.contents) {
+    set($publication.json.contents)
+    return
+  }
+  if (!process.browser || !$publication.links) {
+    set({
+      type: 404,
+      heading: "",
+      children: []
+    })
+    return
+  }
   const contentsLink = $publication.links.find(link => link.rel === "contents")
   if (!contentsLink) return
   const url = contentsLink.url
