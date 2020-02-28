@@ -1,6 +1,7 @@
 
 import {page} from './page'
 import { derived, writable } from 'svelte/store';
+import {collections} from './collections'
 
 export const refreshPublication = writable({id: null, time: Date.now()})
 
@@ -25,6 +26,29 @@ export const publication = derived([publicationId, refreshPublication], ([$publi
       console.error(err)
     })
 })
+
+// All of the stack objects need to be sourced from $collections for the set object to work
+export const publicationStacks = derived([publication, collections], ([$publication, $collections], set) => {
+  const tags = $publication.tags.filter(tag => tag.type !== 'workspace').map(tag => $collections.find(item => item.id === tag.id))
+  set(new Set(tags))
+}, new Set())
+
+
+export const addingStacks = writable(new Set())
+export const removingStacks = writable(new Set())
+
+export const workingStacks = derived([addingStacks, publicationStacks, removingStacks], ([$addingStacks,  $publicationStacks, $removingStacks], set) => {
+  const union = new Set(Array.from($addingStacks).concat(Array.from($publicationStacks)).filter(tag => !$removingStacks.has(tag)))
+  set(union)
+}, new Set())
+
+export const availableStacks = derived([workingStacks, collections], ([$workingStacks, $collections], set) => {
+  const available = $collections.filter(tag => !$workingStacks.has(tag))
+  set(new Set(available))
+}, new Set())
+
+
+
 
 export const contents = derived(publication, ($publication, set) => {
   if ($publication.json && $publication.json.contents) {

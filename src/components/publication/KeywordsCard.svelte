@@ -9,7 +9,6 @@
   let form
   async function save () {
     const entries = Array.from(new URLSearchParams(new FormData(form)).entries()).filter(entry => entry[0] !== "input-new-keyword").map(entry => entry[1])
-    console.log(entries)
     if (entries.length !== 0) {
       const pub = Object.assign({}, $publication, {keywords: entries})
       await window.fetch(`/api/publication/${$publication.shortId}`, {
@@ -125,7 +124,7 @@
         No Keywords
       {/each}
     {:else}
-      <form id="newform" class="KeywordsForm" action="/api/publication/{$publication.shortId}" on:submit={submit} bind:this={form}>
+      <form id="keywordsform" class="KeywordsForm" on:submit={submit} bind:this={form}>
       <div class="Adding">
         <label for="input-new-keyword">Add Keyword:</label>
           <input type="text" name="input-new-keyword"  id="input-new-keyword" bind:this={keywordInput}>

@@ -59,9 +59,9 @@
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
+    justify-content: space-between;
   }
   .Tags {
-    display: grid;
     grid-gap: calc(var(--base) * 0.25);
     grid-template-columns: repeat(auto-fit,minmax(100px,max-content));
   }
