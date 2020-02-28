@@ -38,19 +38,31 @@ export async function get(req, res, next) {
       Authorization: `Bearer ${req.user.token}`
     }
   }).json();
-  if (!response.inLanguage) {
-    response.inLanguage = ['en', 'en-gb', 'is']
-  }
-  if (response.inLanguage) {
-    response.inLanguage = [].concat(response.inLanguage).map(code => {
-      return {
-        code,
-        english: ISO6391.getName(code),
-        native: ISO6391.getNativeName(code)
-      }
-    })
-  }
+  response._inLanguage = [].concat(response.inLanguage).map(code => {
+    return {
+      code,
+      english: ISO6391.getName(code),
+      native: ISO6391.getNativeName(code)
+    }
+  })
   response.keywords = response.keywords || []
   response.replies = notes()
   res.json(response);
+}
+// This needs to filter by workspace
+export async function put(req, res, next) {
+  const url = `${process.env.API_SERVER}publications/${req.params.publicationId}`
+  try {
+    const response = await got.patch(url, {
+      headers: {
+        "content-type": "application/ld+json",
+        Authorization: `Bearer ${req.user.token}`
+      },
+      json: req.body
+    }).json();
+    return res.json(response);
+  } catch (err) {
+    res.status(err.response.statusCode)
+    return res.json(JSON.parse(err.response.body))
+  }
 }

@@ -1,8 +1,15 @@
 <script>
 	import { scale } from 'svelte/transition';
   import { elasticInOut } from 'svelte/easing';
+  import EditButton from './EditButton.svelte'
+  import EditBar from './EditBar.svelte'
   export let id
   export let tab
+  export let editing = false
+  export let save = false
+  export let cancel = () => {
+    editing = false
+  }
 </script>
 
 <style>
@@ -33,5 +40,14 @@
 
 <div class="Card {tab}Tab" transition:scale|local="{{delay: 250, duration: 350, easing: elasticInOut }}"  id="{id}Card">
 <span class="Target" {id}></span>
+{#if save}
+  {#if editing}
+    <EditBar label="Save {id}" {save} {cancel}/>
+  {:else}
+    <EditButton label="Edit {id}" click={event => {
+      editing = true
+    }} />
+  {/if}
+{/if}
   <slot></slot>
 </div>

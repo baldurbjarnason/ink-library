@@ -4,7 +4,7 @@
   function languages (lang) {
     if (lang.english === "English") {
       return 'English'
-    } if (!lang.english && !lang.native) {
+    } if (!lang.english && !lang.native && lang.code) {
       return lang.code
     } else {
       return [lang.native, lang.english].filter(item => item).join(' / ')
@@ -27,14 +27,8 @@
     margin: 0;
     padding: 0;
   }
-  h2 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0;
-  }
 </style>
 
-<h2>About</h2>
 <dl class="Metadata">
   {#if $publication.numberOfPages}
     <dt>Pages</dt>
@@ -57,7 +51,7 @@
     <dd>{$publication.bookEdition}</dd>
   {/if}
   {#if $publication.copyrightYear}
-    <dt>Year of Publicaiton</dt>
+    <dt>Year of Publication</dt>
     <dd>{$publication.copyrightYear}</dd>
   {/if}
   {#if $publication.genre}
@@ -67,13 +61,15 @@
 
 {#if $publication.type !== 'loading'}
 
-  {#if $publication.inLanguage && $publication.inLanguage.length === 1}
+  {#if $publication._inLanguage && $publication._inLanguage.length === 1}
       <dt>Language</dt>
-     {:else if  $publication.inLanguage}
+     {:else if  $publication._inLanguage}
       <dt>Languages</dt>
   {/if}
-  {#each $publication.inLanguage as language}
+  {#each $publication._inLanguage as language}
     <dd>{languages(language)}</dd>
+    {:else}
+      Unknown
   {/each}
 
   {#if $publication.author && $publication.author.length === 1}

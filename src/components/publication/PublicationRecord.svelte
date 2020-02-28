@@ -14,11 +14,16 @@
   import Cover from './Cover.svelte';
   import Note from './Note.svelte';
   import ToC from './ToC.svelte';
+  import DescriptionCard from './DescriptionCard.svelte'
+  import StacksCard from './StacksCard.svelte'
+  import AboutCard from './AboutCard.svelte'
+  import KeywordsCard from './KeywordsCard.svelte'
+  import NotesCard from './NotesCard.svelte'
+  import ToCCard from './ToCCard.svelte'
   let hash = "#Description"
   let scroll = false
   onMount(() => {
     hash = window.location.hash || "#Description"
-    console.log(hash)
   });
   function hashchange () {
     hash = window.location.hash
@@ -76,13 +81,10 @@
       --gap: var(--base);
     }
   } */
-  h2 {
+  .Publication :global(h2) {
     font-size: 1rem;
     font-weight: 600;
-    margin: 0;
-  }
-  .Description {
-    font-size:  var(--item-font-size);
+    margin: 0rem 0 1rem;
   }
 
   .Keywords {
@@ -181,46 +183,17 @@
 <div class="Wrapper">
  
   
-  <Card id="Description" tab="About">
-    <Cover />
-    <h2>Description</h2>
-    <div class="Description">
-      <p>{$publication.description || ""}</p>
-    </div>
-  </Card>
+  <DescriptionCard />
 
-  <Card id="About" tab="About">
-    <Cover />
-    <Metadata />
-  </Card>
-
-  <Card id="Keywords" tab="About">
-    <h2>Keywords</h2>
-    <div class="Keywords">
-    {#each $publication.keywords as keyword}
-        <Keyword {keyword} />
-    {:else}
-      No Keywords
-    {/each}
-    </div>
-  </Card>
+  <AboutCard />
+  <KeywordsCard />
   
 
-  <Card id="ToC" tab="ToC">
-    <ToC />
-  </Card>
+  <ToCCard />
 
-  <Card id="Stacks" tab="Stacks">
-    <h2>Stacks</h2>
-    <ItemStacks item={$publication} />
-  </Card>
+  <StacksCard />
 
-  <Card id="Notes" tab="Notes">
-    <h2>Notes</h2>
-    {#each $publication.replies as note}
-      <Note {note} />
-    {/each}
-  </Card>
+  <NotesCard />
 
 </div>
 {/if}
