@@ -14,10 +14,8 @@ export function create (endpoint) {
         }).json();
         return res.json(response);
       } catch (err) {
-        console.log(err);
-        res.status(500);
-        console.log(err.response.body)
-        return res.json(err.body);
+        res.status(err.response.statusCode)
+        return res.json(JSON.parse(err.response.body))
       }
     }
   }

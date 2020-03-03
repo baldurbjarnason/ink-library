@@ -78,7 +78,7 @@ export async function post(req, res, next) {
       }
       return res.json(response);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500);
       return res.json(err.body);
     }
