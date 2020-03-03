@@ -26,7 +26,6 @@
   }
   $: if ($addedCollections) {
     filteredCollections = filteredCollections.filter(collection => {
-      console.log(collection, $addedCollections.map(coll => coll.value))
       return !$addedCollections.map(coll => coll.value).includes(collection.value)
     })
   } 
