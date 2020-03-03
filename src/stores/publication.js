@@ -72,8 +72,8 @@ export const contents = derived(publication, ($publication, set) => {
         return res.json()
       } else {
         return {
-          type: 404,
-          heading: "",
+          type: "processing",
+          heading: "Processing...",
           children: []
         }
       }
