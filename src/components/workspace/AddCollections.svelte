@@ -1,19 +1,35 @@
 <script>
   import {collections, addingWorkspace, addedCollections, addedWorkspaces, workspaces} from '../../stores'
   import Closer from '../Closer.svelte';
-  import Input from './Input.svelte'
+  import AutocompleteInput from '../widgets/AutocompleteInput.svelte'
   export let dark = false;
   let currentCollections = []
   let filteredCollections = $collections.map(collection => collection.name)
   $: if ($addingWorkspace) {
     if ($addingWorkspace !== 'all') {
-      filteredCollections = $collections.map(collection => collection.name)
-        .filter(collection => collection.startsWith($addingWorkspace))
-      currentCollections = currentCollections.filter(collection => collection.startsWith($addingWorkspace))
+      filteredCollections = $collections.map(collection => {
+        return {
+          label: getName(collection.name),
+          value: collection.id
+        }
+      })
+        .filter(collection => collection.label.startsWith($addingWorkspace))
+      $addedCollections = $addedCollections.filter(collection => collection.label.startsWith($addingWorkspace))
     } else {
-      filteredCollections = $collections.map(collection => collection.name)
+      filteredCollections = $collections.map(collection => {
+        return {
+          label: getName(collection.name),
+          value: collection.id
+        }
+      })
     }
   }
+  $: if ($addedCollections) {
+    filteredCollections = filteredCollections.filter(collection => {
+      console.log(collection, $addedCollections.map(coll => coll.value))
+      return !$addedCollections.map(coll => coll.value).includes(collection.value)
+    })
+  } 
   const spaces = ['Research', 'Public_Scholarships', 'Teaching', 'Personal']
   function getWorkspace (name) {
     const space = name.split('/')[0].replace(' ', '_')
@@ -23,27 +39,41 @@
       return ''
     }
   }
+  function getName (label) {
+    const space = getWorkspace(label)
+    if (space) {
+      return label.split('/')[1]
+    } else {return label}
+  }
   // When addedCollections changes, need to update addedWorkspaces which is added to the request later on.
-  function change (event) {
-    if (filteredCollections.includes(event.target.value)) {
-      currentCollections = Array.from(new Set(currentCollections.concat(event.target.value)))
-      event.target.value = ""
-      $addedCollections = currentCollections.map(name => collectionId(name))
-      $addedWorkspaces = Array.from(new Set(currentCollections.map(name => getWorkspace(name)))).map(name => {
-        return $workspaces.find(item => getWorkspace(item.name) === name)
-      })
+  function ids (arr) {
+    return arr.map(item => item.value)
+  }
+  function change (input, value) {
+    if (value && ids(filteredCollections).includes(value.value)) {
+      $addedCollections = Array.from(new Set($addedCollections.concat(value)))
+      input.value = ""
+      $addedWorkspaces = getWorkspaces()
     }
   }
   function removeTag (event) {
     const removedCollection = event.data.value
-    currentCollections = currentCollections.filter(collection => collection !== removedCollection)
-    $addedCollections = currentCollections.map(name => collectionId(name))
-    $addedWorkspaces = Array.from(new Set(currentCollections.map(name => getWorkspace(name)))).map(name => {
-      return $workspaces.find(item => getWorkspace(item.name) === name)
-    })
+    $addedCollections = $addedCollections.filter(collection => collection.value !== removedCollection)
+    $addedWorkspaces = getWorkspaces()
   }
   function collectionId (name) {
     return $collections.find(tag => tag.name === name).id
+  }
+  function getCollection (suggestion) {
+    return $collections.find(collection => collection.id === suggestion.value)
+  }
+  function mapCollections (item) {
+    const collection = getCollection(item)
+    const workspace = getWorkspace(collection.name)
+    return $workspaces.find(item => getWorkspace(item.name) === workspace)
+  }
+  function getWorkspaces () {
+    return Array.from(new Set($addedCollections.map(mapCollections).filter(item => item)))
   }
 </script>
 
@@ -72,17 +102,12 @@
 </style>
 
 <!-- markup (zero or more items) goes here -->
-  <div><Input placeholder="Collection Name" {dark} name="new-collections" list="collections-datalist" {change}>Add collection:</Input>
-  <datalist id="collections-datalist">
-  {#each filteredCollections as collection}
-    <option value="{collection}">
-  {/each}
-  </datalist>
+  <div><AutocompleteInput placeholder="Collection Name" {dark} name="new-collections" list={filteredCollections} {change}>Add collection:</AutocompleteInput>
   </div>
   <div class="Wide Tags" class:dark>
-  {#each currentCollections as collection, i}
+  {#each $addedCollections as collection, i}
     <span class="Collection">
-        {collection} <Closer {dark} value={collection} click={removeTag} small={true} />
+        {collection.label} <Closer {dark} value={collection.value} click={removeTag} small={true} />
     </span>
   {/each}
   </div>

@@ -67,8 +67,8 @@ export async function post(req, res, next) {
         }
       }
       if (req.body.addedCollections && req.body.addedCollections.length !== 0) {
-        for (const id of req.body.addedCollections) {
-          await got.put(`${response.id}tags/${id}`, {
+        for (const coll of req.body.addedCollections) {
+          await got.put(`${response.id}tags/${coll.value}`, {
             headers: {
               "content-type": "application/ld+json",
               Authorization: `Bearer ${req.user.token}`

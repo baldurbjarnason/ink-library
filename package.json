@@ -55,6 +55,7 @@
   "dependencies": {
     "@google-cloud/storage": "^4.3.0",
     "autoprefixer": "^9.7.3",
+    "awesomplete": "^1.1.5",
     "connect-redis": "^4.0.3",
     "cssnano": "^4.1.10",
     "csurf": "^1.10.0",

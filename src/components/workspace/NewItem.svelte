@@ -255,7 +255,7 @@
 <span></span>
 {:else}
   <span class="new-button" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}"
-    bind:this={newToggle}><Button click={click}><span class="NewButtonPlus">+</span><span class="NewButtonLabel">
+    bind:this={newToggle}><Button click={click}><span class="NewButtonPlus">+</span> <span class="NewButtonLabel">
       New
     </span></Button></span>
 {/if}
