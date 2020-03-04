@@ -1,6 +1,6 @@
 <script>
   import {collections, addingWorkspace, addedCollections, addedWorkspaces, workspaces} from '../../stores'
-  import Closer from '../Closer.svelte';
+  import Closer from '../widgets/Closer.svelte';
   import AutocompleteInput from '../widgets/AutocompleteInput.svelte'
   export let dark = false;
   let currentCollections = []

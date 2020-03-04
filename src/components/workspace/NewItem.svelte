@@ -1,12 +1,12 @@
 <script>
-  import Button from '../Button.svelte'
+  import Button from '../widgets/Button.svelte'
   import WhiteButton from './WhiteButton.svelte'
   import {send, receive} from '../../routes/_crossfade.js';
   import AddWorkspace from './AddWorkspace.svelte'
   import Input from './Input.svelte'
   import FileInput from './FileInput.svelte'
   import TypeSelect from './TypeSelect.svelte'
-  import Closer from '../Closer.svelte';
+  import Closer from '../widgets/Closer.svelte';
   import AddCollections from './AddCollections.svelte'
   import { afterUpdate, tick } from 'svelte';
   import {refreshDate, refreshCollections, collections, addingWorkspace, addedCollections, addedWorkspaces} from '../../stores';
