@@ -8,6 +8,21 @@ export const refreshPublication = writable({id: null, time: Date.now()})
 
 const publicationId = derived(page, ($page) => $page.params.publicationId)
 
+export const publicationNotes = derived([publicationId, refreshPublication], ([$publicationId, $refreshPublication], set) => {
+  if (!$refreshPublication.id || $refreshPublication.id !== $publicationId) {
+    set([])
+  }
+  if (!process.browser || !$publicationId) return
+  const url = `/api/notes/${$publicationId}?orderBy=updated`
+  return fetch(url)
+    .then(lib => {
+      set(lib.items)
+    })
+    .catch(err => {
+      set([])
+      console.error(err)
+    })
+}, [])
 export const publication = derived([publicationId, refreshPublication], ([$publicationId, $refreshPublication], set) => {
   if (!$refreshPublication.id || $refreshPublication.id !== $publicationId) {
     set({type: 'loading', items: [], 

@@ -4,21 +4,19 @@
   import Cover from './Cover.svelte'
   import Note from './Note.svelte'
   import {getToken} from '../../getToken'
-  import {publication, refreshPublication} from '../../stores'
+  import {publication, refreshPublication, publicationNotes} from '../../stores'
   let editing = false
   let text
   async function save () {
     const note = {
       publicationId: $publication.id,
-      body: {
+      body: [{
         motivation: "commenting",
-        "type" : "TextualBody",
-        "value" : text,
-        "format" : "text/html"
-      },
+        content : text
+      }],
       target: { id: $publication.id }
     }
-    await window.fetch(`/api/note`, {
+    await window.fetch(`/api/notes`, {
       method: 'POST',
       credentials: "include",
       headers: {
@@ -30,6 +28,7 @@
     editing = false
     $refreshPublication = {id: $publication.shortId, time: Date.now()}
   }
+  $: console.log($publicationNotes)
 </script>
 
 <style>
@@ -41,7 +40,7 @@
   {#if editing}
     <CreateNoteCard bind:text={text} />
   {/if}
-    {#each $publication.replies as note}
+    {#each $publicationNotes as note}
       <Note {note} />
     {/each}
   </Card>
