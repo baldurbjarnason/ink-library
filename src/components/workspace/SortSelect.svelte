@@ -18,7 +18,6 @@
     }
     const config = Object.assign({}, query, {orderBy: type.split('-')[0], dir})
     const url = `${path}?${new URLSearchParams(config).toString()}`
-    console.log(url)
     if (query.orderBy !== config.orderBy || query.dir !== config.dir) {
       goto(url)
     }

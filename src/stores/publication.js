@@ -2,6 +2,7 @@
 import {page} from './page'
 import { derived, writable } from 'svelte/store';
 import {collections} from './collections'
+import {fetch} from './fetch.js'
 
 export const refreshPublication = writable({id: null, time: Date.now()})
 
@@ -14,10 +15,7 @@ export const publication = derived([publicationId, refreshPublication], ([$publi
   }
   if (!process.browser || !$publicationId) return
   const url = `/api/publication/${$publicationId}`
-  return window.fetch(url)
-    .then(res => {
-      return res.json()
-    })
+  return fetch(url)
     .then(lib => {
       set(lib)
     })
@@ -72,8 +70,8 @@ export const contents = derived(publication, ($publication, set) => {
         return res.json()
       } else {
         return {
-          type: 404,
-          heading: "",
+          type: "processing",
+          heading: "Processing...",
           children: []
         }
       }

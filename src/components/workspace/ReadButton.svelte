@@ -22,6 +22,8 @@
     background-color: var(--workspace-color);
     border-radius: 7px;
     display: block;
+    display: flex;
+    align-items: center;
   }
   a:hover {
     background-color: var(--link);

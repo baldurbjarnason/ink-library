@@ -1,7 +1,7 @@
 <script>
   import {contents} from "../../stores"
   import ContentsItem from "./ContentsItem.svelte"
-  import Loading from "../Loading.svelte"
+  import Loading from "../widgets/Loading.svelte"
 </script>
 
 <style>

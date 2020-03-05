@@ -1,7 +1,7 @@
 <script>
   // your script goes here
   import {send, receive} from '../routes/_crossfade.js';
-  import Closer from './Closer.svelte';
+  import Closer from './widgets/Closer.svelte';
 	import { afterUpdate, tick } from 'svelte';
   import { goto } from "@sapper/app";
   import {searchStore} from '../stores'

@@ -1,11 +1,11 @@
 <script>
   import {library, clearSelected} from '../../stores'
   import Footer from './Footer.svelte'
-  import Button from '../Button.svelte'
+  import Button from '../widgets/Button.svelte'
   import Card from './Card.svelte'
   import Item from './Item.svelte'
   import HeaderArrows from './HeaderArrows.svelte'
-  import SmallButton from '../SmallButton.svelte'
+  import SmallButton from '../widgets/SmallButton.svelte'
   import SortSelect from './SortSelect.svelte'
   import SortButton from './SortButton.svelte'
   import { stores } from "@sapper/app";

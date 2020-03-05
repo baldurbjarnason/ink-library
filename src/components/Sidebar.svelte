@@ -88,8 +88,11 @@
 .Sidebar.all .hash.research {
   color: var(--research-workspace);
 }
-.all .selected {
-  background-color: var(--all-workspace-selected);
+.Sidebar .hash.all {
+  color: transparent;
+}
+.Sidebar .selected {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 ul {
   padding: 0;
@@ -256,6 +259,13 @@ h2 {
   {workspace}
 {/if}</h2>
   <ul>
+    <li><a href="/library/{workspace}/all" class:selected={params.collection === 'all'}><span class="hash all">#</span> <span class="linkText">
+  {#if workspace === 'all'}
+    All items
+  {:else}
+    All in {workspace}
+  {/if}
+    </span></a></li>
   {#each tags as tag}
     <li><a href="/library/{workspace}/{encodeURIComponent(tag.name)}" class:selected={params.collection === tag.name}><span class="hash {getWorkspace(tag.name)}">#</span> <span class="linkText">
       {getName(tag.name)}

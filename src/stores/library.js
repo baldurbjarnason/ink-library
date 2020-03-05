@@ -1,6 +1,8 @@
 
 import {page} from './page'
 import { derived, writable } from 'svelte/store';
+import {error} from './error.js'
+import {fetch} from './fetch.js'
 
 export const refreshDate = writable(Date.now())
 export const searchStore = writable()
@@ -29,15 +31,13 @@ export const library = derived([page, refreshDate, searchStore], ([$page, $refre
   } else {
     url = `/api/library`
   }
-  return window.fetch(url)
-    .then(res => {
-      return res.json()
-    })
+  return fetch(url)
     .then(lib => {
       set(lib)
     })
     .catch(err => {
       set({type: 'failed'})
+      error.set(err)
       console.error(err)
     })
 

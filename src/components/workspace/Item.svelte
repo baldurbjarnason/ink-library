@@ -170,11 +170,6 @@
   <div class="ItemEntry Last">{#if selecting}
     <label><span class="visually-hidden">Select this item</span><input type="checkbox" bind:checked={selected}></label>
   {:else}
-    <span><a href="{window.location.pathname}/{item.shortId}" class="Arrow">
-      <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="4.94971" y="6.46447" width="7" height="2" rx="0.999999" transform="rotate(-135 4.94971 6.46447)" fill="#3988C0"/>
-  <rect y="8.58579" width="7" height="2" rx="0.999999" transform="rotate(-45 0 8.58579)" fill="#3988C0"/>
-  </svg>
-    </a></span>
+    <ReadButton {item} />
   {/if}</div>
 </div>

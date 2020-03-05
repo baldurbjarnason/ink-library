@@ -1,8 +1,8 @@
 <script>
   import {library, selectedItems, refreshDate, collections, addingWorkspace, addedCollections, addedWorkspaces} from '../../stores'
-  import RiskyButton from '../RiskyButton.svelte'
-  import SecondaryButton from '../SecondaryButton.svelte'
-  import Button from '../Button.svelte'
+  import RiskyButton from '../widgets/RiskyButton.svelte'
+  import SecondaryButton from '../widgets/SecondaryButton.svelte'
+  import Button from '../widgets/Button.svelte'
   import TypeSelect from './TypeSelect.svelte'
   import ChooseWorkspaces from './ChooseWorkspaces.svelte'
   import Input from './Input.svelte'

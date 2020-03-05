@@ -1,5 +1,5 @@
 <script>
-  import SmallButton from '../SmallButton.svelte'
+  import SmallButton from '../widgets/SmallButton.svelte'
   export let cancel
   export let label
   export let save

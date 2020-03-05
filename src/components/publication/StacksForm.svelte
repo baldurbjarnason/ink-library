@@ -2,7 +2,7 @@
 
 <script>
   import {publication, refreshPublication, collections, addingStacks, availableStacks, workingStacks, removingStacks} from '../../stores'
-  import Closer from '../Closer.svelte';
+  import Closer from '../widgets/Closer.svelte';
   import Input from '../workspace/Input.svelte'
   export let form = undefined
   const spaces = ['Research', 'Public_Scholarships', 'Teaching', 'Personal']

@@ -1,5 +1,5 @@
 <script>
-  import { library as libraryStore, page as pageStore } from '../stores';
+  import { library as libraryStore, page as pageStore, error } from '../stores';
 	import Nav from '../components/Nav.svelte';
 	import Sidebar from '../components/Sidebar.svelte';
   import { stores } from "@sapper/app";
@@ -86,19 +86,26 @@
   }
 </style>
 
-
 <svelte:head>
   <title>Library – {params.workspace || 'all'} – Rebus Ink</title>
     <meta name="csrftoken" content={$session.csrfToken}>
 </svelte:head>
 
-<main class="grid" class:publication>
-{#if !menu}
-  <Nav {params} />
-  <Sidebar {params} />
-{/if}
+{#if $error}
+  {#if $error.response.body}
+    <pre><code>{$error.response.body}</code></pre>
+  {:else}
+    <pre><code>{JSON.stringify($error, null, 2)}</code></pre>
+  {/if}
+{:else}
+  <main class="grid" class:publication>
+  {#if !menu}
+    <Nav {params} />
+    <Sidebar {params} />
+  {/if}
 
-<div class="content {params.workspace}" class:publication>
-	<slot></slot>
-</div>
-</main>
+  <div class="content {params.workspace}" class:publication>
+    <slot></slot>
+  </div>
+  </main>
+{/if}
