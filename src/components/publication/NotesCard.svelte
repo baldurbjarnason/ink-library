@@ -1,10 +1,11 @@
 <script>
+  import {onMount} from 'svelte'
   import Card from './Card.svelte'
   import CreateNoteCard from './CreateNoteCard.svelte'
   import Cover from './Cover.svelte'
   import Note from './Note.svelte'
   import {getToken} from '../../getToken'
-  import {publication, refreshPublication, publicationNotes} from '../../stores'
+  import {publication, refreshPublication, publicationNotes, notesSearch} from '../../stores'
   let editing = false
   let text
   async function save () {
@@ -28,7 +29,18 @@
     editing = false
     $refreshPublication = {id: $publication.shortId, time: Date.now()}
   }
-  $: console.log($publicationNotes)
+
+  let search
+  function input (event) {
+    if (search && search.value) {
+      $notesSearch = search.value
+    } else {
+      $notesSearch = ""
+    }
+  }
+  onMount(() => {
+    $refreshPublication = {id: $publication.shortId, time: Date.now()}
+  });
 </script>
 
 <style>
@@ -39,6 +51,8 @@
     <h2>Notes</h2>
   {#if editing}
     <CreateNoteCard bind:text={text} />
+    {:else}
+      <input type="text" name="notes-search" id="notes-search" bind:this={search} on:input={input}>
   {/if}
     {#each $publicationNotes as note}
       <Note {note} />
