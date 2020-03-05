@@ -62,5 +62,5 @@
 
 <div class="EditBar">
 <SmallButton click={cancel}>Cancel</SmallButton>
-<button class="Button" aria-label="{label}" type="button" on:click={save}>Save
+<button class="Button" aria-label="{label}" type="button" on:click={save}>{label}
 </button></div>
