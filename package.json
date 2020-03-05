@@ -5,7 +5,7 @@
   "description": "The ink library frontend",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "dev": "SECRETORKEY=kick-opossum-snowiness ISSUER=auth.reader-api.test API_SERVER=http://localhost:8080/ sapper dev",
+    "dev": "sapper dev",
     "build": "sapper build --legacy && snowpack --dest static/web_modules/ --optimize",
     "export": "sapper export --legacy",
     "start": "node index.js",
