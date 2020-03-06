@@ -7,23 +7,27 @@ import {fetch} from './fetch.js'
 export const refreshPublication = writable({id: null, time: Date.now()})
 
 const publicationId = derived(page, ($page) => $page.params.publicationId)
+const publicationWorkspace = derived(page, ($page) => $page.params.workspace)
 
 export const notesSearch = writable('')
 
 // We need to figure out how to do collections and workspace filtering here as well. Use the $page store?
 // And how to deal with pagination. Do the pagination in the component using a 'more' button that loads and stores the data separately? Or is a derived store combining main notes and a secondary store for other pages?
-export const publicationNotes = derived([publicationId, refreshPublication, notesSearch], ([$publicationId, $refreshPublication, $notesSearch], set) => {
+export const publicationNotes = derived([publicationId, refreshPublication, notesSearch, publicationWorkspace], ([$publicationId, $refreshPublication, $notesSearch, $publicationWorkspace], set) => {
   console.log($refreshPublication)
   if (!$refreshPublication.id || $refreshPublication.id !== $publicationId) {
     set([])
   }
   if (!process.browser || !$publicationId) return
-  let url
+  let url = `/api/notes/${$publicationId}`
+  const query = new URLSearchParams({orderBy: 'updated'})
   if ($notesSearch) {
-    url = `/api/notes/${$publicationId}?orderBy=updated&search=${encodeURIComponent($notesSearch)}`
-  } else {
-    url = `/api/notes/${$publicationId}?orderBy=updated`
+    query.append("search", $notesSearch)
   }
+  if ($publicationWorkspace && $publicationWorkspace !== 'all') {
+    query.append("workspace", $publicationWorkspace)
+  }
+  url = `${url}?${query.toString()}`
   return fetch(url)
     .then(lib => {
       set(lib.items)

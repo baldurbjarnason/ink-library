@@ -27,7 +27,7 @@
   }
   input:focus {
     outline: none;
-    box-shadow: 0 0 0 2px solid rgba(104,214,212,.6);
+    box-shadow: 0 0 0 2px rgba(104,214,212,.6);
   }
   svg {
     position: absolute;

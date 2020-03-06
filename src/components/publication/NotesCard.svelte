@@ -6,17 +6,22 @@
   import Note from './Note.svelte'
   import NotesSearch from './NotesSearch.svelte'
   import {getToken} from '../../getToken'
-  import {publication, refreshPublication, publicationNotes, notesSearch} from '../../stores'
+  import {publication, refreshPublication, publicationNotes, notesSearch, page, workspaces} from '../../stores'
   let editing = false
   let text
   async function save () {
+    let workspace
+    if ($page.params.workspace && $page.params.workspace !== 'all') {
+      workspace = $workspaces.find(space => space.name === $page.params.workspace).id
+    }
     const note = {
       publicationId: $publication.id,
       body: [{
         motivation: "commenting",
         content : text
       }],
-      target: { id: $publication.id }
+      target: { id: $publication.id },
+      _workspace: workspace
     }
     await window.fetch(`/api/notes`, {
       method: 'POST',
