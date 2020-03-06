@@ -10,6 +10,8 @@ const publicationId = derived(page, ($page) => $page.params.publicationId)
 
 export const notesSearch = writable('')
 
+// We need to figure out how to do collections and workspace filtering here as well. Use the $page store?
+// And how to deal with pagination. Do the pagination in the component using a 'more' button that loads and stores the data separately? Or is a derived store combining main notes and a secondary store for other pages?
 export const publicationNotes = derived([publicationId, refreshPublication, notesSearch], ([$publicationId, $refreshPublication, $notesSearch], set) => {
   console.log($refreshPublication)
   if (!$refreshPublication.id || $refreshPublication.id !== $publicationId) {
