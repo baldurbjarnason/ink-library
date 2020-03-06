@@ -3,7 +3,9 @@ import got from "got";
 
 export const post = async function post(req, res, next) {
   const workspace = req.body._workspace
+  const collection = req.body._collection
   delete req.body._workspace
+  delete req.body.collection
   if (req.user && req.user.profile) {
     try {
       const response = await got.post(`${process.env.API_SERVER}notes`, {
@@ -16,6 +18,15 @@ export const post = async function post(req, res, next) {
       // Check workspace, if there is one, add
       if (workspace) {
         await got.put(`${response.id}/tags/${workspace}`, {
+          headers: {
+            "content-type": "application/ld+json",
+            Authorization: `Bearer ${req.user.token}`
+          }
+        })
+      }
+      // Check collection
+      if (collection) {
+        await got.put(`${response.id}/tags/${collection}`, {
           headers: {
             "content-type": "application/ld+json",
             Authorization: `Bearer ${req.user.token}`

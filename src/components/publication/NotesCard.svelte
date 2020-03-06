@@ -6,13 +6,18 @@
   import Note from './Note.svelte'
   import NotesSearch from './NotesSearch.svelte'
   import {getToken} from '../../getToken'
-  import {publication, refreshPublication, publicationNotes, notesSearch, page, workspaces} from '../../stores'
+  import {publication, refreshPublication, publicationNotes, notesSearch, page, workspaces, collections} from '../../stores'
   let editing = false
   let text
   async function save () {
     let workspace
     if ($page.params.workspace && $page.params.workspace !== 'all') {
       workspace = $workspaces.find(space => space.name === $page.params.workspace).id
+    }
+    // Need to do the same for stack
+    let collection
+    if ($page.params.collection && $page.params.collection !== 'all') {
+      collection = $collections.find(space => space.name === $page.params.collection).id
     }
     const note = {
       publicationId: $publication.id,
@@ -21,7 +26,8 @@
         content : text
       }],
       target: { id: $publication.id },
-      _workspace: workspace
+      _workspace: workspace,
+      _collection: collection
     }
     await window.fetch(`/api/notes`, {
       method: 'POST',
