@@ -1,7 +1,7 @@
 <script>
   import Card from './Card.svelte'
   import StacksForm from './StacksForm.svelte'
-  import ItemStacks from '../workspace/ItemStacks.svelte'
+  import StacksCardItems from './StacksCardItems.svelte'
   import {publication, addedCollections, refreshPublication, addingStacks, removingStacks} from '../../stores'
   import {getToken} from '../../getToken'
   let editing = false
@@ -51,6 +51,6 @@
     {#if editing}
       <StacksForm bind:form={form} />
     {:else}
-      <ItemStacks item={$publication} />
+      <StacksCardItems item={$publication} />
     {/if}
   </Card>

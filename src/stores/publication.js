@@ -8,6 +8,43 @@ export const refreshPublication = writable({id: null, time: Date.now()})
 
 const publicationId = derived(page, ($page) => $page.params.publicationId)
 
+const publicationWorkspace = derived(page, ($page) => $page.params.workspace)
+
+const publicationStack = derived(page, ($page) => $page.params.collection)
+
+export const notesSearch = writable('')
+
+
+export const publicationNotes = derived([publicationId, refreshPublication, notesSearch, publicationWorkspace, publicationStack], ([$publicationId, $refreshPublication, $notesSearch, $publicationWorkspace, $publicationStack], set) => {
+  console.log($refreshPublication)
+  if (!$refreshPublication.id || $refreshPublication.id !== $publicationId) {
+    set([])
+  }
+  if (!process.browser || !$publicationId) return
+  let url = `/api/notes/${$publicationId}`
+  const query = new URLSearchParams({orderBy: 'updated'})
+  if ($notesSearch) {
+    query.append("search", $notesSearch)
+  }
+  if ($publicationWorkspace && $publicationWorkspace !== 'all') {
+    query.append("workspace", $publicationWorkspace)
+  }
+  if ($publicationStack && $publicationStack !== 'all') {
+    query.append("stack", $publicationStack)
+  }
+  
+
+  url = `${url}?${query.toString()}`
+  return fetch(url)
+    .then(lib => {
+      set(lib.items)
+    })
+    .catch(err => {
+      set([])
+      console.error(err)
+    })
+}, [])
+
 export const publication = derived([publicationId, refreshPublication], ([$publicationId, $refreshPublication], set) => {
   if (!$refreshPublication.id || $refreshPublication.id !== $publicationId) {
     set({type: 'loading', items: [], 
