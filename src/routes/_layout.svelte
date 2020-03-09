@@ -94,6 +94,8 @@
 
 {#if $error}
   {#if $error.response.body}
+  <h1>Something went wrong.</h1>
+  <p>See the error object below.</p>
     <pre><code>{$error.response.body}</code></pre>
   {:else}
     <pre><code>{JSON.stringify($error, null, 2)}</code></pre>
