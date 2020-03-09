@@ -99,7 +99,7 @@ export function setup(sapper, options = {}) {
     return res.send(html)
   })
   app.use((req, res, next) => {
-    if (req.user) {
+    if (req.user && req.user.profile) {
       return next()
     } else {
       res.redirect(`/access?returnTo=${encodeURIComponent(req.path)}`)
