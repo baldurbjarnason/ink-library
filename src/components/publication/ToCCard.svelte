@@ -35,13 +35,14 @@
       heading: "Table of Contents"
     }
   }
+  $: console.log($contents, $contents ? false: save)
 </script>
 
 <style>
 </style>
 
 
-  <Card id="ToC" tab="ToC" bind:editing={editing} save={$contents ? false: save}>
+  <Card id="ToC" tab="ToC" bind:editing={editing} save={$contents.type === 404 ? save: 404}>
   {#if editing}
       <ToCEdit bind:text={text} />
   {:else}
