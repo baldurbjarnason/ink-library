@@ -35,7 +35,6 @@
       heading: "Table of Contents"
     }
   }
-  $: console.log($contents, $contents ? false: save)
 </script>
 
 <style>
