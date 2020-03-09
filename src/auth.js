@@ -6,14 +6,13 @@ import httpStrategies from "passport-http";
 import debugSetup from "debug";
 import Auth0Strategy from "passport-auth0";
 const debug = debugSetup("vonnegut:auth");
-const AUDIENCE = process.env.AUDIENCE || ""
 
 function generateToken(user) {
   const expiresIn = "30m";
   return jwt.sign({ sub: user.id }, process.env.SECRETORKEY, {
     algorithm: "HS256",
     expiresIn,
-    audience: AUDIENCE,
+    audience: process.env.AUDIENCE || "",
     issuer: process.env.ISSUER
   });
 }
@@ -36,7 +35,7 @@ async function deserialise(user) {
       process.env.SECRETORKEY,
       {
         algorithm: "HS256",
-        audience: AUDIENCE,
+        audience: process.env.AUDIENCE || "",
         issuer: process.env.ISSUER
       },
       (err, decoded) => {

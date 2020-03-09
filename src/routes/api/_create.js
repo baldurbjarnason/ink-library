@@ -2,7 +2,6 @@ import got from "got";
 
 export function create (endpoint) {
   return async function post(req, res, next) {
-    console.log(req.body)
     if (req.user && req.user.profile) {
       try {
         const response = await got.post(`${process.env.API_SERVER}${endpoint}`, {

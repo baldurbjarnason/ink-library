@@ -20,6 +20,7 @@
   import KeywordsCard from './KeywordsCard.svelte'
   import NotesCard from './NotesCard.svelte'
   import ToCCard from './ToCCard.svelte'
+  import CreateNoteCard from './CreateNoteCard.svelte'
   let hash = "#Description"
   let scroll = false
   onMount(() => {
@@ -182,7 +183,10 @@
 </ul>
 <div class="Wrapper">
  
-  
+  {#if $page.params.noteId}
+     <CreateNoteCard />
+  {:else}
+    
   <DescriptionCard />
 
   <AboutCard />
@@ -195,6 +199,7 @@
 
   <NotesCard />
 
+  {/if}
 </div>
 {/if}
 </div>

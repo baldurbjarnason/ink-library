@@ -7,6 +7,7 @@
   export let tab
   export let editing = false
   export let save = false
+  export let saveLabel = 'Save'
   export let cancel = () => {
     editing = false
   }
@@ -42,7 +43,7 @@
 <span class="Target" {id}></span>
 {#if save}
   {#if editing}
-    <EditBar label="Save {id}" {save} {cancel}/>
+    <EditBar label="{saveLabel}" {save} {cancel}/>
   {:else}
     <EditButton label="Edit {id}" click={event => {
       editing = true

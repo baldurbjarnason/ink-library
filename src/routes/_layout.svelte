@@ -33,6 +33,7 @@
 
 <style global>
   @import '../../styles/**/*.css';
+  @import 'quill/dist/quill.snow.css';
 	main, .content {
 		position: relative;
 		padding: 0;

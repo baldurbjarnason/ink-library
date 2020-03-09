@@ -5,7 +5,7 @@
 
   let bodies = []
   $: if (note.body && note.body.length) {
-    bodies = note.body.filter(body => body.purpose === "commenting").map(body => striptags(body.value, true))
+    bodies = note.body.filter(body => body.motivation === "commenting").map(body => striptags(body.content || '', true))
   }
 </script>
 
@@ -15,7 +15,7 @@
   padding-left: calc(var(--base) * 1);
   padding-right: var(--base);
   font-size: var(--item-font-size);
-  margin: var(--base) 0;
+  margin: var(--base) 0 0;
 }
 .Icon {
   position: absolute;
