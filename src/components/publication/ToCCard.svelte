@@ -41,7 +41,7 @@
 </style>
 
 
-  <Card id="ToC" tab="ToC" bind:editing={editing} save={$contents.type === 404 ? save: 404}>
+  <Card id="ToC" tab="ToC" bind:editing={editing} save={$contents.type === 404 ? save: false}>
   {#if editing}
       <ToCEdit bind:text={text} />
   {:else}
