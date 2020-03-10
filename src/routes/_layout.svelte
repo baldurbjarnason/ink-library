@@ -70,7 +70,7 @@
   .content.Research {
     --workspace-color: var(--research-workspace);
   }
-  .content.publication {
+  .content.publication, .content.unfinished {
     grid-column: 2 / -1;
   }
   @media (max-width: 720px) {
@@ -108,7 +108,7 @@
     <Sidebar {params} />
   {/if}
 
-  <div class="content {params.workspace}" class:publication>
+  <div class="content {params.workspace || "unfinished"}" class:publication>
     <slot></slot>
   </div>
   </main>
