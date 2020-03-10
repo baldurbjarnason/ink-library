@@ -13,7 +13,7 @@ export const tags = derived(refreshCollections, ($refreshCollections, set) => {
       set(lib)
     })
     .catch(err => {
-      set({type: 'failed'})
+      set([])
       error.set(err)
       console.error(err)
     })

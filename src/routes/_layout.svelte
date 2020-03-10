@@ -97,7 +97,7 @@
   <h1>Something went wrong.</h1>
   <p>See the error object below.</p>
   <p><a href="/logout">Signing out</a> and then signing back in might help.</p>
-    <pre><code>{$error.response.body}</code></pre>
+    <pre><code>{JSON.stringify($error, null, 2)}</code></pre>
   {:else}
     <pre><code>{JSON.stringify($error, null, 2)}</code></pre>
   {/if}

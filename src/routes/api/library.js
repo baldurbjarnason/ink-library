@@ -23,7 +23,12 @@ export async function get(req, res, next) {
     }).json();
     res.json(response);
   } catch (err) {
-    res.status(err.response.statusCode)
-    return res.json(JSON.parse(err.response.body))
+    if (err.response && err.response.statusCode) {
+      res.status(err.response.statusCode)
+      return res.json(JSON.parse(err.response.body))
+    } else {
+      res.status(500)
+      return res.json(JSON.parse(err))
+    }
   }
 }

@@ -11,7 +11,11 @@ export async function get(req, res, next) {
     }).json();
     res.json(response);
   } catch (err) {
-    res.status(err.response.statusCode)
+    if (err.response && err.response.statusCode) {
+      res.status(err.response.statusCode)
+    } else {
+      res.status(500)
+    }
     let payload
     try {
       payload = JSON.parse(err.response.body)
