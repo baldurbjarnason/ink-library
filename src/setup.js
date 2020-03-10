@@ -98,13 +98,13 @@ export function setup(sapper, options = {}) {
     const html = accessTemplate.replace('{RETURN_TO}', encodeURIComponent(req.query.returnTo) || '%2F')
     return res.send(html)
   })
-  app.use((req, res, next) => {
-    if (req.user && req.user.profile) {
-      return next()
-    } else {
-      res.redirect(`/access?returnTo=${encodeURIComponent(req.path)}`)
-    }
-  })
+  // app.use((req, res, next) => {
+  //   if (req.user && req.user.profile) {
+  //     return next()
+  //   } else {
+  //     res.redirect(`/access?returnTo=${encodeURIComponent(req.path)}`)
+  //   }
+  // })
   app.use(
     "/",
     (req, res, next) => {

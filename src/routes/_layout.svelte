@@ -1,7 +1,8 @@
 <script>
   import { library as libraryStore, page as pageStore, error } from '../stores';
 	import Nav from '../components/Nav.svelte';
-	import Sidebar from '../components/Sidebar.svelte';
+  import Sidebar from '../components/Sidebar.svelte';
+  import SignIn from '../components/Auth/SignIn.svelte'
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   export let segment;
@@ -101,6 +102,10 @@
   {:else}
     <pre><code>{JSON.stringify($error, null, 2)}</code></pre>
   {/if}
+  {:else if !$session.user}
+  <div class="content unfinished">
+  <SignIn path={$page.path} />
+  </div>
 {:else}
   <main class="grid" class:publication>
   {#if !menu}
