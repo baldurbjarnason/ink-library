@@ -67,8 +67,8 @@ export function setup(sapper, options = {}) {
     resave: true,
     rolling: true,
     saveUninitialized: false,
-    name: "__session",
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: !dev, name: "__session", httpOnly: true, sameSite: 'lax' }
+    name: process.env.COOKIE_NAME || '__session',
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: !dev, name: process.env.COOKIE_NAME || '__session', httpOnly: true, sameSite: 'lax' }
   });
   app.use(express.urlencoded({ extended: true }));
   app.use(
