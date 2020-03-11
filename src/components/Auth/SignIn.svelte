@@ -13,6 +13,11 @@ export let path = '/'
 </style>
 
 <div class="SignIn">
-<h1>Sign In</h1>
+<h1>Sign In to Rebus Ink</h1>
 <form action="/login?returnTo={encodeURIComponent(path)}" method="POST"><button class="GenericButton">Login</button></form>
+<!-- 
+<p>Or, if you have never used Ink before:</p>
+<p>
+  <a href="/sign-up" class="GenericButton">Sign Up</a>
+</p> -->
 </div>

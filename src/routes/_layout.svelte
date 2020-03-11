@@ -3,6 +3,8 @@
 	import Nav from '../components/Nav.svelte';
   import Sidebar from '../components/Sidebar.svelte';
   import SignIn from '../components/Auth/SignIn.svelte'
+  import SignUp from '../components/Auth/SignUp.svelte'
+  import SignInPage from '../components/Auth/SignInPage.svelte'
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   export let segment;
@@ -30,6 +32,7 @@
   } else {
     menu = false
   }
+  $: console.log($session);
 </script>
 
 <style global>
@@ -89,8 +92,8 @@
 </style>
 
 <svelte:head>
+  <meta name="csrftoken" content={$session.csrfToken}>
   <title>Library – {params.workspace || 'all'} – Rebus Ink</title>
-    <meta name="csrftoken" content={$session.csrfToken}>
 </svelte:head>
 
 {#if $error}
@@ -102,10 +105,18 @@
   {:else}
     <pre><code>{JSON.stringify($error, null, 2)}</code></pre>
   {/if}
-  {:else if !$session.user}
+{:else if !$session.user && !$page.path.startsWith('/sign-')}
   <div class="content unfinished">
   <SignIn path={$page.path} />
   </div>
+<!-- {:else if !$session.user && $page.path === '/sign-up'}
+  <div class="content unfinished">
+  <SignUp />
+  </div>
+{:else if !$session.user && $page.path === '/sign-in'}
+  <div class="content unfinished">
+  <SignInPage />
+  </div> -->
 {:else}
   <main class="grid" class:publication>
   {#if !menu}
