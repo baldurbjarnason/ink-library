@@ -6,6 +6,10 @@ import httpStrategies from "passport-http";
 import debugSetup from "debug";
 import Auth0Strategy from "passport-auth0";
 const debug = debugSetup("vonnegut:auth");
+// const LocalStrategy = require('passport-local').Strategy
+// const {Firestore} = require('@google-cloud/firestore');
+// const firestore = new Firestore();
+// const bcrypt = require('bcrypt');
 
 function generateToken(user) {
   const expiresIn = "30m";
@@ -129,6 +133,18 @@ export function setup (app) {
         }
       })
     );
+    // passport.use(new LocalStrategy(async function (username, password, done) {
+    //   const existing = await firestore.collection('users').where('email', '==', username)
+    //   if (existing.empty) return done(null, false, { message: 'Incorrect email or password' });
+    //   const [userDoc] = existing.docs
+    //   const passwordHash = userDoc.get('password')
+    //   const match = await bcrypt.compare(password, passwordHash)
+    //   if (!match) {
+    //     return done(null, false, { message: 'Incorrect email or password' });
+    //   } else {
+    //     return done(null, userDoc.data())
+    //   }
+    // }))
   }
 
   app.use(
