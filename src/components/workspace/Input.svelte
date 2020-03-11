@@ -9,26 +9,27 @@
 
 <style>
   .LabelText {
-    font-weight: 600;
-    font-size: 1rem;
+    font-size: .8rem;
+    font-weight: 500;
   }
   .dark {
     color: white
   }
   input {
-    width: 100%;
+    width: 45%;
+    float: left;
     font-size: 0.85rem;
     padding: calc(var(--base) * 0.5);
     margin: calc(var(--base) * 0.25) 0;
-    border-radius: 15px;
-    border: 1px solid #EEEEEE;
+    border-radius: 10px;
     background-color: white;
-  }
+    border: none;
+  }/*
   .dark input {
     border-color: transparent;
     color: #fff;
     background-color: rgba(255,255,255, 0.125);
-  }
+  }*/
   input:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(104,214,212,.6);
@@ -37,7 +38,7 @@
     box-shadow: 0 0 2px 2px white;
   }
   .dark input::placeholder {
-    color: rgba(255,255,255,0.8);
+    color: rgb(0, 34, 48, 0.5);
   }
 @media (max-width: 720px) {
   .LabelText {

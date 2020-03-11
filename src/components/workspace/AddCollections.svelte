@@ -76,10 +76,12 @@
 
 <style>
   .Collection {
-    width: 100%;
+    width: auto;
+    float: left;
     font-size: 0.7rem;
     padding: calc(var(--base) * 0.25);
     margin-right: calc(var(--base) * 0.25);
+    margin-bottom: calc(var(--base) * 0.25);
     border-radius: 5px;
     color: black;
     background-color: white;
@@ -89,6 +91,7 @@
     justify-content: space-between;
   }
   .Tags {
+    grid-column: 1;
     grid-gap: calc(var(--base) * 0.25);
     grid-template-columns: repeat(auto-fit,minmax(100px,max-content));
   }
@@ -99,7 +102,7 @@
 </style>
 
 <!-- markup (zero or more items) goes here -->
-  <div><AutocompleteInput placeholder="Collection Name" {dark} name="new-collections" list={filteredCollections} {change}>Add collection:</AutocompleteInput>
+  <div><AutocompleteInput placeholder="Collection Name" {dark} name="new-collections" list={filteredCollections} {change}>Assign stacks</AutocompleteInput>
   </div>
   <div class="Wide Tags" class:dark>
   {#each $addedCollections as collection, i}

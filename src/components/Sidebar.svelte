@@ -47,8 +47,8 @@
 <style>
 .Sidebar {
   padding: var(--base) 0;
-  border-radius: 0px 15px 0px 0px;
-  height: calc(100vh - 41px);
+  border-radius: 0px 30px 30px 0px;
+  height: calc(100vh - 51px);
   overflow-y: auto;
 }
 .Sidebar.all {
@@ -77,16 +77,16 @@
   color: white;
 }
 .Sidebar.all .hash.teaching {
-  color: var(--teaching-workspace);
+  color: var(--teaching-workspace-pale);
 }
 .Sidebar.all .hash.personal {
-  color: var(--personal-workspace);
+  color: var(--personal-workspace-pale);
 }
 .Sidebar.all .hash.public_scholarships {
-  color: var(--public-workspace);
+  color: var(--public-workspace-pale);
 }
 .Sidebar.all .hash.research {
-  color: var(--research-workspace);
+  color: var(--research-workspace-pale);
 }
 .Sidebar .hash.all {
   color: transparent;
@@ -111,10 +111,6 @@ li {
 .linkText {
   color: white;
 }
-
-li a:hover {
-  background-color: white;
-}
 li a:hover .linkText {
   color: var(--link);
 }
@@ -123,10 +119,18 @@ h2 {
   padding-left: var(--base);
   font-weight: 600;
 }
+ul.tabs {
+  padding: 0;
+  margin-top: 10px;
+}
+ul.tabs li {
+  padding-right: 0;
+  width: calc(100% / 5);
+  position: relative;
+}
 .tabs {
   display: flex;
-  justify-content: space-around;
-
+  justify-content: space-between;
   padding: 0;
   margin: 0;
   padding-right: 13px;
@@ -134,71 +138,151 @@ h2 {
 }
 .tabs a {
   display: block;
-  padding: calc(var(--base) * 0.7);
-  position: relative;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;     
+}
+.tabs a:focus {
+  outline: none;
 }
 .tabs li a:before {
-  content: ' ';
-  border-radius: 100%;
-  width: calc(var(--base) * 0.65);
-  height: calc(var(--base) * 0.65);
-  box-shadow: 1.5px 1.5px 4px rgba(147, 99, 210, 0.4);
+  border-radius: .3rem;
+  width: calc(var(--base) * 1.2);
+  height: calc(var(--base) * 1.2);
+  /*box-shadow: 1.5px 1.5px 4px rgba(147, 99, 210, 0.4);*/
   display: block;
   z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  color: #fff;
+  font-weight: 500;
+  text-align: center;
+  line-height: 26px;
+  transition: all .25s ease-out;
 }
-.tabs svg {
+ul.tabs li:hover a:not(.selected):before {
+  transform: translate(-50%, calc( -50% - 2px));
+  box-shadow: 3px 3px 7px rgba(147, 99, 210, .2);
+}
+.tabs .borders {
   display: none;
 }
-.tabs .selected svg {
-    max-width: 175%;
-  height: auto;
+.tabs .selected .borders {
   position: absolute;
-    top: -15px;
-    z-index: -1;
-    left: -13px;
+  top: 9px;
+  z-index: -1;
+  left: 0;
   display: block;
+  width: 100%;
+  border-radius: 20px;
+  height: 90px;
+  margin: 0;
 }
-.tabs a.selected:hover {
-  background-color: transparent;
+.tabs a.all-tab .borders,
+.all-tab .borders::before,
+.all-tab.selected .borders div { 
+  background: var(--all-workspace); 
 }
+.tabs a.research-tab .borders,
+.research-tab .borders::before,
+.research-tab.selected .borders div { 
+  background: var(--research-workspace); 
+}
+.tabs a.teaching-tab .borders,
+.teaching-tab .borders::before,
+.teaching-tab.selected .borders div { 
+  background: var(--teaching-workspace); 
+}
+.tabs a.personal-tab .borders,
+.personal-tab .borders::before,
+.personal-tab.selected .borders div { 
+  background: var(--personal-workspace); 
+}
+.tabs a.public-tab .borders,
+.public-tab .borders::before,
+.public-tab.selected .borders div { 
+  background: var(--public-workspace); 
+}
+.tabs .selected .borders::before,
+.tabs .selected .borders div {
+  content: "";
+  width: 10px;
+  height: 10px;
+  left: -9px;
+  top: 24px;
+  position: absolute;
+}
+.tabs .selected .borders::after,
+.selected .borders div::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: #F5F8FA;
+  border-radius: 50%;
+  position: absolute;
+}
+.tabs .selected .borders::after {
+  left: -20px;
+  top: 12px;
+}
+.tabs .selected .borders div {
+  left: initial;
+  right: -9px;
+}
+.selected .borders div::after {
+  right: -11px;
+  top: -12px;
+}
+
+
 .tabs .selected:before {
-  background-color: white;
+  background-color: transparent;
   box-shadow: none;
+  transform: translate(-50%, calc(-50% + 5px));
 }
 .all-tab.selected {
   color: var(--all-workspace);
 }
 .all-tab:before {
+  content: 'W';
   background-color: var(--all-workspace);
-  box-shadow: 1.5px 1.5px 4px rgba(185, 185, 185, 0.4);
+  box-shadow: 1.5px 1.5px 4px rgba(95, 83, 83, 0.5);
 }
 .research-tab.selected {
   color: var(--research-workspace);
 }
 .research-tab:before {
-  background-color: var(--research-workspace);
-  box-shadow: 1.5px 1.5px 4px #C32324;
+  content: 'R';
+  background-color: var(--research-workspace-pale);
+  box-shadow: 1.5px 1.5px 4px rgba(238, 82, 83, 0.5);
 }
 .teaching-tab.selected {
   color: var(--teaching-workspace);
 }
 .teaching-tab:before {
-  background-color: var(--teaching-workspace);
-  box-shadow: 1.5px 1.5px 4px rgba(147, 99, 210, 0.4);
+  content: 'T';
+  background-color: var(--teaching-workspace-pale);
+  box-shadow: 1.5px 1.5px 4px rgba(95, 84, 183, 0.5);
 }
 .public-tab.selected {
   color: var(--public-workspace);
 }
 .public-tab:before {
-  background-color: var(--public-workspace);
-  box-shadow: 1.5px 1.5px 4px rgba(49, 111, 183, 0.4);
+  content: 'PS';
+  background-color: var(--public-workspace-pale);
+  box-shadow: 1.5px 1.5px 4px rgba(111, 176, 201, .5);
 }
 .personal-tab.selected {
   color: var(--personal-workspace);
 }
 .personal-tab:before {
-  background-color: var(--personal-workspace);
-  box-shadow: 1.5px 1.5px 4px rgba(0, 165, 106, 0.4);
+  content: 'P';
+  background-color: var(--personal-workspace-pale);
+  box-shadow: 1.5px 1.5px 4px rgba(134, 209, 209, .5);
 }
 .workspaces {
   position: sticky;
@@ -215,34 +299,45 @@ h2 {
 {#if workspace}
 <div class="workspaces" transition:fly|local={{x: -250}}>
 <ul class="tabs">
-  <li><a href="/library/all/all" class="all-tab" class:selected={workspace === 'all'}>
-  {#if workspace === 'all'}
-    <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
-  {/if}
-  <span class="visually-hidden">All</span> </a></li>
-  <li><a href="/library/Research/all" class="research-tab" class:selected={workspace === 'Research'}>
-  
-  {#if workspace === 'Research'}
-    <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
-  {/if}
-    <span class="visually-hidden">Research</span></a></li>
-  <li><a href="/library/Teaching/all" class="teaching-tab" class:selected={workspace === 'Teaching'}>
-  
-  {#if workspace === 'Teaching'}
-    <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
-  {/if}<span class="visually-hidden">Teaching</span></a></li>
-  <li><a href="/library/Public_Scholarships/all" class="public-tab" class:selected={workspace === 'Public_Scholarships'}>
-
-  {#if workspace === 'Public_Scholarships'}
-    <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
-  {/if}
-  <span class="visually-hidden">Public scholarships</span></a></li>
-  <li><a href="/library/Personal/all" class="personal-tab" class:selected={workspace === 'Personal'}>
-
-  {#if workspace === 'Personal'}
-    <svg  out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}" width='66' height='57' viewBox='0 0 66 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='9' width='48' height='57' rx='24' fill='currentColor'/><path d='M66 38.0345C59.2 38.0345 57.1667 30.6782 57 27L54 43L66 38.0345Z' fill='currentColor'/><path d='M0 37.7241C6.8 37.7241 8.83333 29.908 9 26L12 43L0 37.7241Z' fill='currentColor'/></svg>
-  {/if}
-  <span class="visually-hidden">Personal</span></a></li>
+  <li>
+      <a href="/library/all/all" class="all-tab" class:selected={workspace === 'all'}>
+          {#if workspace === 'all'}
+            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+          {/if}
+          <span class="visually-hidden">All</span> 
+      </a>
+  </li>
+  <li>
+      <a href="/library/Research/all" class="research-tab" class:selected={workspace === 'Research'}>
+          {#if workspace === 'Research'}
+            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+          {/if}
+          <span class="visually-hidden">Research</span>
+      </a>
+  </li>
+  <li>
+      <a href="/library/Teaching/all" class="teaching-tab" class:selected={workspace === 'Teaching'}>
+          {#if workspace === 'Teaching'}
+            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+          {/if}<span class="visually-hidden">Teaching</span>
+      </a>
+  </li>
+  <li>
+      <a href="/library/Public_Scholarships/all" class="public-tab" class:selected={workspace === 'Public_Scholarships'}>
+          {#if workspace === 'Public_Scholarships'}
+            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+          {/if}
+          <span class="visually-hidden">Public scholarships</span>
+      </a>
+  </li>
+  <li>
+      <a href="/library/Personal/all" class="personal-tab" class:selected={workspace === 'Personal'}>
+          {#if workspace === 'Personal'}
+            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"></div>  
+          {/if}
+          <span class="visually-hidden">Personal</span>
+      </a>
+  </li>
 </ul>
 <div class="Sidebar {workspace.split('_')[0].toLowerCase()}">
 <h2>{#if workspace === 'all'}
