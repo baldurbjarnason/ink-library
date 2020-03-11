@@ -8,6 +8,12 @@
   --all-workspace: #002230;
   --all-workspace-selected: #193C4A;
 }
+:root {
+  --research-workspace-pale: #E74951;
+  --teaching-workspace-pale: #6D73E0;
+  --public-workspace-pale: #0184CE;
+  --personal-workspace-pale: #00AAAA;
+}
 
 :root {
   --rc-darker: #2e9595;

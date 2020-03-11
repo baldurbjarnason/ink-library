@@ -102,10 +102,18 @@
   .NewBox .MoreItems {
     grid-column: 1 / -1;
     padding: var(--base);
-    grid-gap: var(--base);
+    grid-gap: var(--base) calc(var(--base) * 3);
     border-top: 1px solid white;
     display: grid;
     grid-template-columns: 1fr 1fr;
+  }
+  .MoreItems p {
+    float: left;
+    width: 10%;
+    text-align: center;
+    line-height: 38px;
+    margin: calc(var(--base)*0.25) 0;
+    font-size: .8rem;
   }
   /* .Wide {
     grid-column: 1 / -1;
@@ -123,7 +131,7 @@
     outline: none;
   }
   .NewBox input::placeholder {
-    color: white;
+    color: rgba(255, 255, 255, .5);
   }
   .NewBox:focus-within {
     box-shadow: 0 0 0 3px white;
@@ -179,6 +187,10 @@
   .Expander.expanded {
     transform: rotate(180deg);
   }
+  .typeDiv {
+    grid-row: 2;
+    grid-column: 2;
+  }
   @media (max-width: 720px) {
     .new-button {
       position: fixed;
@@ -222,40 +234,45 @@
 </style>
 
 {#if open}
-  <div class="NewBox" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}">
-  <form id="newform" class="newForm" action="/api/create-publication" on:submit={submit}>
-<label class="visually-hidden" id="new-label" for="new-input">New item:</label>
-<Closer click={close} dark={true} />
-<input type="hidden" name="type" value="Publication">
-<input type="title" required name="name" id="new-input" class="title-field" value="" placeholder="Publication Title" bind:this={input}  autocomplete="off">
+    <div class="NewBox" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}">
+        <form id="newform" class="newForm" action="/api/create-publication" on:submit={submit}>
+            <label class="visually-hidden" id="new-label" for="new-input">New item:</label>
+            <Closer click={close} dark={true} />
+            <input type="hidden" name="type" value="Publication">
+            <input type="title" required name="name" id="new-input" class="title-field" value="" placeholder="Publication Title" bind:this={input}  autocomplete="off">
 
-  <WhiteButton>Create</WhiteButton>
-  <button type="button" class="Expander" class:expanded on:click={() => {
-    expanded = !expanded
-  }}>
-  <svg width="36" height="36" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="1" y="-1" width="37" height="37" rx="14" transform="matrix(1 0 0 -1 0 37)" stroke="currentColor" stroke-width="2"/>
-<rect x="12" y="17.4141" width="2" height="10" rx="1" transform="rotate(-45 12 17.4141)" fill="currentColor"/>
-<rect x="24.7285" y="16" width="2" height="10" rx="1" transform="rotate(45 24.7285 16)" fill="currentColor"/>
-</svg>
-</button>
-
-{#if expanded}
-   <div class="MoreItems">
-    <div><Input placeholder="https://www.example.com/path/to/item" dark={true} name="newURL" type="url">Add url:</Input></div>
-    <div><FileInput dark={true} name="newFile" type="file">Add file:</FileInput></div>
-    <div><TypeSelect dark={true}>Select type:</TypeSelect></div>
-    <div><AddWorkspace>Add workspace:</AddWorkspace></div>
-    <div><Input placeholder="First Author, Second Author..." dark={true} name="author">Add authors:</Input></div>
-    <AddCollections dark={true} />
-   </div>
-{/if}
-</form>
-</div>
-<span></span>
+            <WhiteButton>Create</WhiteButton>
+            <button type="button" class="Expander" class:expanded on:click={() => { expanded = !expanded }}>
+                <svg width="36" height="36" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="1" y="-1" width="37" height="37" rx="14" transform="matrix(1 0 0 -1 0 37)" stroke="currentColor" stroke-width="2"/>
+                    <rect x="12" y="17.4141" width="2" height="10" rx="1" transform="rotate(-45 12 17.4141)" fill="currentColor"/>
+                    <rect x="24.7285" y="16" width="2" height="10" rx="1" transform="rotate(45 24.7285 16)" fill="currentColor"/>
+                </svg>
+            </button>
+            {#if expanded}
+                <div class="MoreItems">
+                    <div>
+                        <Input placeholder="Enter a URL" dark={true} name="newURL" type="url">Publication</Input>
+                        <p>or</p>
+                        <FileInput dark={true} name="newFile" type="file"></FileInput>
+                    </div>
+                    <div>
+                        <AddWorkspace>Assign workspace</AddWorkspace>
+                    </div>
+                    <AddCollections dark={true} />
+                    <div class="typeDiv">
+                        <TypeSelect dark={true}>Type</TypeSelect>
+                    </div>
+                </div>
+            {/if}
+        </form>
+    </div>
+    <span></span>
 {:else}
-  <span class="new-button" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}"
-    bind:this={newToggle}><Button click={click}><span class="NewButtonPlus">+</span> <span class="NewButtonLabel">
-      New
-    </span></Button></span>
+    <span class="new-button" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}" bind:this={newToggle}>
+        <Button click={click}>
+            <span class="NewButtonPlus">+</span> 
+            <span class="NewButtonLabel">New</span>
+        </Button>
+    </span>
 {/if}
