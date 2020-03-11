@@ -13,8 +13,6 @@
           value: collection.id
         }
       })
-        .filter(collection => collection.label.startsWith($addingWorkspace))
-      $addedCollections = $addedCollections.filter(collection => collection.label.startsWith($addingWorkspace))
     } else {
       filteredCollections = $collections.map(collection => {
         return {
