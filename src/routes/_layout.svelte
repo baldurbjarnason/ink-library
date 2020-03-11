@@ -32,7 +32,6 @@
   } else {
     menu = false
   }
-  $: console.log($session);
 </script>
 
 <style global>
