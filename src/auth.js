@@ -114,7 +114,7 @@ export function setup (app) {
       res,
       next
     ) {
-      res.redirect(req.session.returnTo || "/");
+      res.redirect("/library/all/all");
     });
   } else {
     // console.log('basic')
@@ -135,7 +135,7 @@ export function setup (app) {
     "/login",
     passport.authenticate(process.env.PASSPORT_STRATEGY),
     function(req, res, next) {
-      res.redirect(req.query.returnTo || "/");
+      res.redirect("/library/all/all");
     }
   );
   app.use("/logout", (req, res) => {
