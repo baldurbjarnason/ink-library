@@ -15,6 +15,7 @@
   import Note from './Note.svelte';
   import ToC from './ToC.svelte';
   import DescriptionCard from './DescriptionCard.svelte'
+  import CitationCard from './CitationCard.svelte'
   import StacksCard from './StacksCard.svelte'
   import AboutCard from './AboutCard.svelte'
   import KeywordsCard from './KeywordsCard.svelte'
@@ -49,12 +50,13 @@
   .Publication .Wrapper {
     display: grid;
     grid-template-columns: minmax(0,.5fr) 1fr .6fr;
+    grid-template-rows: min-content min-content min-content min-content 1fr;
     grid-row-gap: var(--base);
     grid-column-gap: var(--gap);
     grid-template-areas: "About Description Stacks"
+                         "About Citation Notes"
                          "About ToC Notes"
                          "Keywords ToC Notes"
-                         ". ToC Notes"
                          ". ToC Notes";
   }
   :global(#AboutCard) {
@@ -188,6 +190,7 @@
   {:else}
     
   <DescriptionCard />
+  <CitationCard />
 
   <AboutCard />
   <KeywordsCard />
