@@ -5,6 +5,7 @@
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   import {collections} from '../stores'
+  import {getWorkspaceAsLabel} from './getWorkspaceAsLabel.js'
   export let params
   let tags
   let workspace
@@ -345,7 +346,7 @@ ul.tabs li:hover a:not(.selected):before {
   {:else if workspace === "Research"}
     Research
   {:else if workspace === "Public_Scholarships"}
-    Public scholarships
+    Public scholarship
   {:else if workspace === "Teaching"}
     Teaching
   {:else if workspace === "Personal"}
@@ -358,7 +359,7 @@ ul.tabs li:hover a:not(.selected):before {
   {#if workspace === 'all'}
     All items
   {:else}
-    All in {workspace}
+    All in {getWorkspaceAsLabel(workspace)}
   {/if}
     </span></a></li>
   {#each tags as tag}

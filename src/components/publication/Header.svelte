@@ -4,6 +4,7 @@
   import { elasticInOut } from 'svelte/easing';
   import Tab from './Tab.svelte';
   import NavButton from './NavButton.svelte';
+  import {getWorkspaceAsLabel} from '../getWorkspaceAsLabel.js'
   let workspace
   $: if ($page.params.workspace) {
     workspace = $page.params.workspace
@@ -257,7 +258,7 @@
 <div class="Header" transition:fly|local="{{duration: 250, y: -250, easing: elasticInOut }}">
   <div class="HeaderContent {workspace !== 'all' && 'not-all'}">
   <div class="ReturnLink">
-    <a href="/library/{$page.params.workspace}/{$page.params.collection}" class="Return"><span aria-hidden="true" class="Chevron">&lt;</span> {$page.params.workspace === 'all' ? 'All workspaces' : $page.params.workspace.replace('_', ' ')}</a>
+    <a href="/library/{$page.params.workspace}/{$page.params.collection}" class="Return"><span aria-hidden="true" class="Chevron">&lt;</span> {$page.params.workspace === 'all' ? 'All workspaces' : getWorkspaceAsLabel($page.params.workspace.replace('_', ' '))}</a>
   </div>
   {#if url}
     <div class="MobileRead"><a href="{url}">Read</a></div>
