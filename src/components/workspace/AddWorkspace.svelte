@@ -11,12 +11,13 @@
   @supports(-webkit-appearance: none) {
     input[type="radio"] {
       -webkit-appearance: none;
-      width: 17px;
-      height: 17px;
+      width: 18px;
+      height: 18px;
       border:1px solid rgba(255,255,255, 0.75);
       background-color: var(--workspace-color);
-      border-radius: 100%;
+      border-radius: 6px;
       margin: 0;
+      cursor: pointer;
     }
     input[value="all"] {
       background-color: var(--all-workspace);
@@ -24,22 +25,22 @@
       /* box-shadow: 0 0 0 2px var(--research-workspace); */
     }
     input.Research {
-      background-color: var(--research-workspace);
+      background-color: var(--research-workspace-pale);
       color: var(--research-workspace);
       /* box-shadow: 0 0 0 2px var(--research-workspace); */
     }
     input.Public {
-      background-color: var(--public-workspace);
+      background-color: var(--public-workspace-pale);
       color: var(--public-workspace);
       /* box-shadow: 0 0 0 2px var(--public-workspace); */
     }
     input.Teaching {
-      background-color: var(--teaching-workspace);
+      background-color: var(--teaching-workspace-pale);
       color: var(--teaching-workspace);
       /* box-shadow: 0 0 0 2px var(--teaching-workspace); */
     }
     input.Personal {
-      background-color: var(--personal-workspace);
+      background-color: var(--personal-workspace-pale);
       color: var(--personal-workspace);
       /* box-shadow: 0 0 0 2px var(--personal-workspace); */
     }
@@ -48,10 +49,21 @@
     }
     input[type="radio"]:checked {
       position: relative;
-      /* Do a bug fix to keep iOS from adding dark background. */
+      /* Do a bug fix to keep iOS from adding dark background. 
       background-color: white;
       border-color: white;
-      box-shadow: inset 0 0 0 3px currentColor;
+      box-shadow: inset 0 0 0 3px currentColor;*/
+    }
+    input[type="radio"]:checked::after {
+        content: '';
+        border-bottom: 2px solid #fff;
+        border-right: 2px solid #fff;
+        width: 3px;
+        height: 6px;
+        position: absolute;
+        top: calc(50% - 1px);
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
     }
     /* input[type="radio"]:checked::after {
       content: " ";
@@ -74,19 +86,19 @@
     }
 }
   .LabelText {
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: 500;
+    font-size: .8rem;
   }
   .Checks {
     display: flex;
-    padding: calc(var(--base)*0.5) calc(var(--base)*1.5);
+    padding: calc(var(--base)*0.5 - 1px) calc(var(--base)*1.5);
     width: 100%;
     font-size: 0.85rem;
     margin: calc(var(--base) * 0.25) 0;
-    border-radius: 15px;
+    border-radius: 10px;
     border-color: transparent;
     color: #fff;
-    background-color: rgba(255,255,255, 0.125);
+    background-color: #fff;
     justify-content: space-between;
   }
   label {

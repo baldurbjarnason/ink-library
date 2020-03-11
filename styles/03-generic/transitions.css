@@ -1,0 +1,4 @@
+* {
+    transition: all .25s ease-out;
+    -webkit-transition: all .25s ease-out;
+}

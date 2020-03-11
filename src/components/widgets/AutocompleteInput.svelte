@@ -59,8 +59,8 @@
     display: none;
 }
   .LabelText {
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: 500;
+    font-size: .8rem;
   }
   .dark {
     color: white
@@ -70,14 +70,14 @@
     font-size: 0.85rem;
     padding: calc(var(--base) * 0.5);
     margin: calc(var(--base) * 0.25) 0;
-    border-radius: 15px;
+    border-radius: 10px;
     border: 1px solid #EEEEEE;
     background-color: white;
   }
   .dark input {
     border-color: transparent;
-    color: #fff;
-    background-color: rgba(255,255,255, 0.125);
+    color: var(--all-workspace);
+    background-color: rgba(255,255,255, 1);
   }
   input:focus {
     outline: none;
@@ -87,7 +87,7 @@
     box-shadow: 0 0 2px 2px white;
   }
   .dark input::placeholder {
-    color: rgba(255,255,255,0.8);
+    color: rgb(0, 34, 48, 0.5);
   }
 @media (max-width: 720px) {
   .LabelText {

@@ -52,28 +52,33 @@
 
 <style>
   .LabelText {
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: 500;
+    font-size: .8rem;
   }
   .dark {
     color: white
   }
   .input {
-    width: 100%;
+    width: 45%;
+    float: left;
+    cursor: pointer;
     font-size: 0.85rem;
-    padding: calc(var(--base) * 0.5);
+    padding: calc(var(--base) * 0.5 - 2px);
     margin: calc(var(--base) * 0.25) 0;
-    border-radius: 15px;
-    border: 1px solid #EEEEEE;
-    background-color: white;
+    border-radius: 10px;
+    border: 2px solid #fff;
     line-height: 1rem;
     position: relative;
+    text-align: center;
   }
+  .input:hover {
+    background: rgba(255, 255, 255, .1);
+  }/*
   .dark .input {
     border-color: transparent;
     color: #fff;
     background-color: rgba(255,255,255, 0.125);
-  }
+  }*/
   label:focus-within .input {
     outline: none;
     box-shadow: 0 0 0 2px rgba(104,214,212,.6);
@@ -147,23 +152,27 @@
 Upload URL endpoint should take content type as a parameter and return a {publication: true|false, url} object to indicate whether we support that file type.
  -->
 <label class:dark>
-<div class="LabelText">
-  <slot></slot>
-</div>
-{#if type}
-  <input type="hidden" name="uploadType" value={type}>
-{/if}
-{#if publication}
-  <input type="hidden" name="uploadPublication" value={publication}>
-{/if}
-{#if storageId}
-  <input type="hidden" name="storageId" value={storageId}>
-{/if}
-{#if original}
-  <input type="hidden" name="uploadURL" value={original}>
-{/if}
-<div class="input" class:done class:failed class:working>
-{#if file}
-  {file.name}
-{:else}Upload a file 
-{/if}<input type="file" name={name} id="input-{name}" {placeholder} autocomplete="off" class="visually-hidden" on:change={change}></div></label>
+    <div class="LabelText">
+        <slot></slot>
+    </div>
+    {#if type}
+        <input type="hidden" name="uploadType" value={type}>
+    {/if}
+    {#if publication}
+        <input type="hidden" name="uploadPublication" value={publication}>
+    {/if}
+    {#if storageId}
+        <input type="hidden" name="storageId" value={storageId}>
+    {/if}
+    {#if original}
+        <input type="hidden" name="uploadURL" value={original}>
+    {/if}
+    <div class="input" class:done class:failed class:working>
+    {#if file}
+        {file.name}
+    {:else}
+        Upload a file 
+    {/if}
+    <input type="file" name={name} id="input-{name}" {placeholder} autocomplete="off" class="visually-hidden" on:change={change}>
+    </div>
+</label>
