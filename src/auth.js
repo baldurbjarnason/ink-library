@@ -52,8 +52,9 @@ async function deserialise(user) {
     try {
       user.profile = await getProfile(user)
     } catch (err) {
-      console.error(err)
-      console.error(err.response)
+      try {
+        console.error("Auth failed: ", err.response.body)
+      } catch (err) {}
       if (err.response && err.response.statusCode === 404) {
         try {
           await got.post(`${process.env.API_SERVER}readers`, {
@@ -68,10 +69,10 @@ async function deserialise(user) {
           });
           user.profile = await getProfile(user)
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
       } else {
-        user.profile = { status: err.response.statusCode };
+        user.profile = null;
       }
     }
   }
@@ -113,7 +114,7 @@ export function setup (app) {
       res,
       next
     ) {
-      res.redirect(req.session.returnTo || "/");
+      res.redirect("/library/all/all");
     });
   } else {
     // console.log('basic')
@@ -134,7 +135,7 @@ export function setup (app) {
     "/login",
     passport.authenticate(process.env.PASSPORT_STRATEGY),
     function(req, res, next) {
-      res.redirect(req.query.returnTo || "/");
+      res.redirect("/library/all/all");
     }
   );
   app.use("/logout", (req, res) => {

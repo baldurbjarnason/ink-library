@@ -6,7 +6,6 @@ import { setup as authSetup } from "./auth.js";
 // import dotenv from "dotenv";
 import session from "express-session";
 import makeStore from 'connect-redis'
-import fs from "fs"
 
 const { NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
@@ -33,7 +32,6 @@ if (dev) {
 //   .then(result => console.log(result))
 //   .catch(err => console.error(err))
 
-const accessTemplate = fs.readFileSync('pages/access.html', 'utf8')
 const redis = require('redis')
 // import firesession from 'firestore-store'
 
@@ -67,8 +65,8 @@ export function setup(sapper, options = {}) {
     resave: true,
     rolling: true,
     saveUninitialized: false,
-    name: "__session",
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: !dev, name: "__session", httpOnly: true, sameSite: 'lax' }
+    name: process.env.COOKIE_NAME || '__session',
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: !dev, name: process.env.COOKIE_NAME || '__session', httpOnly: true, sameSite: 'lax' }
   });
   app.use(express.urlencoded({ extended: true }));
   app.use(
@@ -94,17 +92,6 @@ export function setup(sapper, options = {}) {
       sirv("static")
     );
   }
-  app.get("/access", (req, res, next) => {
-    const html = accessTemplate.replace('{RETURN_TO}', encodeURIComponent(req.query.returnTo) || '%2F')
-    return res.send(html)
-  })
-  app.use((req, res, next) => {
-    if (req.user) {
-      return next()
-    } else {
-      res.redirect(`/access?returnTo=${encodeURIComponent(req.path)}`)
-    }
-  })
   app.use(
     "/",
     (req, res, next) => {

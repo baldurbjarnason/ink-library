@@ -36,7 +36,7 @@ export const library = derived([page, refreshDate, searchStore], ([$page, $refre
       set(lib)
     })
     .catch(err => {
-      set({type: 'failed'})
+      set({type: 'failed', items: []})
       error.set(err)
       console.error(err)
     })

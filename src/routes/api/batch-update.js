@@ -9,6 +9,7 @@
 import got from "got";
 
 export async function post(req, res, next) {
+  if (!req.user.profile) return res.sendStatus(401)
   if (!req.body.items) return
   if (req.body.action === "delete") {
     const ids = req.body.items.map(item => item.id)

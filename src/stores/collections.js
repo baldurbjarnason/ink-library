@@ -13,7 +13,7 @@ export const tags = derived(refreshCollections, ($refreshCollections, set) => {
       set(lib)
     })
     .catch(err => {
-      set({type: 'failed'})
+      set([])
       error.set(err)
       console.error(err)
     })
@@ -22,7 +22,7 @@ export const workspaces = derived(tags, ($tags, set) => {
   set($tags.filter(tag => tag.type === 'workspace'))
 })
 export const collections = derived(tags, ($tags, set) => {
-  const stacks = $tags.filter(tag => tag.type !== 'workspace').sort((a, b) => getName(a.name).localeCompare(getName(b.name)))
+  const stacks = $tags.filter(tag => tag.type === 'stack').sort((a, b) => getName(a.name).localeCompare(getName(b.name)))
   set(stacks)
 })
 

@@ -3,6 +3,7 @@ import got from "got";
 
 // This needs to filter by workspace
 export async function get(req, res, next) {
+  if (!req.user.profile) return res.sendStatus(401)
   try {
     let url = `${process.env.API_SERVER}library`
     const query = new URLSearchParams(req.query)
@@ -22,7 +23,12 @@ export async function get(req, res, next) {
     }).json();
     res.json(response);
   } catch (err) {
-    res.status(err.response.statusCode)
-    return res.json(JSON.parse(err.response.body))
+    if (err.response && err.response.statusCode) {
+      res.status(err.response.statusCode)
+      return res.json(JSON.parse(err.response.body))
+    } else {
+      res.status(500)
+      return res.json(JSON.parse(err))
+    }
   }
 }

@@ -16,7 +16,6 @@ export const notesSearch = writable('')
 
 
 export const publicationNotes = derived([publicationId, refreshPublication, notesSearch, publicationWorkspace, publicationStack], ([$publicationId, $refreshPublication, $notesSearch, $publicationWorkspace, $publicationStack], set) => {
-  console.log($refreshPublication)
   if (!$refreshPublication.id || $refreshPublication.id !== $publicationId) {
     set([])
   }
