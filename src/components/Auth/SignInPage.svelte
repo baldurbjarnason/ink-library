@@ -69,7 +69,7 @@
   <div class="LabelText">
     Email:
   </div>
-  <input type="email" name="email" placeholder="example.email@example.com" autocomplete="username" required>
+  <input type="email" name="username" placeholder="example.email@example.com" autocomplete="username" required>
 </label>
 <label>
   <div class="LabelText">
