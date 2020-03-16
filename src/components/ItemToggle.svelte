@@ -54,9 +54,13 @@
     text-decoration: none !important;
     transition: color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: none;
-    margin: auto;
-    padding: calc(var(--base) * 0.5) 0 calc(var(--base) * 0.5) calc(var(--base) * 0.65);
+    margin: auto 0;
+    padding: calc(var(--base) * 0.5) 0 calc(var(--base) * 0.5);
   }
+  a:first-child {
+    margin-right: 12px;
+  }
+
 
   a:hover,
   a:link:hover,
@@ -84,7 +88,7 @@
   }
   .Toggles {
     display: flex;
-    padding: 0 0 0 var(--base);
+    padding: 0;
   }
 @media (max-width: 720px) {
   .Toggles {

@@ -1,7 +1,6 @@
 <script>
   import NewItem from './workspace/NewItem.svelte'
   import Search from './Search.svelte'
-  import ItemToggle from './ItemToggle.svelte'
   import WorkspaceMenu from './WorkspaceMenu.svelte'
   import List from './workspace/List.svelte'
   export let workspace
@@ -20,6 +19,16 @@
 
   z-index: 2;
 }
+.Toolbar::before{
+  content: '';
+  background: var(--main-background-color);
+  width: calc(100% + 20px);
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: -5px;
+  z-index: -1;
+}
   @media (max-width: 720px) {
     .Toolbar {
       height: calc(var(--base) * 6);
@@ -36,6 +45,5 @@
 <nav class="Toolbar">
   <NewItem {workspace} />
   <Search />
-  <ItemToggle />
 </nav>
 <List />

@@ -5,6 +5,7 @@
   import Card from './Card.svelte'
   import Item from './Item.svelte'
   import HeaderArrows from './HeaderArrows.svelte'
+  import ItemToggle from '../ItemToggle.svelte'
   import SmallButton from '../widgets/SmallButton.svelte'
   import SortSelect from './SortSelect.svelte'
   import SortButton from './SortButton.svelte'
@@ -37,8 +38,20 @@
     font-size: var(--item-font-size);
     position: sticky;
     top: 82px;
+    padding-top: 40px;
     background-color: var(--main-background-color);
     z-index: 1;
+  }
+  .Header::before, 
+  .CardHeader::before {
+    content: "";
+    background: var(--main-background-color);
+    width: calc(100% + 30px);
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: -5px;
+    z-index: -1;
   }
   .Header > div {
     display: flex;
@@ -126,6 +139,7 @@ code {
 
   {#if query["list-style"] === 'card'}
     <div class="CardHeader">
+    <ItemToggle />  
     <div><SortSelect {query} path={$page.path}>Sort By: </SortSelect></div>
     <div>{#if selecting}
       <SmallButton click={() => selecting = false}>Done</SmallButton>
@@ -141,7 +155,7 @@ code {
             <Card {item} {selecting} />
             {:else}
               <div class="Empty">
-              <pre aria-hidden="true"><code> ̄\_(ツ)_/ ̄</code></pre>
+              <pre aria-hidden="true"><code>¯\_(ツ)_/¯</code></pre>
                 <p>
                   No publications...
                 </p></div>
@@ -158,7 +172,7 @@ code {
       {/if}</div>
     </div>
     <div class="Header">
-    <div>&nbsp;</div>
+      <ItemToggle />
     <div><SortButton {query} type="title" path={$page.path}>Title</SortButton></div>
     <div>Stacks</div>
     <div>Type</div>
