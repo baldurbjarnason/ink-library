@@ -22,7 +22,7 @@
 .Toolbar::before{
   content: '';
   background: var(--main-background-color);
-  width: calc(100% + 20px);
+  width: calc(100% + 30px);
   height: 100%;
   position: absolute;
   top: 0;
