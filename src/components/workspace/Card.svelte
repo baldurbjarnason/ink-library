@@ -2,6 +2,7 @@
   import ItemStacks from './ItemStacks.svelte'
   import ReadButton from './ReadButton.svelte'
   import {addSelected, removeSelected} from '../../stores'
+  import {typeName} from '../typeName.js'
   export let item = {}
   export let selecting
   let selected = false
@@ -154,7 +155,7 @@
     <label><span class="visually-hidden">Select this item</span><input type="checkbox" bind:checked={selected}></label>
   {:else}
     <span>&nbsp;</span>
-  {/if}<span>{item.type}</span> <span class="Modified">Modified:  <strong>{new Date(item.updated).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</strong></span></div>
+  {/if}<span>{typeName(item.type)}</span> <span class="Modified">Modified:  <strong>{new Date(item.updated).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</strong></span></div>
   <div class="CardMain">
     <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
     <div class="Name"><span class="title">{item.name}</span>

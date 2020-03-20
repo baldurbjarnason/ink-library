@@ -1,6 +1,7 @@
 
 <script>
   import {publication, workspaces, page} from '../../stores'
+  import {typeName} from '../typeName.js'
   function languages (lang) {
     if (lang.english === "English") {
       return 'English'
@@ -130,6 +131,6 @@
   {/each}
 
   <dt>Type</dt>
-  <dd>{$publication.type.split(/(?=[A-Z])/).join(' ')}</dd>
+  <dd>{typeName($publication.type).split(/(?=[A-Z])/).join(' ')}</dd>
 {/if}
 </dl>
