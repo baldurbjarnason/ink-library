@@ -252,7 +252,7 @@
             {#if expanded}
                 <div class="MoreItems">
                     <div>
-                        <Input placeholder="Enter a URL" dark={true} name="newURL" type="url">Source</Input>
+                        <Input placeholder="Enter a URL" name="newURL" type="url">Source</Input>
                         <p>or</p>
                         <FileInput dark={true} name="newFile" type="file"></FileInput>
                     </div>

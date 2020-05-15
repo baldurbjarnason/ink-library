@@ -4,6 +4,7 @@
   export let dark = false
   export let type = "text"
   export let list = false
+  export let fullWidth = false
   export let change = () => {}
 </script>
 
@@ -24,12 +25,13 @@
     border-radius: 10px;
     background-color: white;
     border: none;
-  }/*
+  }
+
   .dark input {
     border-color: transparent;
     color: #fff;
     background-color: rgba(255,255,255, 0.125);
-  }*/
+  }
   input:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(104,214,212,.6);
@@ -38,12 +40,15 @@
     box-shadow: 0 0 2px 2px white;
   }
   .dark input::placeholder {
-    color: rgb(0, 34, 48, 0.5);
+    color: rgb(255, 255, 255, 0.5);
   }
 @media (max-width: 720px) {
   .LabelText {
     font-size: 0.85rem;
   }
+}
+.fullWidth {
+  width: 100%;
 }
 </style>
 
@@ -51,4 +56,4 @@
 <div class="LabelText">
   <slot></slot>
 </div>
-<input {type} name={name} id="input-{name}" {placeholder} autocomplete="off" {list} on:change={change}></label>
+<input {type} name={name} id="input-{name}" {placeholder} autocomplete="off" {list} on:change={change} class:fullWidth></label>

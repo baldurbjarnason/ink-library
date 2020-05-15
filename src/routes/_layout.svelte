@@ -2,6 +2,7 @@
   import { library as libraryStore, page as pageStore, error } from '../stores';
 	import Nav from '../components/Nav.svelte';
   import Sidebar from '../components/Sidebar.svelte';
+  import NotesSidebar from '../components/NotesSidebar.svelte';
   import SignIn from '../components/Auth/SignIn.svelte'
   import SignUp from '../components/Auth/SignUp.svelte'
   import SignInPage from '../components/Auth/SignInPage.svelte'
@@ -32,6 +33,7 @@
   } else {
     menu = false
   }
+  $: console.log(segment)
 </script>
 
 <style global>
@@ -118,9 +120,13 @@
   </div> -->
 {:else}
   <main class="grid" class:publication>
-  {#if !menu}
+  {#if !menu && segment === 'library'}
     <Nav {params} />
     <Sidebar {params} />
+    {:else if !menu && segment === 'notes'}
+    <Nav {params} />
+    <NotesSidebar {params} />
+       <!-- else if content here -->
   {/if}
 
   <div class="content {params.workspace || "unfinished"}" class:publication>
