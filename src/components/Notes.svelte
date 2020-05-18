@@ -20,7 +20,7 @@
   top: 0;
   position: sticky;
   background-color: var(--main-background-color);
-
+  justify-content: space-between;
   z-index: 2;
 }
 .Body {
