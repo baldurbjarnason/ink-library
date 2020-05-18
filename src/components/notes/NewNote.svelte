@@ -1,12 +1,13 @@
 <script>
   import Button from '../widgets/Button.svelte'
+  import Closer from '../widgets/Closer.svelte';
+  import WhiteButton from '../workspace/WhiteButton.svelte'
   import {send, receive} from '../../routes/_crossfade.js';
   import { afterUpdate, tick } from 'svelte';
-  import {refreshDate, refreshCollections, collections, addingWorkspace, addedCollections, addedWorkspaces} from '../../stores';
+  import NoteEditor from '../widgets/NoteEditor.svelte'
+  import {refreshNotes, refreshCollections, collections, addingWorkspace, addedCollections, addedWorkspaces, page, workspaces} from '../../stores';
   import {getToken} from '../../getToken'
-  export let workspace
   let open = false
-  let input
   let newToggle
   let expanded = false
   function click () {
@@ -17,58 +18,38 @@
     await tick()
     newToggle.querySelector('button').focus()
   }
-  afterUpdate(() => {
-    if (open) {
-      input.focus();
-    }
-  })
+
+  let text
   async function submit (event) {
     event.preventDefault();
     close();
-    const { target } = event;
-    const newInput = window.document.getElementById('new-input').value
-    if (newInput[0] === "#") {
-      const value = workspace === 'all' ? newInput.slice(1) : `${workspace}/${newInput.slice(1)}`
-      try {
-        await fetch('/api/create-collection', {
-          method: "POST",
-          credentials: "include",
-          headers: { 
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "csrf-token": getToken()
-            },
-          body: JSON.stringify({
-            type: 'stack',
-            name: value
-          })
-        })
-        $refreshCollections = Date.now()
-      } catch (err) {
-        console.error(err)
-      }
-    } else {
-      try {
-        const body = Object.fromEntries(new URLSearchParams(new FormData(target)).entries())
-        body.addedCollections = $addedCollections
-        body.addedWorkspaces = $addedWorkspaces
-        $addedWorkspaces = []
-        $addedCollections = []
-        await fetch(target.action, {
-          method: "POST",
-          credentials: "include",
-          headers: { 
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "csrf-token": getToken()
-            },
-          body: JSON.stringify(body)
-        })
-        $refreshDate = Date.now()
-      } catch (err) {
-        console.error(err)
-      }
+    let workspace
+    if ($page.params.workspace && $page.params.workspace !== 'all') {
+      workspace = $workspaces.find(space => space.name === $page.params.workspace).id
     }
+    // Need to do the same for stack
+    let collection
+    if ($page.params.collection && $page.params.collection !== 'all') {
+      collection = $collections.find(space => space.name === $page.params.collection).id
+    }
+    const note = {
+      body: [{
+        motivation: "commenting",
+        content : text
+      }],
+      _workspace: workspace,
+      _collection: collection
+    }
+    await window.fetch(`/api/notes`, {
+      method: 'POST',
+      credentials: "include",
+      headers: {
+        "csrf-token": getToken(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(note),
+    })
+    $refreshNotes = Date.now()
   }
 </script>
 
@@ -92,98 +73,14 @@
     height: 100%;
     grid-template-rows: calc(var(--base)*5.3) auto;
   }
-  .NewBox .MoreItems {
+.Editor {
+  display: block;
+  background-color: rgba(255,255,255,0.9);
     grid-column: 1 / -1;
-    padding: var(--base);
-    grid-gap: var(--base) calc(var(--base) * 3);
-    border-top: 1px solid white;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-  .MoreItems p {
-    float: left;
-    width: 10%;
-    text-align: center;
-    line-height: 38px;
-    margin: calc(var(--base)*0.25) 0;
-    font-size: .8rem;
-  }
-  /* .Wide {
-    grid-column: 1 / -1;
-  } */
-  .NewBox input {
-    flex: 1 1 100%;
-    font-family: var(--sans-fonts);
-    font-size: 220%;
-    border: none;
-    font-weight: 300;
-    background-color: transparent;
-    color: white;
-  }
-  .NewBox input:focus {
-    outline: none;
-  }
-  .NewBox input::placeholder {
-    color: rgba(255, 255, 255, .5);
-  }
-  .NewBox:focus-within {
-    box-shadow: 0 0 0 3px white;
-  }
-  .new-button {
-    margin: 0 auto 0 0;
-  }
-  .Expander{
-    font-family: var(--sans-fonts);
-    font-size: 0.9rem;
-    flex: 0 1 auto;
-    line-height: 1;
-
-    display: inline-block;
-
-    padding: var(--base);
-
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    text-align: center;
-    white-space: nowrap;
-    text-decoration: none;
-    font-weight: 500;
-    color: white;
-    border-radius: 15px;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    /* transition: box-shadow 0.15s ease-in-out; */
-    background-color: transparent;
-    text-decoration: none !important;
-    transition: transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
-    border: none;
-  }
-
-  .Expander:hover svg{
-    color: white !important;
-    fill: rgba(255, 255, 255, 0.4);
-    box-shadow: none;
-    text-decoration: none;
-  }
-
-  .Expander:active,
-  .Expander:link:active {
-    background-color: var(--active);
-  }
-  .Expander:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px #68d6d499;
-  }
-  .Expander.expanded {
-    transform: rotate(180deg);
-  }
-  .typeDiv {
-    grid-row: 2;
-    grid-column: 2;
-  }
+    color: #333;
+    margin: 1rem;
+    border-radius: 0.25rem;
+}
   @media (max-width: 720px) {
     .new-button {
       position: fixed;
@@ -225,9 +122,25 @@
   }
 }
 </style>
+
+{#if open}<div class="NewBox" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}">
+        <form id="newform" class="newForm" action="/api/create-publication" on:submit={submit}>
+            <Closer click={close} dark={true} />
+            
+<span>&nbsp;</span>
+            <WhiteButton>Create</WhiteButton>
+<span>&nbsp;</span>
+          <div class="Editor">
+          <NoteEditor bind:richtext={text}/>
+          </div>
+        </form>
+    </div>
+    <span></span>
+{:else}
     <span class="new-button" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}" bind:this={newToggle}>
         <Button click={click}>
             <span class="NewButtonPlus">+</span> 
             <span class="NewButtonLabel">New Note</span>
         </Button>
     </span>
+{/if}

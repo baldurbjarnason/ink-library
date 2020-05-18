@@ -1,12 +1,16 @@
 <script>
-  import {note, notes, refreshNotes} from '../../stores'
+  import {note, notes, refreshNotes, page} from '../../stores'
   import NoteEditor from '../widgets/NoteEditor.svelte'
   import {getToken} from '../../getToken'
   import Button from '../widgets/Button.svelte'
   let title
   $: if ($notes && $notes.type !== "loading") {
     const listNote = $notes.items.find(item => item.shortId === $note.shortId)
-    title = listNote.publication.name
+    if (listNote.publication) {
+      title = listNote.publication.name
+    } else {
+      title = `Workspace: ${$page.params.workspace}`
+    }
   }
   let body = ""
   $: if ($note && $note.body && $note.body[0]) {
