@@ -6,6 +6,7 @@ export {error} from './error'
 export {library, refreshDate, searchStore} from './library'
 export {notes, refreshNotes, searchNotes} from './notes'
 export {collections, workspaces, tags, refreshCollections, addingWorkspace, addedCollections, addedWorkspaces} from './collections'
+export {note, refreshNote} from './note'
 
 export const selectedItems = writable(new Set())
 

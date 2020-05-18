@@ -4,7 +4,9 @@
   import ItemToggle from './ItemToggle.svelte'
   import WorkspaceMenu from './WorkspaceMenu.svelte'
   import NotesList from './notes/NotesList.svelte'
+  import NoteEdit from './notes/NoteEdit.svelte'
   import Button from './widgets/Button.svelte'
+  export let id = false
   export let workspace
 </script>
 
@@ -20,6 +22,13 @@
   background-color: var(--main-background-color);
 
   z-index: 2;
+}
+.Body {
+  display: grid;
+  grid-gap: 1rem;
+}
+.NotesEditor {
+  grid-template-columns: .3fr 1fr;
 }
   @media (max-width: 720px) {
     .Toolbar {
@@ -42,4 +51,13 @@
     <Button light={true}>Grouping</Button>
   </div>
 </nav>
-<NotesList />
+
+<div class="Body" class:NotesEditor={id}>
+  <div>
+  <NotesList />
+  </div>
+  {#if id}
+     <NoteEdit />
+  {/if}
+</div>
+

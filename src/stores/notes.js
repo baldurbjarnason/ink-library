@@ -33,6 +33,10 @@ export const notes = derived([page, refreshNotes, searchNotes], ([$page, $refres
   }
   return fetch(url)
     .then(lib => {
+      if ($page.params.id) {
+        const listNote = lib.items.find(item => item.shortId === $page.params.id)
+        listNote.selected = true
+      }
       set(lib)
     })
     .catch(err => {

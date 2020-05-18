@@ -33,7 +33,6 @@
   } else {
     menu = false
   }
-  $: console.log(segment)
 </script>
 
 <style global>

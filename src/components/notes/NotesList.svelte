@@ -33,8 +33,9 @@
   .Cards {
     position: relative;
     display: grid;
-    min-height: 100vh;
+    min-height: calc(100vh - 8rem);
     grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-gap: var(--base);
     grid-auto-rows: max-content;
   }
