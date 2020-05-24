@@ -15,6 +15,14 @@
   --personal-workspace-pale: #00AAAA;
 }
 
+
+/* Colour variables used in the reading UI */
+:root {
+  --reader-toolbar-background: #F1F5F8;
+  --reader-toolbar-color: #002230;
+  --reader-notes-tools-background: #002230;
+}
+
 :root {
   --rc-darker: #2e9595;
   --rc-dark: #32a5a5;
