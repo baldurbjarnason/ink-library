@@ -6,7 +6,7 @@
   let title
   $: if ($notes && $notes.type !== "loading") {
     const listNote = $notes.items.find(item => item.shortId === $note.shortId)
-    if (listNote.publication) {
+    if (listNote && listNote.publication) {
       title = listNote.publication.name
     } else {
       title = `Workspace: ${$page.params.workspace}`
