@@ -36,6 +36,7 @@ export async function post(req, res, next) {
     type,
     author,
     links,
+    json: {storageId: req.body.storageId},
     name: req.body.name
   }
   console.log(req.body)

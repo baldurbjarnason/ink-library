@@ -53,7 +53,10 @@ async function onFinalize(object, context, done) {
     });
     extract({contents: JSON.stringify(book)}, Object.assign({ url: "index.json" }, book), {contentType: "application/json"})
   }
-  async function extract(file, resource, metadata) {
+  async function extract(file, resource) {
+    const metadata = {
+      contentType:  resource.encodingFormat
+    }
     // Should also generate thumbnails of all images.
     let thumb;
     let gzip = resource.encodingFormat && compressible(resource.encodingFormat)
