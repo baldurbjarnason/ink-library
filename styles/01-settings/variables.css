@@ -19,8 +19,13 @@
 /* Colour variables used in the reading UI */
 :root {
   --reader-toolbar-background: #F1F5F8;
-  --reader-toolbar-color: #002230;
+  --reader-toolbar-border: #DDE8ED;
+  --reader-toolbar-color: #333;
+  --reader-titlebar-color: rgba(255, 255, 255, 0.8);
+  --reader-titlebar-background: #002230;
   --reader-notes-tools-background: #002230;
+  --reader-main-background: #FAFAFA;
+  --reader-info-background:  #F9FCFE;
 }
 
 :root {

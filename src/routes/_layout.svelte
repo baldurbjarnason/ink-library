@@ -76,6 +76,7 @@
   }
   .content.publication, .content.unfinished {
     grid-column: 2 / -1;
+    padding: 0;
   }
   @media (max-width: 720px) {
     .grid {

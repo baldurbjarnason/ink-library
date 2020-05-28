@@ -6,4 +6,4 @@
   /* your styles go here */
 </style>
 
-<PublicationRecord />
+<PublicationRecord info={true} />

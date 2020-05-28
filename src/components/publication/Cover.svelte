@@ -22,10 +22,9 @@
   .Image {
     width: 100%;
     height: auto;
-    box-shadow: 3px 3px 10px rgba(192, 192, 192, 0.3);
-    border-radius: 15px;
     margin: auto;
     margin-bottom: var(--base);
+    border: 1px solid #BDBDBD;
     max-width: 320px;
   }
 </style>

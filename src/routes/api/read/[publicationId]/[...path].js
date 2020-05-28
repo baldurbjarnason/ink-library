@@ -16,7 +16,11 @@ export async function get(req, res, next) {
     const file = bucket.file(basePath)
     const [data] = await file.download()
     const chapter = JSON.parse(data)
-    const response = await preRender(chapter, {annotations: notes.items, documentURL: path.join('/api/read/', req.params.publicationId, req.params.storageId, req.params.path.join("/"))})
+    const documentURL = path.join('/api/read/', req.params.publicationId, req.params.storageId, req.params.path.join("/"))
+    const chapterBase = '/'
+    const linkBase = path.join('/library/all/all/', req.params.publicationId, req.params.storageId, req.params.path.join("/"))
+    const mediaBase = path.join('/api/stored/', req.params.storageId, req.params.path.join("/"))
+    const response = await preRender(chapter, {annotations: notes.items, documentURL, mediaBase, linkBase, chapterBase})
     res.json(response);
   } catch (err) {
     if (err.response && err.response.statusCode) {

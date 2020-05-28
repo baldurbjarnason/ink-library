@@ -5,7 +5,7 @@
 <style>
 nav {
   background: white;
-  box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.03); 
+  border-right: 1px solid #EEEEEE;
   position: sticky;
   top: 0;
   z-index: 1;

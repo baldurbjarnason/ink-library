@@ -14,7 +14,7 @@ export async function get(req, res, next) {
     const bucket = storage
       .bucket(process.env.GOOGLE_STORAGE_BUCKET)
     const [url] = await bucket
-      .file(`${userPrefix}/${req.params.file}`)
+      .file(`${userPrefix}/${req.params.storageId}/${req.params.path.join('/')}`)
       .getSignedUrl(config);
     res.redirect(url)
   }
