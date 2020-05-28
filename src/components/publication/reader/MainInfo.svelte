@@ -1,6 +1,7 @@
 <script>
   import {publication, workspaces, page} from '../../../stores'
-  import Metadata from '../Metadata.svelte'
+  import AboutCard from '../AboutCard.svelte'
+  import DescriptionCard from '../DescriptionCard.svelte'
   import Cover from '../Cover.svelte'
 </script>
 
@@ -20,5 +21,8 @@
 
 <div class="Reader">
   <div class="LeftSidebar"><Cover /></div>
-  <div class="Body"><Metadata /></div>
+  <div class="Body">
+  <DescriptionCard />
+  <AboutCard />
+  </div>
 </div>

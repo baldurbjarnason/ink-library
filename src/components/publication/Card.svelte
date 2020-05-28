@@ -18,11 +18,9 @@
   .Card {
     display: flex;
     flex-direction: column;
-    background-color: white;
-    padding: calc(var(--base)*1.5) var(--gap);
-    box-shadow: 5px 5px 50px rgba(0, 0, 0, 0.05);
-    border-radius: 15px;
     position: relative;
+    border-top: 1px solid #ddd;
+    margin-bottom: 2rem;
   }
   .Target {
     display: block;
