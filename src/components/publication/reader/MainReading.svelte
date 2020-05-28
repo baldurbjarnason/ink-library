@@ -1,5 +1,6 @@
 <script>
   import {publication, workspaces, page} from '../../../stores'
+  import ToC from '../ToC.svelte'
 </script>
 
 <style>
@@ -18,7 +19,7 @@
 </style>
 
 <div class="Reader">
-  <div class="LeftSidebar"></div>
+  <div class="LeftSidebar"><ToC /></div>
   <div class="Body"></div>
   <div class="RightSidebar"></div>
 </div>

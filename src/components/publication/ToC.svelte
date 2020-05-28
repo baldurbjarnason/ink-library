@@ -5,6 +5,9 @@
 </script>
 
 <style>
+  .ToC {
+    padding: 0 1rem;
+  }
   .ToC :global(ol) {
     margin: 0;
     padding-left: var(--base);
