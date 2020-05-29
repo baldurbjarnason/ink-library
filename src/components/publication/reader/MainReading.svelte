@@ -1,14 +1,13 @@
 <script>
   import {publication, workspaces, page, chapter} from '../../../stores'
   import ToC from '../ToC.svelte'
-  $: console.dir($chapter)
 </script>
 
 <style>
 .Reader {
   background-color: var(--reader-main-background);
   display: grid;
-  grid-template-columns: 0.3fr 1fr 0.3fr;
+  grid-template-columns: 0.4fr 1fr 0.2fr;
   padding-top: 2rem;
   padding-bottom: 2rem;
 }
@@ -16,6 +15,10 @@
   height: 100%;
   background-color: white;
   border: 1px solid #DDDDDD;
+  display: block;
+}
+:global(ink-body) {
+  padding: 2rem;
   display: block;
 }
 </style>

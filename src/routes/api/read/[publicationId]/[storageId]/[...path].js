@@ -7,7 +7,6 @@ const preRender = require('ink-engine/src/prerender')
 const URL = require('url').URL
 
 export async function get(req, res, next) {
-  console.log('function called')
   if (!req.user.profile) return res.sendStatus(401)
   const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
   try {
