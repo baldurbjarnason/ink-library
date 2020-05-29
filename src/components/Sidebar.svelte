@@ -303,7 +303,7 @@ ul.tabs li:hover a:not(.selected):before {
   <li>
       <a href="/library/all/all" class="all-tab" class:selected={workspace === 'all'}>
           {#if workspace === 'all'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+            <div class="borders" out:send|local|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"><div></div></div>  
           {/if}
           <span class="visually-hidden">All</span> 
       </a>
@@ -311,7 +311,7 @@ ul.tabs li:hover a:not(.selected):before {
   <li>
       <a href="/library/Research/all" class="research-tab" class:selected={workspace === 'Research'}>
           {#if workspace === 'Research'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+            <div class="borders" out:send|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"><div></div></div>  
           {/if}
           <span class="visually-hidden">Research</span>
       </a>
@@ -319,14 +319,14 @@ ul.tabs li:hover a:not(.selected):before {
   <li>
       <a href="/library/Teaching/all" class="teaching-tab" class:selected={workspace === 'Teaching'}>
           {#if workspace === 'Teaching'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+            <div class="borders" out:send|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"><div></div></div>  
           {/if}<span class="visually-hidden">Teaching</span>
       </a>
   </li>
   <li>
       <a href="/library/Public_Scholarships/all" class="public-tab" class:selected={workspace === 'Public_Scholarships'}>
           {#if workspace === 'Public_Scholarships'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+            <div class="borders" out:send|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"><div></div></div>  
           {/if}
           <span class="visually-hidden">Public scholarships</span>
       </a>
@@ -334,7 +334,7 @@ ul.tabs li:hover a:not(.selected):before {
   <li>
       <a href="/library/Personal/all" class="personal-tab" class:selected={workspace === 'Personal'}>
           {#if workspace === 'Personal'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"></div>  
+            <div class="borders" out:send|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"></div>  
           {/if}
           <span class="visually-hidden">Personal</span>
       </a>

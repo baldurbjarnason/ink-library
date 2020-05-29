@@ -234,7 +234,7 @@
 </style>
 
 {#if open}
-    <div class="NewBox" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}">
+    <div class="NewBox" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}">
         <form id="newform" class="newForm" action="/api/create-publication" on:submit={submit}>
             <label class="visually-hidden" id="new-label" for="new-input">New item:</label>
             <Closer click={close} dark={true} />
@@ -269,7 +269,7 @@
     </div>
     <span></span>
 {:else}
-    <span class="new-button" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}" bind:this={newToggle}>
+    <span class="new-button" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}" bind:this={newToggle}>
         <Button click={click}>
             <span class="NewButtonPlus">+</span> 
             <span class="NewButtonLabel">New Source</span>
