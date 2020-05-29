@@ -4,25 +4,26 @@ const storage = new Storage();
 const got = require('got');
 const path = require('path')
 const preRender = require('ink-engine/src/prerender')
+const URL = require('url').URL
 
-// This needs to filter by workspace
 export async function get(req, res, next) {
+  console.log('function called')
   if (!req.user.profile) return res.sendStatus(401)
   const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
   try {
     const notes = await getNotes(req)
     const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "")
-    const basePath = path.join(userPrefix, req.params.storageId, req.params.path.join("/"))
+    const basePath = path.join(userPrefix, req.params.storageId, req.params.path.join("/") + '.json')
     const file = bucket.file(basePath)
     const [data] = await file.download()
     const chapter = JSON.parse(data)
     const documentURL = path.join('/api/read/', req.params.publicationId, req.params.storageId, req.params.path.join("/"))
-    const chapterBase = '/'
     const linkBase = path.join('/library/all/all/', req.params.publicationId, req.params.storageId, req.params.path.join("/"))
     const mediaBase = path.join('/api/stored/', req.params.storageId, req.params.path.join("/"))
-    const response = await preRender(chapter, {annotations: notes.items, documentURL, mediaBase, linkBase, chapterBase})
+    const response = await preRender(chapter, {annotations: notes.items, documentURL, mediaBase, linkBase})
     res.json(response);
   } catch (err) {
+    console.error(err)
     if (err.response && err.response.statusCode) {
       res.status(err.response.statusCode)
       return res.json(JSON.parse(err.response.body))

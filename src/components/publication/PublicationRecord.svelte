@@ -30,7 +30,7 @@
 .Publication {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr 100vh
+  grid-template-rows: 1fr 1fr minmax(100vh, auto);
 }
 </style>
 <svelte:window on:hashchange={hashchange}/>

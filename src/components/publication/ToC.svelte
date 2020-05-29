@@ -1,7 +1,10 @@
 <script>
-  import {contents} from "../../stores"
+  import {contents, chapterId} from "../../stores"
   import ContentsItem from "./ContentsItem.svelte"
   import Loading from "../widgets/Loading.svelte"
+  $: if ($chapterId === null && $contents.children[0]) {
+    $chapterId = $contents.children[0].url
+  }
 </script>
 
 <style>
