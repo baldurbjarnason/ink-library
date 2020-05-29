@@ -1,4 +1,5 @@
 <script>
+  import {typeName} from '../typeName.js'
   const types = [
   'Publication',
   'Article',
@@ -95,6 +96,6 @@
   <option value="none">None</option>
 {/if}
 {#each types as type}
-  <option value="{type}">{type}</option>
+  <option value="{type}">{typeName(type)}</option>
 {/each}
 </select></label>

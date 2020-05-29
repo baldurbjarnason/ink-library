@@ -1,10 +1,18 @@
 <script>
-  import {contents} from "../../stores"
+  import {contents, chapterId, page} from "../../stores"
   import ContentsItem from "./ContentsItem.svelte"
   import Loading from "../widgets/Loading.svelte"
+  $: if ($chapterId === null && $contents.children[0] && !$page.params.path) {
+    $chapterId = $contents.children[0].url
+  } else if ($page.params.path) {
+    $chapterId = $page.params.path.join("/")
+  }
 </script>
 
 <style>
+  .ToC {
+    padding: 0 1rem;
+  }
   .ToC :global(ol) {
     margin: 0;
     padding-left: var(--base);

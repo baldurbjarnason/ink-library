@@ -4,6 +4,7 @@
   export let hidden = false
   export let disabled = false
   export let type = 'button'
+  export let light = false
 </script>
 
 <style>
@@ -58,6 +59,12 @@
     outline: none;
     box-shadow: 0 0 0 3px #68d6d499;
   }
+  .Button.light {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    color: #002230;
+  }
 </style>
 
 
@@ -67,12 +74,14 @@
     {hidden}
     {disabled}
     {href}
+    class:light
     on:click={click}>
     <slot />
   </a>
 {:else}
   <button
     class="Button"
+    class:light
     {type}
     {hidden}
     {disabled}

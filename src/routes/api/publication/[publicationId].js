@@ -1,32 +1,7 @@
 
 import got from "got";
-import friendlyWords from 'friendly-words';
 import ISO6391 from 'iso-639-1'
 
-function friendlyName (type) {
-  const index = Math.floor(Math.random() * Math.floor(friendlyWords[type].length));
-  const word = friendlyWords[type][index].charAt(0).toUpperCase() + friendlyWords[type][index].slice(1)
-  return word
-}
-
-function note () {
-  const number = Math.floor(Math.random() * Math.floor(100));
-  const result = {type: "TextualBody", purpose: "commenting"}
-  const body = []
-  for (let index = 0; index < number; index++) {
-    body.push(`${friendlyName('predicates')} ${friendlyName('objects')}`)
-  }
-  result.value = body.join(' ')
-  return result
-}
-function notes () {
-  const result = []
-  for (let index = 0; index < 10; index++) {
-    result.push({body: [note()]})
-  }
-  return result
-
-}
 
 // Make a list of fake notes: motivation, lang, id, body
 
@@ -48,7 +23,6 @@ export async function get(req, res, next) {
       }
     })
     response.keywords = response.keywords || []
-    response.replies = notes()
     res.json(response);
   } catch (err) {
     res.status(err.response.statusCode)

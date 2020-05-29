@@ -120,3 +120,64 @@ export const contents = derived(publication, ($publication, set) => {
       console.error(err)
     })
 }, {type: 'loading', children: []})
+
+export const chapterId = writable(null)
+
+export const chapter = derived([chapterId, publication], ([$chapterId, $publication], set) => {
+  if (!process.browser || !$publication.json || !$chapterId) return
+  const storageId = $publication.json.storageId
+  if (!storageId) return
+  return window.fetch(`/api/read/${$publication.shortId}/${storageId}/${$chapterId}`)
+    .then(res => {
+      if (res.ok) {
+        return res.json()
+      } else {
+        return {
+          type: "processing",
+          heading: "Processing...",
+          contents: "",
+          stylesheets: []
+        }
+      }
+    })
+    .then(contents => {
+      set(contents)
+    })
+    .catch(err => {
+      set({type: 'failed', stylesheets: [], contents: ""})
+      console.error(err)
+    })
+}, {type: "Loading", contents: "", stylesheets: []})
+
+
+export const storedPub = derived(publication, ($publication, set) => {
+  if (!process.browser || !$publication.json) {
+    set({
+      type: 404,
+      heading: "",
+      children: []
+    })
+    return
+  }
+  const storageId = $publication.json.storageId
+  if (!storageId) return
+  return window.fetch(`/api/read/${$publication.shortId}/${storageId}/`)
+    .then(res => {
+      if (res.ok) {
+        return res.json()
+      } else {
+        return {
+          type: "processing",
+          heading: "Processing...",
+          readingOrder: []
+        }
+      }
+    })
+    .then(contents => {
+      set(contents)
+    })
+    .catch(err => {
+      set({type: 'failed'})
+      console.error(err)
+    })
+}, {type: 'loading', readingOrder: []})

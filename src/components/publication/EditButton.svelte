@@ -35,8 +35,10 @@
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: 1px solid currentColor;
     position: absolute;
-    top: calc(var(--base)*1.25);
-    right: var(--gap);
+    top: 0;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: var(--reader-info-background);
   }
   .Button:hover {
     color: var(--hover);
