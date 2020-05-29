@@ -154,8 +154,7 @@ export const storedPub = derived(publication, ($publication, set) => {
   if (!process.browser || !$publication.json) {
     set({
       type: 404,
-      heading: "",
-      children: []
+      readingOrder: []
     })
     return
   }

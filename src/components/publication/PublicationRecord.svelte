@@ -1,6 +1,6 @@
 <script>
   import {onMount, afterUpdate} from 'svelte';
-  import {publication, workspaces, page} from '../../stores'
+  import {publication, workspaces, page, chapterId, storedPub} from '../../stores'
   import {send, receive} from './crossfade.js';
 	import { fly } from 'svelte/transition';
   import { elasticInOut } from 'svelte/easing';
@@ -25,6 +25,11 @@
       element.scrollIntoView({behavior: "smooth"})
     }
   });
+  $: if ($chapterId === null && $storedPub.readingOrder[0] && !$page.params.path) {
+    $chapterId = $storedPub.readingOrder[0].url
+  } else if ($page.params.path) {
+    $chapterId = $page.params.path.join("/")
+  }
 </script>
 <style>
 .Publication {
