@@ -124,7 +124,12 @@ export const contents = derived(publication, ($publication, set) => {
 export const chapterId = writable(null)
 
 export const chapter = derived([chapterId, publication], ([$chapterId, $publication], set) => {
-  if (!process.browser || !$publication.json || !$chapterId) return
+  if (!process.browser) return
+  if (!$chapterId) {
+    set({type: "Loading", contents: "", stylesheets: []})
+    return
+  }
+  if (!$publication.json) return
   const storageId = $publication.json.storageId
   if (!storageId) return
   return window.fetch(`/api/read/${$publication.shortId}/${storageId}/${$chapterId}`)
