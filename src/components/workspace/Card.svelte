@@ -1,6 +1,5 @@
 <script>
   import ItemStacks from './ItemStacks.svelte'
-  import ReadButton from './ReadButton.svelte'
   import {addSelected, removeSelected} from '../../stores'
   import {typeName} from '../typeName.js'
   export let item = {}
@@ -170,5 +169,5 @@
   <div class="Stacks">
     <ItemStacks {item} {selected} />
   </div>
-  <div class="ItemEntry"><span><ReadButton {item} /></span></div>
+  <div class="ItemEntry"><span></span></div>
 </div>

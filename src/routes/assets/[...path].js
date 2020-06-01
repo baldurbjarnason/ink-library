@@ -71,7 +71,6 @@ export async function get(req, res, next) {
       const [exists] = await file.exists()
       if (!exists) return res.sendStatus(404)
       const [metadata] = await file.getMetadata()
-      console.log(metadata.contentType)
       if (metadata.contentType === "image/svg+xml") {
         const [mainresponse] = await file.download()
         const dom = new JSDOM(mainresponse, {
@@ -104,7 +103,6 @@ export async function get(req, res, next) {
           }).pipe(resizer)
           .pipe(res);
       } else if (testMediaTypes(metadata.contentType)) {
-        console.log('we get this far')
         file.createReadStream()
           .on('error', function(err) {
             console.error(err)
