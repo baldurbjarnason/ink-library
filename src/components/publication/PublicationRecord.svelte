@@ -1,8 +1,6 @@
 <script>
   import {onMount, afterUpdate} from 'svelte';
   import {publication, workspaces, page, chapterId, storedPub, chapter} from '../../stores'
-  import {send, receive} from './crossfade.js';
-	import { fly } from 'svelte/transition';
   import { elasticInOut } from 'svelte/easing';
   import TitleBar from './reader/TitleBar.svelte'
   import ToolBar from './reader/ToolBar.svelte'
