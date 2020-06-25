@@ -104,26 +104,10 @@
   }
 
 @media (max-width: 720px) {
-  .NewBox input {
-    font-size: 100%;
-  }
-  .Expander {
-    padding: 0.25rem;
-  }
-  .Expander svg {
-    width: 29px;
-    height: 29px;
-  }
-  .NewBox .MoreItems {
-    max-height: 55vh;
-    grid-template-columns: 1fr;
-    overflow-y: auto;
-    margin-bottom: 2rem;
-  }
 }
 </style>
 
-{#if open}<div class="NewBox" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}">
+{#if open}<div class="NewBox" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}">
         <form id="newform" class="newForm" action="/api/create-publication" on:submit={submit}>
             <Closer click={close} dark={true} />
             
@@ -137,7 +121,7 @@
     </div>
     <span></span>
 {:else}
-    <span class="new-button" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}" bind:this={newToggle}>
+    <span class="new-button" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}" bind:this={newToggle}>
         <Button click={click}>
             <span class="NewButtonPlus">+</span> 
             <span class="NewButtonLabel">New Note</span>

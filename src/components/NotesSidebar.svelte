@@ -80,24 +80,6 @@
   margin-right: calc(var(--base) * 0.5);
   color: white;
 }
-.Sidebar.all .hash.teaching {
-  color: var(--teaching-workspace-pale);
-}
-.Sidebar.all .hash.personal {
-  color: var(--personal-workspace-pale);
-}
-.Sidebar.all .hash.public_scholarships {
-  color: var(--public-workspace-pale);
-}
-.Sidebar.all .hash.research {
-  color: var(--research-workspace-pale);
-}
-.Sidebar .hash.all {
-  color: transparent;
-}
-.Sidebar .selected {
-    background-color: rgba(255, 255, 255, 0.2);
-}
 ul {
   padding: 0;
 }
@@ -106,17 +88,8 @@ li {
   font-size: 0.8rem;
   padding-right: calc(var(--base) * .5);
 }
-.Sidebar a:link, .Sidebar .empty {
-  display: block;
-  padding: calc(var(--base) * 0.25) var(--base);
-  text-decoration: none;
-  border-radius: 0px 50px 50px 0px;
-}
 .linkText {
   color: white;
-}
-li a:hover .linkText {
-  color: var(--link);
 }
 h2 {
   font-size: 0.9rem;
@@ -311,7 +284,7 @@ ul.tabs li:hover a:not(.selected):before {
   <li>
       <a href="/library/all/all" class="all-tab" class:selected={workspace === 'all'}>
           {#if workspace === 'all'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+            <div class="borders" out:send|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"><div></div></div>  
           {/if}
           <span class="visually-hidden">All</span> 
       </a>
@@ -319,7 +292,7 @@ ul.tabs li:hover a:not(.selected):before {
   <li>
       <a href="/library/Research/all" class="research-tab" class:selected={workspace === 'Research'}>
           {#if workspace === 'Research'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+            <div class="borders" out:send|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"><div></div></div>  
           {/if}
           <span class="visually-hidden">Research</span>
       </a>
@@ -327,14 +300,14 @@ ul.tabs li:hover a:not(.selected):before {
   <li>
       <a href="/library/Teaching/all" class="teaching-tab" class:selected={workspace === 'Teaching'}>
           {#if workspace === 'Teaching'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+            <div class="borders" out:send|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"><div></div></div>  
           {/if}<span class="visually-hidden">Teaching</span>
       </a>
   </li>
   <li>
       <a href="/library/Public_Scholarships/all" class="public-tab" class:selected={workspace === 'Public_Scholarships'}>
           {#if workspace === 'Public_Scholarships'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"><div></div></div>  
+            <div class="borders" out:send|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"><div></div></div>  
           {/if}
           <span class="visually-hidden">Public scholarships</span>
       </a>
@@ -342,7 +315,7 @@ ul.tabs li:hover a:not(.selected):before {
   <li>
       <a href="/library/Personal/all" class="personal-tab" class:selected={workspace === 'Personal'}>
           {#if workspace === 'Personal'}
-            <div class="borders" out:send="{{key: 'tabs-marker'}}" in:receive="{{key: 'tabs-marker'}}"></div>  
+            <div class="borders" out:send|local="{{key: 'tabs-marker'}}" in:receive|local="{{key: 'tabs-marker'}}"></div>  
           {/if}
           <span class="visually-hidden">Personal</span>
       </a>

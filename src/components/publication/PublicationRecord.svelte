@@ -1,8 +1,6 @@
 <script>
   import {onMount, afterUpdate} from 'svelte';
-  import {publication, workspaces, page} from '../../stores'
-  import {send, receive} from './crossfade.js';
-	import { fly } from 'svelte/transition';
+  import {publication, workspaces, page, chapterId, storedPub, chapter} from '../../stores'
   import { elasticInOut } from 'svelte/easing';
   import TitleBar from './reader/TitleBar.svelte'
   import ToolBar from './reader/ToolBar.svelte'
@@ -25,6 +23,13 @@
       element.scrollIntoView({behavior: "smooth"})
     }
   });
+  $: if ($chapterId === null && $storedPub.readingOrder[0] && !$page.params.path) {
+    $chapterId = $storedPub.readingOrder[0].url
+  } else if ($page.params.path) {
+    $chapterId = $page.params.path.join("/")
+  } else {
+    $chapterId = null
+  }
 </script>
 <style>
 .Publication {

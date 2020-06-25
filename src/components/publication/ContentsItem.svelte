@@ -2,7 +2,7 @@
   import {page} from "../../stores"
   export let item
   let selected
-  $: if ($page.params.path.join("/") === item.url) {
+  $: if ($page.params.path && $page.params.path.join("/") === item.url) {
     selected = true
   } else {
     selected = false
@@ -81,7 +81,7 @@
     </details>
   {:else}
    {#if item.url}
-    <a href="/library/{$page.params.workspace}/{$page.params.stack}/{$page.params.publicationId}/{item.url}" class="Level">{item.label}</a>
+    <a href="/library/{$page.params.workspace}/{$page.params.collection}/{$page.params.publicationId}/{item.url}" class="Level">{item.label}</a>
    {:else}
     <span class="Level">{item.label}</span>
    {/if}
