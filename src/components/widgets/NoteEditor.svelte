@@ -4,7 +4,6 @@
   import Editor from './Editor.svelte'
   import DOMPurify from "dompurify";
   const commentConfig = {
-    KEEP_CONTENT: false,
     ALLOWED_TAGS: [
       "p",
       "i",
@@ -22,8 +21,11 @@
     ],
     FORBID_ATTR: ["style"]
   };
-  let html = ""
+  export let html = ""
   export let richtext = ""
+  $: if (html) {
+    richtext = DOMPurify.sanitize(html, commentConfig)
+  }
 </script>
 
 <style>
@@ -31,5 +33,5 @@
 </style>
 
 <Editor bind:richtext>
-{@html DOMPurify.sanitize(html, commentConfig)}
+<div>{@html DOMPurify.sanitize(html, commentConfig)}</div>
 </Editor>

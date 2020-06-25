@@ -2,6 +2,7 @@
 import got from "got";
 
 export async function get(req, res, next) {
+  if (!req.user.profile) return res.sendStatus(401)
   try {
     let url = `${process.env.API_SERVER}notes`
     const query = new URLSearchParams(req.query)

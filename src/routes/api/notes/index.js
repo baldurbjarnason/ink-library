@@ -2,6 +2,7 @@
 import got from "got";
 
 export const post = async function post(req, res, next) {
+  if (!req.user.profile) return res.sendStatus(401)
   const workspace = req.body._workspace
   const collection = req.body._collection
   delete req.body._workspace
@@ -43,6 +44,7 @@ export const post = async function post(req, res, next) {
 }
 
 export async function get(req, res, next) {
+  if (!req.user.profile) return res.sendStatus(401)
   try {
     let url = `${process.env.API_SERVER}notes`
     const query = new URLSearchParams(req.query)

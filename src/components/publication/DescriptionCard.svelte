@@ -36,10 +36,19 @@
     background-color: #f6f6f6;
     padding: 1rem;
   }
+  h2 {
+    background-color: var(--reader-info-background);
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0 1rem 0 0;
+    transform: translateY(-50%);
+    font-size:  1rem;
+    font-weight: bold;
+  }
 </style>
 
   <Card id="Description" tab="About" bind:editing={editing} {save}>
-    <Cover />
     <h2>Description</h2>
     <div class="Description">
       {#if editing}

@@ -234,12 +234,12 @@
 </style>
 
 {#if open}
-    <div class="NewBox" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}">
+    <div class="NewBox" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}">
         <form id="newform" class="newForm" action="/api/create-publication" on:submit={submit}>
             <label class="visually-hidden" id="new-label" for="new-input">New item:</label>
             <Closer click={close} dark={true} />
             <input type="hidden" name="type" value="Publication">
-            <input type="title" required name="name" id="new-input" class="title-field" value="" placeholder="Publication Title" bind:this={input}  autocomplete="off">
+            <input type="title" required name="name" id="new-input" class="title-field" value="" placeholder="Enter a new Source Title or #stack name" bind:this={input}  autocomplete="off">
 
             <WhiteButton>Create</WhiteButton>
             <button type="button" class="Expander" class:expanded on:click={() => { expanded = !expanded }}>
@@ -252,7 +252,7 @@
             {#if expanded}
                 <div class="MoreItems">
                     <div>
-                        <Input placeholder="Enter a URL" dark={true} name="newURL" type="url">Publication</Input>
+                        <Input placeholder="Enter a URL" name="newURL" type="url">Source</Input>
                         <p>or</p>
                         <FileInput dark={true} name="newFile" type="file"></FileInput>
                     </div>
@@ -269,10 +269,10 @@
     </div>
     <span></span>
 {:else}
-    <span class="new-button" out:send="{{key: 'new-box'}}" in:receive="{{key: 'new-box'}}" bind:this={newToggle}>
+    <span class="new-button" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}" bind:this={newToggle}>
         <Button click={click}>
             <span class="NewButtonPlus">+</span> 
-            <span class="NewButtonLabel">New</span>
+            <span class="NewButtonLabel">New Source</span>
         </Button>
     </span>
 {/if}

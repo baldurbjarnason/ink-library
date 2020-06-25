@@ -6,6 +6,10 @@ import httpStrategies from "passport-http";
 import debugSetup from "debug";
 import Auth0Strategy from "passport-auth0";
 const debug = debugSetup("vonnegut:auth");
+// const LocalStrategy = require('passport-local').Strategy
+// const {Firestore} = require('@google-cloud/firestore');
+// const firestore = new Firestore();
+// const bcrypt = require('bcrypt');
 
 function generateToken(user) {
   const expiresIn = "30m";
@@ -52,8 +56,9 @@ async function deserialise(user) {
     try {
       user.profile = await getProfile(user)
     } catch (err) {
-      console.error(err)
-      console.error(err.response)
+      try {
+        console.error("Auth failed: ", err.response.body)
+      } catch (err) {}
       if (err.response && err.response.statusCode === 404) {
         try {
           await got.post(`${process.env.API_SERVER}readers`, {
@@ -68,10 +73,10 @@ async function deserialise(user) {
           });
           user.profile = await getProfile(user)
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
       } else {
-        user.profile = { status: err.response.statusCode };
+        user.profile = null;
       }
     }
   }
@@ -113,7 +118,7 @@ export function setup (app) {
       res,
       next
     ) {
-      res.redirect(req.session.returnTo || "/");
+      res.redirect("/library/all/all");
     });
   } else {
     // console.log('basic')
@@ -128,13 +133,25 @@ export function setup (app) {
         }
       })
     );
+    // passport.use(new LocalStrategy(async function (username, password, done) {
+    //   const existing = await firestore.collection('users').where('email', '==', username)
+    //   if (existing.empty) return done(null, false, { message: 'Incorrect email or password' });
+    //   const [userDoc] = existing.docs
+    //   const passwordHash = userDoc.get('password')
+    //   const match = await bcrypt.compare(password, passwordHash)
+    //   if (!match) {
+    //     return done(null, false, { message: 'Incorrect email or password' });
+    //   } else {
+    //     return done(null, userDoc.data())
+    //   }
+    // }))
   }
 
   app.use(
     "/login",
     passport.authenticate(process.env.PASSPORT_STRATEGY),
     function(req, res, next) {
-      res.redirect(req.query.returnTo || "/");
+      res.redirect("/library/all/all");
     }
   );
   app.use("/logout", (req, res) => {

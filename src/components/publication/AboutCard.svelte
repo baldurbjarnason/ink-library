@@ -47,11 +47,20 @@
 </script>
 
 <style>
+  h2 {
+    background-color: var(--reader-info-background);
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0 1rem 0 0;
+    transform: translateY(-50%);
+    font-size:  1rem;
+    font-weight: bold;
+  }
 </style>
 
   <Card id="About" tab="About" bind:editing={editing} {save}>
     <h2>About</h2>
-    <Cover />
     {#if !editing}
       <Metadata />
     {:else}

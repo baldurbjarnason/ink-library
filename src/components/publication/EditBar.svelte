@@ -53,10 +53,12 @@
     display: flex;
     position: absolute;
 
-    top: calc(var(--base)*1.25);
-    right: var(--gap);
+    top: 0;
+    right: 0;
+    transform: translateY(-50%);
     width: min-content;
     justify-content: space-between;
+    background-color: var(--reader-info-background);
   }
 </style>
 

@@ -50,6 +50,7 @@
     min-height: 100vh;
     grid-template-columns: 1fr 1fr;
     grid-gap: var(--base);
+    grid-auto-rows: max-content;
   }
   .Items {
     position: relative;

@@ -1,10 +1,13 @@
 <script>
-  import {contents} from "../../stores"
+  import {contents, page} from "../../stores"
   import ContentsItem from "./ContentsItem.svelte"
   import Loading from "../widgets/Loading.svelte"
 </script>
 
 <style>
+  .ToC {
+    padding: 0 1rem;
+  }
   .ToC :global(ol) {
     margin: 0;
     padding-left: var(--base);

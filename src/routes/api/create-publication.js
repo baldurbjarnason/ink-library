@@ -3,6 +3,7 @@ import got from "got";
 // We need to take uploadURL, uploadType, storageId and uploadPublication and turn it into a link type
 // Access URL is `/api/stored-${file}` where file is storageId
 export async function post(req, res, next) {
+  if (!req.user.profile) return res.sendStatus(401)
   let author
   if (req.body.author) {
     author = req.body.author.split(',').map(name => {
@@ -35,6 +36,7 @@ export async function post(req, res, next) {
     type,
     author,
     links,
+    json: {storageId: req.body.storageId},
     name: req.body.name
   }
   console.log(req.body)

@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require("fs");
-const engine = require("ink-engine");
 const os = require("os");
 const formats = require("ink-engine/src/formats");
 const sharp = require("sharp");
@@ -34,6 +33,7 @@ async function onFinalize(object, context, done) {
     throw new Error('Both user id and publication id are required');
   if (!formats[contentType])
     return
+  const Format = formats[contentType]
   // The user id here has to be the sub/account id, not the profile id
   // The pubId should be the publication pathname, not its full URL
   const targetPath = [userType, userId, pubId].join("/");
@@ -41,7 +41,8 @@ async function onFinalize(object, context, done) {
   const bucket = storage.bucket(fileBucket);
   const tempFilePath = path.join(os.tmpdir(), fileName);
   await bucket.file(filePath).download({ destination: tempFilePath });
-  const book = await engine(tempFilePath, extract, { type: contentType });
+  const processor = new Format(tempFilePath, { extract, type: contentType })
+  const book = await processor.process();
   fs.unlinkSync(tempFilePath);
   if (book) {
     book.resources = book.resources.concat({
@@ -52,7 +53,10 @@ async function onFinalize(object, context, done) {
     });
     extract({contents: JSON.stringify(book)}, Object.assign({ url: "index.json" }, book), {contentType: "application/json"})
   }
-  async function extract(file, resource, metadata) {
+  async function extract(file, resource) {
+    const metadata = {
+      contentType:  resource.encodingFormat
+    }
     // Should also generate thumbnails of all images.
     let thumb;
     let gzip = resource.encodingFormat && compressible(resource.encodingFormat)

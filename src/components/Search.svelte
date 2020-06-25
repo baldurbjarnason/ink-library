@@ -60,6 +60,8 @@
     text-decoration: none !important;
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: none;
+    display: inline-flex;
+    justify-content: space-between;
   }
 
   .Button:hover,

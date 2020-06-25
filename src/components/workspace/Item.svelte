@@ -1,7 +1,7 @@
 <script>
   import {addSelected, removeSelected} from '../../stores'
   import ItemStacks from './ItemStacks.svelte'
-  import ReadButton from './ReadButton.svelte'
+  import {typeName} from '../typeName.js'
   export let item = {}
   export let selecting
   let selected = false
@@ -165,11 +165,9 @@
   <div class="Stacks">
     <ItemStacks {item} {selected} />
   </div>
-  <div class="ItemEntry"><span>{item.type}</span></div>
+  <div class="ItemEntry"><span>{typeName(item.type)}</span></div>
   <div class="ItemEntry"><span>{new Date(item.updated).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</span></div>
   <div class="ItemEntry Last">{#if selecting}
     <label><span class="visually-hidden">Select this item</span><input type="checkbox" bind:checked={selected}></label>
-  {:else}
-    <ReadButton {item} />
   {/if}</div>
 </div>
