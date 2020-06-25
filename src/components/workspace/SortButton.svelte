@@ -4,7 +4,7 @@
   export let path
   export let type
   export let selected
-  let url, sorting
+  let url
   $: if (query.orderBy === type) {
     selected = true;
   } else {
@@ -14,8 +14,11 @@
     url = `${path}${sortQuery(type)}`
   }
   function flipDirection (direction) {
-    sorting = direction === 'asc' ? 'desc' : 'asc';
-    return sorting
+    if (direction === 'asc') {
+       return 'desc'
+    } else {
+      return 'asc'
+    }
   }
   function sortQuery (type) {
     const config = Object.assign({}, query, {orderBy: type})
@@ -45,4 +48,5 @@
     color: white;
   }
 </style>
-<a href="{url}" class="HeaderSort" class:selected><HeaderArrows arrow={selected ? sorting : false} /> <slot></slot></a>
+
+<a href="{url}" class="HeaderSort" class:selected><HeaderArrows /> <slot></slot></a>

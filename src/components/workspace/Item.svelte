@@ -38,15 +38,12 @@
     display: grid;
     grid-template-columns: var(--list-template-columns);
     grid-gap: calc(var(--base) * 0.5);
-    margin: 0 2px 6px;
+    margin: 2px;
     border-radius: 15px;
     padding: calc(var(--base) * 0.25) calc(var(--base) * 0.5) calc(var(--base) * 0.25) calc(var(--base) * 0.25);
     min-width: 600px;
     position: relative;
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 250ms cubic-bezier(0.075, 0.82, 0.165, 1), transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
-    -webkit-box-shadow: 2px 2px 10px 0px rgba(0,0,0,0.05);
-    -moz-box-shadow: 2px 2px 10px 0px rgba(0,0,0,0.05);
-    box-shadow: 2px 2px 10px 0px rgba(0,0,0,0.05);
   }
   .Image {
     padding: calc(var(--base) * 0.25) 0;
