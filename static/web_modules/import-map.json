@@ -1,6 +1,6 @@
 {
   "imports": {
-    "inert-polyfill": "./inert-polyfill.js",
-    "intersection-observer": "./intersection-observer.js"
+    "intersection-observer": "./intersection-observer.js",
+    "inert-polyfill": "./inert-polyfill.js"
   }
 }
