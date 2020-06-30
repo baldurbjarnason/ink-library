@@ -5,17 +5,29 @@ const {session} = stores()
 <style>
 h1 {
   margin-left: 100px;
+  margin-top: 4rem;
 }
 dt {
   font-weight: bold;
 }
 .Profile {
   grid-column: 1 / -1;
+  padding-top: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+form {
+  display: flex;
+  justify-content: center;
 }
 </style>
-<h1>Profile</h1>
 
 <div class="Profile">
+
+<form action="/logout" method="POST"><button class="GenericButton">Logout</button></form>
+
+
+<h1>Profile</h1>
   
   <dl>
   <dt>Auth0 ID</dt>
