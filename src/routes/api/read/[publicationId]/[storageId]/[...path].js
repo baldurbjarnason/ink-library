@@ -36,7 +36,7 @@ export async function get(req, res, next) {
 async function getNotes (req) {
   let url = `${process.env.API_SERVER}notes`
   const query = new URLSearchParams()
-  query.append('publication', `${process.env.API_SERVER}${req.params.publicationId}`)
+  query.append('source', `${process.env.API_SERVER}${req.params.publicationId}`)
   query.delete('dir')
   url = `${url}?${query.toString()}`
   const response = await got(url, {

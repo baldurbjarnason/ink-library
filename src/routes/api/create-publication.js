@@ -13,7 +13,7 @@ export async function post(req, res, next) {
       }
     })
   }
-  const type = req.body.pubType || 'Publication'
+  const type = req.body.pubType || 'Source'
   let links
   if (req.body.newURL) {
     links = [{
@@ -39,10 +39,10 @@ export async function post(req, res, next) {
     json: {storageId: req.body.storageId},
     name: req.body.name
   }
-  console.log(req.body)
+  console.log(body)
   if (req.user && req.user.profile) {
     try {
-      const response = await got.post(`${process.env.API_SERVER}publications`, {
+      const response = await got.post(`${process.env.API_SERVER}sources`, {
         headers: {
           "content-type": "application/ld+json",
           Authorization: `Bearer ${req.user.token}`

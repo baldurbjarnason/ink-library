@@ -1,7 +1,7 @@
 <script>
   import {typeName} from '../typeName.js'
   const types = [
-  'Publication',
+  'Source',
   'Article',
   'Blog',
   'Book',
