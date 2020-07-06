@@ -16,7 +16,7 @@
   'Manuscript',
   'Map',
   'MediaObject',
-  'MusicRecordig',
+  'MusicRecording',
   'Painting',
   'Photograph',
   'Play',
