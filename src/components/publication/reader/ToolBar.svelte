@@ -14,7 +14,8 @@
     justify-content: space-between;
     align-items: center;
     position: sticky;
-top: 0;
+    top: 0;
+    overflow-x: hidden;
   }
   ol {
     list-style: none;
