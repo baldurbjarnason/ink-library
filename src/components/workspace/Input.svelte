@@ -17,7 +17,7 @@
     color: white
   }
   input {
-    width: 45%;
+    width: 100%;
     float: left;
     font-size: 0.85rem;
     padding: calc(var(--base) * 0.5);

@@ -59,7 +59,7 @@
     color: white
   }
   .input {
-    width: 45%;
+    width: 100%;
     float: left;
     cursor: pointer;
     font-size: 0.85rem;
@@ -153,6 +153,7 @@ Upload URL endpoint should take content type as a parameter and return a {public
  -->
 <label class:dark>
     <div class="LabelText">
+        <br>
         <slot></slot>
     </div>
     {#if type}
