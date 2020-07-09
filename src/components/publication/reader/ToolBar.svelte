@@ -1,8 +1,9 @@
 <script>
-  import {publication, workspaces, page} from '../../../stores'
+  import {publication, workspaces, page, chapter} from '../../../stores'
   import {selection} from '../../../stores/utilities/selection.js'
   import {highlightRange} from './toolbar/highlightRange.js'
   import {positionToAnnotation} from './toolbar/positionToAnnotation.js'
+  import {saveNote} from './toolbar/saveNote.js'
   export let root = null
   $: if (root) {
     console.log(root)
@@ -119,11 +120,11 @@
   <li></li>
 </ol>
 <ol>
-  <li><button class="Button" on:click={() => {
+  <li><button class="Button" on:click={async () => {
     if ($selection && root.contains($selection.commonAncestorContainer)) {
       const positions = highlightRange($selection, root)
-      const annotation = positionToAnnotation(positions, root, {id: 'id'}, {url: 'url'})
-      console.log(annotation)
+      const annotation = positionToAnnotation(positions, root, $publication, `/${$page.params.publicationId}/${$page.params.path.join("/")}`)
+      await saveNote(annotation)
       window.getSelection().removeAllRanges()
     }
     // call saveannotation

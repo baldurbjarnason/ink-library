@@ -16,10 +16,10 @@ export async function get(req, res, next) {
     const file = bucket.file(basePath)
     const [data] = await file.download()
     const chapter = JSON.parse(data)
-    const documentURL = path.join('/api/read/', req.params.publicationId, req.params.storageId, req.params.path.join("/"))
+    const documentURL = `/${req.params.publicationId}/${req.params.path.join("/")}`
     const linkBase = path.join('/library/all/all/', req.params.publicationId, req.params.storageId, req.params.path.join("/"))
     const mediaBase = path.join('/api/stored/', req.params.storageId, req.params.path.join("/"))
-    const response = await preRender(chapter, {annotations: notes.items, documentURL, mediaBase, linkBase})
+    const response = await preRender(chapter, {annotations: fixItems(notes.items), documentURL, mediaBase, linkBase})
     res.json(response);
   } catch (err) {
     console.error(err)
@@ -36,7 +36,8 @@ export async function get(req, res, next) {
 async function getNotes (req) {
   let url = `${process.env.API_SERVER}notes`
   const query = new URLSearchParams()
-  query.append('source', `${process.env.API_SERVER}${req.params.publicationId}`)
+  // Change this to document
+  query.append('document', `/${req.params.publicationId}/${req.params.path.join("/")}`)
   query.delete('dir')
   url = `${url}?${query.toString()}`
   const response = await got(url, {
@@ -45,4 +46,22 @@ async function getNotes (req) {
     }
   }).json();
   return response
+}
+
+function fixItems (items) {
+  return items.map(fixItem).filter(item => item)
+}
+
+function fixItem (item) {
+  item.body = [].concat(item.body).map((body => {
+    return {
+      type: "TextualBody",
+      value: body.content,
+      format: "text/html",
+      purpose: body.motivation
+    }
+  }))
+  item.type = "Annotation"
+  if (!item.target.selector) return null
+  return item
 }
