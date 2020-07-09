@@ -107,13 +107,17 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
+  .MoreItems div {
+    position: relative;
+  }
   .MoreItems p {
-    float: left;
-    width: 10%;
+    right: -40px;
+    width: 20px;
     text-align: center;
     line-height: 38px;
     margin: calc(var(--base)*0.25) 0;
     font-size: .8rem;
+    position: absolute;
   }
   /* .Wide {
     grid-column: 1 / -1;
@@ -254,10 +258,10 @@
                     <div>
                         <Input placeholder="Enter a URL" name="newURL" type="url">Source</Input>
                         <p>or</p>
-                        <FileInput dark={true} name="newFile" type="file"></FileInput>
                     </div>
                     <div>
-                        <AddWorkspace>Assign workspace</AddWorkspace>
+                        <FileInput dark={true} name="newFile" type="file"></FileInput><!--
+                        <AddWorkspace>Assign workspace</AddWorkspace>-->
                     </div>
                     <AddCollections dark={true} />
                     <div class="typeDiv">

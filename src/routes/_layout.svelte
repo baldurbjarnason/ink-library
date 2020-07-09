@@ -50,8 +50,9 @@
     padding-top: 0;
   }
   .grid {
-    display: grid;
-    grid-template-columns: calc(var(--base) * 4) calc(var(--base) * 14) 1fr;
+    display: grid;/*
+    grid-template-columns: calc(var(--base) * 4) calc(var(--base) * 14) 1fr;*/
+    grid-template-columns: calc(var(--base) * 4) 1fr;
     min-height: 100vh;
   }
   @media (max-width: 720px) {
@@ -150,10 +151,10 @@
   <main class="grid" class:publication>
   {#if !menu && segment === 'library'}
     <Nav {params} />
-    <Sidebar {params} />
+    <!--<Sidebar {params} />-->
     {:else if !menu && segment === 'notes'}
     <Nav {params} />
-    <NotesSidebar {params} />
+    <!--<NotesSidebar {params} />-->
        <!-- else if content here -->
   {/if}
 
