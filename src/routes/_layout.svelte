@@ -12,6 +12,7 @@
   let query
   let params
   let publication = false
+  let betaNotice = true
   $: if ($page) {
     pageStore.set($page)
     query = $page.query;
@@ -78,6 +79,25 @@
     grid-column: 2 / -1;
     padding: 0;
   }
+
+  .BetaNotice {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width : 100%;
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    z-index: 10;
+    background-color: #E0F5F5;
+    padding: 1rem 2rem;
+    grid-column-gap: 1rem;
+    backdrop-filter: blur(10px)
+  }
+  .BetaNotice span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   @media (max-width: 720px) {
     .grid {
       display: flex;
@@ -119,6 +139,14 @@
   <SignInPage />
   </div> -->
 {:else}
+  {#if betaNotice}
+  <div class="BetaNotice">
+  <p><strong>NOTE: This is a beta version of Rebus Ink.</strong> There will be bugs and changes, both expected and unexpected! To ask for help, stay up to date with new features, provide feedback and keep in touch with the team, please go to <a href="https://support.rebus.ink/">support.rebus.ink</a></p>
+  <span><button class="GenericButton" on:click={() => {
+    betaNotice = false
+  }}>Dismiss</button></span>
+  </div>
+  {/if}
   <main class="grid" class:publication>
   {#if !menu && segment === 'library'}
     <Nav {params} />
