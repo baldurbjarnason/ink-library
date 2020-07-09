@@ -39,6 +39,9 @@ export function web (pathOrStore, config) {
   }
   return derived(stores, ([$path, $visible, $online, $refresh], set) => {
     if (($visible || refreshWhenHidden) && ($online || refreshWhenOffline)) {
+      // Default fetcher should return a {data, links} object.
+      // TODO: if `links: true` then you expect either a links prop or a HAL+JSON `data._links` prop. Then we could do a `rel` utility that creates a derived web store for a particular rel link from a resource. -> Turns the web store into a path store.
+      // rel utility can also take a `document` object as a link rel source.
       return fetcher($path.path)
         .then(data => {
           set({

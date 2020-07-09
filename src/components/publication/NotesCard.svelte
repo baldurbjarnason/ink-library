@@ -20,7 +20,7 @@
       collection = $collections.find(space => space.name === $page.params.collection).id
     }
     const note = {
-      publicationId: $publication.id,
+      sourceId: $publication.id,
       body: [{
         motivation: "commenting",
         content : text

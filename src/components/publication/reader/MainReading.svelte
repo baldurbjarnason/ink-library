@@ -1,6 +1,7 @@
 <script>
   import {publication, workspaces, page, chapter} from '../../../stores'
   import ToC from '../ToC.svelte'
+  export let readerBody = null
 </script>
 
 <style>
@@ -32,6 +33,6 @@
 
 <div class="Reader">
   <div class="LeftSidebar"><ToC /></div>
-  <div class="Body">{@html $chapter.contents}</div>
+  <div class="Body" bind:this={readerBody}>{@html $chapter.contents}</div>
   <div class="RightSidebar"></div>
 </div>
