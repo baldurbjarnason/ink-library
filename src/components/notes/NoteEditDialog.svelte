@@ -11,7 +11,7 @@
     localDialog = new A11yDialog(element)
     dialog = localDialog
   }
-  let note = {body: [], publication: {name: ""}}
+  let note = {body: [], source: {name: ""}}
   $: if (localDialog) {
     localDialog.on('show', async function (dialogEl, event) {
       const noteURL = event.currentTarget.dataset.annotationId.split("/")
@@ -22,10 +22,9 @@
           console.error(err)
         })
       note = await response.json()
-      console.log(note)
     })
     localDialog.on('hide', async function (dialogEl, event) {
-      note = {body: [], publication: {name: ""}}
+      note = {body: [], source: {name: ""}}
     })
   }
 </script>

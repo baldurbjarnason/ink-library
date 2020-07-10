@@ -32,6 +32,7 @@ export async function get(req, res, next) {
 // This needs to filter by workspace
 export async function put(req, res, next) {
   const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`
+  delete req.body.keywords
   try {
     const response = await got.patch(url, {
       headers: {

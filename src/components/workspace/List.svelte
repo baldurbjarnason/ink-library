@@ -144,7 +144,7 @@ code {
               <div class="Empty">
               <pre aria-hidden="true"><code> ̄\_(ツ)_/ ̄</code></pre>
                 <p>
-                  No publications...
+                  No sources...
                 </p></div>
         {/each}
     {/if}
@@ -180,7 +180,7 @@ code {
               <div class="Empty">
               <pre aria-hidden="true"><code> ̄\_(ツ)_/ ̄</code></pre>
                 <p>
-                  No publications...
+                  No sources...
                 </p></div>
         {/each}
     {/if}

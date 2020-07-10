@@ -4,8 +4,8 @@
   import {page} from '../../stores'
   export let note = {}
   let title
-  if (note.publication) {
-    title = note.publication.name
+  $: if (note.source) {
+    title = note.source.name
   } else {
     title = `Workspace: ${$page.params.workspace}`
   }
@@ -46,6 +46,14 @@
     width: 100%;
     height: 100%;
     outline: none;
+  }
+  .source-title {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: calc(var(--base) * 0.5) 0;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
   }
   .Top {
     display: flex;
@@ -97,7 +105,7 @@
   <div class="Top">
     <span class="Icon">
     </span>
-    <!--<a class="title" href="/notes/{$page.params.workspace}/{$page.params.collection}/{note.shortId}">{title}</a>-->
+    <a class="source-title" href="/notes/{$page.params.workspace}/{$page.params.collection}/{note.shortId}">{title}</a>
     <span>&nbsp;</span>
   </div>
   <div class="CardMain">

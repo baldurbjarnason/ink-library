@@ -5,22 +5,18 @@
   import NoteEditor from '../widgets/NoteEditor.svelte'
   import {getToken} from '../../getToken'
   import Button from '../widgets/Button.svelte'
-  // let title
-  // $: if ($notes && $notes.type !== "loading") {
-  //   const listNote = $notes.items.find(item => item.shortId === note.shortId)
-  //   if (listNote && listNote.publication) {
-  //     title = listNote.publication.name || ""
-  //   } else {
-  //     title = ""
-  //   }
-  // }
-  export let note = {body: []}
+  export let note = {body: [], source: {name: ""}}
   let highlight
   let comment
   $: if (note && note.body && note.body.find) {
     highlight = note.body.find(item => item.motivation === 'highlighting')
     comment = note.body.find(item => item.motivation === 'commenting') || {motivation: 'commenting', content: ""}
-    console.log(comment)
+  }
+  let title
+  $: if (note && note.source && note.source.name) {
+    title = note.source.name
+  } else {
+    title = ""
   }
   let text = ""
   function clean(obj) {
@@ -129,7 +125,7 @@
   <div class="Top">
     <span class="Icon">
     </span> 
-    <!-- <span class="title" id="note-edit-title">{title}</span> -->
+    <span class="title" id="note-edit-title">{title}</span>
     <Button click={save}>Save</Button>
   </div>
   <div class="CardMain">
@@ -137,7 +133,7 @@
       <Highlight body={highlight} edit={true} />
     {/if}
     {#if comment}
-      <NoteEditor html={comment.content} bind:richtext={text}/>
+      <NoteEditor html={comment.content || ""} bind:richtext={text}/>
     {/if}
   </div>
   <div class="CardBottom"><span></span>
