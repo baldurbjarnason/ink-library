@@ -25,7 +25,6 @@
   export let richtext = ""
   $: if (html) {
     richtext = clean(html)
-    console.log(html, richtext)
   }
   function clean (html) {
     if (process.browser) {
