@@ -69,15 +69,8 @@ export function highlightRange(range, root) {
 // Update highlight - takes an (temp)Id and an annotation object -> updates mark and links to match.
 
 export function updateHighlight (oldId, newId) {
-
+  console.log(oldId, newId)
   document.querySelectorAll(`[data-annotation-id="${oldId}"]`).forEach(node => {
-    node.dataset.noteId = newId;
+    node.dataset.annotationId = newId;
   });
-  document.getElementById("highlight-" + encode(oldId)).id =
-    "highlight-" + encode(newId);
-  document.querySelector(
-    `[href="${window.location.pathname}#note-${encode(oldId)}"]`
-  ).href = `[href="${window.location.pathname}#note-${encode(
-    newId
-  )}"]`;
 }

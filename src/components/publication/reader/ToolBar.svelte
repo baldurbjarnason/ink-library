@@ -1,7 +1,7 @@
 <script>
   import {publication, workspaces, page, chapter} from '../../../stores'
   import {selection} from '../../../stores/utilities/selection.js'
-  import {highlightRange} from './toolbar/highlightRange.js'
+  import {highlightRange, updateHighlight} from './toolbar/highlightRange.js'
   import {positionToAnnotation} from './toolbar/positionToAnnotation.js'
   import {saveNote} from './toolbar/saveNote.js'
   import {dialog} from '../../notes/NoteEditDialog.svelte'
@@ -35,6 +35,7 @@
     position: sticky;
     top: 0;
     overflow-x: hidden;
+    z-index: 2;
   }
   ol {
     list-style: none;
@@ -133,7 +134,8 @@
     if ($selection && root.contains($selection.commonAncestorContainer)) {
       const positions = highlightRange($selection, root)
       const annotation = positionToAnnotation(positions, root, $publication, `/${$page.params.publicationId}/${$page.params.path.join("/")}`)
-      await saveNote(annotation)
+      const saved = await saveNote(annotation)
+      updateHighlight(positions.tempId, saved.id)
       window.getSelection().removeAllRanges()
     }
     // call saveannotation
