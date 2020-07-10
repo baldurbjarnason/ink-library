@@ -74,7 +74,7 @@ Then when you hit save, it compares the list in the widget with the the pre-exis
  -->
 
 <form id="stacksform" class="StacksForm" on:submit={submit} bind:this={form}>
-  <Input placeholder="Collection Name" name="new-collections" list="collections-datalist" {change}><span class="visually-hidden">Add collection:</span></Input>
+  <Input placeholder="Stack Name" name="new-collections" list="collections-datalist" {change}><span class="visually-hidden">Add collection:</span></Input>
     <datalist id="collections-datalist">
       {#each filteredCollections as collection}
         <option value="{collection}">

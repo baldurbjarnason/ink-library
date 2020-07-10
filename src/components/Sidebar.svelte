@@ -374,7 +374,7 @@ ul.tabs li:hover a:not(.selected):before {
       {getName(tag.name)}
     </span></a></li>
     {:else}
-      <li><span class="empty">No collections...</span></li>
+      <li><span class="empty">No stacks...</span></li>
   {/each}
   </ul>
 </div>

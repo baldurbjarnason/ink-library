@@ -102,7 +102,7 @@
 </style>
 
 <!-- markup (zero or more items) goes here -->
-  <div><AutocompleteInput placeholder="Collection Name" {dark} name="new-collections" list={filteredCollections} {change}>Assign stacks</AutocompleteInput>
+  <div><AutocompleteInput placeholder="Stack Name" {dark} name="new-collections" list={filteredCollections} {change}>Assign stacks</AutocompleteInput>
   </div>
   <div class="Wide Tags" class:dark>
   {#each $addedCollections as collection, i}

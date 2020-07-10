@@ -96,7 +96,7 @@ code {
     <div>{#if selecting}
       <SmallButton click={() => selecting = false}>Done</SmallButton>
     {:else}
-      <SmallButton click={() => selecting = true}>Select</SmallButton>
+      <!-- <SmallButton click={() => selecting = true}>Select</SmallButton> -->
     {/if}</div>
     </div>
     <div class="Cards">
@@ -109,7 +109,7 @@ code {
               <div class="Empty">
               <pre aria-hidden="true"><code> ̄\_(ツ)_/ ̄</code></pre>
                 <p>
-                  No publications...
+                  No sources...
                 </p></div>
         {/each}
     {/if}

@@ -31,6 +31,9 @@
 .NotesEditor {
   grid-template-columns: .3fr 1fr;
 }
+.Tools {
+  display: none;
+}
   @media (max-width: 720px) {
     .Toolbar {
       height: calc(var(--base) * 6);
@@ -46,7 +49,7 @@
 
 <nav class="Toolbar">
   <NewNote {workspace} />
-  <div>
+  <div class="Tools">
     <Button light={true}>Outline</Button>
     <Button light={true}>Mindmap</Button>
     <Button light={true}>Grouping</Button>
