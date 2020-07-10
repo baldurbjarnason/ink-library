@@ -2,6 +2,8 @@
 import position from "dom-anchor-text-position";
 import textQuote from "dom-anchor-text-quote";
 
+// Add support for purposes. And root motivation
+
 export function positionToAnnotation (selector, root, source, chapter) {
   const range = position.toRange(root, selector);
   const content = serializeRange(range);

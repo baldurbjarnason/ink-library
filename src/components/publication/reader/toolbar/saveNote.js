@@ -2,7 +2,7 @@
 import {getToken} from '../../../../getToken'
 
 export async function saveNote (note) {
-  await window.fetch(`/api/notes`, {
+  const response = await window.fetch(`/api/notes`, {
     method: 'POST',
     credentials: "include",
     headers: {
@@ -11,4 +11,5 @@ export async function saveNote (note) {
     },
     body: JSON.stringify(note),
   })
+  return response.json()
 }

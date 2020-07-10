@@ -31,7 +31,7 @@ export function highlightRange(range, root) {
     const node = nodes[i];
     if (!node.parentElement.closest(".Highlight") && !whitespace.test(node.textContent)) {
       const highlight = document.createElement("mark");
-      highlight.dataset.noteId = tempId;
+      highlight.dataset.annotationId = tempId;
       highlight.classList.add("Highlight");
       highlight.root = root;
       // highlight.addEventListener('click', event => {
@@ -69,15 +69,8 @@ export function highlightRange(range, root) {
 // Update highlight - takes an (temp)Id and an annotation object -> updates mark and links to match.
 
 export function updateHighlight (oldId, newId) {
-
-  document.querySelectorAll(`[data-note-id="${oldId}"]`).forEach(node => {
-    node.dataset.noteId = newId;
+  console.log(oldId, newId)
+  document.querySelectorAll(`[data-annotation-id="${oldId}"]`).forEach(node => {
+    node.dataset.annotationId = newId;
   });
-  document.getElementById("highlight-" + encode(oldId)).id =
-    "highlight-" + encode(newId);
-  document.querySelector(
-    `[href="${window.location.pathname}#note-${encode(oldId)}"]`
-  ).href = `[href="${window.location.pathname}#note-${encode(
-    newId
-  )}"]`;
 }
