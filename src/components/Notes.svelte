@@ -1,4 +1,5 @@
 <script>
+  import {note} from '../stores'
   import NewNote from './notes/NewNote.svelte'
   import Search from './Search.svelte'
   import ItemToggle from './ItemToggle.svelte'
@@ -57,7 +58,7 @@
   <NotesList />
   </div>
   {#if id}
-     <NoteEdit />
+     <NoteEdit note={$note} />
   {/if}
 </div>
 

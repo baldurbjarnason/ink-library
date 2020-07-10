@@ -12,15 +12,28 @@
   padding-top: 2rem;
   padding-bottom: 2rem;
 }
+.Chapter {
+  all: initial;
+  position: relative;
+  line-height: var(--reader-line-height);
+  font-size: var(--reader-font-size);
+  color: var(--reader-text-color);
+  font-family: var(--reader-font-family);
+  background-color: var(--main-background-color);
+  line-height: var(--reader-line-height);
+  display: block;
+  contain: content;
+  min-height: 100vh;
+}
 :global(ink-html) {
   height: 100%;
   background-color: white;
   border: 1px solid #DDDDDD;
   display: block;
 }
-:global(ink-body) {
-  padding: 2rem;
+.Chapter :global(#ink-engine ink-body) {
   display: block;
+  padding: 2rem;
 }
 </style>
 <svelte:head>
@@ -33,6 +46,6 @@
 
 <div class="Reader">
   <div class="LeftSidebar"><ToC /></div>
-  <div class="Body" bind:this={readerBody}>{@html $chapter.contents}</div>
+  <div class="Body Chapter" bind:this={readerBody}>{@html $chapter.contents}</div>
   <div class="RightSidebar"></div>
 </div>

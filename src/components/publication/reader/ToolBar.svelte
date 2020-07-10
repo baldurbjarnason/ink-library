@@ -4,11 +4,20 @@
   import {highlightRange} from './toolbar/highlightRange.js'
   import {positionToAnnotation} from './toolbar/positionToAnnotation.js'
   import {saveNote} from './toolbar/saveNote.js'
+  import {dialog} from '../../notes/NoteEditDialog.svelte'
   export let root = null
   $: if (root) {
     console.log(root)
+    root.addEventListener('click', handleClick, false)
     // set up event listeners
     // get the selection store
+  }
+  function handleClick (event) {
+    if (event.target.matches('mark[data-annotation-id]')) {
+      const refabEvent = Object.assign({}, event, {currentTarget: event.target})
+      dialog.show(refabEvent)
+    }
+
   }
 </script>
 

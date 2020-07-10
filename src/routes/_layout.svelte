@@ -6,6 +6,7 @@
   import SignIn from '../components/Auth/SignIn.svelte'
   import SignUp from '../components/Auth/SignUp.svelte'
   import SignInPage from '../components/Auth/SignInPage.svelte'
+	import NoteEditDialog from '../components/notes/NoteEditDialog.svelte';
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   export let segment;
@@ -162,4 +163,5 @@
     <slot></slot>
   </div>
   </main>
+  <NoteEditDialog />
 {/if}
