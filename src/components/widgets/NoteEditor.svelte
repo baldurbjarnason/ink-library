@@ -24,7 +24,12 @@
   export let html = ""
   export let richtext = ""
   $: if (html) {
-    richtext = DOMPurify.sanitize(html, commentConfig)
+    richtext = clean(html)
+  }
+  function clean (html) {
+    if (process.browser) {
+      return DOMPurify.sanitize(html, commentConfig)
+    }
   }
 </script>
 
@@ -33,5 +38,5 @@
 </style>
 
 <Editor bind:richtext>
-<div>{@html DOMPurify.sanitize(html, commentConfig)}</div>
+<div>{@html clean(html)}</div>
 </Editor>

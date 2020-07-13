@@ -10,6 +10,7 @@
   export let info = false
   let hash = "#Description"
   let scroll = false
+  let readerBody
   onMount(() => {
     hash = window.location.hash || "#Description"
   });
@@ -45,7 +46,7 @@
   <InfoToolBar />
   <MainInfo />
 {:else}
-  <ToolBar />
-  <MainReading />
+  <ToolBar root={readerBody} />
+  <MainReading bind:readerBody />
 {/if}
 </div>

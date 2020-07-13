@@ -8,7 +8,7 @@ import ISO6391 from 'iso-639-1'
 // This needs to filter by workspace
 export async function get(req, res, next) {
   if (!req.user.profile) return res.sendStatus(401)
-  const url = `${process.env.API_SERVER}publications/${req.params.publicationId}`
+  const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`
   try {
     const response = await got(url, {
       headers: {
@@ -31,7 +31,8 @@ export async function get(req, res, next) {
 }
 // This needs to filter by workspace
 export async function put(req, res, next) {
-  const url = `${process.env.API_SERVER}publications/${req.params.publicationId}`
+  const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`
+  delete req.body.keywords
   try {
     const response = await got.patch(url, {
       headers: {

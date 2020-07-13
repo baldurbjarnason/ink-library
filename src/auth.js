@@ -147,6 +147,13 @@ export function setup (app) {
     // }))
   }
 
+  app.use("/login", function (req, res, next) {
+    if (req.body.betaCode !== process.env.BETACODE) {
+      return res.sendStatus(403)
+    } else {
+      next()
+    }
+  })
   app.use(
     "/login",
     passport.authenticate(process.env.PASSPORT_STRATEGY),

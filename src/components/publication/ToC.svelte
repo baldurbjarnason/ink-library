@@ -7,6 +7,10 @@
 <style>
   .ToC {
     padding: 0 1rem;
+    position: sticky;
+    top: 3rem;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
   }
   .ToC :global(ol) {
     margin: 0;

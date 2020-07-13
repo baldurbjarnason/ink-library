@@ -12,7 +12,7 @@ export async function get(req, res, next) {
     if (req.query.orderBy === "modified") {
       query.delete('orderBy')
     }
-    query.append('publication', `${process.env.API_SERVER}${req.params.publicationId}`)
+    query.append('source', `${process.env.API_SERVER}${req.params.publicationId}`)
     query.delete('dir')
     url = `${url}?${query.toString()}`
     const response = await got(url, {

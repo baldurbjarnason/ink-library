@@ -10,8 +10,7 @@ const noteId = derived(page, ($page) => $page.params.id)
 
 export const note = derived([noteId, refreshNote], ([$noteId, $refreshNote], set) => {
   if (!$refreshNote.id || $refreshNote.id !== $noteId) {
-    set({type: 'loading', items: [], 
-    tags: [], keywords: [], replies: []})
+    set({body: [], source: {name: ""}})
   }
   if (!process.browser || !$noteId) return
   const url = `/api/note/${$noteId}`
@@ -23,4 +22,4 @@ export const note = derived([noteId, refreshNote], ([$noteId, $refreshNote], set
       set({type: 'failed'})
       console.error(err)
     })
-})
+}, {body: [], source: {name: ""}})
