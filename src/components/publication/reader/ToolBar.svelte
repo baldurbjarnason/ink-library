@@ -7,7 +7,6 @@
   import {dialog} from '../../notes/NoteEditDialog.svelte'
   export let root = null
   $: if (root) {
-    console.log(root)
     root.addEventListener('click', handleClick, false)
     // set up event listeners
     // get the selection store
@@ -133,7 +132,13 @@
   <li><button class="Button" on:click={async () => {
     if ($selection && root.contains($selection.commonAncestorContainer)) {
       const positions = highlightRange($selection, root)
-      const annotation = positionToAnnotation(positions, root, $publication, `/${$page.params.publicationId}/${$page.params.path.join("/")}`)
+      let path
+      if ($page.params.path) {
+        path = $page.params.path.join("/")
+      } else if ($chapter.resource && $chapter.resource.url) {
+        path = $chapter.resource.url
+      }
+      const annotation = positionToAnnotation(positions, root, $publication, `/${$page.params.publicationId}/${path}`)
       const saved = await saveNote(annotation)
       updateHighlight(positions.tempId, saved.id)
       window.getSelection().removeAllRanges()
