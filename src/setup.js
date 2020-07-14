@@ -62,7 +62,7 @@ export function setup(sapper, options = {}) {
   const sessionMiddleware = session({
     store: new RedisStore({ client }),
     secret: process.env.COOKIE_KEY || 'randome stuff',
-    resave: true,
+    resave: false,
     rolling: true,
     saveUninitialized: false,
     name: process.env.COOKIE_NAME || '__session',
