@@ -40,7 +40,6 @@ export function highlightRange(range, root) {
       //   event.stopPropagation();
       //   return goto(highlight.dataset.href);
       // });
-      highlight.setAttribute("sapper-noscroll", "true");
       node.parentNode.replaceChild(highlight, node);
       highlight.appendChild(node);
       if (i === nodes.length - 1) {
@@ -55,14 +54,12 @@ export function highlightRange(range, root) {
         a.dataset.highlightId = `${encode(tempId)}`;
         a.classList.add("Highlight-return-link");
         a.classList.add('visually-hidden')
-        a.setAttribute("sapper-noscroll", "");
         a.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
         a.setAttribute("aria-label", "Go to note in sidebar");
         highlight.insertAdjacentElement("afterend", a);
       }
     }
   }
-  console.log(nodes)
   return {tempId, ...positions}
 }
 

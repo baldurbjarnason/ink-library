@@ -136,7 +136,8 @@
       if ($page.params.path) {
         path = $page.params.path.join("/")
       } else if ($chapter.resource && $chapter.resource.url) {
-        path = $chapter.resource.url
+        // This is going to break somewhere. Need to do better suffix parsing
+        path = $chapter.resource.url.replace('.json', "")
       }
       const annotation = positionToAnnotation(positions, root, $publication, `/${$page.params.publicationId}/${path}`)
       const saved = await saveNote(annotation)

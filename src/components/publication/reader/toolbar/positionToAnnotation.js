@@ -29,7 +29,7 @@ function serializeRange(range) {
   fragment.querySelectorAll("[data-reader]").forEach(element => {
     element.remove();
   });
-  fragment.querySelectorAll("mark[data-note-id]").forEach(element => {
+  fragment.querySelectorAll("mark[data-annotation-id]").forEach(element => {
     element.replaceWith(element.textContent);
   });
   fragment.querySelectorAll("a.Highlight-return-link").forEach(element => {
