@@ -113,13 +113,31 @@ export function setup (app) {
         }
       )
     );
-    app.get("/callback", passport.authenticate("auth0", {}), function(
-      req,
-      res,
-      next
-    ) {
-      res.redirect("/library/all/all");
-    });
+    app.get("/callback", (req, res, next) => {
+      passport.authenticate('auth0', (err, user, info) => {
+        if(err) return next(err)
+        if(!user) return res.redirect("/failure?info=" + JSON.stringify(info))
+    
+        req.logIn(user, err => {
+          if(err) return next(err)
+    
+          const returnTo = req.session.returnTo
+          delete req.session.returnTo
+          res.redirect(returnTo || "/library/all/all")
+        })
+      })(req, res, next)
+    })
+    // app.get("/callback", passport.authenticate("auth0", function (err, user, info) {
+    //   if(err) return next(err)
+    //   if(!user) return res.redirect("/failure?info=" + JSON.stringify(info))
+    //   console.log(err, user, info)
+    // }, {}), function(
+    //   req,
+    //   res,
+    //   next
+    // ) {
+    //   res.redirect("/library/all/all");
+    // });
   } else {
     // console.log('basic')
     passport.use(
