@@ -14,6 +14,8 @@ export async function get(req, res, next) {
     const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "")
     const basePath = path.join(userPrefix, req.params.storageId, req.params.path.join("/") + '.json')
     const file = bucket.file(basePath)
+    const [exists] = await file.exists()
+    if (!exists) return res.sendStatus(404)
     const [data] = await file.download()
     const chapter = JSON.parse(data)
     const documentURL = `/${req.params.publicationId}/${req.params.path.join("/")}`

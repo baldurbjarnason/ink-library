@@ -11,9 +11,12 @@ export async function get(req, res, next) {
     const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "")
     const basePath = path.join(userPrefix, req.params.storageId, "index.json")
     const file = bucket.file(basePath)
+    const [exists] = await file.exists()
+    if (!exists) return res.sendStatus(404)
     const [data] = await file.download()
     res.json(JSON.parse(data));
   } catch (err) {
+    console.error(err)
     if (err.response && err.response.statusCode) {
       res.status(err.response.statusCode)
       return res.json(JSON.parse(err.response.body))
