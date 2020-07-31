@@ -33,6 +33,8 @@ export async function get(req, res, next) {
 export async function put(req, res, next) {
   const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`
   delete req.body.keywords
+  const tags = req.body._tags
+  delete req.body._tags
   try {
     const response = await got.patch(url, {
       headers: {
@@ -41,6 +43,17 @@ export async function put(req, res, next) {
       },
       json: req.body
     }).json();
+    // In theory this should let us add tags on updates
+    if (tags && tags.length !== 0) {
+      for (const tag of tags) {
+        await got.put(`${url}/tags/${tag}`, {
+          headers: {
+            "content-type": "application/ld+json",
+            Authorization: `Bearer ${req.user.token}`
+          }
+        })
+      }
+    }
     return res.json(response);
   } catch (err) {
     res.status(err.response.statusCode)

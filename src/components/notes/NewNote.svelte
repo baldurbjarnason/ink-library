@@ -5,7 +5,7 @@
   import {send, receive} from '../../routes/_crossfade.js';
   import { afterUpdate, tick } from 'svelte';
   import NoteEditor from '../widgets/NoteEditor.svelte'
-  import {refreshNotes, refreshCollections, collections, addingWorkspace, addedCollections, addedWorkspaces, page, workspaces} from '../../stores';
+  import {refreshNotes, refreshCollections, collections, addingWorkspace, addedCollections, addedWorkspaces, page, workspaces, tags} from '../../stores';
   import {getToken} from '../../getToken'
   let open = false
   let newToggle
@@ -13,6 +13,7 @@
   function click () {
     open = !open;
   }
+  $: console.log($tags.getIds(["colour 1", "colour 2", "colour 3", "colour 4"]))
   async function close () {
     open = false
     await tick()

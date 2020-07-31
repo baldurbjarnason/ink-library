@@ -32,6 +32,8 @@ export async function get(req, res, next) {
 // This needs to filter by workspace
 export async function put(req, res, next) {
   const url = `${process.env.API_SERVER}notes/${req.params.id}`
+  const tags = req.body._tags
+  delete req.body._tags
   try {
     const response = await got.put(url, {
       headers: {
@@ -40,6 +42,17 @@ export async function put(req, res, next) {
       },
       json: req.body
     });
+    // In theory this should let us add tags on updates
+    if (tags && tags.length !== 0) {
+      for (const tag of tags) {
+        await got.put(`${url}/tags/${tag}`, {
+          headers: {
+            "content-type": "application/ld+json",
+            Authorization: `Bearer ${req.user.token}`
+          }
+        })
+      }
+    }
     console.log(response)
     return res.sendStatus(response.statusCode);
   } catch (err) {

@@ -42,6 +42,7 @@ export async function post(req, res, next) {
   console.log(body)
   if (req.user && req.user.profile) {
     try {
+      const tags = req.body._tags
       const response = await got.post(`${process.env.API_SERVER}sources`, {
         headers: {
           "content-type": "application/ld+json",
@@ -49,6 +50,17 @@ export async function post(req, res, next) {
         },
         body: JSON.stringify(body)
       }).json();
+
+      if (tags && tags.length !== 0) {
+        for (const tag of tags) {
+          await got.put(`${response.id}/tags/${tag}`, {
+            headers: {
+              "content-type": "application/ld+json",
+              Authorization: `Bearer ${req.user.token}`
+            }
+          })
+        }
+      }
       // Check workspace, if there is one, add
       if (req.body.addWorkspace && req.body.addWorkspace !== 'all') {
         await got.put(`${response.id}tags/${req.body.addWorkspace}`, {
