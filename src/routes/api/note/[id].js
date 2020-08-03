@@ -51,7 +51,6 @@ export async function put(req, res, next) {
         });
       }
     }
-    console.log(response);
     return res.sendStatus(response.statusCode);
   } catch (err) {
     console.log(err);
