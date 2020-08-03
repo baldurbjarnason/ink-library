@@ -1,8 +1,8 @@
 
-import {page} from './page'
+import { page } from './page'
 import { derived, writable } from 'svelte/store';
-import {error} from './error.js'
-import {fetch} from './fetch.js'
+import { error } from './error.js'
+import { fetch } from './fetch.js'
 
 export const refreshDate = writable(Date.now())
 export const searchStore = writable()
@@ -11,14 +11,14 @@ export const library = derived([page, refreshDate, searchStore], ([$page, $refre
   if (!process.browser) return
   if (!$page.path || !$page.path.startsWith('/library')) return
   if ($page.query.returnTo) return
-  set({type: 'loading', items: []})
+  set({ type: 'loading', items: [] })
   const query = Object.assign({}, $page.query)
   if ($page.params.collection && $page.params.collection !== "all") {
     query.stack = $page.params.collection
   } else if ($page.params.workspace && $page.params.workspace !== 'all') {
     query.workspace = $page.params.workspace.replace('_', ' ')
   }
-  
+
   if ($searchStore) {
     query.search = $searchStore
   } else if ($page.query.search) {
@@ -36,9 +36,9 @@ export const library = derived([page, refreshDate, searchStore], ([$page, $refre
       set(lib)
     })
     .catch(err => {
-      set({type: 'failed', items: []})
+      set({ type: 'failed', items: [] })
       error.set(err)
       console.error(err)
     })
 
-}, {type: 'loading', items: []})
+}, { type: 'loading', items: [] })

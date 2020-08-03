@@ -1,11 +1,13 @@
 <script>
-  export let body = {content: ""}
+  export let body = { content: "" };
 </script>
 
 <style>
-.Comment {
-    padding: 0.5rem calc(var(--base) * 1);
-}
+  .Comment {
+    padding: calc(var(--base) * 1);
+  }
 </style>
 
-<div class="Comment">{@html body.content}</div>
+<div class="Comment">
+  {@html body.content}
+</div>

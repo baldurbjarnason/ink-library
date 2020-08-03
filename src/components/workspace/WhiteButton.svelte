@@ -1,12 +1,11 @@
 <script>
-  export let click = null
-  export let href = null
-  export let hidden = false
-  export let disabled = false
+  export let click = null;
+  export let href = null;
+  export let hidden = false;
+  export let disabled = false;
 </script>
 
 <style>
-
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
@@ -59,29 +58,18 @@
   }
   @media (max-width: 720px) {
     .Button {
-      font-size: 0.7rem;
       padding-left: 1rem;
       padding-right: 1rem;
     }
   }
 </style>
 
-
 {#if href}
-  <a
-    class="Button"
-    {hidden}
-    {disabled}
-    {href}
-    on:click={click}>
+  <a class="Button" {hidden} {disabled} {href} on:click={click}>
     <slot />
   </a>
 {:else}
-  <button
-    class="Button"
-    {hidden}
-    {disabled}
-    on:click={click}>
+  <button class="Button Submit" {hidden} {disabled} on:click={click}>
     <slot />
   </button>
 {/if}
