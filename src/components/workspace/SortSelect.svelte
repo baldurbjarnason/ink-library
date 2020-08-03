@@ -1,49 +1,51 @@
 <script>
-  import {onMount} from 'svelte'
+  import { onMount } from "svelte";
   import { goto, stores } from "@sapper/app";
-  const {page} = stores()
-  export let query
-  export let path
-  let selectElement
-  let selectedOption
+  const { page } = stores();
+  export let query;
+  export let path;
+  let selectElement;
+  let selectedOption;
   $: if ($page) {
-    selectedOption = `${$page.query.orderBy}-${$page.query.dir}`
+    selectedOption = `${$page.query.orderBy}-${$page.query.dir}`;
   }
-  function sortItems (type) {
-    let dir
-    if (type.includes('asc')) {
-      dir = 'asc'
-    } else if (type.includes('desc')) {
-      dir = 'desc'
+  function sortItems(type) {
+    let dir;
+    if (type.includes("asc")) {
+      dir = "asc";
+    } else if (type.includes("desc")) {
+      dir = "desc";
     }
-    const config = Object.assign({}, query, {orderBy: type.split('-')[0], dir})
-    const url = `${path}?${new URLSearchParams(config).toString()}`
+    const config = Object.assign({}, query, {
+      orderBy: type.split("-")[0],
+      dir
+    });
+    const url = `${path}?${new URLSearchParams(config).toString()}`;
     if (query.orderBy !== config.orderBy || query.dir !== config.dir) {
-      goto(url)
+      goto(url);
     }
   }
-  function length (event) {
+  function length(event) {
     if (event.target.value.includes("title")) {
-      event.target.style.width = `11ch`
+      event.target.style.width = `11ch`;
     } else if (event.target.value.includes("type")) {
-      event.target.style.width = `11ch`
+      event.target.style.width = `11ch`;
     } else if (event.target.value.includes("modified")) {
-      event.target.style.width = `23ch`
+      event.target.style.width = `23ch`;
     } else if (event.target.value.includes("added")) {
-      event.target.style.width = `18ch`
+      event.target.style.width = `18ch`;
     }
   }
-  function changed (event) {
-    length(event)
-    return sortItems(event.target.value)
+  function changed(event) {
+    length(event);
+    return sortItems(event.target.value);
   }
   onMount(() => {
-    length({target: selectElement})
-  })
+    length({ target: selectElement });
+  });
 </script>
 
 <style>
-  
   label,
   select,
   option {
@@ -56,7 +58,7 @@
   select {
     display: inline-block;
     color: var(--action);
-    padding:calc(var(--base) * 0.25) 0;
+    padding: calc(var(--base) * 0.25) 0;
     box-sizing: border-box;
     margin: 0;
     border: none;
@@ -71,7 +73,7 @@
     background-repeat: no-repeat, repeat;
     background-position: right 0.7em top 50%, 0 0;
     background-size: 8px auto, 100%;
-  font-weight: 600;
+    font-weight: 600;
     font-size: var(--item-font-size);
   }
   select::-ms-expand {
@@ -84,10 +86,23 @@
 </style>
 
 <label>
-<slot></slot>
-<select name="sort-select" id="sort-select" on:change={changed} bind:this={selectElement}>
-<option value="modified-asc" selected={selectedOption === "modified-asc"}>Date Modified, newest first</option>
-<option value="modified-desc" selected={selectedOption === "modified-desc"}>Date Modified, oldest first</option>
-<option value="title-asc" selected={selectedOption === "title-asc"}>Title, A-Z</option>
-<option value="title-desc" selected={selectedOption === "title-desc"}>Title, Z-A</option>
-</select></label>
+  <slot />
+  <select
+    name="sort-select"
+    id="sort-select"
+    on:change={changed}
+    bind:this={selectElement}>
+    <option value="modified-asc" selected={selectedOption === 'modified-asc'}>
+      Date Modified, newest first
+    </option>
+    <option value="modified-desc" selected={selectedOption === 'modified-desc'}>
+      Date Modified, oldest first
+    </option>
+    <option value="title-asc" selected={selectedOption === 'title-asc'}>
+      Title, A-Z
+    </option>
+    <option value="title-desc" selected={selectedOption === 'title-desc'}>
+      Title, Z-A
+    </option>
+  </select>
+</label>

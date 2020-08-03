@@ -1,7 +1,5 @@
-
-
 <script>
-  import Editor from './Editor.svelte'
+  import Editor from "./Editor.svelte";
   import DOMPurify from "dompurify";
   const commentConfig = {
     ALLOWED_TAGS: [
@@ -21,14 +19,14 @@
     ],
     FORBID_ATTR: ["style"]
   };
-  export let html = ""
-  export let richtext = ""
+  export let html = "";
+  export let richtext = "";
   $: if (html) {
-    richtext = clean(html)
+    richtext = clean(html);
   }
-  function clean (html) {
+  function clean(html) {
     if (process.browser) {
-      return DOMPurify.sanitize(html, commentConfig)
+      return DOMPurify.sanitize(html, commentConfig);
     }
   }
 </script>
@@ -38,5 +36,7 @@
 </style>
 
 <Editor bind:richtext>
-<div>{@html clean(html)}</div>
+  <div>
+    {@html clean(html)}
+  </div>
 </Editor>

@@ -1,33 +1,33 @@
 <script>
-  import Card from './Card.svelte'
-  import Cover from './Cover.svelte'
-  import {publication, refreshPublication} from '../../stores'
-  import {getToken} from '../../getToken'
-  let editing = false
-  let text = $publication.description || ""
-  async function save () {
-    const pub = Object.assign({}, $publication, {description: text})
+  import Card from "./Card.svelte";
+  import Cover from "./Cover.svelte";
+  import { publication, refreshPublication } from "../../stores";
+  import { getToken } from "../../getToken";
+  let editing = false;
+  let text = $publication.description || "";
+  async function save() {
+    const pub = Object.assign({}, $publication, { description: text });
     await window.fetch(`/api/publication/${$publication.shortId}`, {
-      method: 'PUT',
+      method: "PUT",
       credentials: "include",
       headers: {
         "csrf-token": getToken(),
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(pub),
-    })
-    editing = false
-    $refreshPublication = {id: $publication.shortId, time: Date.now()}
+      body: JSON.stringify(pub)
+    });
+    editing = false;
+    $refreshPublication = { id: $publication.shortId, time: Date.now() };
   }
-  let textarea
+  let textarea;
   $: if (editing && textarea) {
-    textarea.focus()
+    textarea.focus();
   }
 </script>
 
 <style>
   .Description {
-    font-size:  var(--item-font-size);
+    font-size: var(--item-font-size);
   }
   textarea {
     width: 100%;
@@ -43,18 +43,24 @@
     left: 0;
     padding: 0 1rem 0 0;
     transform: translateY(-50%);
-    font-size:  1rem;
+    font-size: 1rem;
     font-weight: bold;
   }
 </style>
 
-  <Card id="Description" tab="About" bind:editing={editing} {save}>
-    <h2>Description</h2>
-    <div class="Description">
-      {#if editing}
-         <textarea name="DescriptionEdit" id="PublicationDescriptionEdit" cols="30" rows="10" bind:value={text} bind:this={textarea}></textarea>
-      {:else}
-        <p>{$publication.description || ""}</p>
-      {/if}
-    </div>
-  </Card>
+<Card id="Description" tab="About" bind:editing {save}>
+  <h2>Description</h2>
+  <div class="Description">
+    {#if editing}
+      <textarea
+        name="DescriptionEdit"
+        id="PublicationDescriptionEdit"
+        cols="30"
+        rows="10"
+        bind:value={text}
+        bind:this={textarea} />
+    {:else}
+      <p>{$publication.description || ''}</p>
+    {/if}
+  </div>
+</Card>

@@ -1,15 +1,14 @@
 <script>
-  export let click = null
-  export let href = null
-  export let dark = false
+  export let click = null;
+  export let href = null;
+  export let dark = false;
 </script>
 
 <style>
-
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
-    font-size:  var(--item-font-size);
+    font-size: var(--item-font-size);
     flex: 0 1 auto;
     line-height: 1;
 
@@ -30,7 +29,7 @@
     -ms-touch-action: manipulation;
     touch-action: manipulation;
     /* transition: box-shadow 0.15s ease-in-out; */
-    background: #FFFFFF;
+    background: #ffffff;
     border-radius: 7px;
     text-decoration: none !important;
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
@@ -63,20 +62,12 @@
   }
 </style>
 
-
 {#if href}
-  <a
-    class="Button"
-    {href}
-    on:click={click}
-    class:dark>
+  <a class="Button" {href} on:click={click} class:dark>
     <slot />
   </a>
 {:else}
-  <button
-    class="Button"
-    on:click={click}
-    class:dark>
+  <button class="Button" on:click={click} class:dark>
     <slot />
   </button>
 {/if}

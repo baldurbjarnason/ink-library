@@ -1,33 +1,33 @@
 <script>
-  import HeaderArrows from './HeaderArrows.svelte'
-  export let query
-  export let path
-  export let type
-  export let selected
-  let url
+  import HeaderArrows from "./HeaderArrows.svelte";
+  export let query;
+  export let path;
+  export let type;
+  export let selected;
+  let url;
   $: if (query.orderBy === type) {
     selected = true;
   } else {
-    selected = false
+    selected = false;
   }
   $: if (query) {
-    url = `${path}${sortQuery(type)}`
+    url = `${path}${sortQuery(type)}`;
   }
-  function flipDirection (direction) {
-    if (direction === 'asc') {
-       return 'desc'
+  function flipDirection(direction) {
+    if (direction === "asc") {
+      return "desc";
     } else {
-      return 'asc'
+      return "asc";
     }
   }
-  function sortQuery (type) {
-    const config = Object.assign({}, query, {orderBy: type})
+  function sortQuery(type) {
+    const config = Object.assign({}, query, { orderBy: type });
     if (query.orderBy === type) {
-      config.dir = flipDirection(query.dir)
+      config.dir = flipDirection(query.dir);
     } else {
-      config.dir = 'asc'
+      config.dir = "asc";
     }
-    return '?' + new URLSearchParams(config).toString()
+    return "?" + new URLSearchParams(config).toString();
   }
 </script>
 
@@ -40,13 +40,16 @@
     background-color: #fdfefe;
   }
   a.HeaderSort.selected {
-    background-color:var(--workspace-color);
+    background-color: var(--workspace-color);
     color: white;
   }
   a.HeaderSort:link:hover {
-    background-color:var(--hover);
+    background-color: var(--hover);
     color: white;
   }
 </style>
 
-<a href="{url}" class="HeaderSort" class:selected><HeaderArrows /> <slot></slot></a>
+<a href={url} class="HeaderSort" class:selected>
+  <HeaderArrows />
+  <slot />
+</a>

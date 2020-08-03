@@ -1,13 +1,12 @@
-
 <script>
-  import {page} from '../../stores'
+  import { page } from "../../stores";
 </script>
 
 <style>
   /* your styles go here */
   .NotesSidebar {
-    display: block
+    display: block;
   }
 </style>
 
-<div class="NotesSidebar"></div>
+<div class="NotesSidebar" />

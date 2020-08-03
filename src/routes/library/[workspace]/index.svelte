@@ -1,10 +1,10 @@
 <script>
   import { stores } from "@sapper/app";
-	import { scale } from 'svelte/transition';
-  import { expoInOut } from 'svelte/easing';
-  import MenuCollections from "../../../components/workspace/MenuCollections.svelte"
+  import { scale } from "svelte/transition";
+  import { expoInOut } from "svelte/easing";
+  import MenuCollections from "../../../components/workspace/MenuCollections.svelte";
   const { page, session } = stores();
-  let returnTo = $page.query.returnTo
+  let returnTo = $page.query.returnTo;
 </script>
 
 <style>
@@ -68,34 +68,85 @@
   }
 </style>
 
-<nav aria-label="Ink Sections" class="Menu" transition:scale|local="{{delay: 250, duration: 350, easing: expoInOut }}">
-<a href="{returnTo}" class="Closer" aria-label="Return to Library"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="17.5" width="3" height="24.7487" rx="1.5" transform="rotate(45 17.5 0)" fill="currentColor"/>
-<rect x="20.0001" y="17.5" width="3" height="24.7487" rx="1.5" transform="rotate(135 20.0001 17.5)" fill="currentColor"/>
-</svg>
-</a>
+<nav
+  aria-label="Ink Sections"
+  class="Menu"
+  transition:scale|local={{ delay: 250, duration: 350, easing: expoInOut }}>
+  <a href={returnTo} class="Closer" aria-label="Return to Library">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <rect
+        x="17.5"
+        width="3"
+        height="24.7487"
+        rx="1.5"
+        transform="rotate(45 17.5 0)"
+        fill="currentColor" />
+      <rect
+        x="20.0001"
+        y="17.5"
+        width="3"
+        height="24.7487"
+        rx="1.5"
+        transform="rotate(135 20.0001 17.5)"
+        fill="currentColor" />
+    </svg>
+  </a>
 
-<ol>
-  <li class="MainItem"><a href="/library/all/all" class:selected={$page.params.workspace === "all"}>All Workspaces</a>
-  {#if $page.params.workspace === "all"}
-     <MenuCollections workspace={$page.params.workspace} />
-  {/if}</li>
-  <li class="MainItem"><a href="/library/Research/all" class:selected={$page.params.workspace === "Research"}>Research</a>
-  {#if $page.params.workspace === "Research"}
-     <MenuCollections workspace={$page.params.workspace} />
-  {/if}
-  </li>
-  <li class="MainItem"><a href="/library/Teaching/all" class:selected={$page.params.workspace === "Teaching"}>Teaching</a>
-  {#if $page.params.workspace === "Teaching"}
-     <MenuCollections workspace={$page.params.workspace} />
-  {/if}</li>
-  <li class="MainItem"><a href="/library/Public_Scholarship/all" class:selected={$page.params.workspace === "Public_Scholarship"}>Public Scholarship</a>
-  {#if $page.params.workspace === "Public_Scholarship"}
-     <MenuCollections workspace={$page.params.workspace} />
-  {/if}</li>
-  <li class="MainItem"><a href="/library/Personal/all" class:selected={$page.params.workspace === "Personal"}>Personal</a>
-  {#if $page.params.workspace === "Personal"}
-     <MenuCollections workspace={$page.params.workspace} />
-  {/if}</li>
-</ol>
+  <ol>
+    <li class="MainItem">
+      <a
+        href="/library/all/all"
+        class:selected={$page.params.workspace === 'all'}>
+        All Workspaces
+      </a>
+      {#if $page.params.workspace === 'all'}
+        <MenuCollections workspace={$page.params.workspace} />
+      {/if}
+    </li>
+    <li class="MainItem">
+      <a
+        href="/library/Research/all"
+        class:selected={$page.params.workspace === 'Research'}>
+        Research
+      </a>
+      {#if $page.params.workspace === 'Research'}
+        <MenuCollections workspace={$page.params.workspace} />
+      {/if}
+    </li>
+    <li class="MainItem">
+      <a
+        href="/library/Teaching/all"
+        class:selected={$page.params.workspace === 'Teaching'}>
+        Teaching
+      </a>
+      {#if $page.params.workspace === 'Teaching'}
+        <MenuCollections workspace={$page.params.workspace} />
+      {/if}
+    </li>
+    <li class="MainItem">
+      <a
+        href="/library/Public_Scholarship/all"
+        class:selected={$page.params.workspace === 'Public_Scholarship'}>
+        Public Scholarship
+      </a>
+      {#if $page.params.workspace === 'Public_Scholarship'}
+        <MenuCollections workspace={$page.params.workspace} />
+      {/if}
+    </li>
+    <li class="MainItem">
+      <a
+        href="/library/Personal/all"
+        class:selected={$page.params.workspace === 'Personal'}>
+        Personal
+      </a>
+      {#if $page.params.workspace === 'Personal'}
+        <MenuCollections workspace={$page.params.workspace} />
+      {/if}
+    </li>
+  </ol>
 </nav>

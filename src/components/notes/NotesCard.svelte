@@ -1,20 +1,20 @@
 <script>
-  import Comment from './Comment.svelte'
-  import Highlight from './Highlight.svelte'
-  import {page} from '../../stores'
-  export let note = {}
-  let title
+  import Comment from "./Comment.svelte";
+  import Highlight from "./Highlight.svelte";
+  import { page } from "../../stores";
+  export let note = {};
+  let title;
   $: if (note.source) {
-    title = note.source.name
+    title = note.source.name;
   } else {
-    title = `Workspace: ${$page.params.workspace}`
+    title = `Workspace: ${$page.params.workspace}`;
   }
-  let noteBody = []
+  let noteBody = [];
   $: if (note && note.body && note.body[0]) {
-    if (note.body.find(item => item.motivation === 'commenting')) {
-      noteBody = [].concat(note.body)
+    if (note.body.find(item => item.motivation === "commenting")) {
+      noteBody = [].concat(note.body);
     } else {
-      noteBody = note.body.concat({motivation: 'commenting', content: ""})
+      noteBody = note.body.concat({ motivation: "commenting", content: "" });
     }
   }
 </script>
@@ -30,11 +30,14 @@
     border-radius: 15px;
     font-size: var(--item-font-size);
     position: relative;
-    transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 250ms cubic-bezier(0.075, 0.82, 0.165, 1), transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
+    transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1),
+      box-shadow 250ms cubic-bezier(0.075, 0.82, 0.165, 1),
+      transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.05);
-    background-color: #FAFAFA;
+    background-color: #fafafa;
   }
-  .title {/*
+  .title {
+    /*
     font-size: var(--item-font-size);
     font-weight: 600;
     padding: calc(var(--base) * 0.5) 0;
@@ -90,34 +93,48 @@
     width: 1rem;
     height: 1rem;
     border-radius: 100%;
-    background-color:#FEA95B;
+    background-color: #fea95b;
   }
   .Item :global(p) {
     font-size: calc(var(--reader-font-size) * 0.85);
   }
   .Selected {
-    box-shadow:  0px 0px 0px 2px rgba(200, 200, 200, 0.7), 5px 5px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 0px 0px 2px rgba(200, 200, 200, 0.7),
+      5px 5px 10px rgba(0, 0, 0, 0.05);
   }
 </style>
 
 <div class="Item" class:Selected={note.selected}>
-<a class="title" href="/notes/{$page.params.workspace}/{$page.params.collection}/{note.shortId}"></a>
+  <a
+    class="title"
+    href="/notes/{$page.params.workspace}/{$page.params.collection}/{note.shortId}" />
   <div class="Top">
-    <span class="Icon">
-    </span>
-    <a class="source-title" href="/notes/{$page.params.workspace}/{$page.params.collection}/{note.shortId}">{title}</a>
+    <span class="Icon" />
+    <a
+      class="source-title"
+      href="/notes/{$page.params.workspace}/{$page.params.collection}/{note.shortId}">
+      {title}
+    </a>
     <span>&nbsp;</span>
   </div>
   <div class="CardMain">
-  {#each noteBody as body}
-    {#if body.motivation === 'highlighting'}
-      <Highlight {body} />
-    {:else}
-      <Comment {body} />
-    {/if}
-  {/each}
+    {#each noteBody as body}
+      {#if body.motivation === 'highlighting'}
+        <Highlight {body} />
+      {:else}
+        <Comment {body} />
+      {/if}
+    {/each}
   </div>
-  <div class="CardBottom"><span></span>
-   <span class="Modified"><strong>Modified:</strong>  {new Date(note.updated).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
+  <div class="CardBottom">
+    <span />
+    <span class="Modified">
+      <strong>Modified:</strong>
+      {new Date(note.updated).toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      })}
+    </span>
   </div>
-  </div>
+</div>

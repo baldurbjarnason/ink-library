@@ -1,3 +1,3 @@
-import {create} from './_create'
+import { create } from "./_create";
 
-export const post = create('tags')
+export const post = create("tags");

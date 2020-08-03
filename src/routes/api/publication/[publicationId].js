@@ -1,14 +1,12 @@
-
 import got from "got";
-import ISO6391 from 'iso-639-1'
-
+import ISO6391 from "iso-639-1";
 
 // Make a list of fake notes: motivation, lang, id, body
 
 // This needs to filter by workspace
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401)
-  const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`
+  if (!req.user.profile) return res.sendStatus(401);
+  const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`;
   try {
     const response = await got(url, {
       headers: {
@@ -20,29 +18,31 @@ export async function get(req, res, next) {
         code,
         english: ISO6391.getName(code),
         native: ISO6391.getNativeName(code)
-      }
-    })
-    response.keywords = response.keywords || []
+      };
+    });
+    response.keywords = response.keywords || [];
     res.json(response);
   } catch (err) {
-    res.status(err.response.statusCode)
-    return res.json(JSON.parse(err.response.body))
+    res.status(err.response.statusCode);
+    return res.json(JSON.parse(err.response.body));
   }
 }
 // This needs to filter by workspace
 export async function put(req, res, next) {
-  const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`
-  delete req.body.keywords
-  const tags = req.body._tags
-  delete req.body._tags
+  const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`;
+  delete req.body.keywords;
+  const tags = req.body._tags;
+  delete req.body._tags;
   try {
-    const response = await got.patch(url, {
-      headers: {
-        "content-type": "application/ld+json",
-        Authorization: `Bearer ${req.user.token}`
-      },
-      json: req.body
-    }).json();
+    const response = await got
+      .patch(url, {
+        headers: {
+          "content-type": "application/ld+json",
+          Authorization: `Bearer ${req.user.token}`
+        },
+        json: req.body
+      })
+      .json();
     // In theory this should let us add tags on updates
     if (tags && tags.length !== 0) {
       for (const tag of tags) {
@@ -51,12 +51,12 @@ export async function put(req, res, next) {
             "content-type": "application/ld+json",
             Authorization: `Bearer ${req.user.token}`
           }
-        })
+        });
       }
     }
     return res.json(response);
   } catch (err) {
-    res.status(err.response.statusCode)
-    return res.json(JSON.parse(err.response.body))
+    res.status(err.response.statusCode);
+    return res.json(JSON.parse(err.response.body));
   }
 }

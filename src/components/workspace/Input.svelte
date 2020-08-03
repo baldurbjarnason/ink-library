@@ -1,20 +1,20 @@
 <script>
-  export let name
-  export let placeholder = ""
-  export let dark = false
-  export let type = "text"
-  export let list = false
-  export let fullWidth = false
-  export let change = () => {}
+  export let name;
+  export let placeholder = "";
+  export let dark = false;
+  export let type = "text";
+  export let list = false;
+  export let fullWidth = false;
+  export let change = () => {};
 </script>
 
 <style>
   .LabelText {
-    font-size: .8rem;
+    font-size: 0.8rem;
     font-weight: 500;
   }
   .dark {
-    color: white
+    color: white;
   }
   input {
     width: 100%;
@@ -30,11 +30,11 @@
   .dark input {
     border-color: transparent;
     color: #fff;
-    background-color: rgba(255,255,255, 0.125);
+    background-color: rgba(255, 255, 255, 0.125);
   }
   input:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(104,214,212,.6);
+    box-shadow: 0 0 0 2px rgba(104, 214, 212, 0.6);
   }
   .dark input:focus {
     box-shadow: 0 0 2px 2px white;
@@ -42,18 +42,27 @@
   .dark input::placeholder {
     color: rgb(255, 255, 255, 0.5);
   }
-@media (max-width: 720px) {
-  .LabelText {
-    font-size: 0.85rem;
+  @media (max-width: 720px) {
+    .LabelText {
+      font-size: 0.85rem;
+    }
   }
-}
-.fullWidth {
-  width: 100%;
-}
+  .fullWidth {
+    width: 100%;
+  }
 </style>
 
 <label class:dark>
-<div class="LabelText">
-  <slot></slot>
-</div>
-<input {type} name={name} id="input-{name}" {placeholder} autocomplete="off" {list} on:change={change} class:fullWidth></label>
+  <div class="LabelText">
+    <slot />
+  </div>
+  <input
+    {type}
+    {name}
+    id="input-{name}"
+    {placeholder}
+    autocomplete="off"
+    {list}
+    on:change={change}
+    class:fullWidth />
+</label>

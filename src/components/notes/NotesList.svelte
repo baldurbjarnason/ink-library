@@ -1,19 +1,19 @@
 <script>
-  import {notes, clearSelected} from '../../stores'
-  import Button from '../widgets/Button.svelte'
-  import NotesCard from './NotesCard.svelte'
-  import SmallButton from '../widgets/SmallButton.svelte'
-  import SortSelect from '../workspace/SortSelect.svelte'
-  import SortButton from '../workspace/SortButton.svelte'
+  import { notes, clearSelected } from "../../stores";
+  import Button from "../widgets/Button.svelte";
+  import NotesCard from "./NotesCard.svelte";
+  import SmallButton from "../widgets/SmallButton.svelte";
+  import SortSelect from "../workspace/SortSelect.svelte";
+  import SortButton from "../workspace/SortButton.svelte";
   import { stores } from "@sapper/app";
   const { page, session } = stores();
-  let selecting = false
-  let items
+  let selecting = false;
+  let items;
   $: if ($notes) {
-    items = $notes.items
+    items = $notes.items;
   }
-  let query = {}
-  let params = {}
+  let query = {};
+  let params = {};
   $: if ($page) {
     query = Object.assign({}, $page.query);
     params = Object.assign({}, $page.params);
@@ -55,7 +55,7 @@
     height: 2rem;
     border-radius: 100%;
     background-color: transparent;
-    box-shadow: 0 0 2px #f0f0f0,0 0 4px var(--workspace-color);
+    box-shadow: 0 0 2px #f0f0f0, 0 0 4px var(--workspace-color);
     margin: 8rem auto;
     animation-duration: 1s;
     animation-name: loading;
@@ -65,52 +65,55 @@
     grid-column: 1 / -1;
   }
   @keyframes loading {
-  from {
-    transform: scale(.5);
-    box-shadow: 0 0 2px #f0f0f0,0 0 4px var(--workspace-color);
+    from {
+      transform: scale(0.5);
+      box-shadow: 0 0 2px #f0f0f0, 0 0 4px var(--workspace-color);
+    }
+    to {
+      transform: scale(1.5);
+      box-shadow: 0 0 0 3px var(--workspace-color), 0 0 0 20px #f0f0f0;
+    }
   }
-  to {
-    transform: scale(1.5);
-    box-shadow: 0 0 0 3px var(--workspace-color), 0 0 0 20px #f0f0f0;
+  .Empty {
+    text-align: center;
+    color: #c4cdd1;
+    grid-column: 1 / -1;
   }
-}
-.Empty {
-  text-align: center;
-  color: #C4CDD1;
-  grid-column: 1 / -1;
-}
-code {
-  background-color: transparent;
-    color: #C4CDD1;
+  code {
+    background-color: transparent;
+    color: #c4cdd1;
     font-size: 4rem;
     margin: auto;
-}
-@media (max-width: 720px) {
-
-}
-
+  }
+  @media (max-width: 720px) {
+  }
 </style>
 
-    <div class="CardHeader">
-    <div><SortSelect {query} path={$page.path}>Sort By: </SortSelect></div>
-    <div>{#if selecting}
-      <SmallButton click={() => selecting = false}>Done</SmallButton>
+<div class="CardHeader">
+  <div>
+    <SortSelect {query} path={$page.path}>Sort By:</SortSelect>
+  </div>
+  <div>
+    {#if selecting}
+      <SmallButton click={() => (selecting = false)}>Done</SmallButton>
     {:else}
       <!-- <SmallButton click={() => selecting = true}>Select</SmallButton> -->
-    {/if}</div>
-    </div>
-    <div class="Cards">
-    {#if $notes.type === 'loading'}
-      <div class="Loading"></div>
-      {:else}
-        {#each items as note}
-            <NotesCard {note} {selecting} />
-            {:else}
-              <div class="Empty">
-              <pre aria-hidden="true"><code> ̄\_(ツ)_/ ̄</code></pre>
-                <p>
-                  No sources...
-                </p></div>
-        {/each}
     {/if}
-    </div>
+  </div>
+</div>
+<div class="Cards">
+  {#if $notes.type === 'loading'}
+    <div class="Loading" />
+  {:else}
+    {#each items as note}
+      <NotesCard {note} {selecting} />
+    {:else}
+      <div class="Empty">
+        <pre aria-hidden="true">
+          <code>̄\_(ツ)_/ ̄</code>
+        </pre>
+        <p>No sources...</p>
+      </div>
+    {/each}
+  {/if}
+</div>

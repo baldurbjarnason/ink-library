@@ -1,79 +1,91 @@
 <script>
-  import Button from '../widgets/Button.svelte'
-  import WhiteButton from './WhiteButton.svelte'
-  import {send, receive} from '../../routes/_crossfade.js';
-  import AddWorkspace from './AddWorkspace.svelte'
-  import Input from './Input.svelte'
-  import FileInput from './FileInput.svelte'
-  import TypeSelect from './TypeSelect.svelte'
-  import Closer from '../widgets/Closer.svelte';
-  import AddCollections from './AddCollections.svelte'
-  import { afterUpdate, tick } from 'svelte';
-  import {refreshDate, refreshCollections, collections, addingWorkspace, addedCollections, addedWorkspaces} from '../../stores';
-  import {getToken} from '../../getToken'
-  export let workspace
-  let open = false
-  let input
-  let newToggle
-  let expanded = false
-  function click () {
+  import Button from "../widgets/Button.svelte";
+  import WhiteButton from "./WhiteButton.svelte";
+  import { send, receive } from "../../routes/_crossfade.js";
+  import AddWorkspace from "./AddWorkspace.svelte";
+  import Input from "./Input.svelte";
+  import FileInput from "./FileInput.svelte";
+  import TypeSelect from "./TypeSelect.svelte";
+  import Closer from "../widgets/Closer.svelte";
+  import AddCollections from "./AddCollections.svelte";
+  import { afterUpdate, tick } from "svelte";
+  import {
+    refreshDate,
+    refreshCollections,
+    collections,
+    addingWorkspace,
+    addedCollections,
+    addedWorkspaces
+  } from "../../stores";
+  import { getToken } from "../../getToken";
+  export let workspace;
+  let open = false;
+  let input;
+  let newToggle;
+  let expanded = false;
+  function click() {
     open = !open;
   }
-  async function close () {
-    open = false
-    await tick()
-    newToggle.querySelector('button').focus()
+  async function close() {
+    open = false;
+    await tick();
+    newToggle.querySelector("button").focus();
   }
   afterUpdate(() => {
     if (open) {
       input.focus();
     }
-  })
-  async function submit (event) {
+  });
+  async function submit(event) {
     event.preventDefault();
     close();
     const { target } = event;
-    const newInput = window.document.getElementById('new-input').value
+    const newInput = window.document.getElementById("new-input").value;
     if (newInput[0] === "#") {
-      const value = workspace === 'all' ? newInput.slice(1) : `${workspace}/${newInput.slice(1)}`
+      const value =
+        workspace === "all"
+          ? newInput.slice(1)
+          : `${workspace}/${newInput.slice(1)}`;
       try {
-        await fetch('/api/create-collection', {
+        await fetch("/api/create-collection", {
           method: "POST",
           credentials: "include",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json",
+            Accept: "application/json",
             "csrf-token": getToken()
-            },
+          },
           body: JSON.stringify({
-            type: 'stack',
+            type: "stack",
             name: value
           })
-        })
-        $refreshCollections = Date.now()
+        });
+        $refreshCollections = Date.now();
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
     } else {
       try {
-        const body = Object.fromEntries(new URLSearchParams(new FormData(target)).entries())
-        body.addedCollections = $addedCollections
-        body.addedWorkspaces = $addedWorkspaces
-        $addedWorkspaces = []
-        $addedCollections = []
+        const body = Object.fromEntries(
+          new URLSearchParams(new FormData(target)).entries()
+        );
+        body.addedCollections = $addedCollections;
+        body.addedWorkspaces = $addedWorkspaces;
+        $addedWorkspaces = [];
+        $addedCollections = [];
         await fetch(target.action, {
           method: "POST",
           credentials: "include",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json",
+            Accept: "application/json",
             "csrf-token": getToken()
-            },
+          },
           body: JSON.stringify(body)
-        })
-        $refreshDate = Date.now()
+        });
+        $refreshDate = Date.now();
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
     }
   }
@@ -87,7 +99,7 @@
     top: calc(var(--base) * 0.5);
     left: 0;
     right: 0;
-    min-height: calc(var(--base)*5.3);
+    min-height: calc(var(--base) * 5.3);
     z-index: 2;
     border-radius: 15px;
   }
@@ -97,7 +109,7 @@
     grid-template-columns: min-content 1fr min-content min-content;
     align-items: center;
     height: 100%;
-    grid-template-rows: calc(var(--base)*5.3) auto;
+    grid-template-rows: calc(var(--base) * 5.3) auto;
   }
   .NewBox .MoreItems {
     grid-column: 1 / -1;
@@ -115,8 +127,8 @@
     width: 20px;
     text-align: center;
     line-height: 38px;
-    margin: calc(var(--base)*0.25) 0;
-    font-size: .8rem;
+    margin: calc(var(--base) * 0.25) 0;
+    font-size: 0.8rem;
     position: absolute;
   }
   /* .Wide {
@@ -135,7 +147,7 @@
     outline: none;
   }
   .NewBox input::placeholder {
-    color: rgba(255, 255, 255, .5);
+    color: rgba(255, 255, 255, 0.5);
   }
   .NewBox:focus-within {
     box-shadow: 0 0 0 3px white;
@@ -143,7 +155,7 @@
   .new-button {
     margin: 0 auto 0 0;
   }
-  .Expander{
+  .Expander {
     font-family: var(--sans-fonts);
     font-size: 0.9rem;
     flex: 0 1 auto;
@@ -173,7 +185,7 @@
     border: none;
   }
 
-  .Expander:hover svg{
+  .Expander:hover svg {
     color: white !important;
     fill: rgba(255, 255, 255, 0.4);
     box-shadow: none;
@@ -203,7 +215,7 @@
     }
     .new-button :global(.Button) {
       box-shadow: 3px 1px 7px rgba(0, 0, 0, 0.2);
-      padding: .65rem;
+      padding: 0.65rem;
       border-radius: 100%;
       height: 42px;
       width: 42px;
@@ -217,66 +229,124 @@
     }
   }
 
-@media (max-width: 720px) {
-  .NewBox input {
-    font-size: 100%;
+  @media (max-width: 720px) {
+    .NewBox input {
+      font-size: 100%;
+    }
+    .Expander {
+      padding: 0.25rem;
+    }
+    .Expander svg {
+      width: 29px;
+      height: 29px;
+    }
+    .NewBox .MoreItems {
+      max-height: 55vh;
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+      margin-bottom: 2rem;
+    }
   }
-  .Expander {
-    padding: 0.25rem;
-  }
-  .Expander svg {
-    width: 29px;
-    height: 29px;
-  }
-  .NewBox .MoreItems {
-    max-height: 55vh;
-    grid-template-columns: 1fr;
-    overflow-y: auto;
-    margin-bottom: 2rem;
-  }
-}
 </style>
 
 {#if open}
-    <div class="NewBox" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}">
-        <form id="newform" class="newForm" action="/api/create-publication" on:submit={submit}>
-            <label class="visually-hidden" id="new-label" for="new-input">New item:</label>
-            <Closer click={close} dark={true} />
-            <input type="hidden" name="type" value="Publication">
-            <input type="title" required name="name" id="new-input" class="title-field" value="" placeholder="Enter a new Source Title or #stack name" bind:this={input}  autocomplete="off">
+  <div
+    class="NewBox"
+    out:send|local={{ key: 'new-box' }}
+    in:receive|local={{ key: 'new-box' }}>
+    <form
+      id="newform"
+      class="newForm"
+      action="/api/create-publication"
+      on:submit={submit}>
+      <label class="visually-hidden" id="new-label" for="new-input">
+        New item:
+      </label>
+      <Closer click={close} dark={true} />
+      <input type="hidden" name="type" value="Publication" />
+      <input
+        type="title"
+        required
+        name="name"
+        id="new-input"
+        class="title-field"
+        value=""
+        placeholder="Enter a new Source Title or #stack name"
+        bind:this={input}
+        autocomplete="off" />
 
-            <WhiteButton>Create</WhiteButton>
-            <button type="button" class="Expander" class:expanded on:click={() => { expanded = !expanded }}>
-                <svg width="36" height="36" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="1" y="-1" width="37" height="37" rx="14" transform="matrix(1 0 0 -1 0 37)" stroke="currentColor" stroke-width="2"/>
-                    <rect x="12" y="17.4141" width="2" height="10" rx="1" transform="rotate(-45 12 17.4141)" fill="currentColor"/>
-                    <rect x="24.7285" y="16" width="2" height="10" rx="1" transform="rotate(45 24.7285 16)" fill="currentColor"/>
-                </svg>
-            </button>
-            {#if expanded}
-                <div class="MoreItems">
-                    <div>
-                        <Input placeholder="Enter a URL" name="newURL" type="url">Source</Input>
-                        <p>or</p>
-                    </div>
-                    <div>
-                        <FileInput dark={true} name="newFile" type="file"></FileInput><!--
+      <WhiteButton>Create</WhiteButton>
+      <button
+        type="button"
+        class="Expander"
+        class:expanded
+        on:click={() => {
+          expanded = !expanded;
+        }}>
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 39 39"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <rect
+            x="1"
+            y="-1"
+            width="37"
+            height="37"
+            rx="14"
+            transform="matrix(1 0 0 -1 0 37)"
+            stroke="currentColor"
+            stroke-width="2" />
+          <rect
+            x="12"
+            y="17.4141"
+            width="2"
+            height="10"
+            rx="1"
+            transform="rotate(-45 12 17.4141)"
+            fill="currentColor" />
+          <rect
+            x="24.7285"
+            y="16"
+            width="2"
+            height="10"
+            rx="1"
+            transform="rotate(45 24.7285 16)"
+            fill="currentColor" />
+        </svg>
+      </button>
+      {#if expanded}
+        <div class="MoreItems">
+          <div>
+            <Input placeholder="Enter a URL" name="newURL" type="url">
+              Source
+            </Input>
+            <p>or</p>
+          </div>
+          <div>
+            <FileInput dark={true} name="newFile" type="file" />
+            <!--
                         <AddWorkspace>Assign workspace</AddWorkspace>-->
-                    </div>
-                    <AddCollections dark={true} />
-                    <div class="typeDiv">
-                        <TypeSelect dark={true}>Type</TypeSelect>
-                    </div>
-                </div>
-            {/if}
-        </form>
-    </div>
-    <span></span>
+          </div>
+          <AddCollections dark={true} />
+          <div class="typeDiv">
+            <TypeSelect dark={true}>Type</TypeSelect>
+          </div>
+        </div>
+      {/if}
+    </form>
+  </div>
+  <span />
 {:else}
-    <span class="new-button" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}" bind:this={newToggle}>
-        <Button click={click}>
-            <span class="NewButtonPlus">+</span> 
-            <span class="NewButtonLabel">New Source</span>
-        </Button>
-    </span>
+  <span
+    class="new-button"
+    out:send|local={{ key: 'new-box' }}
+    in:receive|local={{ key: 'new-box' }}
+    bind:this={newToggle}>
+    <Button {click}>
+      <span class="NewButtonPlus">+</span>
+      <span class="NewButtonLabel">New Source</span>
+    </Button>
+  </span>
 {/if}

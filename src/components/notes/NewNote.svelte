@@ -1,56 +1,74 @@
 <script>
-  import Button from '../widgets/Button.svelte'
-  import Closer from '../widgets/Closer.svelte';
-  import WhiteButton from '../workspace/WhiteButton.svelte'
-  import {send, receive} from '../../routes/_crossfade.js';
-  import { afterUpdate, tick } from 'svelte';
-  import NoteEditor from '../widgets/NoteEditor.svelte'
-  import {refreshNotes, refreshCollections, collections, addingWorkspace, addedCollections, addedWorkspaces, page, workspaces, tags} from '../../stores';
-  import {getToken} from '../../getToken'
-  let open = false
-  let newToggle
-  let expanded = false
-  function click () {
+  import Button from "../widgets/Button.svelte";
+  import Closer from "../widgets/Closer.svelte";
+  import WhiteButton from "../workspace/WhiteButton.svelte";
+  import { send, receive } from "../../routes/_crossfade.js";
+  import { afterUpdate, tick } from "svelte";
+  import NoteEditor from "../widgets/NoteEditor.svelte";
+  import {
+    refreshNotes,
+    refreshCollections,
+    collections,
+    addingWorkspace,
+    addedCollections,
+    addedWorkspaces,
+    page,
+    workspaces,
+    tags
+  } from "../../stores";
+  import { getToken } from "../../getToken";
+  let open = false;
+  let newToggle;
+  let expanded = false;
+  function click() {
     open = !open;
   }
-  $: console.log($tags.getIds(["colour 1", "colour 2", "colour 3", "colour 4"]))
-  async function close () {
-    open = false
-    await tick()
-    newToggle.querySelector('button').focus()
+  $: console.log(
+    $tags.getIds(["colour 1", "colour 2", "colour 3", "colour 4"])
+  );
+  async function close() {
+    open = false;
+    await tick();
+    newToggle.querySelector("button").focus();
   }
 
-  let text
-  async function submit (event) {
+  let text;
+  async function submit(event) {
     event.preventDefault();
     close();
-    let workspace
-    if ($page.params.workspace && $page.params.workspace !== 'all') {
-      workspace = $workspaces.find(space => space.name === $page.params.workspace).id
+    let workspace;
+    if ($page.params.workspace && $page.params.workspace !== "all") {
+      workspace = $workspaces.find(
+        space => space.name === $page.params.workspace
+      ).id;
     }
     // Need to do the same for stack
-    let collection
-    if ($page.params.collection && $page.params.collection !== 'all') {
-      collection = $collections.find(space => space.name === $page.params.collection).id
+    let collection;
+    if ($page.params.collection && $page.params.collection !== "all") {
+      collection = $collections.find(
+        space => space.name === $page.params.collection
+      ).id;
     }
     const note = {
-      body: [{
-        motivation: "commenting",
-        content : text
-      }],
+      body: [
+        {
+          motivation: "commenting",
+          content: text
+        }
+      ],
       _workspace: workspace,
       _collection: collection
-    }
+    };
     await window.fetch(`/api/notes`, {
-      method: 'POST',
+      method: "POST",
       credentials: "include",
       headers: {
         "csrf-token": getToken(),
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(note),
-    })
-    $refreshNotes = Date.now()
+      body: JSON.stringify(note)
+    });
+    $refreshNotes = Date.now();
   }
 </script>
 
@@ -62,7 +80,7 @@
     top: calc(var(--base) * 0.5);
     left: 0;
     right: 0;
-    min-height: calc(var(--base)*5.3);
+    min-height: calc(var(--base) * 5.3);
     z-index: 2;
     border-radius: 15px;
   }
@@ -72,16 +90,16 @@
     grid-template-columns: min-content 1fr min-content min-content;
     align-items: center;
     height: 100%;
-    grid-template-rows: calc(var(--base)*5.3) auto;
+    grid-template-rows: calc(var(--base) * 5.3) auto;
   }
-.Editor {
-  display: block;
-  background-color: rgba(255,255,255,0.9);
+  .Editor {
+    display: block;
+    background-color: rgba(255, 255, 255, 0.9);
     grid-column: 1 / -1;
     color: #333;
     margin: 1rem;
     border-radius: 0.25rem;
-}
+  }
   @media (max-width: 720px) {
     .new-button {
       position: fixed;
@@ -90,7 +108,7 @@
     }
     .new-button :global(.Button) {
       box-shadow: 3px 1px 7px rgba(0, 0, 0, 0.2);
-      padding: .65rem;
+      padding: 0.65rem;
       border-radius: 100%;
       height: 42px;
       width: 42px;
@@ -104,28 +122,40 @@
     }
   }
 
-@media (max-width: 720px) {
-}
+  @media (max-width: 720px) {
+  }
 </style>
 
-{#if open}<div class="NewBox" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}">
-        <form id="newform" class="newForm" action="/api/create-publication" on:submit={submit}>
-            <Closer click={close} dark={true} />
-            
-<span>&nbsp;</span>
-            <WhiteButton>Create</WhiteButton>
-<span>&nbsp;</span>
-          <div class="Editor">
-          <NoteEditor bind:richtext={text}/>
-          </div>
-        </form>
-    </div>
-    <span></span>
+{#if open}
+  <div
+    class="NewBox"
+    out:send|local={{ key: 'new-box' }}
+    in:receive|local={{ key: 'new-box' }}>
+    <form
+      id="newform"
+      class="newForm"
+      action="/api/create-publication"
+      on:submit={submit}>
+      <Closer click={close} dark={true} />
+
+      <span>&nbsp;</span>
+      <WhiteButton>Create</WhiteButton>
+      <span>&nbsp;</span>
+      <div class="Editor">
+        <NoteEditor bind:richtext={text} />
+      </div>
+    </form>
+  </div>
+  <span />
 {:else}
-    <span class="new-button" out:send|local="{{key: 'new-box'}}" in:receive|local="{{key: 'new-box'}}" bind:this={newToggle}>
-        <Button click={click}>
-            <span class="NewButtonPlus">+</span> 
-            <span class="NewButtonLabel">New Note</span>
-        </Button>
-    </span>
+  <span
+    class="new-button"
+    out:send|local={{ key: 'new-box' }}
+    in:receive|local={{ key: 'new-box' }}
+    bind:this={newToggle}>
+    <Button {click}>
+      <span class="NewButtonPlus">+</span>
+      <span class="NewButtonLabel">New Note</span>
+    </Button>
+  </span>
 {/if}

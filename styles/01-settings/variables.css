@@ -1,31 +1,29 @@
-
 /* Workspaces */
 :root {
-  --research-workspace: #E74951;
-  --teaching-workspace: #6D73E0;
-  --public-workspace: #0184CE;
-  --personal-workspace: #00AAAA;
+  --research-workspace: #e74951;
+  --teaching-workspace: #6d73e0;
+  --public-workspace: #0184ce;
+  --personal-workspace: #00aaaa;
   --all-workspace: #002230;
-  --all-workspace-selected: #193C4A;
+  --all-workspace-selected: #193c4a;
 }
 :root {
-  --research-workspace-pale: #E74951;
-  --teaching-workspace-pale: #6D73E0;
-  --public-workspace-pale: #0184CE;
-  --personal-workspace-pale: #00AAAA;
+  --research-workspace-pale: #e74951;
+  --teaching-workspace-pale: #6d73e0;
+  --public-workspace-pale: #0184ce;
+  --personal-workspace-pale: #00aaaa;
 }
-
 
 /* Colour variables used in the reading UI */
 :root {
-  --reader-toolbar-background: #F1F5F8;
-  --reader-toolbar-border: #DDE8ED;
+  --reader-toolbar-background: #f1f5f8;
+  --reader-toolbar-border: #dde8ed;
   --reader-toolbar-color: #333;
   --reader-titlebar-color: rgba(255, 255, 255, 0.8);
   --reader-titlebar-background: #002230;
   --reader-notes-tools-background: #002230;
-  --reader-main-background: #FAFAFA;
-  --reader-info-background:  #F9FCFE;
+  --reader-main-background: #fafafa;
+  --reader-info-background: #f9fcfe;
 }
 
 :root {
@@ -36,7 +34,7 @@
   --rc-light: #b8f4f2;
   --rc-lighter: #e4fffe;
   --sidebar-background-color: #f3f7fa;
-  --main-background-color: #F5F8FA;
+  --main-background-color: #f5f8fa;
   --warm-background-color: #f7f6f4;
   --highlight-color: #ffff98;
   --dark: #333333;
@@ -47,7 +45,7 @@
   --active: #00ccee;
   --primary: #cd4b18;
   --visited: #2e9595;
-  --action: #14457F;
+  --action: #14457f;
   --error: #ff3b3b;
   --error-light: #fff5f4;
   --valid: #2ed0ac;
@@ -96,7 +94,6 @@
   --x-large: 1.5rem;
   --xx-large: 1.75rem;
 }
-
 
 :root {
   --sans-fonts: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,

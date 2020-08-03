@@ -1,22 +1,22 @@
 <script>
-  import {library, clearSelected} from '../../stores'
-  import Footer from './Footer.svelte'
-  import Button from '../widgets/Button.svelte'
-  import Card from './Card.svelte'
-  import Item from './Item.svelte'
-  import HeaderArrows from './HeaderArrows.svelte'
-  import SmallButton from '../widgets/SmallButton.svelte'
-  import SortSelect from './SortSelect.svelte'
-  import SortButton from './SortButton.svelte'
+  import { library, clearSelected } from "../../stores";
+  import Footer from "./Footer.svelte";
+  import Button from "../widgets/Button.svelte";
+  import Card from "./Card.svelte";
+  import Item from "./Item.svelte";
+  import HeaderArrows from "./HeaderArrows.svelte";
+  import SmallButton from "../widgets/SmallButton.svelte";
+  import SortSelect from "./SortSelect.svelte";
+  import SortButton from "./SortButton.svelte";
   import { stores } from "@sapper/app";
   const { page, session } = stores();
-  let selecting = false
-  let items
+  let selecting = false;
+  let items;
   $: if ($library) {
-    items = $library.items
+    items = $library.items;
   }
-  let query = {}
-  let params = {}
+  let query = {};
+  let params = {};
   $: if ($page) {
     query = Object.assign({}, $page.query);
     params = Object.assign({}, $page.params);
@@ -75,7 +75,7 @@
     height: 2rem;
     border-radius: 100%;
     background-color: transparent;
-    box-shadow: 0 0 2px #f0f0f0,0 0 4px var(--workspace-color);
+    box-shadow: 0 0 2px #f0f0f0, 0 0 4px var(--workspace-color);
     margin: 8rem auto;
     animation-duration: 1s;
     animation-name: loading;
@@ -85,110 +85,130 @@
     grid-column: 1 / -1;
   }
   @keyframes loading {
-  from {
-    transform: scale(.5);
-    box-shadow: 0 0 2px #f0f0f0,0 0 4px var(--workspace-color);
+    from {
+      transform: scale(0.5);
+      box-shadow: 0 0 2px #f0f0f0, 0 0 4px var(--workspace-color);
+    }
+    to {
+      transform: scale(1.5);
+      box-shadow: 0 0 0 3px var(--workspace-color), 0 0 0 20px #f0f0f0;
+    }
   }
-  to {
-    transform: scale(1.5);
-    box-shadow: 0 0 0 3px var(--workspace-color), 0 0 0 20px #f0f0f0;
+  .Empty {
+    text-align: center;
+    color: #c4cdd1;
+    grid-column: 1 / -1;
   }
-}
-.Empty {
-  text-align: center;
-  color: #C4CDD1;
-  grid-column: 1 / -1;
-}
-code {
-  background-color: transparent;
-    color: #C4CDD1;
+  code {
+    background-color: transparent;
+    color: #c4cdd1;
     font-size: 4rem;
     margin: auto;
-}
-.MobileHeader {
-  display: none;
-}
-@media (max-width: 720px) {
-  .Header, .CardHeader {
-    display: none;
   }
   .MobileHeader {
-    display: flex;
-    padding: calc(var(--base) * 0.25) var(--base);
-    justify-content: space-between;
-    align-items: center;
+    display: none;
   }
-  .Items, .Cards {
-    padding: 0 var(--base) 60px;
+  @media (max-width: 720px) {
+    .Header,
+    .CardHeader {
+      display: none;
+    }
+    .MobileHeader {
+      display: flex;
+      padding: calc(var(--base) * 0.25) var(--base);
+      justify-content: space-between;
+      align-items: center;
+    }
+    .Items,
+    .Cards {
+      padding: 0 var(--base) 60px;
+    }
   }
-}
-
 </style>
 
-  {#if query["list-style"] === 'card'}
-    <div class="CardHeader">
-    <div><SortSelect {query} path={$page.path}>Sort By: </SortSelect></div>
-    <div>{#if selecting}
-      <SmallButton click={() => selecting = false}>Done</SmallButton>
-    {:else}
-      <SmallButton click={() => selecting = true}>Select</SmallButton>
-    {/if}</div>
+{#if query['list-style'] === 'card'}
+  <div class="CardHeader">
+    <div>
+      <SortSelect {query} path={$page.path}>Sort By:</SortSelect>
     </div>
-    <div class="Cards">
+    <div>
+      {#if selecting}
+        <SmallButton click={() => (selecting = false)}>Done</SmallButton>
+      {:else}
+        <SmallButton click={() => (selecting = true)}>Select</SmallButton>
+      {/if}
+    </div>
+  </div>
+  <div class="Cards">
     {#if $library.type === 'loading'}
-      <div class="Loading"></div>
+      <div class="Loading" />
+    {:else}
+      {#each items as item}
+        <Card {item} {selecting} />
       {:else}
-        {#each items as item}
-            <Card {item} {selecting} />
-            {:else}
-              <div class="Empty">
-              <pre aria-hidden="true"><code> ̄\_(ツ)_/ ̄</code></pre>
-                <p>
-                  No sources...
-                </p></div>
-        {/each}
+        <div class="Empty">
+          <pre aria-hidden="true">
+            <code>̄\_(ツ)_/ ̄</code>
+          </pre>
+          <p>No sources...</p>
+        </div>
+      {/each}
     {/if}
+  </div>
+{:else}
+  <div class="MobileHeader">
+    <div>
+      <SortSelect {query} path={$page.path}>Sort By:</SortSelect>
     </div>
-  {:else}
-    <div class="MobileHeader">
-      <div><SortSelect {query} path={$page.path}>Sort By: </SortSelect></div>
-      <div>{#if selecting}
-        <SmallButton click={() => selecting = false}>Done</SmallButton>
+    <div>
+      {#if selecting}
+        <SmallButton click={() => (selecting = false)}>Done</SmallButton>
       {:else}
-        <SmallButton click={() => selecting = true}>Select</SmallButton>
-      {/if}</div>
+        <SmallButton click={() => (selecting = true)}>Select</SmallButton>
+      {/if}
     </div>
-    <div class="Header">
+  </div>
+  <div class="Header">
     <div>&nbsp;</div>
-    <div><SortButton {query} type="title" path={$page.path}>Title</SortButton></div>
+    <div>
+      <SortButton {query} type="title" path={$page.path}>Title</SortButton>
+    </div>
     <div>Stacks</div>
     <div>Type</div>
-    <div><SortButton {query} type="modified" path={$page.path}>Modified</SortButton></div>
-    <div>{#if selecting}
-      <SmallButton click={() => selecting = false}>Done</SmallButton>
-    {:else}
-      <SmallButton click={() => selecting = true}>Select</SmallButton>
-    {/if}</div>
+    <div>
+      <SortButton {query} type="modified" path={$page.path}>
+        Modified
+      </SortButton>
     </div>
-    <div class="Items">
-    {#if $library.type === 'loading'}
-      <div class="Loading"></div>
+    <div>
+      {#if selecting}
+        <SmallButton click={() => (selecting = false)}>Done</SmallButton>
       {:else}
-        {#each items as item}
-            <Item {item} {selecting} />
-            {:else}
-              <div class="Empty">
-              <pre aria-hidden="true"><code> ̄\_(ツ)_/ ̄</code></pre>
-                <p>
-                  No sources...
-                </p></div>
-        {/each}
-    {/if}
+        <SmallButton click={() => (selecting = true)}>Select</SmallButton>
+      {/if}
     </div>
-  {/if}
-  {#if selecting}
-    <Footer endSelection={() => {
-      selecting = false
-      clearSelected()
+  </div>
+  <div class="Items">
+    {#if $library.type === 'loading'}
+      <div class="Loading" />
+    {:else}
+      {#each items as item}
+        <Item {item} {selecting} />
+      {:else}
+        <div class="Empty">
+          <pre aria-hidden="true">
+            <code>̄\_(ツ)_/ ̄</code>
+          </pre>
+          <p>No sources...</p>
+        </div>
+      {/each}
+    {/if}
+  </div>
+{/if}
+{#if selecting}
+  <Footer
+    endSelection={() => {
+      selecting = false;
+      clearSelected();
     }} />
-  {/if}
+{/if}

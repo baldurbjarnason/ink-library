@@ -1,32 +1,34 @@
 <script>
-  import ItemStacks from './ItemStacks.svelte'
-  import {addSelected, removeSelected} from '../../stores'
-  import {typeName} from '../typeName.js'
-  export let item = {}
-  export let selecting
-  let selected = false
+  import ItemStacks from "./ItemStacks.svelte";
+  import { addSelected, removeSelected } from "../../stores";
+  import { typeName } from "../typeName.js";
+  export let item = {};
+  export let selecting;
+  let selected = false;
   $: if (!selecting && selected) {
-    selected = false
+    selected = false;
   }
   $: if (selected && item.id) {
-    addSelected(item)
+    addSelected(item);
   } else {
-    removeSelected(item)
+    removeSelected(item);
   }
-  let cover
+  let cover;
   $: if (item.resources) {
-    cover = item.resources.find(resource => resource.rel.indexOf('cover') !== -1)
+    cover = item.resources.find(
+      resource => resource.rel.indexOf("cover") !== -1
+    );
     if (!cover) {
       cover = {
         href: "/img/placeholder-cover.jpg",
         rel: ["cover"]
-      }
+      };
     }
   } else {
     cover = {
       href: "/img/placeholder-cover.jpg",
       rel: ["cover"]
-    }
+    };
   }
 </script>
 
@@ -42,14 +44,16 @@
     border-radius: 15px;
     font-size: var(--item-font-size);
     position: relative;
-    transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 250ms cubic-bezier(0.075, 0.82, 0.165, 1), transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
+    transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1),
+      box-shadow 250ms cubic-bezier(0.075, 0.82, 0.165, 1),
+      transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
   }
   .Image {
     padding: calc(var(--base) * 0.5) 0;
     display: flex;
   }
   .Image img {
-    height: calc(var(--base)*5);
+    height: calc(var(--base) * 5);
     width: auto;
     object-fit: contain;
   }
@@ -113,12 +117,12 @@
     color: white;
     background-color: var(--workspace-color);
   }
-  @supports(-webkit-appearance: none) {
+  @supports (-webkit-appearance: none) {
     input[type="checkbox"] {
       -webkit-appearance: none;
       width: 0.75rem;
       height: 0.75rem;
-      border: 2px solid  var(--workspace-color);
+      border: 2px solid var(--workspace-color);
       border-radius: 4px;
       margin: 0;
     }
@@ -135,39 +139,63 @@
       margin-left: 1px;
       margin-top: 1px;
       content: "";
-      width: .4rem;
-      height: .4rem;
+      width: 0.4rem;
+      height: 0.4rem;
       background-color: var(--workspace-color);
       border-radius: 2px;
     }
     .selected input[type="checkbox"]:checked::after {
       background-color: white;
     }
-}
-.Modified {
-  text-align: right;
-}
+  }
+  .Modified {
+    text-align: right;
+  }
 </style>
 
 <div class="Item" class:selecting class:selected>
-  <div class="Top">{#if selecting}
-    <label><span class="visually-hidden">Select this item</span><input type="checkbox" bind:checked={selected}></label>
-  {:else}
-    <span>&nbsp;</span>
-  {/if}<span>{typeName(item.type)}</span> <span class="Modified">Modified:  <strong>{new Date(item.updated).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</strong></span></div>
+  <div class="Top">
+    {#if selecting}
+      <label>
+        <span class="visually-hidden">Select this item</span>
+        <input type="checkbox" bind:checked={selected} />
+      </label>
+    {:else}
+      <span>&nbsp;</span>
+    {/if}
+    <span>{typeName(item.type)}</span>
+    <span class="Modified">
+      Modified:
+      <strong>
+        {new Date(item.updated).toLocaleString(undefined, {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric'
+        })}
+      </strong>
+    </span>
+  </div>
   <div class="CardMain">
-    <div class="Image"><img src="{cover.href}" alt="Cover for {item.name}"></div>
-    <div class="Name"><span class="title">{item.name}</span>
+    <div class="Image">
+      <img src={cover.href} alt="Cover for {item.name}" />
+    </div>
+    <div class="Name">
+      <span class="title">{item.name}</span>
       <div class="Authors">
-      {#each item.author as author, i}
-        <span class="Author">{author.name}{#if i !== item.author.length - 1}, {/if}</span>
-      {/each}
+        {#each item.author as author, i}
+          <span class="Author">
+            {author.name}
+            {#if i !== item.author.length - 1},{/if}
+          </span>
+        {/each}
       </div>
     </div>
-  <!-- Need to add authors! -->
+    <!-- Need to add authors! -->
   </div>
   <div class="Stacks">
     <ItemStacks {item} {selected} />
   </div>
-  <div class="ItemEntry"><span></span></div>
+  <div class="ItemEntry">
+    <span />
+  </div>
 </div>
