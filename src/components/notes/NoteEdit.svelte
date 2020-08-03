@@ -1,4 +1,5 @@
 <script>
+  import IcoGoBack from "../img/IcoGoBack.svelte";
   import { notes, refreshNotes, page } from "../../stores";
   import Comment from "./Comment.svelte";
   import Highlight from "./Highlight.svelte";
@@ -64,19 +65,14 @@
 <style>
   /* your styles go here */
   .Item {
-    min-height: calc(var(--base) * 4);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin: 2px;
-    border-radius: 15px;
+    height: 100vh;
+    padding: 20px 20px 20px 0;
     font-size: var(--item-font-size);
-    position: relative;
+    display: grid;
+    grid-template-rows: 50px 25px 1fr;
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1),
       box-shadow 250ms cubic-bezier(0.075, 0.82, 0.165, 1),
       transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.05);
-    background-color: #fafafa;
   }
   .title {
     font-size: var(--item-font-size);
@@ -84,32 +80,42 @@
     padding: calc(var(--base) * 0.5) 0;
     display: flex;
     flex-direction: column;
+    display: none;
+  }
+  .Top,
+  .CardBottom {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
   }
   .Top {
-    display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    border-bottom: 0.5px solid var(--light);
-    padding: calc(var(--base) * 0.5);
-    align-items: center;
     background-color: white;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
   }
   .CardBottom {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: calc(var(--base) * 0.5);
-    align-items: center;
-    height: calc(var(--base) * 2);
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
+    justify-content: start;
+    background: #f6f6f6;
+    border-top: 1px solid #eeeeee;
   }
   .CardMain {
-    padding: 0;
-    grid-gap: calc(var(--base) * 0.5);
-    flex: 1 1 auto;
+    padding: 20px;
+    display: grid;
+    grid-gap: 10px;
+    background: #fff;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    grid-template-rows: 25px 1fr;
+  }
+  .CardMain.Highlighted {
+    grid-template-rows: 0.5fr 25px 1fr;
+  }
+  .CardMain :global(.Editor .ql-editor) {
+    padding: 20px;
+    background: var(--main-background-color);
+    height: 100%;
+    border-radius: 10px;
   }
   .Modified {
     text-align: right;
@@ -130,22 +136,33 @@
   :global(#sapper .Item .ql-container.ql-snow) {
     border: none;
   }
+  .breadcrumbs h5 {
+    float: left;
+    margin: 0;
+    color: #888888;
+    font-size: 0.75rem;
+    line-height: 14px;
+    font-weight: 500;
+  }
+  @media (max-width: 720px) {
+    .Item {
+      height: calc(100vh - 60px);
+      padding: 20px;
+    }
+  }
 </style>
 
 {#if note.type !== 'loading'}
   <div class="Item">
     <div class="Top">
+      <a href="/notes/all/all" class="breadcrumbs">
+        <IcoGoBack />
+        <h5>Notes Library</h5>
+      </a>
+      <!--
       <span class="Icon" />
-      <span class="title" id="note-edit-title">{title}</span>
+      <span class="title" id="note-edit-title">{title}</span>-->
       <Button click={save}>Save</Button>
-    </div>
-    <div class="CardMain">
-      {#if highlight}
-        <Highlight body={highlight} edit={true} />
-      {/if}
-      {#if comment}
-        <NoteEditor html={comment.content || ''} bind:richtext={text} />
-      {/if}
     </div>
     <div class="CardBottom">
       <span />
@@ -157,6 +174,14 @@
           day: 'numeric'
         })}
       </span>
+    </div>
+    <div class="CardMain {highlight ? 'Highlighted' : ''}">
+      {#if highlight}
+        <Highlight body={highlight} edit={true} />
+      {/if}
+      {#if comment}
+        <NoteEditor html={comment.content || ''} bind:richtext={text} />
+      {/if}
     </div>
   </div>
 {/if}

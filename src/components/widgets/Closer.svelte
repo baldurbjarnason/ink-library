@@ -78,7 +78,7 @@
 
 <button
   type="Button"
-  class="Button"
+  class="Button Closer"
   on:click={event => {
     event.data = Object.assign({}, event.data, { value });
     return click(event);

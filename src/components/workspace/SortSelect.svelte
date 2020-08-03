@@ -37,11 +37,11 @@
     }
   }
   function changed(event) {
-    length(event);
+    //length(event);
     return sortItems(event.target.value);
   }
   onMount(() => {
-    length({ target: selectElement });
+    //length({ target: selectElement });
   });
 </script>
 
@@ -54,27 +54,33 @@
   }
   label {
     font-size: var(--item-font-size);
+    position: relative;
+    color: #333333;
+    font-weight: 600;
+  }
+  svg {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 19px;
+    color: var(--action);
   }
   select {
+    background: var(--main-background-color);
+    border-radius: 50px;
+    padding: 11px 35px 11px 25px;
+    font-weight: 700;
     display: inline-block;
     color: var(--action);
-    padding: calc(var(--base) * 0.25) 0;
     box-sizing: border-box;
-    margin: 0;
+    margin: 0 0 0 5px;
     border: none;
-    border-radius: 2px;
-    padding-right: 1.5rem;
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
-    background-color: transparent;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%228%22%20height%3D%224%22%20viewBox%3D%220%200%208%204%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M4%204L0.535899%200.25L7.4641%200.25L4%204Z%22%20fill%3D%22%2314457F%22%2F%3E%3C%2Fsvg%3E"),
-      linear-gradient(to bottom, transparent 0%, transparent 100%);
-    background-repeat: no-repeat, repeat;
-    background-position: right 0.7em top 50%, 0 0;
-    background-size: 8px auto, 100%;
-    font-weight: 600;
     font-size: var(--item-font-size);
+    outline: none;
+    mix-blend-mode: multiply;
   }
   select::-ms-expand {
     display: none;
@@ -87,16 +93,26 @@
 
 <label>
   <slot />
+  <svg
+    width="7"
+    height="11"
+    viewBox="0 0 12 8"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M7.3,8.2C6.7,8.9,5.6,8.9,5,8.2L0.3,2.4C-0.5,1.5,0.2,0,1.5,0l9.3,0c1.3,0,2,1.5,1.2,2.4L7.3,8.2z"
+      fill="currentColor" />
+  </svg>
   <select
     name="sort-select"
     id="sort-select"
     on:change={changed}
     bind:this={selectElement}>
     <option value="modified-asc" selected={selectedOption === 'modified-asc'}>
-      Date Modified, newest first
+      Date, Asc
     </option>
     <option value="modified-desc" selected={selectedOption === 'modified-desc'}>
-      Date Modified, oldest first
+      Date, Desc
     </option>
     <option value="title-asc" selected={selectedOption === 'title-asc'}>
       Title, A-Z

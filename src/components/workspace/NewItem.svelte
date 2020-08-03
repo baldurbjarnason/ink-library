@@ -1,4 +1,5 @@
 <script>
+  import NewSource from "../img/NewSource.svelte";
   import Button from "../widgets/Button.svelte";
   import WhiteButton from "./WhiteButton.svelte";
   import { send, receive } from "../../routes/_crossfade.js";
@@ -22,7 +23,7 @@
   let open = false;
   let input;
   let newToggle;
-  let expanded = false;
+  let expanded = true;
   function click() {
     open = !open;
   }
@@ -95,13 +96,13 @@
   .NewBox {
     position: absolute;
     background-color: var(--workspace-color);
-    color: white;
-    top: calc(var(--base) * 0.5);
-    left: 0;
-    right: 0;
+    color: #fff;
+    left: 20px;
+    width: calc(100% - 40px);
+    top: 20px;
     min-height: calc(var(--base) * 5.3);
-    z-index: 2;
-    border-radius: 15px;
+    z-index: 3;
+    border-radius: 30px;
   }
   .NewBox form {
     display: -webkit-box;
@@ -151,9 +152,6 @@
   }
   .NewBox:focus-within {
     box-shadow: 0 0 0 3px white;
-  }
-  .new-button {
-    margin: 0 auto 0 0;
   }
   .Expander {
     font-family: var(--sans-fonts);
@@ -207,18 +205,40 @@
     grid-row: 2;
     grid-column: 2;
   }
+
+  .new-button {
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+  }
+  .new-button :global(.Button) {
+    padding: 0.65rem 1.95rem 0.6rem;
+  }
+  .NewButtonLabel {
+    float: left;
+    margin-top: 2px;
+    margin-left: 10px;
+  }
+  .new-button :global(svg) {
+    float: left;
+  }
   @media (max-width: 720px) {
     .new-button {
       position: fixed;
       right: var(--base);
-      bottom: 70px;
+      bottom: 50px;
     }
     .new-button :global(.Button) {
       box-shadow: 3px 1px 7px rgba(0, 0, 0, 0.2);
       padding: 0.65rem;
       border-radius: 100%;
-      height: 42px;
-      width: 42px;
+      height: 60px;
+      width: 60px;
+    }
+    .new-button :global(svg) {
+      float: inherit;
+      width: 25px;
+      height: 25px;
     }
     .NewButtonLabel {
       display: none;
@@ -227,9 +247,6 @@
       font-size: 2rem;
       line-height: 1rem;
     }
-  }
-
-  @media (max-width: 720px) {
     .NewBox input {
       font-size: 100%;
     }
@@ -239,12 +256,103 @@
     .Expander svg {
       width: 29px;
       height: 29px;
-    }
+    } /*
     .NewBox .MoreItems {
       max-height: 55vh;
       grid-template-columns: 1fr;
       overflow-y: auto;
       margin-bottom: 2rem;
+    }*/
+
+    .NewBox {
+      height: 100vh;
+      width: 100%;
+      left: 0;
+      top: -62px;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+    }
+    .NewBox form {
+      float: left;
+      height: initial;
+      display: block;
+      position: relative;
+    }
+    .NewBox .MoreItems {
+      display: block;
+      padding: 50px 40px;
+      margin-bottom: 0;
+      float: left;
+      border-top: none;
+    }
+    .MoreItems > div,
+    .MoreItems > :global(div) {
+      margin-bottom: 20px;
+      float: left;
+      width: 100%;
+    }
+    .MoreItems :global(div:empty) {
+      display: none;
+    }
+    .MoreItems > div:nth-child(2) {
+      margin-left: 10%;
+    }
+    .MoreItems > div:nth-child(-n + 2) {
+      width: 45%;
+    }
+    .MoreItems p {
+      right: -10%;
+      transform: translateX(50%);
+    }
+    /* ------------- */
+
+    form label + :global(.Button) {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      padding: 0;
+      margin: 0;
+      transform: rotate(45deg);
+    }
+    form label + :global(.Button::before),
+    form label + :global(.Button::after) {
+      content: "";
+      display: block;
+      background: var(--workspace-color);
+      width: 40%;
+      height: 2px;
+      border-radius: 110px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    form label + :global(.Button::after) {
+      width: 2px;
+      height: 40%;
+    }
+    form label + :global(.Button svg) {
+      display: none;
+    }
+    .NewBox #new-input {
+      font-size: 100%;
+      width: calc(100% - 80px);
+      margin: 0 auto;
+      display: inherit;
+    }
+    #new-input + :global(.Button) {
+      font-size: 0.7rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      float: right;
+      position: absolute;
+      bottom: 0px;
+      right: 0;
     }
   }
 </style>
@@ -276,6 +384,7 @@
         autocomplete="off" />
 
       <WhiteButton>Create</WhiteButton>
+      <!--
       <button
         type="button"
         class="Expander"
@@ -315,7 +424,7 @@
             transform="rotate(45 24.7285 16)"
             fill="currentColor" />
         </svg>
-      </button>
+      </button>-->
       {#if expanded}
         <div class="MoreItems">
           <div>
@@ -345,8 +454,8 @@
     in:receive|local={{ key: 'new-box' }}
     bind:this={newToggle}>
     <Button {click}>
-      <span class="NewButtonPlus">+</span>
-      <span class="NewButtonLabel">New Source</span>
+      <NewSource />
+      <span class="NewButtonLabel">Source</span>
     </Button>
   </span>
 {/if}

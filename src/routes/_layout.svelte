@@ -48,12 +48,9 @@
     box-sizing: border-box;
   }
   .content {
-    padding: calc(var(--base) * 2);
-    padding-top: 0;
   }
   .grid {
-    display: grid; /*
-    grid-template-columns: calc(var(--base) * 4) calc(var(--base) * 14) 1fr;*/
+    display: grid;
     grid-template-columns: calc(var(--base) * 4) 1fr;
     min-height: 100vh;
   }
@@ -171,15 +168,7 @@
     </div>
   {/if}
   <main class="grid" class:publication>
-    {#if !menu && segment === 'library'}
-      <Nav {params} />
-      <!--<Sidebar {params} />-->
-    {:else if !menu && segment === 'notes'}
-      <Nav {params} />
-      <!--<NotesSidebar {params} />-->
-      <!-- else if content here -->
-    {/if}
-
+    <Nav {params} />
     <div class="content {params.workspace || 'unfinished'}" class:publication>
       <slot />
     </div>

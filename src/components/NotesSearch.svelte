@@ -24,82 +24,57 @@
 </script>
 
 <style>
-  .Button,
-  .Button:link {
-    font-family: var(--sans-fonts);
-    font-size: 0.9rem;
-    flex: 0 1 auto;
-    line-height: 1;
-
-    display: inline-block;
-
-    padding: 0.65rem 1.5rem 0.7rem;
-
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    text-align: center;
-    white-space: nowrap;
-    text-decoration: none;
-    font-weight: 300;
-    color: var(--workspace-color);
+  .Button {
+    background-color: var(--main-background-color);
+    height: 34px;
     border-radius: 50px;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    /* transition: box-shadow 0.15s ease-in-out; */
-    background-color: #ffffff;
-    text-decoration: none !important;
-    transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
+    width: 225px;
+    position: relative;
+    float: left;
+  }
+  .Button input {
+    font-family: var(--sans-fonts);
+    font-size: var(--item-font-size);
     border: none;
-    display: inline-flex;
-    justify-content: space-between;
+    font-weight: 700;
+    background: transparent;
+    position: absolute;
+    top: 50%;
+    left: 40px;
+    width: calc(100% - 50px);
+    height: 100%;
+    transform: translateY(-50%);
+    color: var(--action);
+    transition: all 0.25s ease-out;
   }
-
-  .Button:hover,
-  .Button:link:hover,
-  .Button:link:visited:hover,
-  .Button:visited:hover,
-  .Button:link:visited:hover {
-    color: white !important;
-    background-color: var(--workspace-color);
-    box-shadow: none;
-    text-decoration: none;
-  }
-  .Button:hover .Search {
-    color: white !important;
-  }
-
-  .Button:active,
-  .Button:link:active {
-    background-color: var(--active);
+  .Button input:focus {
+    outline: none;
   }
   .Button:focus-within {
-    outline: none;
-    box-shadow: 0 0 0 3px #68d6d499;
+    background: #e5ecf2;
+  }
+  .Button input::placeholder {
+    color: var(--action);
+    opacity: 0.5;
+    font-weight: 500;
   }
   .Button svg {
-    color: var(--workspace-color);
-    margin-left: calc(var(--base) * 1.25);
-    transform: translateY(1px);
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    margin: 0;
+    width: 15px;
+    height: 15px;
   }
-  .Button:hover svg {
-    color: white;
-  }
-  .Search {
-    border: none;
-    background-color: transparent;
-  }
-  .Search:focus {
-    outline: none;
-    box-shadow: none;
-  }
-  @media (max-width: 720px) {
+  @media (max-width: 640px) {
     .Button {
-      width: 100%;
-      display: inline-flex;
-      justify-content: space-between;
+      left: 0.5rem;
+      right: 0.5rem;
+      position: absolute;
+      width: calc(100% - 80px);
+      left: 40px;
+      top: 0;
     }
   }
 </style>

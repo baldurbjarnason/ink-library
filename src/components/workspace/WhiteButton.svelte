@@ -58,7 +58,6 @@
   }
   @media (max-width: 720px) {
     .Button {
-      font-size: 0.7rem;
       padding-left: 1rem;
       padding-right: 1rem;
     }
@@ -70,7 +69,7 @@
     <slot />
   </a>
 {:else}
-  <button class="Button" {hidden} {disabled} on:click={click}>
+  <button class="Button Submit" {hidden} {disabled} on:click={click}>
     <slot />
   </button>
 {/if}

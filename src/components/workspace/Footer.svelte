@@ -16,6 +16,7 @@
   import Input from "./Input.svelte";
   import { getToken } from "../../getToken";
   import AddCollections from "./AddCollections.svelte";
+
   let editing = false;
   export let endSelection = function() {};
 
@@ -86,13 +87,15 @@
   .Footer {
     display: flex;
     justify-content: space-between;
-    padding: var(--base) calc(var(--base) * 2);
+    padding: var(--base) calc(var(--base) * 2) var(--base)
+      calc(var(--base) * 2 + 40px);
+    width: calc(100% - calc(var(--base) * 4 - 40px));
     align-items: center;
     font-size: var(--item-font-size);
-    position: sticky;
+    position: fixed;
     bottom: 0;
+    left: 40px;
     background-color: var(--main-background-color);
-    margin: 0 calc(var(--base) * -2);
     box-shadow: 0px -7px 15px rgba(0, 0, 0, 0.1);
   }
   .Footer.editing {
@@ -102,14 +105,15 @@
   }
   @media (max-width: 720px) {
     .Footer {
-      bottom: 53px;
-      z-index: 10;
+      left: 0;
+      padding: var(--base) calc(var(--base) * 2);
+      width: 100%;
     }
     .Footer.editing {
       display: grid;
       grid-template-columns: 1fr;
       grid-gap: var(--base);
-      padding: var(--base);
+      padding: 40px 40px 20px;
       left: 0;
       max-width: 100vw;
       overflow-y: auto;
@@ -140,15 +144,17 @@
     <div>
       <TypeSelect noDefault={true}>Change type:</TypeSelect>
     </div>
+    <!--
     <div>
       <ChooseWorkspaces>Change workspace:</ChooseWorkspaces>
-    </div>
+    </div>-->
     <AddCollections />
-    <span />
+    <!--
     <span class="FooterNumber">
       Editing {$selectedItems.size}
       {#if $selectedItems.size === 1}item{:else}items{/if}
     </span>
+    <span />-->
     <span class="FooterButtons">
       <SecondaryButton
         click={() => {

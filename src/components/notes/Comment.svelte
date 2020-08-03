@@ -4,7 +4,7 @@
 
 <style>
   .Comment {
-    padding: 0.5rem calc(var(--base) * 1);
+    padding: calc(var(--base) * 1);
   }
 </style>
 

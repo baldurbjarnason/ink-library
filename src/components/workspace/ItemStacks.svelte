@@ -41,7 +41,14 @@
   }
   ul {
     margin: 0;
-    padding: calc(var(--base) * 0.5) 0;
+    padding: calc(var(--base) * 0.5) 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: inherit;
+    max-height: 42px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
   li {
     list-style: none;
@@ -57,9 +64,6 @@
   }
   .linkText {
     color: #333;
-  }
-  .selected .linkText {
-    color: white;
   }
 
   li a:hover {
