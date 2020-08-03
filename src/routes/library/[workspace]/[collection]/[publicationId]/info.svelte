@@ -1,5 +1,5 @@
 <script>
-  import PublicationRecord from '../../../../../components/publication/PublicationRecord.svelte'
+  import PublicationRecord from "../../../../../components/publication/PublicationRecord.svelte";
 </script>
 
 <style>

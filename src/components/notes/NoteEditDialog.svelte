@@ -1,135 +1,141 @@
-
 <script context="module">
-  export let dialog
+  export let dialog;
 </script>
+
 <script>
-  import NoteEdit from './NoteEdit.svelte'
-  import A11yDialog from 'a11y-dialog'
-  let element
-  let localDialog
+  import NoteEdit from "./NoteEdit.svelte";
+  import A11yDialog from "a11y-dialog";
+  let element;
+  let localDialog;
   $: if (element) {
-    localDialog = new A11yDialog(element)
-    dialog = localDialog
+    localDialog = new A11yDialog(element);
+    dialog = localDialog;
   }
-  let note = {body: [], source: {name: ""}}
+  let note = { body: [], source: { name: "" } };
   $: if (localDialog) {
-    localDialog.on('show', async function (dialogEl, event) {
-      const noteURL = event.currentTarget.dataset.annotationId.split("/")
-      const noteId = noteURL[noteURL.length - 1]
-      const url = `/api/note/${noteId}`
-      const response = await fetch(url)
-        .catch(err => {
-          console.error(err)
-        })
-      note = await response.json()
-    })
-    localDialog.on('hide', async function (dialogEl, event) {
-      note = {body: [], source: {name: ""}}
-    })
+    localDialog.on("show", async function(dialogEl, event) {
+      const noteURL = event.currentTarget.dataset.annotationId.split("/");
+      const noteId = noteURL[noteURL.length - 1];
+      const url = `/api/note/${noteId}`;
+      const response = await fetch(url).catch(err => {
+        console.error(err);
+      });
+      note = await response.json();
+    });
+    localDialog.on("hide", async function(dialogEl, event) {
+      note = { body: [], source: { name: "" } };
+    });
   }
 </script>
 
 <style>
-:global(#note-edit-dialog.dialog[aria-hidden="true"]) {
-  display: none;
-}
-.dialog-overlay {
-  z-index: 10;
-  background-color: rgba(0, 0, 0, 0.66);
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
+  :global(#note-edit-dialog.dialog[aria-hidden="true"]) {
+    display: none;
+  }
+  .dialog-overlay {
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.66);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
 
+  .dialog-content {
+    background-color: rgb(255, 255, 255);
+    z-index: 11;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
 
-.dialog-content {
-  background-color: rgb(255, 255, 255);
-  z-index: 11;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  margin: 0;
-}
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
+  @keyframes appear {
+    from {
+      transform: translate(-50%, -40%);
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
+  }
 
-@keyframes fade-in {
-  from { opacity: 0;  }
-  to { opacity: 1;  }
-}
+  .dialog:not([aria-hidden="true"]) > .dialog-overlay {
+    animation: fade-in 200ms 1 both;
+  }
 
-@keyframes appear {
-  from { transform: translate(-50%, -40%); opacity: 0; }
-  to { transform: translate(-50%, -50%); opacity: 1; }
-}
+  .dialog:not([aria-hidden="true"]) > .dialog-content {
+    animation: appear 400ms 150ms 1 both;
+  }
 
-
-.dialog:not([aria-hidden='true']) > .dialog-overlay {
-  animation: fade-in 200ms 1 both;
-}
-
-.dialog:not([aria-hidden='true']) > .dialog-content {
-  animation: appear 400ms 150ms 1 both;
-}
-
-
-
-.dialog-content {
-  padding: 0;
-  max-width: 90%;
-  width: 600px;
-    border-radius: 15px;
-}
-
-
-@media screen and (min-width: 700px) {
   .dialog-content {
     padding: 0;
+    max-width: 90%;
+    width: 600px;
+    border-radius: 15px;
   }
-}
 
-.dialog-overlay {
-  background-color: rgba(43, 46, 56, 0.9);
-}
+  @media screen and (min-width: 700px) {
+    .dialog-content {
+      padding: 0;
+    }
+  }
 
-.dialog h1 {
-  font-size: 1.25em;
-}
+  .dialog-overlay {
+    background-color: rgba(43, 46, 56, 0.9);
+  }
 
-.dialog-close {
-  position: absolute;
-  top: 0.75rem;
-  left: 1em;
-  z-index: 12;
-  border: 0;
-  padding: 0;
-  background-color: transparent;
-  font-weight: bold;
-  font-size: 1.25em;
-  width: 1.2em;
-  height: 1.2em;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.15s;
-}
-h1 {
-  text-align: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  margin: 0.5rem 1rem;
-  z-index: 11;
-}
+  .dialog h1 {
+    font-size: 1.25em;
+  }
 
+  .dialog-close {
+    position: absolute;
+    top: 0.75rem;
+    left: 1em;
+    z-index: 12;
+    border: 0;
+    padding: 0;
+    background-color: transparent;
+    font-weight: bold;
+    font-size: 1.25em;
+    width: 1.2em;
+    height: 1.2em;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  h1 {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0.5rem 1rem;
+    z-index: 11;
+  }
 </style>
 
-<div id="note-edit-dialog" bind:this={element} class="dialog" aria-hidden="true">
-    <div class="dialog-overlay" tabindex="-1" data-a11y-dialog-hide></div>
+<div
+  id="note-edit-dialog"
+  bind:this={element}
+  class="dialog"
+  aria-hidden="true">
+  <div class="dialog-overlay" tabindex="-1" data-a11y-dialog-hide />
 
   <!--
     Dialog window content related notes:
@@ -145,10 +151,15 @@ h1 {
       - It does have to have the `data-a11y-dialog-hide` attribute.
       - It does have to have an aria-label attribute if you use an icon as content.
     -->
-        <button data-a11y-dialog-hide class="dialog-close" aria-label="Close this dialog window">&times;</button>
-        <h1 id="dialog-title">Edit Note</h1>
-        {#if note.id && process.browser}
-          <NoteEdit note={note}/>
-        {/if}
+    <button
+      data-a11y-dialog-hide
+      class="dialog-close"
+      aria-label="Close this dialog window">
+      &times;
+    </button>
+    <h1 id="dialog-title">Edit Note</h1>
+    {#if note.id && process.browser}
+      <NoteEdit {note} />
+    {/if}
   </div>
 </div>

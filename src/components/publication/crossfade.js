@@ -1,15 +1,13 @@
-
-import { crossfade } from 'svelte/transition';
+import { crossfade } from "svelte/transition";
 const [send, receive] = crossfade({
-    duration: d => {
-        return Math.sqrt(d * 300)
-    },
-    fallback(node, params) {
-
-        return {
-            duration: 0
-        };
-    }
+  duration: d => {
+    return Math.sqrt(d * 300);
+  },
+  fallback(node, params) {
+    return {
+      duration: 0
+    };
+  }
 });
 
-export {send, receive};
+export { send, receive };

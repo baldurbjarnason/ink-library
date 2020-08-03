@@ -11,10 +11,10 @@ class HTTPError extends Error {
   }
 }
 
-export async function fetch (...args) {
+export async function fetch(...args) {
   const response = await window.fetch(...args);
   if (!response.ok) {
     throw new HTTPError("API Request Error", response);
   }
-  return response.json()
+  return response.json();
 }

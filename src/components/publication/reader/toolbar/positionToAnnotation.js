@@ -1,27 +1,30 @@
-
 import position from "dom-anchor-text-position";
 import textQuote from "dom-anchor-text-quote";
 
 // Add support for purposes. And root motivation
 
-export function positionToAnnotation (selector, root, source, chapter) {
+export function positionToAnnotation(selector, root, source, chapter) {
   const range = position.toRange(root, selector);
   const content = serializeRange(range);
-  const quote = {type: "TextQuoteSelector", ...textQuote.fromTextPosition(root, selector)}
+  const quote = {
+    type: "TextQuoteSelector",
+    ...textQuote.fromTextPosition(root, selector)
+  };
   return {
     sourceId: source.id,
     target: {
       source: chapter,
       selector: quote
     },
-    body: [{
-      motivation: "highlighting",
-      content
-    }],
-    document: chapter, // Make sure this is right
+    body: [
+      {
+        motivation: "highlighting",
+        content
+      }
+    ],
+    document: chapter // Make sure this is right
   };
 }
-
 
 function serializeRange(range) {
   const placeholder = document.createElement("div");

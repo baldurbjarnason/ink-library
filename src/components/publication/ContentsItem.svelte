@@ -1,11 +1,11 @@
 <script>
-  import {page} from "../../stores"
-  export let item
-  let selected
+  import { page } from "../../stores";
+  export let item;
+  let selected;
   $: if ($page.params.path && $page.params.path.join("/") === item.url) {
-    selected = true
+    selected = true;
   } else {
-    selected = false
+    selected = false;
   }
 </script>
 
@@ -29,7 +29,7 @@
     background-repeat: no-repeat;
     background-position: right 0.7em top 50%;
     background-size: 12px auto;
-    background-color: transparent
+    background-color: transparent;
   }
   details > summary::-webkit-details-marker {
     display: none;
@@ -60,30 +60,35 @@
     color: #333;
     padding-left: 1rem;
   }
-  .ContentsItem a:hover, .ContentsItem a:focus {
+  .ContentsItem a:hover,
+  .ContentsItem a:focus {
     color: var(--link);
     text-decoration: underline;
   }
   .selected a {
-    color:  #005173;
+    color: #005173;
   }
 </style>
 
 <li class:selected class="ContentsItem">
   {#if item.children && item.children.length}
     <details open>
-      <summary><span class="Level">{item.label}</span></summary>
+      <summary>
+        <span class="Level">{item.label}</span>
+      </summary>
       <ol>
         {#each item.children as item}
-           <svelte:self {item} />
+          <svelte:self {item} />
         {/each}
       </ol>
     </details>
+  {:else if item.url}
+    <a
+      href="/library/{$page.params.workspace}/{$page.params.collection}/{$page.params.publicationId}/{item.url}"
+      class="Level">
+      {item.label}
+    </a>
   {:else}
-   {#if item.url}
-    <a href="/library/{$page.params.workspace}/{$page.params.collection}/{$page.params.publicationId}/{item.url}" class="Level">{item.label}</a>
-   {:else}
     <span class="Level">{item.label}</span>
-   {/if}
   {/if}
 </li>

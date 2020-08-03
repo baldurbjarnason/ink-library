@@ -1,20 +1,18 @@
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 const { subscribe, set } = writable(true);
-const QUERY = '(prefers-reduced-motion: reduce)'
-
+const QUERY = "(prefers-reduced-motion: reduce)";
 
 // online
 if (!window) {
-  set(false)
+  set(false);
 } else {
-    if (!window.matchMedia) {
-      set(false)
-    } else {
-      set(window.matchMedia(QUERY).matches)
-    }
+  if (!window.matchMedia) {
+    set(false);
+  } else {
+    set(window.matchMedia(QUERY).matches);
+  }
 }
-
 
 export const motion = {
   subscribe

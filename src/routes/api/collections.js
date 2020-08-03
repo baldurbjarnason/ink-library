@@ -1,8 +1,7 @@
-
 import got from "got";
 
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401)
+  if (!req.user.profile) return res.sendStatus(401);
   try {
     const response = await got(`${process.env.API_SERVER}tags`, {
       headers: {
@@ -12,16 +11,16 @@ export async function get(req, res, next) {
     res.json(response);
   } catch (err) {
     if (err.response && err.response.statusCode) {
-      res.status(err.response.statusCode)
+      res.status(err.response.statusCode);
     } else {
-      res.status(500)
+      res.status(500);
     }
-    let payload
+    let payload;
     try {
-      payload = JSON.parse(err.response.body)
+      payload = JSON.parse(err.response.body);
     } catch (err2) {
-      payload = err
+      payload = err;
     }
-    return res.json(payload)
+    return res.json(payload);
   }
 }

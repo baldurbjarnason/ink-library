@@ -1,16 +1,15 @@
 <script>
-  import SmallButton from '../widgets/SmallButton.svelte'
-  export let cancel
-  export let label
-  export let save
+  import SmallButton from "../widgets/SmallButton.svelte";
+  export let cancel;
+  export let label;
+  export let save;
 </script>
 
 <style>
-
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
-    font-size:  var(--item-font-size);
+    font-size: var(--item-font-size);
     flex: 0 1 auto;
     line-height: 1;
 
@@ -63,6 +62,8 @@
 </style>
 
 <div class="EditBar">
-<SmallButton click={cancel}>Cancel</SmallButton>
-<button class="Button" aria-label="{label}" type="button" on:click={save}>{label}
-</button></div>
+  <SmallButton click={cancel}>Cancel</SmallButton>
+  <button class="Button" aria-label={label} type="button" on:click={save}>
+    {label}
+  </button>
+</div>

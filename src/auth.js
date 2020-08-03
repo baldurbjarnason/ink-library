@@ -1,4 +1,3 @@
-
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import got from "got";
@@ -21,7 +20,7 @@ function generateToken(user) {
   });
 }
 
-async function getProfile (user) {
+async function getProfile(user) {
   const response = await got(`${process.env.API_SERVER}whoami`, {
     headers: {
       Authorization: `Bearer ${user.token}`
@@ -54,10 +53,10 @@ async function deserialise(user) {
   }
   if (!user.profile || !user.profile.id) {
     try {
-      user.profile = await getProfile(user)
+      user.profile = await getProfile(user);
     } catch (err) {
       try {
-        console.error("Auth failed: ", err.response.body)
+        console.error("Auth failed: ", err.response.body);
       } catch (err) {}
       if (err.response && err.response.statusCode === 404) {
         try {
@@ -71,7 +70,7 @@ async function deserialise(user) {
               summary: `Reader profile`
             })
           });
-          user.profile = await getProfile(user)
+          user.profile = await getProfile(user);
         } catch (err) {
           console.error(err);
         }
@@ -83,8 +82,7 @@ async function deserialise(user) {
   return user;
 }
 
-
-export function setup (app) {
+export function setup(app) {
   passport.serializeUser((user, done) => {
     // console.log('serialise: ', user)
     done(null, user);
@@ -99,7 +97,7 @@ export function setup (app) {
   app.use(passport.session());
 
   if (process.env.PASSPORT_STRATEGY === "auth0") {
-    console.log('auth0')
+    console.log("auth0");
     passport.use(
       new Auth0Strategy(
         {
@@ -114,19 +112,19 @@ export function setup (app) {
       )
     );
     app.get("/callback", (req, res, next) => {
-      passport.authenticate('auth0', (err, user, info) => {
-        if(err) return next(err)
-        if(!user) return res.redirect("/failure?info=" + JSON.stringify(info))
-    
+      passport.authenticate("auth0", (err, user, info) => {
+        if (err) return next(err);
+        if (!user) return res.redirect("/failure?info=" + JSON.stringify(info));
+
         req.logIn(user, err => {
-          if(err) return next(err)
-    
-          const returnTo = req.session.returnTo
-          delete req.session.returnTo
-          res.redirect(returnTo || "/library/all/all")
-        })
-      })(req, res, next)
-    })
+          if (err) return next(err);
+
+          const returnTo = req.session.returnTo;
+          delete req.session.returnTo;
+          res.redirect(returnTo || "/library/all/all");
+        });
+      })(req, res, next);
+    });
     // app.get("/callback", passport.authenticate("auth0", function (err, user, info) {
     //   if(err) return next(err)
     //   if(!user) return res.redirect("/failure?info=" + JSON.stringify(info))
@@ -142,7 +140,7 @@ export function setup (app) {
     // console.log('basic')
     passport.use(
       new httpStrategies.BasicStrategy((username, password, callback) => {
-        console.log('using basic')
+        console.log("using basic");
         if (password === "devpassword") {
           const user = { id: `dev-testing11|${username}` };
           return callback(null, user);
@@ -165,13 +163,13 @@ export function setup (app) {
     // }))
   }
 
-  app.use("/login", function (req, res, next) {
+  app.use("/login", function(req, res, next) {
     if (req.body.betaCode !== process.env.BETACODE) {
-      return res.sendStatus(403)
+      return res.sendStatus(403);
     } else {
-      next()
+      next();
     }
-  })
+  });
   app.use(
     "/login",
     passport.authenticate(process.env.PASSPORT_STRATEGY),
@@ -192,5 +190,5 @@ export function setup (app) {
       res.redirect(redirect);
     });
   });
-  return app
+  return app;
 }

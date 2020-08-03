@@ -1,14 +1,13 @@
 <script>
-  export let click = null
-  export let href = null
-  export let hidden = false
-  export let disabled = false
-  export let type = 'button'
-  export let light = false
+  export let click = null;
+  export let href = null;
+  export let hidden = false;
+  export let disabled = false;
+  export let type = "button";
+  export let light = false;
 </script>
 
 <style>
-
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
@@ -60,22 +59,15 @@
     box-shadow: 0 0 0 3px #68d6d499;
   }
   .Button.light {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     border-radius: 15px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
     color: #002230;
   }
 </style>
 
-
 {#if href}
-  <a
-    class="Button"
-    {hidden}
-    {disabled}
-    {href}
-    class:light
-    on:click={click}>
+  <a class="Button" {hidden} {disabled} {href} class:light on:click={click}>
     <slot />
   </a>
 {:else}

@@ -1,12 +1,11 @@
 <script>
-  export let click = null
-  export let href = null
-  export let hidden = false
-  export let disabled = false
+  export let click = null;
+  export let href = null;
+  export let hidden = false;
+  export let disabled = false;
 </script>
 
 <style>
-
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
@@ -66,23 +65,12 @@
   }
 </style>
 
-
 {#if href}
-  <a
-    class="Button"
-    {hidden}
-    {disabled}
-    {href}
-    on:click={click}>
+  <a class="Button" {hidden} {disabled} {href} on:click={click}>
     <slot />
   </a>
 {:else}
-  <button
-    class="Button"
-    type="button"
-    {hidden}
-    {disabled}
-    on:click={click}>
+  <button class="Button" type="button" {hidden} {disabled} on:click={click}>
     <slot />
   </button>
 {/if}

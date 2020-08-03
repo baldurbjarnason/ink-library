@@ -1,8 +1,7 @@
-
 const createDOMPurify = require("dompurify");
 const { JSDOM } = require("jsdom");
-const sharp = require('sharp');
-const {Storage} = require('@google-cloud/storage');
+const sharp = require("sharp");
+const { Storage } = require("@google-cloud/storage");
 const storage = new Storage();
 
 const purifyConfig = {
@@ -63,16 +62,16 @@ export async function get(req, res, next) {
   res.set("Cache-Control", "max-age=31536000, immutable");
   if (req.user) {
     try {
-      const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "")
-      const bucket = storage
-        .bucket(process.env.PUBLICATION_BUCKET)
-      const file = await bucket
-        .file(`${userPrefix}/${req.params.storageId}/${req.params.path.join('/')}`)
-      const [exists] = await file.exists()
-      if (!exists) return res.sendStatus(404)
-      const [metadata] = await file.getMetadata()
+      const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "");
+      const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
+      const file = await bucket.file(
+        `${userPrefix}/${req.params.storageId}/${req.params.path.join("/")}`
+      );
+      const [exists] = await file.exists();
+      if (!exists) return res.sendStatus(404);
+      const [metadata] = await file.getMetadata();
       if (metadata.contentType === "image/svg+xml") {
-        const [mainresponse] = await file.download()
+        const [mainresponse] = await file.download();
         const dom = new JSDOM(mainresponse, {
           contentType: metadata.contentType
         });
@@ -82,14 +81,11 @@ export async function get(req, res, next) {
           window.document.documentElement,
           purifyConfig
         );
-        const xml = new window.XMLSerializer()
+        const xml = new window.XMLSerializer();
         const result = xml.serializeToString(clean);
         res.type("svg");
         res.send(result);
-      } else if (
-        metadata.contentType.includes("image") &&
-        req.query.cover
-      ) {
+      } else if (metadata.contentType.includes("image") && req.query.cover) {
         const resizer = sharp()
           .resize(300, 300, { fit: "inside" })
           .jpeg({ quality: 70 });
@@ -97,31 +93,35 @@ export async function get(req, res, next) {
           console.error(err);
           res.sendStatus(404);
         });
-        file.createReadStream()
-          .on('error', function(err) {
-            console.error(err)
-          }).pipe(resizer)
+        file
+          .createReadStream()
+          .on("error", function(err) {
+            console.error(err);
+          })
+          .pipe(resizer)
           .pipe(res);
       } else if (testMediaTypes(metadata.contentType)) {
-        file.createReadStream()
-          .on('error', function(err) {
-            console.error(err)
-          }).pipe(res);
+        file
+          .createReadStream()
+          .on("error", function(err) {
+            console.error(err);
+          })
+          .pipe(res);
       } else {
         return res.sendStatus(404);
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
       return res.sendStatus(404);
     }
   }
 }
 
 function testMediaTypes(contentType) {
-  if (contentType.startsWith('image')) return true
-  if (contentType.startsWith('font')) return true
-  if (contentType.startsWith('audio')) return true
-  if (contentType.startsWith('video')) return true
+  if (contentType.startsWith("image")) return true;
+  if (contentType.startsWith("font")) return true;
+  if (contentType.startsWith("audio")) return true;
+  if (contentType.startsWith("video")) return true;
 
   if (validTypes.includes(contentType)) {
     return true;

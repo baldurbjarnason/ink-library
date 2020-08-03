@@ -96,7 +96,6 @@
     event.preventDefault();
     close();
     let workspace;
-
     if ($page.params.workspace && $page.params.workspace !== "all") {
       workspace = $workspaces.find(
         space => space.name === $page.params.workspace
@@ -121,6 +120,7 @@
       _collection: collection
       //tags: tags
     };
+
 
     await window.fetch(`/api/notes`, {
       method: "POST",

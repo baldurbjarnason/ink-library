@@ -1,12 +1,12 @@
 <script>
-  import {contents} from '../../stores'
-  export let text
-  let textarea
+  import { contents } from "../../stores";
+  export let text;
+  let textarea;
   $: if (textarea) {
-    textarea.focus()
+    textarea.focus();
   }
   if ($contents) {
-    text = $contents.children.map(child => child.label).join('\n')
+    text = $contents.children.map(child => child.label).join("\n");
   }
 </script>
 
@@ -25,8 +25,13 @@
   }
 </style>
 
-
 <label>
   <h2>Edit the Table of Contents</h2>
-    <textarea name="ContentsEdit" id="PublicationContentsEdit" cols="30" rows="30" bind:value={text} bind:this={textarea}></textarea>
+  <textarea
+    name="ContentsEdit"
+    id="PublicationContentsEdit"
+    cols="30"
+    rows="30"
+    bind:value={text}
+    bind:this={textarea} />
 </label>

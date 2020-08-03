@@ -1,20 +1,19 @@
 <script>
-	import { scale } from 'svelte/transition';
-  import { elasticInOut } from 'svelte/easing';
-  import EditButton from './EditButton.svelte'
-  import EditBar from './EditBar.svelte'
-  export let id
-  export let tab
-  export let editing = false
-  export let save = false
-  export let saveLabel = 'Save'
+  import { scale } from "svelte/transition";
+  import { elasticInOut } from "svelte/easing";
+  import EditButton from "./EditButton.svelte";
+  import EditBar from "./EditBar.svelte";
+  export let id;
+  export let tab;
+  export let editing = false;
+  export let save = false;
+  export let saveLabel = "Save";
   export let cancel = () => {
-    editing = false
-  }
+    editing = false;
+  };
 </script>
 
 <style>
-  
   .Card {
     display: flex;
     flex-direction: column;
@@ -26,7 +25,7 @@
     display: block;
     content: "";
     position: absolute;
-    top:-4rem;
+    top: -4rem;
   }
   @media (max-width: 720px) {
     .Card {
@@ -36,17 +35,21 @@
   }
 </style>
 
-
-<div class="Card {tab}Tab" transition:scale|local="{{delay: 250, duration: 350, easing: elasticInOut }}"  id="{id}Card">
-<span class="Target" {id}></span>
-{#if save}
-  {#if editing}
-    <EditBar label="{saveLabel}" {save} {cancel}/>
-  {:else}
-    <EditButton label="Edit {id}" click={event => {
-      editing = true
-    }} />
+<div
+  class="Card {tab}Tab"
+  transition:scale|local={{ delay: 250, duration: 350, easing: elasticInOut }}
+  id="{id}Card">
+  <span class="Target" {id} />
+  {#if save}
+    {#if editing}
+      <EditBar label={saveLabel} {save} {cancel} />
+    {:else}
+      <EditButton
+        label="Edit {id}"
+        click={event => {
+          editing = true;
+        }} />
+    {/if}
   {/if}
-{/if}
-  <slot></slot>
+  <slot />
 </div>
