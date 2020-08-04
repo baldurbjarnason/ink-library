@@ -93,10 +93,9 @@
     width: auto;
     float: left;
     font-size: 0.7rem;
-    padding: calc(var(--base) * 0.25);
-    margin-right: calc(var(--base) * 0.25);
-    margin-bottom: calc(var(--base) * 0.25);
-    border-radius: 5px;
+    padding: calc(var(--base) * 0.5);
+    margin: calc(var(--base) * 0.25) 0;
+    border-radius: 10px;
     color: black;
     background-color: white;
     text-transform: uppercase;
@@ -116,21 +115,29 @@
 </style>
 
 <!-- markup (zero or more items) goes here -->
-<div>
-  <AutocompleteInput
-    placeholder="Stack Name"
-    {dark}
-    name="new-collections"
-    list={filteredCollections}
-    {change}>
-    Assign stacks
-  </AutocompleteInput>
-</div>
-<div class="Wide Tags" class:dark>
-  {#each $addedCollections as collection, i}
-    <span class="Collection">
-      {collection.label}
-      <Closer {dark} value={collection.value} click={removeTag} small={true} />
-    </span>
-  {/each}
-</div>
+{#if $addedCollections.length < 1}
+  <div>
+    <AutocompleteInput
+      placeholder="Stack Name"
+      {dark}
+      name="new-collections"
+      list={filteredCollections}
+      {change}>
+      Assign stacks
+    </AutocompleteInput>
+  </div>
+{:else}
+  <div class="Wide Tags" class:dark>
+    <div class="LabelText svelte-rmvtnc">Assign stacks</div>
+    {#each $addedCollections as collection, i}
+      <span class="Collection">
+        {collection.label}
+        <Closer
+          {dark}
+          value={collection.value}
+          click={removeTag}
+          small={true} />
+      </span>
+    {/each}
+  </div>
+{/if}

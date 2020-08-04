@@ -8,7 +8,7 @@
   import FlagRevisit from "../img/FlagRevisit.svelte";
   import FlagToDo from "../img/FlagToDo.svelte";
   import FlagUrgent from "../img/FlagUrgent.svelte";
-  import NewNote from "../img/NewNote.svelte";
+  import IcoNewNote from "../img/IcoNewNote.svelte";
 
   import Button from "../widgets/Button.svelte";
   import Closer from "../widgets/Closer.svelte";
@@ -34,7 +34,7 @@
       component: FlagFurtherRead,
       string: "Further read",
       value: false
-    },
+    }, 
     {
       component: FlagIdea,
       string: "Idea",
@@ -404,12 +404,11 @@
   }
   .newNote :global(button.Closer) {
     width: 125px;
-    height: 34px;
-    padding: 0;
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0.65rem 1.95rem 0.6rem;
   }
   .newNote :global(.Closer::after) {
     content: "Cancel";
@@ -452,6 +451,9 @@
       position: fixed;
       align-items: center;
       display: flex;
+    }
+    .newNote :global(button.Closer) {
+      width: 50%;
     }
     :global(button.Closer),
     :global(button.Submit) {
@@ -524,7 +526,7 @@
     in:receive|local={{ key: 'new-box' }}
     bind:this={newToggle}>
     <Button {click}>
-      <NewNote />
+      <IcoNewNote />
       <span class="NewButtonLabel">Note</span>
     </Button>
   </span>
