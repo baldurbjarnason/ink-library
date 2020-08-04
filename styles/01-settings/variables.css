@@ -14,6 +14,8 @@
   --personal-workspace-pale: #00aaaa;
 }
 
+
+
 /* Colour variables used in the reading UI */
 :root {
   --reader-toolbar-background: #f1f5f8;
@@ -24,6 +26,13 @@
   --reader-notes-tools-background: #002230;
   --reader-main-background: #fafafa;
   --reader-info-background: #f9fcfe;
+}
+/* Reader highlight colours */
+:root {
+  --highlight-color1: #ffff98;
+  --highlight-color2: #FEA95B;
+  --highlight-color3: #FF8EBE;
+  --highlight-color4: #6FE1FA;
 }
 
 :root {
