@@ -61,7 +61,7 @@
       position: relative;
       padding: calc(var(--base) * 1.5) calc(var(--base) * 2);
     }
-    .Toolbar:first-child:nth-last-child(5) :global(.new-button) {
+    .Toolbar:first-child:nth-last-child(4) :global(.new-button) {
       display: none;
     }
     .Toolbar section {
