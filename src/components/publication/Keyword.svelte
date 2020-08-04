@@ -1,5 +1,5 @@
 <script>
-  export let keyword
+  export let keyword;
 </script>
 
 <style>
@@ -13,7 +13,7 @@
     display: inline-flex;
     margin-right: calc(var(--base) * 0.25);
     margin-bottom: calc(var(--base) * 0.25);
-    height: calc(var(--base)*0.5 + 1rem);
+    height: calc(var(--base) * 0.5 + 1rem);
   }
 </style>
 

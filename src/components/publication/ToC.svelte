@@ -1,7 +1,7 @@
 <script>
-  import {contents, page} from "../../stores"
-  import ContentsItem from "./ContentsItem.svelte"
-  import Loading from "../widgets/Loading.svelte"
+  import { contents, page } from "../../stores";
+  import ContentsItem from "./ContentsItem.svelte";
+  import Loading from "../widgets/Loading.svelte";
 </script>
 
 <style>
@@ -17,7 +17,7 @@
     padding-left: var(--base);
   }
   .ToC :global(ol) {
-    counter-reset: section;                
+    counter-reset: section;
     list-style-type: none;
   }
   .ToC ol {
@@ -25,10 +25,10 @@
     margin-top: var(--base);
   }
   .ToC :global(li) {
-    counter-increment: section;  
+    counter-increment: section;
   }
-  .ToC :global(li .Level::before) {          
-    content: counters(section, ".") ". ";   
+  .ToC :global(li .Level::before) {
+    content: counters(section, ".") ". ";
   }
   /* Level 1 */
   .ToC :global(ol > li) {
@@ -42,13 +42,13 @@
     color: #444;
   }
   /* Level 3 */
-  .ToC :global(ol > li ol > li  ol > li) {
+  .ToC :global(ol > li ol > li ol > li) {
     font-size: calc(var(--item-font-size) * 0.85);
     font-weight: 400;
     color: #666;
   }
   /* Level 4 */
-  .ToC :global(ol > li ol > li  ol > li  ol > li) {
+  .ToC :global(ol > li ol > li ol > li ol > li) {
     font-size: calc(var(--item-font-size) * 0.85);
     font-weight: 400;
     color: #666;
@@ -62,14 +62,14 @@
 </style>
 
 <div class="ToC">
-{#if $contents.type !== "loading"}
-<h2>{$contents.heading || "Table of Contents"}</h2>
-<ol>
-  {#each $contents.children as item}
-    <ContentsItem {item} />
-  {/each}
-</ol>
-{:else}
-  <Loading />
-{/if}
+  {#if $contents.type !== 'loading'}
+    <h2>{$contents.heading || 'Table of Contents'}</h2>
+    <ol>
+      {#each $contents.children as item}
+        <ContentsItem {item} />
+      {/each}
+    </ol>
+  {:else}
+    <Loading />
+  {/if}
 </div>

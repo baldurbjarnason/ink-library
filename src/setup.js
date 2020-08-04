@@ -5,12 +5,12 @@ import csurf from "csurf";
 import { setup as authSetup } from "./auth.js";
 // import dotenv from "dotenv";
 import session from "express-session";
-import makeStore from 'connect-redis'
+import makeStore from "connect-redis";
 
 const { NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
 if (dev) {
-  require('dotenv').config()
+  require("dotenv").config();
 }
 
 // Uncomment these lines to set up cors for your bucket
@@ -32,15 +32,15 @@ if (dev) {
 //   .then(result => console.log(result))
 //   .catch(err => console.error(err))
 
-const redis = require('redis')
+const redis = require("redis");
 // import firesession from 'firestore-store'
 
-const RedisStore = makeStore(session)
+const RedisStore = makeStore(session);
 const client = redis.createClient({
   host: process.env.REDIS_HOST,
   port: process.env.REDIS_PORT,
   password: process.env.REDIS_PASSWORD
-})
+});
 
 if (dev) {
   // const result = dotenv.config();
@@ -61,12 +61,18 @@ export function setup(sapper, options = {}) {
 
   const sessionMiddleware = session({
     store: new RedisStore({ client }),
-    secret: process.env.COOKIE_KEY || 'randome stuff',
+    secret: process.env.COOKIE_KEY || "randome stuff",
     resave: false,
     rolling: true,
     saveUninitialized: false,
-    name: process.env.COOKIE_NAME || '__session',
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: !dev, name: process.env.COOKIE_NAME || '__session', httpOnly: true, sameSite: 'lax' }
+    name: process.env.COOKIE_NAME || "__session",
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      secure: !dev,
+      name: process.env.COOKIE_NAME || "__session",
+      httpOnly: true,
+      sameSite: "lax"
+    }
   });
   app.use(express.urlencoded({ extended: true }));
   app.use(
@@ -82,15 +88,9 @@ export function setup(sapper, options = {}) {
   app.use(sessionMiddleware);
   authSetup(app);
   if (dev) {
-    app.use(
-      compression({ threshold: 0 }),
-      sirv("static", { dev })
-    );
+    app.use(compression({ threshold: 0 }), sirv("static", { dev }));
   } else {
-    app.use(
-      compression({ threshold: 0 }),
-      sirv("static")
-    );
+    app.use(compression({ threshold: 0 }), sirv("static"));
   }
   app.use(
     "/",
@@ -98,7 +98,7 @@ export function setup(sapper, options = {}) {
       if (req.path === "/callback") {
         return next();
       } else if (req.path === "/") {
-        return res.redirect('/library/all/all/')
+        return res.redirect("/library/all/all/");
       } else {
         return csurf()(req, res, next);
       }

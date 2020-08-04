@@ -1,43 +1,50 @@
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from "svelte/store";
 
 const { subscribe, set } = writable(Date.now());
 
 // online
 if (!window) {
-  set(false)
+  set(false);
 }
 
 if (window) {
   if (!isVisible()) {
-    set(false)
+    set(false);
   }
-  window.addEventListener('visibilitychange', setVisibility, false)
-  window.addEventListener('focus', setVisibility, false)
+  window.addEventListener("visibilitychange", setVisibility, false);
+  window.addEventListener("focus", setVisibility, false);
 }
 export const visible = {
   subscribe
 };
 
-export function throttledVisible (interval) {
-  let lastEvent = Date.now()
-  return derived(visible, ($visible, set) => {
-    if ($visible - lastEvent >= interval) {
-      lastEvent = $visible
-      set(lastEvent)
-    }
-  }, Date.now())
+export function throttledVisible(interval) {
+  let lastEvent = Date.now();
+  return derived(
+    visible,
+    ($visible, set) => {
+      if ($visible - lastEvent >= interval) {
+        lastEvent = $visible;
+        set(lastEvent);
+      }
+    },
+    Date.now()
+  );
 }
 
-function setVisibility () {
+function setVisibility() {
   if (isVisible()) {
-    set(Date.now())
+    set(Date.now());
   }
 }
 
-function isVisible () {
-  if (typeof document !== 'undefined' && typeof document.visibilityState !== 'undefined') {
-    return document.visibilityState !== 'hidden'
+function isVisible() {
+  if (
+    typeof document !== "undefined" &&
+    typeof document.visibilityState !== "undefined"
+  ) {
+    return document.visibilityState !== "hidden";
   } else {
-    return true
+    return true;
   }
 }

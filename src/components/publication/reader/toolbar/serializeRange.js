@@ -1,5 +1,3 @@
-
-
 export function serializeRange(range) {
   const placeholder = document.createElement("div");
   const fragment = range.cloneContents();

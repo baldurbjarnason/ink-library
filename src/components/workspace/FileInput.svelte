@@ -1,51 +1,51 @@
 <script>
-  import {getToken} from '../../getToken'
-  export let name
-  export let placeholder = ""
-  export let dark = false
-  let file
-  let url
-  let publication
-  let type
-  let working
-  let done
-  let failed
-  let storageId
-  let original
-  async function change (event) {
-    file = event.target.files[0]
-    const response = await fetch('/api/upload-url', {
-      method: 'POST',
+  import { getToken } from "../../getToken";
+  export let name;
+  export let placeholder = "";
+  export let dark = false;
+  let file;
+  let url;
+  let publication;
+  let type;
+  let working;
+  let done;
+  let failed;
+  let storageId;
+  let original;
+  async function change(event) {
+    file = event.target.files[0];
+    const response = await fetch("/api/upload-url", {
+      method: "POST",
       credentials: "include",
       headers: {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
         "csrf-token": getToken()
       },
-      body: JSON.stringify({file: file.name})
-    })
-    const payload = await response.json()
-    url = payload.url
-    publication = payload.publication
-    type = payload.type
-    storageId = payload.storageId
-    original = payload.original
+      body: JSON.stringify({ file: file.name })
+    });
+    const payload = await response.json();
+    url = payload.url;
+    publication = payload.publication;
+    type = payload.type;
+    storageId = payload.storageId;
+    original = payload.original;
     try {
-      working = true
+      working = true;
       const uploaded = await fetch(url, {
-        method: 'PUT',
-        mode: 'cors',
+        method: "PUT",
+        mode: "cors",
         headers: {
           "Content-Type": type
         },
         body: file
-      })
-      working = false
-      done = true
+      });
+      working = false;
+      done = true;
     } catch (err) {
-      working = false
-      done = false
-      failed = true
+      working = false;
+      done = false;
+      failed = true;
     }
   }
 </script>
@@ -53,10 +53,10 @@
 <style>
   .LabelText {
     font-weight: 500;
-    font-size: .8rem;
+    font-size: 0.8rem;
   }
   .dark {
-    color: white
+    color: white;
   }
   .input {
     width: 100%;
@@ -72,8 +72,8 @@
     text-align: center;
   }
   .input:hover {
-    background: rgba(255, 255, 255, .1);
-  }/*
+    background: rgba(255, 255, 255, 0.1);
+  } /*
   .dark .input {
     border-color: transparent;
     color: #fff;
@@ -81,19 +81,19 @@
   }*/
   label:focus-within .input {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(104,214,212,.6);
+    box-shadow: 0 0 0 2px rgba(104, 214, 212, 0.6);
   }
   label.dark:focus-within .input {
     box-shadow: 0 0 2px 2px white;
   }
   .dark input::placeholder {
-    color: rgba(255,255,255,0.8);
+    color: rgba(255, 255, 255, 0.8);
   }
   .input.done::after {
     content: "✓";
     font-size: 1rem;
     top: 0;
-    right: .5rem;
+    right: 0.5rem;
     position: absolute;
     height: 100%;
     display: flex;
@@ -104,7 +104,7 @@
   }
   @keyframes loaded {
     from {
-      transform: scale(.25);
+      transform: scale(0.25);
     }
     to {
       transform: scale(1);
@@ -114,7 +114,7 @@
     content: " ";
     font-size: 1rem;
     top: 0.85rem;
-    right: .75rem;
+    right: 0.75rem;
     position: absolute;
     height: 100%;
     display: flex;
@@ -123,7 +123,7 @@
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 100%;
-    box-shadow: 0 0 2px #f0f0f0,0 0 4px var(--workspace-color);
+    box-shadow: 0 0 2px #f0f0f0, 0 0 4px var(--workspace-color);
     background-color: transparent;
     animation-duration: 1000ms;
     animation-name: loading;
@@ -133,47 +133,51 @@
   }
   @keyframes loading {
     from {
-      transform: scale(.75);
-      box-shadow: 0 0 1px #f0f0f0,0 0 2px #eee;
+      transform: scale(0.75);
+      box-shadow: 0 0 1px #f0f0f0, 0 0 2px #eee;
     }
     to {
       transform: scale(1);
       box-shadow: 0 0 0 6px #f9f9f9, 0 0 0 4px #eee, 0 0 0 2px #ccc;
     }
   }
-@media (max-width: 720px) {
-  .LabelText {
-    font-size: 0.85rem;
+  @media (max-width: 720px) {
+    .LabelText {
+      font-size: 0.85rem;
+    }
   }
-}
 </style>
+
 <!-- This needs to react when changed and set the upload text to the file name. And when a file is selected it needs to fetch an upload url and upload the file. Once this is done we save the upload file url and the content type to hidden inputs.
 
 Upload URL endpoint should take content type as a parameter and return a {publication: true|false, url} object to indicate whether we support that file type.
  -->
 <label class:dark>
-    <div class="LabelText">
-        <br>
-        <slot></slot>
-    </div>
-    {#if type}
-        <input type="hidden" name="uploadType" value={type}>
-    {/if}
-    {#if publication}
-        <input type="hidden" name="uploadPublication" value={publication}>
-    {/if}
-    {#if storageId}
-        <input type="hidden" name="storageId" value={storageId}>
-    {/if}
-    {#if original}
-        <input type="hidden" name="uploadURL" value={original}>
-    {/if}
-    <div class="input" class:done class:failed class:working>
-    {#if file}
-        {file.name}
-    {:else}
-        Upload a file 
-    {/if}
-    <input type="file" name={name} id="input-{name}" {placeholder} autocomplete="off" class="visually-hidden" on:change={change}>
-    </div>
+  <div class="LabelText">
+    <br />
+    <slot />
+  </div>
+  {#if type}
+    <input type="hidden" name="uploadType" value={type} />
+  {/if}
+  {#if publication}
+    <input type="hidden" name="uploadPublication" value={publication} />
+  {/if}
+  {#if storageId}
+    <input type="hidden" name="storageId" value={storageId} />
+  {/if}
+  {#if original}
+    <input type="hidden" name="uploadURL" value={original} />
+  {/if}
+  <div class="input" class:done class:failed class:working>
+    {#if file}{file.name}{:else}Upload a file{/if}
+    <input
+      type="file"
+      {name}
+      id="input-{name}"
+      {placeholder}
+      autocomplete="off"
+      class="visually-hidden"
+      on:change={change} />
+  </div>
 </label>

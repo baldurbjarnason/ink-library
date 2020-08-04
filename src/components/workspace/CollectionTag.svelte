@@ -1,10 +1,9 @@
 <script>
-  export let click
-  export let dark = false
+  export let click;
+  export let dark = false;
 </script>
 
 <style>
-
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
@@ -57,12 +56,36 @@
   }
 </style>
 
-
 <button type="Button" class="Button" on:click={click} class:dark>
-<svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle opacity="0.7" cx="14.1426" cy="15" r="10" transform="rotate(45 14.1426 15)" fill={dark ? 'white' : 'currentColor'}/>
-<rect x="16.9707" y="10.7573" width="2" height="10" rx="1" transform="rotate(45 16.9707 10.7573)" fill="{dark ? 'black' : 'white'}"/>
-<rect x="18.3848" y="17.8286" width="2" height="10" rx="1" transform="rotate(135 18.3848 17.8286)" fill="{dark ? 'black' : 'white'}"/>
-</svg>
+  <svg
+    width="29"
+    height="30"
+    viewBox="0 0 29 30"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <circle
+      opacity="0.7"
+      cx="14.1426"
+      cy="15"
+      r="10"
+      transform="rotate(45 14.1426 15)"
+      fill={dark ? 'white' : 'currentColor'} />
+    <rect
+      x="16.9707"
+      y="10.7573"
+      width="2"
+      height="10"
+      rx="1"
+      transform="rotate(45 16.9707 10.7573)"
+      fill={dark ? 'black' : 'white'} />
+    <rect
+      x="18.3848"
+      y="17.8286"
+      width="2"
+      height="10"
+      rx="1"
+      transform="rotate(135 18.3848 17.8286)"
+      fill={dark ? 'black' : 'white'} />
+  </svg>
 
 </button>
