@@ -34,7 +34,7 @@
       component: FlagFurtherRead,
       string: "Further read",
       value: false
-    },
+    }, 
     {
       component: FlagIdea,
       string: "Idea",
