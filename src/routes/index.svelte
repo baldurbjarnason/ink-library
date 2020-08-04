@@ -11,7 +11,7 @@
   import NoSources from "../components/img/NoSources.svelte";
   import Item from "../components/workspace/Item.svelte";
   export let id = false;
-  export let workspace;
+  export let workspace = "all";
 
   let items, itemsNotes;
   $: if ($notes) itemsNotes = $notes.items;
