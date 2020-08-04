@@ -48,10 +48,9 @@ export async function put(req, res, next) {
             "content-type": "application/ld+json",
             Authorization: `Bearer ${req.user.token}`
           }
-        });
+        }).catch(() => console.error('tag error'));
       }
     }
-    console.log(response);
     return res.sendStatus(response.statusCode);
   } catch (err) {
     console.log(err);

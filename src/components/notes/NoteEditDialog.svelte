@@ -159,7 +159,7 @@
     </button>
     <h1 id="dialog-title">Edit Note</h1>
     {#if note.id && process.browser}
-      <NoteEdit {note} />
+      <NoteEdit {note} dialog={true} />
     {/if}
   </div>
 </div>
