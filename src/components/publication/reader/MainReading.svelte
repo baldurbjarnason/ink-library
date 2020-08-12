@@ -49,7 +49,7 @@
   <div class="LeftSidebar">
     <ToC />
   </div>
-  <div class="Body Chapter" bind:this={readerBody}>
+  <div class="Body Chapter" id="reader-body" bind:this={readerBody}>
     {@html $chapter.contents}
   </div>
   <div class="RightSidebar" />

@@ -6,8 +6,12 @@
     page,
     chapterId,
     storedPub,
-    chapter
+    chapter,
+    nodes,
+    intersecting,
+    positions
   } from "../../stores";
+  import {guard} from "../../stores/utilities/ssr-guard.js"
   import { elasticInOut } from "svelte/easing";
   import TitleBar from "./reader/TitleBar.svelte";
   import ToolBar from "./reader/ToolBar.svelte";
@@ -18,6 +22,11 @@
   let hash = "#Description";
   let scroll = false;
   let readerBody;
+  // we can't scope this to readerBody because then we have to wait for readerBody to become non-nullish and that makes Svelte complain about the stores.
+  const watched = guard(nodes)("[data-annotation-id]")
+  const visible = guard(intersecting)(watched, {rootMargin: "40px 0px 0px 0px", threshold: 0.1})
+  const positioned = guard(positions)(watched, {rootMargin: "0px 0px 1500px 0px", threshold: 0.1})
+  $: console.log($watched, $visible, $positioned)
   onMount(() => {
     hash = window.location.hash || "#Description";
   });

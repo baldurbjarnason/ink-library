@@ -87,8 +87,10 @@
     "postcss-custom-properties": "^9.0.2",
     "postcss-easy-import": "^3.0.0",
     "postcss-reporter": "^6.0.1",
+    "qsa-observer": "^1.1.2",
     "quill": "^1.3.7",
     "redis": "^2.8.0",
+    "resize-observer-polyfill": "^1.5.1",
     "sharp": "^0.24.0",
     "short-uuid": "^3.1.1",
     "universal-base64url": "^1.1.0"
@@ -121,13 +123,13 @@
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-svelte": "^5.1.1",
     "rollup-plugin-terser": "^5.1.3",
-    "sapper": "^0.27.12",
+    "sapper": "^0.27.16",
     "sirv": "^0.4.2",
     "snowpack": "^2.2.0",
-    "svelte": "^3.17.1",
+    "svelte": "^3.24.1",
     "svelte-jester": "^1.0.3",
-    "svelte-preprocess": "^3.3.0",
-    "tap": "^14.10.7",
+    "svelte-preprocess": "^4.0.10",
+    "tap": "^14.10.8",
     "tiny-lr": "^1.1.1",
     "typescript": "^3.7.2"
   }
