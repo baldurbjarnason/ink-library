@@ -1,4 +1,4 @@
-import QSAO from 'qsa-observer';
+import QSAO from 'qsa-observer/esm';
 import ResizeObserver from 'resize-observer-polyfill';
 import { writable, derived } from "svelte/store";
 
