@@ -17,6 +17,7 @@
       noteBody = note.body.concat({ motivation: "commenting", content: "" });
     }
   }
+  $: console.log(note)
 </script>
 
 <style>

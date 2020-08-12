@@ -1,6 +1,7 @@
 <script>
   import { publication, workspaces, page, chapter } from "../../../stores";
   import ToC from "../ToC.svelte";
+  import SidebarNotes from "./SidebarNotes.svelte"
   export let readerBody = null;
 </script>
 
@@ -8,9 +9,12 @@
   .Reader {
     background-color: var(--reader-main-background);
     display: grid;
-    grid-template-columns: 0.4fr 1fr 0.2fr;
+    grid-template-columns: 0.4fr 1fr 0.4fr;
     padding-top: 2rem;
     padding-bottom: 2rem;
+  }
+  .RightSidebar {
+    position: relative;
   }
   .Chapter {
     all: initial;
@@ -52,5 +56,5 @@
   <div class="Body Chapter" id="reader-body" bind:this={readerBody}>
     {@html $chapter.contents}
   </div>
-  <div class="RightSidebar" />
+  <div class="RightSidebar"><SidebarNotes /></div>
 </div>
