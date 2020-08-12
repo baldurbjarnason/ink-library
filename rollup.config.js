@@ -74,6 +74,7 @@ export default {
         })
     ],
 
+		preserveEntrySignatures: false,
     onwarn
   },
 
@@ -103,6 +104,7 @@ export default {
       require("module").builtinModules
     ),
 
+		preserveEntrySignatures: 'strict',
     onwarn
   },
 
@@ -119,6 +121,7 @@ export default {
       !dev && terser()
     ],
 
+		preserveEntrySignatures: false,
     onwarn
   }
 };
