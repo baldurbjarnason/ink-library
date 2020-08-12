@@ -74,7 +74,6 @@ export function positions (nodeStore, config) {
       }
       for (const entry of entries) {
         observer.unobserve(entry.target)
-        console.log(entry.boundingClientRect.y, entry.boundingClientRect.top, window.scrollY)
         elements.add({target: entry.target, id: entry.target.dataset.annotationId,left: window.scrollX + entry.boundingClientRect.left, top: window.scrollY + entry.boundingClientRect.top, width: entry.boundingClientRect.width, height: entry.boundingClientRect.height})
       }
       set(new Set(elements))

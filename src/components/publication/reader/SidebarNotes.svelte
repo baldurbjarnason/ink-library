@@ -18,7 +18,6 @@
   const visible = guard(intersecting)(watched, {rootMargin: "40px 0px 0px 0px", threshold: 0.1})
   const positioned = guard(positions)(watched, {rootMargin: "0px 0px 1500px 0px", threshold: 0.1})
   const placed = guard(annotations)(positioned)
-  $: console.log($placed, $publicationNotes)
   function getNote (id) {
     if ($publicationNotes) {
       return $publicationNotes.find(note => note.id === id)
