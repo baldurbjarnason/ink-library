@@ -39,6 +39,18 @@
     display: block;
     padding: 2rem;
   }
+  .Chapter :global(.Colour) {
+    background-color: var(--highlight-color1);
+  }
+  .Chapter :global(.Colour2) {
+    background-color: var(--highlight-color2);
+  }
+  .Chapter :global(.Colour3) {
+    background-color: var(--highlight-color3);
+  }
+  .Chapter :global(.Colour4) {
+    background-color: var(--highlight-color4);
+  }
 </style>
 
 <svelte:head>

@@ -85,6 +85,9 @@ function fixItem(item) {
       purpose: body.motivation
     };
   });
+  if (item.tags && item.tags.find(tag => tag.name.startsWith('colour'))) {
+    item.target.styleClass = item.tags.find(tag => tag.name.startsWith('colour')).name.replace(' ', '').replace('c', 'C')
+  }
   item.type = "Annotation";
   if (!item.target.selector) return null;
   return item;
