@@ -8,16 +8,15 @@
   import Button from "../widgets/Button.svelte";
   export let note = { body: [], source: { name: "" } };
   export let dialog = false
-  let colour = "Colour1"
+  let colour = null
   let selectedFlags = []
   let highlight;
   let comment;
-  $: if (note && note.tags && note.tags.find(tag => tag.name.startsWith('colour'))) {
+  $: if (note && note.tags && note.tags.find(tag => tag.name.startsWith('colour')) && !colour) {
     colour = note.tags.find(tag => tag.name.startsWith('colour')).name.replace(' ', '').replace('c', 'C')
   }
   $: if (selectedFlags.length === 0 && note.tags) {
     selectedFlags = note.tags.filter(tag => tag.type === 'flag' && !tag.name.startsWith("colour")).map(tag => tag.name)
-    console.log(selectedFlags, note.tags)
   }
   $: if (note && note.body && note.body.find) {
     highlight = note.body.find(item => item.motivation === "highlighting");
@@ -29,7 +28,6 @@
   let flags = []
   $: if ($tags && $tags.items.length !== 0) {
     flags = $tags.items.filter(tag => tag.type === 'flag' && !tag.name.startsWith('colour'))
-    console.log(flags)
   }
   let title;
   $: if (note && note.source && note.source.name) {
@@ -45,11 +43,21 @@
       }
     }
   }
+  function updateHighlight(id, colour) {
+    document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
+      node.classList.forEach(token => {
+        if (token.startsWith('Colour')) {
+          node.classList.remove(token)
+        }
+      })
+      node.classList.add(colour)
+    });
+  }
   async function save() {
     // Get all tags, filter through them to match name of adding tags, add ids as prop
     try {
       const payload = Object.assign({}, note);
-      payload._tags = $tags.getIds([colour.replace('Colour', 'colour ')].concat(selectedFlags))
+      payload._tags = $tags.getIds([colour.replace('Colour', 'colour').replace(' ', '')].concat(selectedFlags))
       if (payload.body.find(body => body.motivation === "commenting")) {
         const body = payload.body.find(
           body => body.motivation === "commenting"
@@ -73,6 +81,7 @@
         }
       });
       $refreshNotes = Date.now();
+      updateHighlight(note.id, colour.replace('colour', 'Colour').replace(' ', ''))
     } catch (err) {
       console.error(err);
     }
@@ -259,7 +268,7 @@
     </div>
     <div class="CardMain {highlight ? 'Highlighted' : ''}">
       {#if highlight}
-        <Highlight body={highlight} edit={true} {colour} />
+        <Highlight body={highlight} edit={true} colour={colour|| "Colour1"} />
       {/if}
       {#if comment}
         <NoteEditor html={comment.content || ''} bind:richtext={text} />
