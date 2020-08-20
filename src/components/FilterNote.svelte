@@ -13,85 +13,105 @@
   import FlagUrgent from "./img/FlagUrgent.svelte";
   import IcoFlag from "./img/IcoFlag.svelte";
   import IcoColor from "./img/IcoColor.svelte";
-  import { page, tags } from "../stores";
-  import { goto } from "@sapper/app";
 
-  /////////////////////////////////////////// Colour
-  function assignCol(icon) {
-    switch (icon) {
-      case "colour 1":
-        return "Orange";
-      case "colour 2":
-        return "Pink";
-      case "colour 3":
-        return "Blue";
-      case "colour 4":
-        return "Green";
-    }
+  /////////////////////////////////////////// Notebook
+  let dynamicNbk = ["Aliquam", "Fusce", "Integer", "Nullam", "Duis"];
+  let notebooks = [];
+
+  function handleClick(item) {
+    var index = dynamicNbk.indexOf(item);
+    dynamicNbk.splice(index, 1);
+    dynamicNbk = dynamicNbk;
+
+    notebooks.push(item);
+    notebooks = notebooks;
   }
-  $: colorArr = $tags.items.filter(
-    item => item.type === "flag" && item.name.startsWith("colour")
-  );
-  $: currentColor =
-    $page.query.flag && $page.query.flag.startsWith("colour")
-      ? $page.query.flag
-      : undefined;
+  function closeNotebook(item) {
+    var index = notebooks.indexOf(item);
+    notebooks.splice(index, 1);
+    notebooks = notebooks;
+
+    dynamicNbk.push(item);
+    dynamicNbk = dynamicNbk;
+  }
+  /////////////////////////////////////////// Notebook
+  let dynColor = ["Pink", "Orange", "Blue", "Green"];
+  let colors = [];
 
   function colorClick(item) {
-    let flagged = { flag: item.toLowerCase() };
-    let path = $page.path;
+    var index = dynColor.indexOf(item);
+    dynColor.splice(index, 1);
+    dynColor = dynColor;
 
-    const url = `${path}?${new URLSearchParams(flagged).toString()}`;
-    goto(url);
+    colors.push(item);
+    colors = colors;
+  }
+  function closeColor(item) {
+    var index = colors.indexOf(item);
+    colors.splice(index, 1);
+    colors = colors;
+
+    dynColor.push(item);
+    dynColor = dynColor;
   }
 
   /////////////////////////////////////////// Flags
-  function assignIco(icon) {
-    switch (icon) {
-      case "further reading":
-        return FlagFurtherRead;
-      case "idea":
-        return FlagIdea;
-      case "important":
-        return FlagImportant;
-      case "important term":
-        return FlagImpTerm;
-      case "question":
-        return FlagQuestion;
-      case "reference":
-        return FlagReference;
-      case "revisit":
-        return FlagRevisit;
-      case "to do":
-        return FlagToDo;
-      case "urgent":
-        return FlagUrgent;
+  let dynFlag = [
+    {
+      component: FlagFurtherRead,
+      string: "Further read"
+    },
+    {
+      component: FlagIdea,
+      string: "Idea"
+    },
+    {
+      component: FlagImportant,
+      string: "Important"
+    },
+    {
+      component: FlagImpTerm,
+      string: "Important term"
+    },
+    {
+      component: FlagQuestion,
+      string: "Question"
+    },
+    {
+      component: FlagReference,
+      string: "Reference"
+    },
+    {
+      component: FlagRevisit,
+      string: "Revisit"
+    },
+    {
+      component: FlagToDo,
+      string: "To Do"
+    },
+    {
+      component: FlagUrgent,
+      string: "Urgent"
     }
-  }
+  ];
 
-  $: flagsArr = $tags.items.filter(
-    item => item.type === "flag" && !item.name.startsWith("colour")
-  );
-  $: currentFlag =
-    $page.query.flag && !$page.query.flag.startsWith("colour")
-      ? $page.query.flag
-      : undefined;
+  let flags = [];
 
   function flagClick(item) {
-    let flagged = { flag: item.toLowerCase() };
-    let path = $page.path;
+    var index = dynFlag.indexOf(item);
+    dynFlag.splice(index, 1);
+    dynFlag = dynFlag;
 
-    const url = `${path}?${new URLSearchParams(flagged).toString()}`;
-    goto(url);
+    flags.push(item);
+    flags = flags;
   }
+  function closeFlag(item) {
+    var index = flags.indexOf(item);
+    flags.splice(index, 1);
+    flags = flags;
 
-  function removeFilter(item) {
-    //if (Object.keys($page.query).length
-    /*
-    Object.keys($page.query).forEach((key, index) => {
-      console.log(key, $page.query[key]);
-    });*/
-    goto($page.path);
+    dynFlag.push(item);
+    dynFlag = dynFlag;
   }
 </script>
 
@@ -129,7 +149,7 @@
     position: relative;
     margin-right: 4px;
     margin-bottom: 4px;
-    z-index: 2;
+    z-index: 5;
     float: left;
   }
   .arr span {
@@ -259,68 +279,67 @@
     margin-right: 4px;
   }
 
-  .arr.colour2 {
+  .arr.Pink {
     color: #c0004e;
     background: #ffe4f0;
     border: none;
   }
-  ul .colour2 {
+  ul .Pink {
     color: #c0004e;
   }
-  ul .colour2::before,
-  .arr.colour2::before,
-  .arr.colour2 span::before,
-  .arr.colour2 span::after {
+  ul .Pink::before,
+  .arr.Pink::before,
+  .arr.Pink span::before,
+  .arr.Pink span::after {
     background: #c0004e;
   }
 
-  .arr.colour1 {
+  .arr.Orange {
     color: #d86801;
     background: #ffebda;
     border: none;
   }
-  ul .colour1 {
+  ul .Orange {
     color: #d86801;
   }
-  ul .colour1::before,
-  .arr.colour1::before,
-  .arr.colour1 span::before,
-  .arr.colour1 span::after {
+  ul .Orange::before,
+  .arr.Orange::before,
+  .arr.Orange span::before,
+  .arr.Orange span::after {
     background: #d86801;
   }
 
-  .arr.colour4 {
+  .arr.Green {
     color: #589b4c;
     background: #e6f8e4;
     border: none;
   }
-  ul .colour4 {
+  ul .Green {
     color: #589b4c;
   }
-  ul .colour4::before,
-  .arr.colour4::before,
-  .arr.colour4 span::before,
-  .arr.colour4 span::after {
+  ul .Green::before,
+  .arr.Green::before,
+  .arr.Green span::before,
+  .arr.Green span::after {
     background: #589b4c;
   }
 
-  .arr.colour3 {
+  .arr.Blue {
     color: #0693b2;
     background: #e2f7fa;
     border: none;
   }
-  ul .colour3 {
+  ul .Blue {
     color: #0693b2;
   }
-  ul .colour3::before,
-  .arr.colour3::before,
-  .arr.colour3 span::before,
-  .arr.colour3 span::after {
+  ul .Blue::before,
+  .arr.Blue::before,
+  .arr.Blue span::before,
+  .arr.Blue span::after {
     background: #0693b2;
   }
 </style>
 
-<!--
 <div class="filter ntbk">
   <p>Notebook</p>
   <input class="btn" />
@@ -352,25 +371,19 @@
       </li>
     {/each}
   </ul>
-</div>-->
+</div>
 
 <div class="filter color">
   <p>Color</p>
   <input class="btn" />
   <div class="inputs">
-    <!--
-    {#each colorArr as color}
+    {#each colors as color}
       <p class="arr {color}">
         {color}
         <span on:click={() => closeColor(color)} />
       </p>
-    {/each}-->
-    {#if currentColor}
-      <p class="arr {currentColor.replace(' ', '')}">
-        {assignCol(currentColor)}
-        <span on:click={() => removeFilter(currentColor)} />
-      </p>
-    {:else}
+    {/each}
+    {#if !colors.length}
       <p class="placeholder">
         <IcoColor />
         Choose color
@@ -379,12 +392,10 @@
     <ArrowDropDown />
   </div>
   <ul>
-    {#each colorArr as color}
-      {#if !currentColor || currentColor !== color.name}
-        <li on:click={() => colorClick(color.name)}>
-          <p class={color.name.replace(' ', '')}>{assignCol(color.name)}</p>
-        </li>
-      {/if}
+    {#each dynColor as color}
+      <li on:click={() => colorClick(color)}>
+        <p class={color}>{color}</p>
+      </li>
     {/each}
   </ul>
 </div>
@@ -393,21 +404,14 @@
   <p>Flag</p>
   <input class="btn" />
   <div class="inputs">
-    <!--
     {#each flags as flag}
       <p class="arr {flag.string}">
-        <svelte:component this={assignIco(flag.string)} />
+        <svelte:component this={flag.component} />
         {flag.string}
         <span on:click={() => closeFlag(flag)} />
       </p>
-    {/each}-->
-    {#if currentFlag}
-      <p class="arr {currentFlag.replace(' ', '')}">
-        <svelte:component this={assignIco(currentFlag)} />
-        {currentFlag}
-        <span on:click={() => removeFilter(currentFlag)} />
-      </p>
-    {:else}
+    {/each}
+    {#if !flags.length}
       <p class="placeholder">
         <IcoFlag />
         Choose flag
@@ -416,15 +420,13 @@
     <ArrowDropDown />
   </div>
   <ul>
-    {#each flagsArr as flag}
-      {#if !currentFlag || currentFlag !== flag.name}
-        <li on:click={() => flagClick(flag.name)}>
-          <p class={flag.name}>
-            <svelte:component this={assignIco(flag.name)} />
-            {flag.name}
-          </p>
-        </li>
-      {/if}
+    {#each dynFlag as flag}
+      <li on:click={() => flagClick(flag)}>
+        <p class={flag.string}>
+          <svelte:component this={flag.component} />
+          {flag.string}
+        </p>
+      </li>
     {/each}
   </ul>
 </div>

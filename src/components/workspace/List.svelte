@@ -30,12 +30,6 @@
   let selection = function() {
     if (!selecting) selecting = true;
   };
-
-  if ($page.query.page) {
-    filterOn = Object.keys($page.query).length > 2 ? true : false;
-  } else {
-    filterOn = Object.keys($page.query).length > 0 ? true : false;
-  }
 </script>
 
 <style>
@@ -43,7 +37,22 @@
     --list-template-columns: 60px 1fr 1fr 0.5fr 0.5fr 2rem;
     --item-font-size: 0.7rem;
     --list-grid-gap: calc(var(--base) * 0.5);
+  } /*
+  .Header {
+    display: grid;
+    grid-template-columns: var(--list-template-columns);
+    padding: calc(var(--base) * 0.25);
+    grid-gap: var(--list-grid-gap);
+    font-size: var(--item-font-size);
+    position: sticky;
+    top: 82px;
+    background-color: var(--main-background-color);
+    z-index: 1;
   }
+  .Header > div {
+    display: flex;
+    align-items: center;
+  }*/
   .Cards {
     position: relative;
     display: grid;
@@ -51,7 +60,11 @@
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     grid-gap: var(--base);
     grid-auto-rows: max-content;
-  }
+  } /*
+  .Items {
+    position: relative;
+    min-height: 100vh;
+  }*/
   .CardHeader {
     display: flex;
     justify-content: space-between;
@@ -66,7 +79,10 @@
     -webkit-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
-  }
+  } /*
+  .Header :global(button.Button) {
+    margin-left: -80%;
+  }*/
   .Loading {
     width: 2rem;
     height: 2rem;
@@ -124,7 +140,7 @@
   .formFilter {
     background: #f9fbfc;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-gap: var(--base);
     grid-auto-rows: -webkit-max-content;
     grid-auto-rows: max-content;
@@ -182,13 +198,22 @@
     color: #c4cdd1;
     font-size: 4rem;
     margin: auto;
-  }
-  @media (min-width: 721px) {
-    :global(.Item:only-child) {
-      width: calc(50% - (var(--base) / 2));
-    }
-  }
+  } /*
+  .MobileHeader {
+    display: none;
+  }*/
   @media (min-width: 641px) and (max-width: 720px) {
+    /*
+    .Header,
+    .CardHeader {
+      display: none;
+    }
+    .MobileHeader {
+      display: flex;
+      padding: calc(var(--base) * 0.25) var(--base);
+      justify-content: space-between;
+      align-items: center;
+    }*/
     .CardHeader {
       top: 0;
       padding-top: 0;
@@ -214,16 +239,19 @@
   </div>
   <div>
     <Search />
+    <!--
     <section class="filter {filterOn ? 'active' : ''}">
       <p>Filter</p>
       <IcoFilter />
       <input type="checkbox" bind:checked={filterOn} />
-    </section>
+    </section>-->
   </div>
 </div>
+<!--
 <section class="formFilter {filterOn ? 'active' : ''}">
   <FilterSource />
-</section>
+</section>-->
+
 <div class="Cards">
   {#if $library.type === 'loading'}
     <div class="Loading" />

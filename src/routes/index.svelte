@@ -1,6 +1,6 @@
 <script>
   import { send, receive } from "./_crossfade.js";
-  import { innote, clearSelected, insource } from "../stores";
+  import { notes, clearSelected, library } from "../stores";
   import NotesCard from "../components/notes/NotesCard.svelte";
   import NotesList from "../components/notes/NotesList.svelte";
   import NewNote from "../components/notes/NewNote.svelte";
@@ -14,8 +14,8 @@
   export let workspace = "all";
 
   let items, itemsNotes;
-  $: if ($innote) itemsNotes = $innote.items;
-  $: if ($insource) items = $insource.items;
+  $: if ($notes) itemsNotes = $notes.items;
+  $: if ($library) items = $library.items;
 </script>
 
 <style>
@@ -39,7 +39,7 @@
     justify-content: space-between;
     align-items: center;
   }
-  .Toolbar div :global(span.new-button) {
+  .Toolbar div :global(span) {
     margin-right: 20px;
     float: left;
   }
@@ -77,9 +77,6 @@
     padding-top: 20px;
     height: calc(100% - 40px);
   }
-  .contNotes {
-    height: 400px;
-  }
   .align {
     background: #f9fbfc;
     border-radius: 30px;
@@ -92,21 +89,9 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-  .index .left {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-  }
-  .indexNotes {
-    height: 375px;
-  }
-  .indexNotes :global(.Top) {
-    height: 147px;
-    grid-gap: 7px;
-  }
-  .indexNotes :global(.Highlight) {
-    -webkit-line-clamp: 1;
-    max-height: 15px;
+  .indexNotes,
+  .contNotes {
+    height: calc(100% - 60px);
   }
   .Sources :global(.Item:nth-last-of-type(-n + 1)) {
     display: none;
@@ -127,7 +112,19 @@
     .indexNotes :global(.Item:nth-last-of-type(-n + 4)) {
       display: none;
     }
-  }
+  } /*
+  @media (min-width: 721px) and (max-width: 849px) {
+    .Cards:not(.align) {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+    }
+    .indexNotes :global(.Item:nth-last-of-type(-n + 5)) {
+      display: none;
+    }
+    .Body {
+      height: calc(100% - 80px);
+    }
+  }*/
   @media (max-width: 849px) {
     .index .Toolbar :global(.new-button) {
       position: inherit;
@@ -138,7 +135,7 @@
       height: inherit;
     }
     .Cards:not(.align) {
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     }
     .indexNotes :global(.Item:nth-last-of-type(-n + 2)) {
       display: none;
@@ -152,7 +149,7 @@
     .Sources {
       display: grid;
       grid-gap: var(--base);
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       position: relative;
       background: transparent;
       padding: 0;
@@ -174,12 +171,10 @@
         <NewItem {workspace} />
       </div>
     </nav>
-    <!--
-    <div class="Body" class:NotesEditor={id}>-->
-    <div class="contNotes">
-      <h5>Recent notes</h5>
-      <div class="Cards indexNotes {!itemsNotes.length ? 'align' : null}">
-        {#if itemsNotes}
+    <div class="Body" class:NotesEditor={id}>
+      <div class="contNotes">
+        <h5>Recent notes</h5>
+        <div class="Cards indexNotes {!itemsNotes.length ? 'align' : null}">
           {#each itemsNotes as note, i}
             {#if i < 8}
               <NotesCard {note} />
@@ -187,13 +182,13 @@
           {:else}
             <NoNotes />
           {/each}
-        {/if}
+        </div>
       </div>
-    </div>
-    <div class="contNotebooks">
-      <h5>Recent notebooks</h5>
-      <div class="notebooks align">
-        <NoNotebooks />
+      <div class="contNotebooks">
+        <h5>Recent notebooks</h5>
+        <div class="notebooks align">
+          <NoNotebooks />
+        </div>
       </div>
     </div>
   </div>

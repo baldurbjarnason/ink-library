@@ -23,10 +23,6 @@
     query = Object.assign({}, $page.query);
     params = Object.assign({}, $page.params);
   }
-
-  if (Object.keys($page.query).length > 0) {
-    filterOn = true;
-  }
 </script>
 
 <style>
@@ -43,7 +39,7 @@
     position: relative;
     display: grid;
     padding: calc(var(--base) * 2);
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-gap: var(--base);
     grid-auto-rows: max-content;
   }
@@ -120,7 +116,7 @@
   .formFilter {
     background: #f9fbfc;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-gap: var(--base);
     grid-auto-rows: -webkit-max-content;
     grid-auto-rows: max-content;
@@ -204,16 +200,18 @@
   </div>
   <div>
     <NotesSearch />
+    <!--
     <section class="filter {filterOn ? 'active' : ''}">
       <p>Filter</p>
       <IcoFilter />
       <input type="checkbox" bind:checked={filterOn} />
-    </section>
+    </section>-->
   </div>
 </div>
+<!--
 <section class="formFilter {filterOn ? 'active' : ''}">
-  <FilterNote {items} />
-</section>
+  <FilterNote />
+</section>-->
 <div class="Cards">
   {#if $notes.type === 'loading'}
     <div class="Loading" />

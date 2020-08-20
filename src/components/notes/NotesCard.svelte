@@ -1,15 +1,4 @@
 <script>
-  import FlagFurtherRead from "../img/FlagFurtherRead.svelte";
-  import FlagIdea from "../img/FlagIdea.svelte";
-  import FlagImportant from "../img/FlagImportant.svelte";
-  import FlagImpTerm from "../img/FlagImpTerm.svelte";
-  import FlagQuestion from "../img/FlagQuestion.svelte";
-  import FlagReference from "../img/FlagReference.svelte";
-  import FlagRevisit from "../img/FlagRevisit.svelte";
-  import FlagToDo from "../img/FlagToDo.svelte";
-  import FlagUrgent from "../img/FlagUrgent.svelte";
-
-  import NavSource from "../img/NavSource.svelte";
   import Comment from "./Comment.svelte";
   import Highlight from "./Highlight.svelte";
   import { page } from "../../stores";
@@ -28,378 +17,120 @@
       noteBody = note.body.concat({ motivation: "commenting", content: "" });
     }
   }
-
-  let noted, highlighed;
-  $: if (note && note.body && note.body[0]) {
-    noted = note.body.find(item => item.motivation === "commenting");
-    highlighed = note.body.find(item => item.motivation === "highlighting");
-  }
-
-  $: flags = note.tags.filter(flag => !flag.name.startsWith("colour"));
-  $: colour = note.tags.find(flag => flag.name.startsWith("colour"));
-
-  function assignIco(icon) {
-    switch (icon) {
-      case "further reading":
-        return FlagFurtherRead;
-      case "idea":
-        return FlagIdea;
-      case "important":
-        return FlagImportant;
-      case "important term":
-        return FlagImpTerm;
-      case "question":
-        return FlagQuestion;
-      case "reference":
-        return FlagReference;
-      case "revisit":
-        return FlagRevisit;
-      case "to do":
-        return FlagToDo;
-      case "urgent":
-        return FlagUrgent;
-    }
-  }
-
-  $: pagination =
-    $page.query && $page.query.page
-      ? `/notes/all/all/${note.shortId}?${new URLSearchParams({
-          page: $page.query.page
-        }).toString()}`
-      : false;
 </script>
 
 <style>
-  .Item * {
-    margin: 0;
-    font-weight: 500;
+  /* your styles go here */
+  .Item {
+    background: #fff;
+    border: 1px solid #d3eacc;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
-  .Top {
-    background: #ffffff;
-    border-radius: 20px 20px 0 0;
-    padding: 16px;
-    display: grid;
-    grid-gap: 17px;
-    /*grid-template-rows: auto 1fr auto;*/
-    grid-template-rows: 1fr;
-    height: 200px;
-  }
-  .Top.two {
-    grid-template-rows: auto 1fr;
-  }
-  /* -------------- Highlight -------------- */
-  header {
-    display: grid;
-    grid-template-columns: 4px 1fr;
-    grid-gap: 8px;
-  }
-  header .info {
-    display: grid;
-    grid-gap: 4px;
-  }
-  a {
+  .title {
+    /*
+    font-size: var(--item-font-size);
+    font-weight: 600;
+    padding: calc(var(--base) * 0.5) 0;
+    display: flex;
+    flex-direction: column;*/
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     outline: none;
   }
-  .Page {
-    font-size: 0.6rem;
+  .Top,
+  .CardBottom {
     float: left;
-    width: max-content;
-    padding: 0 8px;
-    border-radius: 5px;
-    align-items: center;
-    display: flex;
-    color: #ffffff;
+    width: 100%;
   }
-  .Highlight {
-    font-size: 0.75rem;
-    line-height: 0.9rem;
-    color: #333333;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
+  .Top {
+    padding: 15px 15px 25px;
   }
-  .Source {
-    display: grid;
-    align-items: center;
-    grid-template-columns: 10px 1fr;
-    grid-gap: 5px;
+  .CardMain {
+    float: left;
+    width: 100%;
   }
-  .Source :global(svg) {
-    width: 10px;
-    height: auto;
-    color: var(--workspace-color);
+  .CardBottom {
+    background: #f8fcf8;
+    border-top: 1px solid #eaf5e6;
+    color: #589b4c;
+    padding: 10px 15px;
   }
-  .Source[href],
-  .Highlight[href],
-  .Note[href] {
-    text-decoration: none;
-  }
-  .Source[href]:hover,
-  .Highlight[href]:hover,
-  .Note[href]:hover,
-  .Page:hover {
-    text-decoration: underline;
-  }
-  .Source p {
+  .Modified {
+    float: right;
     font-size: 0.7rem;
-    font-weight: 400;
-    color: #333333;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
+    line-height: 0.7rem;
+  }
+  .Circle {
+  }
+  .Item :global(p) {
     overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-  }
-  /* -------------- Note -------------- */
-  .Note {
-    overflow: hidden; /*
     text-overflow: ellipsis;
-    white-space: nowrap;*/
-  }
-  .Note :global(*),
-  .Highlight :global(*) {
-    font-size: 0.75rem !important;
-    line-height: 0.9rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    white-space: inherit;
+    font-weight: 600;
+    font-size: 0.65rem;
     margin: 0;
-    color: #333333;
-  }
-  .empty {
-    color: #888888;
-    font-weight: 400;
-  }
-  /* -------------- Tags -------------- */
-  .Tags {
-    list-style: none;
-    padding: 0;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-  .Tags li {
-    border-radius: 10px;
-    display: inline-table;
-    margin-right: 5px;
-    padding: 2px 10px;
-  }
-  .Tags p {
-    font-size: 0.7em;
-  }
-  /* -------------- Botom -------------- */
-  .Bottom {
-    border-radius: 0 0 20px 20px;
-    padding: 6px 16px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-gap: 7px;
-  }
-  .Flags,
-  .Bottom section {
-    padding: 0;
-    list-style: none;
-  }
-  .Flags {
-    line-height: 0.8rem;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
+    max-height: 72px;
     display: -webkit-box;
-    -webkit-box-orient: vertical;
   }
-  .Flags li {
-    display: inline-table;
-    margin-right: 7px;
+  .Selected {
   }
-  .Bottom section {
-    display: flex;
-    justify-content: flex-end;
+  .Icon,
+  .title {
   }
-  .Bottom p {
-    font-size: 0.7rem;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  .Icon {
   }
-  .Flags :global(svg) {
+  .Icon svg {
     float: left;
-    margin-right: 3px;
-    height: 16px;
+    height: 12px;
   }
 
-  /* ------------ No colour ------------ */
-  .Item .Top {
-    border: 1px solid #cccccc;
-    border-bottom: none;
-  }
-  .Item header .column,
-  .Item .Page {
-    background: #999999;
-  }
-  .Item .Tags li {
-    background: #f6f6f6;
-  }
-  .Item .Bottom {
-    border: 1px solid #cccccc;
-    border-top: 1px solid #dddddd;
-    background: #f6f6f6;
-  }
-  .Item .Tags p,
-  .Item .Bottom * {
-    color: #999999;
-  }
-  /* ------------ Colour 1 ------------ */
-  .colour1 .Top {
-    border: 1px solid #ffe4cb;
-    border-bottom: none;
-  }
-  .colour1 header .column,
-  .colour1 .Page {
-    background: #fea95b;
-  }
-  .colour1 .Tags li {
-    background: #ffebda;
-  }
-  .colour1 .Bottom {
-    border: 1px solid #ffe4cb;
-    border-top: 1px solid #fcf3ed;
-    background: #fffcfa;
-  }
-  .colour1 .Tags p,
-  .colour1 .Bottom * {
-    color: #d86801;
-  }
-  /* ------------ Colour 2 ------------ */
-  .colour2 .Top {
-    border: 1px solid #fcd5e5;
-    border-bottom: none;
-  }
-  .colour2 header .column,
-  .colour2 .Page {
-    background: #ff8ebe;
-  }
-  .colour2 .Tags li {
-    background: #ffe4f0;
-  }
-  .colour2 .Bottom {
-    border: 1px solid #fcd5e5;
-    border-top: 1px solid #f9eaf0;
-    background: #fffafd;
-  }
-  .colour2 .Tags p,
-  .colour2 .Bottom * {
-    color: #c0004e;
-  }
-  /* ------------ Colour 3 ------------ */
-  .colour3 .Top {
-    border: 1px solid #7de8f8;
-    border-bottom: none;
-  }
-  .colour3 header .column,
-  .colour3 .Page {
-    background: #57cfea;
-  }
-  .colour3 .Tags li {
-    background: #def8fe;
-  }
-  .colour3 .Bottom {
-    border: 1px solid #7de8f8;
-    border-top: 1px solid #dff2f5;
-    background: #fafeff;
-  }
-  .colour3 .Tags p,
-  .colour3 .Bottom * {
-    color: #0693b2;
-  }
-  /* ------------ Colour 4 ------------ */
-  .colour4 .Top {
-    border: 1px solid #d3eacc;
-    border-bottom: none;
-  }
-  .colour4 header .column,
-  .colour4 .Page {
-    background: #81d173;
-  }
-  .colour4 .Tags li {
-    background: #e6f8e4;
-  }
-  .colour4 .Bottom {
-    border: 1px solid #d3eacc;
-    border-top: 1px solid #eaf5e6;
-    background: #f8fcf8;
-  }
-  .colour4 .Tags p,
-  .colour4 .Bottom * {
-    color: #589b4c;
+  @media (min-width: 940px) and (max-width: 1419px) {
+    .indexNotes .Item:nth-child(-n + 4) {
+      opacity: 0.1;
+    }
   }
 </style>
 
-<div
-  class="Item {colour ? colour.name.replace(' ', '') : ''}"
-  class:Selected={note.selected}>
-  <div class="Top {note.document || highlighed || note.source ? 'two' : ''}">
-    {#if note.document || highlighed || note.source}
-      <header>
-        <div class="column" />
-        <div class="info">
-          {#if note.document}
-            <a
-              href="{window.location.pathname.replace('notes', 'library')}{note.document}">
-              <p class="Page">Page</p>
-            </a>
-          {/if}
-          {#if highlighed}
-            <a
-              class="Highlight"
-              href="{window.location.pathname.replace('notes', 'library')}{note.document}">
-              {@html highlighed.content}
-            </a>
-          {/if}
-          {#if note.source && note.source.name}
-            <a
-              href="{window.location.pathname.replace('notes', 'library')}/{note.source.shortId}"
-              class="Source">
-              <NavSource />
-              <p>{note.source.name}</p>
-            </a>
-          {/if}
-        </div>
-      </header>
-    {/if}
+<div class="Item" class:Selected={note.selected}>
+  <a class="title" href="/notes/all/all/{note.shortId}" />
+  <!--
+  <div class="Top">
+    <span class="Icon" />
     <a
-      class="Note"
-      href={pagination ? pagination : `/notes/all/all/${note.shortId}`}>
-      {#if noted}
-        {@html noted.content}
-      {:else}
-        <p class="empty">Add note...</p>
-      {/if}
+      class="source-title"
+      href="/notes/{$page.params.workspace}/{$page.params.collection}/{note.shortId}">
+      {title}
     </a>
-    <!-- Adjust "Top" div when tags will be implemented
-    <ul class="Tags">
-      <li>
-        <p>#tag</p>
-      </li>
-    </ul>-->
+    <span>&nbsp;</span>
+  </div>-->
+  <div class="CardMain">
+    {#each noteBody as body}
+      {#if body.motivation === 'highlighting'}
+        <Highlight {body} />
+      {:else}
+        <Comment {body} />
+      {/if}
+    {/each}
   </div>
-  <div class="Bottom">
-    <ul class="Flags">
-      {#each flags as flag}
-        <li>
-          <svelte:component this={assignIco(flag.name)} />
-          <p>{flag.name}</p>
-        </li>
-      {/each}
-    </ul>
-    <section>
-      <p>
-        <strong>Modified:</strong>
-        {new Date(note.updated).toLocaleString(undefined, {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric'
-        })}
-      </p>
-    </section>
+  <div class="CardBottom">
+    <span />
+    <span class="Modified">
+      <strong>Modified:</strong>
+      {new Date(note.updated).toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      })}
+    </span>
   </div>
 </div>
