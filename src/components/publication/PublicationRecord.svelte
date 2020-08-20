@@ -8,6 +8,7 @@
     storedPub,
     chapter
   } from "../../stores";
+  import {guard} from "../../stores/utilities/ssr-guard.js"
   import { elasticInOut } from "svelte/easing";
   import TitleBar from "./reader/TitleBar.svelte";
   import ToolBar from "./reader/ToolBar.svelte";

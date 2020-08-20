@@ -27,7 +27,6 @@
     padding: 0 1rem;
     align-items: stretch;
   }
-  .ToolBar ol li a,
   .ToolBar ol li button {
     color: var(--reader-toolbar-color);
   }

@@ -1,5 +1,5 @@
 <script>
-  import Notebook from "./img/icoNotebook.svelte";
+  import Notebook from "./img/IcoNotebook.svelte";
   import IcoNotebook from "./img/IcoNotebook.svelte";
   import ArrowDropDown from "./img/ArrowDropDown.svelte";
   import FlagFurtherRead from "./img/FlagFurtherRead.svelte";

@@ -35,10 +35,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.6rem 1rem 0.5rem;
+    padding: 0.6rem 1rem 0.45rem;
   }
-  .TitleBar ol li a,
-  .TitleBar ol li button {
+  .TitleBar ol li a {
     color: var(--reader-titlebar-color);
   }
 </style>
