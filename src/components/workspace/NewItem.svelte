@@ -1,5 +1,5 @@
 <script>
-  import NewSource from "../img/NewSource.svelte";
+  import IcoNewSource from "../img/IcoNewSource.svelte";
   import Button from "../widgets/Button.svelte";
   import WhiteButton from "./WhiteButton.svelte";
   import { send, receive } from "../../routes/_crossfade.js";
@@ -11,7 +11,9 @@
   import AddCollections from "./AddCollections.svelte";
   import { afterUpdate, tick } from "svelte";
   import {
+    page,
     refreshDate,
+    refreshInSource,
     refreshCollections,
     collections,
     addingWorkspace,
@@ -23,10 +25,11 @@
   let open = false;
   let input;
   let newToggle;
-  let expanded = true;
   function click() {
     open = !open;
+    itemType = "source";
   }
+
   async function close() {
     open = false;
     await tick();
@@ -42,7 +45,8 @@
     close();
     const { target } = event;
     const newInput = window.document.getElementById("new-input").value;
-    if (newInput[0] === "#") {
+    //if (newInput[0] === "#") {
+    if (itemType === "stack") {
       const value =
         workspace === "all"
           ? newInput.slice(1)
@@ -84,11 +88,18 @@
           },
           body: JSON.stringify(body)
         });
-        $refreshDate = Date.now();
+
+        if ($page.path === "/") $refreshInSource = Date.now();
+        else $refreshDate = Date.now();
       } catch (err) {
         console.error(err);
       }
     }
+  }
+
+  let itemType = "source";
+  function changeType(value) {
+    itemType = value;
   }
 </script>
 
@@ -100,112 +111,88 @@
     left: 20px;
     width: calc(100% - 40px);
     top: 20px;
-    min-height: calc(var(--base) * 5.3);
     z-index: 3;
     border-radius: 30px;
   }
-  .NewBox form {
-    display: -webkit-box;
+  .header {
+    padding: 40px;
+    margin: 0;
     display: grid;
-    grid-template-columns: min-content 1fr min-content min-content;
-    align-items: center;
-    height: 100%;
-    grid-template-rows: calc(var(--base) * 5.3) auto;
+    grid-gap: 15px;
   }
-  .NewBox .MoreItems {
-    grid-column: 1 / -1;
-    padding: var(--base);
-    grid-gap: var(--base) calc(var(--base) * 3);
-    border-top: 1px solid white;
+  .typeOfItem {
+    float: left;
+    margin: 0;
+    width: 100%;
+  }
+  .typeOfItem label {
+    margin-right: 25px;
+    float: left;
+    cursor: pointer;
+  }
+  .typeOfItem p {
+    margin: 0;
+    float: left;
+    margin-left: 5px;
+    line-height: 15px;
+    font-size: 0.9rem;
+  }
+  input[type="radio"] {
+    float: left;
+    width: 15px;
+    height: 15px;
+    -webkit-appearance: none;
+    border-radius: 50%;
+    position: relative;
+    padding: 0;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+    border: 1px solid var(--main-background-color);
+  }
+  input[type="radio"]:checked::after {
+    content: "";
+    display: block;
+    background: var(--main-background-color);
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+  }
+  #new-input {
+    background: var(--main-background-color);
+    border: none;
+    border-radius: 10px;
+    font-size: 180%;
+    padding: 0 20px;
+    color: var(--workspace-color);
+    outline: none;
+    height: 60px;
+  }
+  #new-input::placeholder {
+    color: rgba(0, 34, 48, 0.3);
+    font-weight: lighter;
+  }
+  .MoreItems {
+    padding: 0 40px 40px;
     display: grid;
+    grid-gap: 20px 40px;
     grid-template-columns: 1fr 1fr;
   }
-  .MoreItems div {
-    position: relative;
+  .Source {
+    display: grid;
+    grid-template-columns: 1fr 15px minmax(100px, 0.5fr);
+    grid-gap: 10px;
+    align-items: center;
   }
-  .MoreItems p {
-    right: -40px;
-    width: 20px;
-    text-align: center;
-    line-height: 38px;
-    margin: calc(var(--base) * 0.25) 0;
-    font-size: 0.8rem;
-    position: absolute;
-  }
-  /* .Wide {
-    grid-column: 1 / -1;
-  } */
-  .NewBox input {
-    flex: 1 1 100%;
-    font-family: var(--sans-fonts);
-    font-size: 220%;
-    border: none;
-    font-weight: 300;
-    background-color: transparent;
-    color: white;
-  }
-  .NewBox input:focus {
-    outline: none;
-  }
-  .NewBox input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
-  .NewBox:focus-within {
-    box-shadow: 0 0 0 3px white;
-  }
-  .Expander {
-    font-family: var(--sans-fonts);
+  .Source p {
+    margin: 0;
     font-size: 0.9rem;
-    flex: 0 1 auto;
-    line-height: 1;
-
-    display: inline-block;
-
-    padding: var(--base);
-
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    text-align: center;
-    white-space: nowrap;
-    text-decoration: none;
-    font-weight: 500;
-    color: white;
-    border-radius: 15px;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    /* transition: box-shadow 0.15s ease-in-out; */
-    background-color: transparent;
-    text-decoration: none !important;
-    transition: transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
-    border: none;
+    transform: translateY(7px);
   }
-
-  .Expander:hover svg {
-    color: white !important;
-    fill: rgba(255, 255, 255, 0.4);
-    box-shadow: none;
-    text-decoration: none;
-  }
-
-  .Expander:active,
-  .Expander:link:active {
-    background-color: var(--active);
-  }
-  .Expander:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px #68d6d499;
-  }
-  .Expander.expanded {
-    transform: rotate(180deg);
-  }
-  .typeDiv {
-    grid-row: 2;
-    grid-column: 2;
-  }
-
+  /*-----------------------*/
   .new-button {
     justify-content: center;
     flex-direction: column;
@@ -221,6 +208,46 @@
   }
   .new-button :global(svg) {
     float: left;
+  }
+  /* ------ Footer btns ------ */
+  .footer {
+    align-self: self-end;
+  }
+  .newForm > .footer {
+    float: left;
+    width: 100%;
+    padding: 0 40px;
+  }
+  :global(.Button) {
+    float: right;
+  }
+  .NewBox .footer :global(button.Closer) {
+    width: 125px;
+    padding: 0.65rem 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .NewBox .footer :global(.Closer::after) {
+    content: "Cancel";
+    color: var(--main-background-color);
+  }
+  .footer :global(.Closer:hover::after) {
+    text-decoration: underline;
+  }
+  .footer :global(.Closer svg) {
+    display: none;
+  }
+  .MoreItems :global(input),
+  .MoreItems :global(select) {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: none;
+  }
+  .MoreItems :global(input::placeholder),
+  .MoreItems :global(select) {
+    color: #ffffff;
   }
   @media (max-width: 720px) {
     .new-button {
@@ -243,116 +270,40 @@
     .NewButtonLabel {
       display: none;
     }
-    .NewButtonPlus {
-      font-size: 2rem;
-      line-height: 1rem;
+    .NewBox .footer :global(button.Closer) {
+      width: 50%;
     }
-    .NewBox input {
-      font-size: 100%;
+    :global(button.Closer),
+    :global(button.Submit) {
+      width: 50%;
+      margin: 0 !important;
+      font-size: 0.9rem;
+      border-radius: 20px;
     }
-    .Expander {
-      padding: 0.25rem;
-    }
-    .Expander svg {
-      width: 29px;
-      height: 29px;
-    } /*
-    .NewBox .MoreItems {
-      max-height: 55vh;
-      grid-template-columns: 1fr;
-      overflow-y: auto;
-      margin-bottom: 2rem;
-    }*/
-
     .NewBox {
-      height: 100vh;
-      width: 100%;
       left: 0;
-      top: -62px;
+      top: 0;
       border-radius: 0;
-      display: flex;
+      width: 100%;
+      height: 100%;
+      position: fixed;
       align-items: center;
+      display: flex;
     }
-    .NewBox form {
-      float: left;
-      height: initial;
-      display: block;
-      position: relative;
+    .footer {
+      margin-top: 50px;
     }
-    .NewBox .MoreItems {
-      display: block;
-      padding: 50px 40px;
-      margin-bottom: 0;
+    .footer.stack {
+      width: 100%;
+      padding: 0 40px;
       float: left;
-      border-top: none;
     }
-    .MoreItems > div,
-    .MoreItems > :global(div) {
-      margin-bottom: 20px;
-      float: left;
+    form,
+    #new-input {
       width: 100%;
     }
-    .MoreItems :global(div:empty) {
-      display: none;
-    }
-    .MoreItems > div:nth-child(2) {
-      margin-left: 10%;
-    }
-    .MoreItems > div:nth-child(-n + 2) {
-      width: 45%;
-    }
-    .MoreItems p {
-      right: -10%;
-      transform: translateX(50%);
-    }
-    /* ------------- */
-
-    form label + :global(.Button) {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 50%;
-      padding: 0;
-      margin: 0;
-      transform: rotate(45deg);
-    }
-    form label + :global(.Button::before),
-    form label + :global(.Button::after) {
-      content: "";
-      display: block;
-      background: var(--workspace-color);
-      width: 40%;
-      height: 2px;
-      border-radius: 110px;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    form label + :global(.Button::after) {
-      width: 2px;
-      height: 40%;
-    }
-    form label + :global(.Button svg) {
-      display: none;
-    }
-    .NewBox #new-input {
-      font-size: 100%;
-      width: calc(100% - 80px);
-      margin: 0 auto;
-      display: inherit;
-    }
-    #new-input + :global(.Button) {
-      font-size: 0.7rem;
-      padding-left: 1rem;
-      padding-right: 1rem;
-      float: right;
-      position: absolute;
-      bottom: 0px;
-      right: 0;
+    .MoreItems {
+      grid-template-columns: 1fr;
     }
   }
 </style>
@@ -367,82 +318,64 @@
       class="newForm"
       action="/api/create-publication"
       on:submit={submit}>
-      <label class="visually-hidden" id="new-label" for="new-input">
-        New item:
-      </label>
-      <Closer click={close} dark={true} />
-      <input type="hidden" name="type" value="Publication" />
-      <input
-        type="title"
-        required
-        name="name"
-        id="new-input"
-        class="title-field"
-        value=""
-        placeholder="Enter a new Source Title or #stack name"
-        bind:this={input}
-        autocomplete="off" />
-
-      <WhiteButton>Create</WhiteButton>
-      <!--
-      <button
-        type="button"
-        class="Expander"
-        class:expanded
-        on:click={() => {
-          expanded = !expanded;
-        }}>
-        <svg
-          width="36"
-          height="36"
-          viewBox="0 0 39 39"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <rect
-            x="1"
-            y="-1"
-            width="37"
-            height="37"
-            rx="14"
-            transform="matrix(1 0 0 -1 0 37)"
-            stroke="currentColor"
-            stroke-width="2" />
-          <rect
-            x="12"
-            y="17.4141"
-            width="2"
-            height="10"
-            rx="1"
-            transform="rotate(-45 12 17.4141)"
-            fill="currentColor" />
-          <rect
-            x="24.7285"
-            y="16"
-            width="2"
-            height="10"
-            rx="1"
-            transform="rotate(45 24.7285 16)"
-            fill="currentColor" />
-        </svg>
-      </button>-->
-      {#if expanded}
+      <section class="header">
+        <section class="typeOfItem">
+          <label>
+            <input
+              aria-label="source"
+              name="typeOfItem"
+              type="radio"
+              checked
+              on:click={() => changeType('source')} />
+            <p>New source</p>
+          </label>
+          <label>
+            <input
+              aria-label="stack"
+              name="typeOfItem"
+              type="radio"
+              on:click={() => changeType('stack')} />
+            <p>New stack</p>
+          </label>
+        </section>
+        <label class="visually-hidden" id="new-label" for="new-input">
+          New item:
+        </label>
+        <input type="hidden" name="type" value="Publication" />
+        <input
+          type="title"
+          required
+          name="name"
+          id="new-input"
+          class="title-field"
+          value=""
+          placeholder={itemType === 'source' ? 'Enter a new Source Title' : 'Enter a new stack name'}
+          bind:this={input}
+          autocomplete="off" />
+      </section>
+      {#if itemType === 'source'}
         <div class="MoreItems">
-          <div>
+          <div class="Source">
             <Input placeholder="Enter a URL" name="newURL" type="url">
               Source
             </Input>
             <p>or</p>
-          </div>
-          <div>
             <FileInput dark={true} name="newFile" type="file" />
-            <!--
-                        <AddWorkspace>Assign workspace</AddWorkspace>-->
           </div>
-          <AddCollections dark={true} />
           <div class="typeDiv">
             <TypeSelect dark={true}>Type</TypeSelect>
           </div>
+          <AddCollections dark={true} />
+          <div class="footer">
+            <WhiteButton>Create</WhiteButton>
+            <Closer click={close} dark={true} />
+          </div>
         </div>
+      {:else}
+        <section class="footer stack">
+          <WhiteButton>Create</WhiteButton>
+          <Closer click={close} dark={true} />
+        </section>
       {/if}
     </form>
   </div>
@@ -454,7 +387,7 @@
     in:receive|local={{ key: 'new-box' }}
     bind:this={newToggle}>
     <Button {click}>
-      <NewSource />
+      <IcoNewSource />
       <span class="NewButtonLabel">Source</span>
     </Button>
   </span>
