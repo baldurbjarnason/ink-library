@@ -199,13 +199,15 @@
   </div>
   <div class="Sources">
     <h5>Recent sources</h5>
-    {#each items as item, i}
-      {#if i < 6}
-        <Item {item} />
-      {/if}
+    {#if items}
+      {#each items as item, i}
+        {#if i < 6}
+          <Item {item} />
+        {/if}
+      {/each}
     {:else}
       <NoSources />
       <span />
-    {/each}
+    {/if}
   </div>
 </div>
