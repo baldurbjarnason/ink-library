@@ -116,21 +116,29 @@
 </style>
 
 <!-- markup (zero or more items) goes here -->
-<div>
-  <AutocompleteInput
-    placeholder="Stack Name"
-    {dark}
-    name="new-collections"
-    list={filteredCollections}
-    {change}>
-    Assign stacks
-  </AutocompleteInput>
-</div>
-<div class="Wide Tags" class:dark>
-  {#each $addedCollections as collection, i}
-    <span class="Collection">
-      {collection.label}
-      <Closer {dark} value={collection.value} click={removeTag} small={true} />
-    </span>
-  {/each}
-</div>
+{#if $addedCollections.length < 1}
+  <div>
+    <AutocompleteInput
+      placeholder="Stack Name"
+      {dark}
+      name="new-collections"
+      list={filteredCollections}
+      {change}>
+      Assign stacks
+    </AutocompleteInput>
+  </div>
+{:else}
+  <div class="Wide Tags" class:dark>
+    <div class="LabelText svelte-rmvtnc">Assign stacks</div>
+    {#each $addedCollections as collection, i}
+      <span class="Collection">
+        {collection.label}
+        <Closer
+          {dark}
+          value={collection.value}
+          click={removeTag}
+          small={true} />
+      </span>
+    {/each}
+  </div>
+{/if}
