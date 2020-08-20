@@ -8,7 +8,7 @@
   import FlagRevisit from "../img/FlagRevisit.svelte";
   import FlagToDo from "../img/FlagToDo.svelte";
   import FlagUrgent from "../img/FlagUrgent.svelte";
-  import NewNote from "../img/NewNote.svelte";
+  import IcoNewNote from "../img/IcoNewNote.svelte";
 
   import Button from "../widgets/Button.svelte";
   import Closer from "../widgets/Closer.svelte";
@@ -500,7 +500,7 @@
     in:receive|local={{ key: 'new-box' }}
     bind:this={newToggle}>
     <Button {click}>
-      <NewNote />
+      <IcoNewNote />
       <span class="NewButtonLabel">Note</span>
     </Button>
   </span>

@@ -57,11 +57,6 @@
     font-weight: 600;
     margin: 0;
   }
-  @media (min-width: 721px) {
-    .Body:not(.NotesEditor) :global(.Item:only-child) {
-      width: calc(50% - (var(--base) / 2));
-    }
-  }
   @media (max-width: 720px) {
     nav.Toolbar::before {
       content: none;
@@ -105,16 +100,11 @@
     grid-template-columns: 300px 1fr;
     grid-gap: 0;
   }
-  .NotesEditor :global(.CardHeader),
-  .NotesEditor :global(.formFilter) {
+  .NotesEditor :global(.CardHeader) {
     display: none;
   }
   .NotesEditor :global(.Cards) {
     padding: 20px;
-  }
-  .noteColumn .notesList {
-    position: sticky;
-    top: 0;
     height: 100vh;
     overflow-y: scroll;
   }
