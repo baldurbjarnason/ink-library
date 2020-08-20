@@ -16,129 +16,108 @@
   import { send, receive } from "../../routes/_crossfade.js";
   import { afterUpdate, tick } from "svelte";
   import NoteEditor from "../widgets/NoteEditor.svelte";
-  import {
-    refreshNotes,
-    refreshCollections,
-    collections,
-    addingWorkspace,
-    addedCollections,
-    addedWorkspaces,
-    page,
-    workspaces
-  } from "../../stores";
   import { getToken } from "../../getToken";
-  /*
-  let colours = ["orange", "pink", "blue", "green"];
-  let flagsArr = [
-    {
-      component: FlagFurtherRead,
-      string: "Further read",
-      value: false
-    }, 
-    {
-      component: FlagIdea,
-      string: "Idea",
-      value: false
-    },
-    {
-      component: FlagImportant,
-      string: "Important",
-      value: false
-    },
-    {
-      component: FlagImpTerm,
-      string: "Important term",
-      value: false
-    },
-    {
-      component: FlagQuestion,
-      string: "Question",
-      value: false
-    },
-    {
-      component: FlagReference,
-      string: "Reference",
-      value: false
-    },
-    {
-      component: FlagRevisit,
-      string: "Revisit",
-      value: false
-    },
-    {
-      component: FlagToDo,
-      string: "To Do",
-      value: false
-    },
-    {
-      component: FlagUrgent,
-      string: "Urgent",
-      value: false
+  import {
+    notes,
+    refreshNotes,
+    refreshInNote,
+    page,
+    tags,
+    workspaces,
+    collections
+  } from "../../stores";
+  import Comment from "./Comment.svelte";
+  import Highlight from "./Highlight.svelte";
+  export let note = { body: [], source: { name: "" } };
+
+  let selectedFlags = [];
+  let highlight;
+  let comment;
+
+  $: colours = $tags.items.filter(
+    tag => tag.type == "flag" && tag.name.startsWith("colour")
+  );
+
+  function assignIco(icon) {
+    switch (icon) {
+      case "further reading":
+        return FlagFurtherRead;
+      case "idea":
+        return FlagIdea;
+      case "important":
+        return FlagImportant;
+      case "important term":
+        return FlagImpTerm;
+      case "question":
+        return FlagQuestion;
+      case "reference":
+        return FlagReference;
+      case "revisit":
+        return FlagRevisit;
+      case "to do":
+        return FlagToDo;
+      case "urgent":
+        return FlagUrgent;
     }
-  ];*/
+  }
 
   let open = false;
   let newToggle;
   let expanded = false;
-  let noteColour = "";
+  let noteColour;
+
   function click() {
     open = !open;
-    //noteColour = "orange";
+    noteColour = colours[0] ? colours[0] : null;
   }
+
   async function close() {
     open = false;
     await tick();
     newToggle.querySelector("button").focus();
   }
-
   let text;
+  $: flagsArr = $tags.items.filter(
+    item => item.type === "flag" && !item.name.startsWith("colour")
+  );
+
   async function submit(event) {
     event.preventDefault();
     close();
-    let workspace;
-    if ($page.params.workspace && $page.params.workspace !== "all") {
-      workspace = $workspaces.find(
-        space => space.name === $page.params.workspace
-      ).id;
-    }
-    // Need to do the same for stack
-    let collection;
-    if ($page.params.collection && $page.params.collection !== "all") {
-      collection = $collections.find(
-        space => space.name === $page.params.collection
-      ).id;
-    }
-
-    const note = {
-      body: [
-        {
+    // Get all tags, filter through them to match name of adding tags, add ids as prop
+    try {
+      const payload = Object.assign({}, note);
+      payload._tags = [noteColour.id].concat(
+        selectedFlags.map(item => item.id)
+      );
+      if (payload.body.find(body => body.motivation === "commenting")) {
+        const body = payload.body.find(
+          body => body.motivation === "commenting"
+        );
+        body.content = text;
+        clean(body);
+      } else {
+        payload.body = payload.body.concat({
           motivation: "commenting",
           content: text
+        });
+      }
+
+      await window.fetch(`/api/notes`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+          "csrf-token": getToken()
         }
-      ],
-      _workspace: workspace,
-      _collection: collection
-      //tags: tags
-    };
-
-
-    await window.fetch(`/api/notes`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "csrf-token": getToken(),
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(note)
-    });
-    $refreshNotes = Date.now();
-  } /*
-  let flagsAdded = [];
-  function addFlags(flag) {
-    flag.value
-      ? flagsAdded.push(flag.string)
-      : flagsAdded.splice(flagsAdded.indexOf(flag.string), 1);
-  }*/
+      });
+      if ($page.path === "/") $refreshInNote = Date.now();
+      else $refreshNotes = Date.now();
+    } catch (err) {
+      console.error(err);
+    }
+  }
 </script>
 
 <style>
@@ -202,28 +181,28 @@
     height: 9px;
     border-radius: 50%;
   }
-  input.orange {
+  input.colour1 {
     background: #fea95b;
   }
-  input.orange::after {
+  input.colour1::after {
     background: #d86801;
   }
-  input.pink {
+  input.colour2 {
     background: #ff8ebe;
   }
-  input.pink::after {
+  input.colour2::after {
     background: #c0004e;
   }
-  input.blue {
+  input.colour3 {
     background: #6fe1fa;
   }
-  input.blue::after {
+  input.colour3::after {
     background: #0693b2;
   }
-  input.green {
+  input.colour4 {
     background: #9fe793;
   }
-  input.green::after {
+  input.colour4::after {
     background: #589b4c;
   }
   /* ------ Editor ------ */
@@ -241,7 +220,7 @@
     border: none !important;
     margin: 0;
   }
-  .Editor :global(#sapper button.ql-active) {
+  .newNote .Editor :global(#sapper button.ql-active) {
     background: var(--main-background-color);
   }
   .Editor :global(.ql-snow.ql-toolbar button.ql-active .ql-stroke) {
@@ -274,27 +253,28 @@
     background: var(--main-background-color);
     min-height: 30vh;
     display: grid;
-    /* ------------- Provitional 
     border-radius: 10px 10px 0 0;
-    margin-top: 20px;*/
-    border-radius: 10px;
-    margin: 20px 0;
+    margin-top: 20px;
   }
-  .Editor.orange :global(.Editor) {
+  .Editor.colour1 :global(.Editor) {
     border: 2px solid #fea95b;
     border-bottom: 0;
   }
-  .Editor.pink :global(.Editor) {
+  .Editor.colour2 :global(.Editor) {
     border: 2px solid #ff8ebe;
     border-bottom: 0;
   }
-  .Editor.blue :global(.Editor) {
+  .Editor.colour3 :global(.Editor) {
     border: 2px solid #6fe1fa;
     border-bottom: 0;
   }
-  .Editor.green :global(.Editor) {
+  .Editor.colour4 :global(.Editor) {
     border: 2px solid #9fe793;
     border-bottom: 0;
+  }
+  .Editor :global(.Editor p),
+  .Editor :global(.Editor span) {
+    background: transparent !important;
   }
   /* ------ Flags ------ */
   .flags {
@@ -327,8 +307,9 @@
     color: #888888;
     background: #eeeeee;
     border-radius: 20px;
-    padding: 4px 8px;
+    padding: 5px 10px;
     line-height: 10px;
+    text-transform: capitalize;
   }
   .flags :global(svg) {
     height: 10px;
@@ -346,54 +327,54 @@
     cursor: pointer;
     opacity: 0;
   }
-  .flags.orange {
+  .flags.colour1 {
     border: 2px solid #fea95b;
     border-top: none;
     background: #fffcfa;
   }
-  .flags.orange::after {
+  .flags.colour1::after {
     background: #fcf3ed;
   }
-  .flags.pink {
+  .flags.colour2 {
     border: 2px solid #ff8ebe;
     border-top: none;
     background: #fffafd;
   }
-  .flags.pink::after {
+  .flags.colour2::after {
     background: #f9eaf0;
   }
-  .flags.blue {
+  .flags.colour3 {
     border: 2px solid #6fe1fa;
     border-top: none;
     background: #fafeff;
   }
-  .flags.blue::after {
+  .flags.colour3::after {
     background: #dff2f5;
   }
-  .flags.green {
+  .flags.colour4 {
     border: 2px solid #9fe793;
     border-top: none;
     background: #f8fcf8;
   }
-  .flags.green::after {
+  .flags.colour4::after {
     background: #eaf5e6;
   }
-  .flags.orange input:checked ~ p {
+  .flags.colour1 input:checked ~ p {
     color: #d86801;
     border: none;
     background: #ffebda;
   }
-  .flags.pink input:checked ~ p {
+  .flags.colour2 input:checked ~ p {
     color: #c0004e;
     border: none;
     background: #ffe4f0;
   }
-  .flags.blue input:checked ~ p {
+  .flags.colour3 input:checked ~ p {
     color: #0693b2;
     border: none;
     background: #e2f7fa;
   }
-  .flags.green input:checked ~ p {
+  .flags.colour4 input:checked ~ p {
     color: #589b4c;
     border: none;
     background: #e6f8e4;
@@ -483,37 +464,32 @@
       class="newForm"
       action="/api/create-publication"
       on:submit={submit}>
-      <!--
       <ul class="colours">
         {#each colours as colour}
           <li>
             <input
               name="noteColour"
               type="radio"
-              class={colour}
-              checked={colour === 'orange' ? true : ''}
-              on:click={() => (noteColour = colour)} />
+              class={colour.name.replace(' ', '')}
+              bind:group={noteColour}
+              value={colour} />
           </li>
         {/each}
-      </ul>-->
-      <div class="Editor {noteColour}">
+      </ul>
+      <div class="Editor {noteColour.name.replace(' ', '')}">
         <NoteEditor bind:richtext={text} />
       </div>
-      <!--
-      <ul class="flags {noteColour}">
+      <ul class="flags {noteColour.name.replace(' ', '')}">
         {#each flagsArr as flag}
           <li>
-            <input
-              type="checkbox"
-              bind:checked={flag.value}
-              on:change={() => addFlags(flag)} />
-            <p class={flag.string}>
-              <svelte:component this={flag.component} />
-              {flag.string}
+            <input type="checkbox" bind:group={selectedFlags} value={flag} />
+            <p class={flag.name}>
+              <svelte:component this={assignIco(flag.name)} />
+              {flag.name}
             </p>
           </li>
         {/each}
-      </ul>-->
+      </ul>
       <WhiteButton>Create</WhiteButton>
       <Closer click={close} dark={true} />
     </form>

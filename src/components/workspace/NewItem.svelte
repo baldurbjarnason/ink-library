@@ -11,7 +11,9 @@
   import AddCollections from "./AddCollections.svelte";
   import { afterUpdate, tick } from "svelte";
   import {
+    page,
     refreshDate,
+    refreshInSource,
     refreshCollections,
     collections,
     addingWorkspace,
@@ -27,6 +29,7 @@
     open = !open;
     itemType = "source";
   }
+
   async function close() {
     open = false;
     await tick();
@@ -85,7 +88,9 @@
           },
           body: JSON.stringify(body)
         });
-        $refreshDate = Date.now();
+
+        if ($page.path === "/") $refreshInSource = Date.now();
+        else $refreshDate = Date.now();
       } catch (err) {
         console.error(err);
       }
@@ -207,6 +212,11 @@
   /* ------ Footer btns ------ */
   .footer {
     align-self: self-end;
+  }
+  .newForm > .footer {
+    float: left;
+    width: 100%;
+    padding: 0 40px;
   }
   :global(.Button) {
     float: right;
