@@ -98,7 +98,7 @@ export function setup(sapper, options = {}) {
       if (req.path === "/callback") {
         return next();
       } else if (req.path === "/") {
-        return res.redirect("/library/all/all/");
+        return res.redirect("/library/all/all");
       } else {
         return csurf()(req, res, next);
       }
