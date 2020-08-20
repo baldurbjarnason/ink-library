@@ -11,7 +11,9 @@
   import AddCollections from "./AddCollections.svelte";
   import { afterUpdate, tick } from "svelte";
   import {
+    page,
     refreshDate,
+    refreshInSource,
     refreshCollections,
     collections,
     addingWorkspace,
@@ -27,6 +29,7 @@
   function click() {
     open = !open;
   }
+
   async function close() {
     open = false;
     await tick();
@@ -84,7 +87,9 @@
           },
           body: JSON.stringify(body)
         });
-        $refreshDate = Date.now();
+
+        if ($page.path === "/") $refreshInSource = Date.now();
+        else $refreshDate = Date.now();
       } catch (err) {
         console.error(err);
       }
@@ -221,6 +226,46 @@
   }
   .new-button :global(svg) {
     float: left;
+  }
+  /* ------ Footer btns ------ */
+  .footer {
+    align-self: self-end;
+  }
+  .newForm > .footer {
+    float: left;
+    width: 100%;
+    padding: 0 40px;
+  }
+  :global(.Button) {
+    float: right;
+  }
+  .NewBox .footer :global(button.Closer) {
+    width: 125px;
+    padding: 0.65rem 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .NewBox .footer :global(.Closer::after) {
+    content: "Cancel";
+    color: var(--main-background-color);
+  }
+  .footer :global(.Closer:hover::after) {
+    text-decoration: underline;
+  }
+  .footer :global(.Closer svg) {
+    display: none;
+  }
+  .MoreItems :global(input),
+  .MoreItems :global(select) {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: none;
+  }
+  .MoreItems :global(input::placeholder),
+  .MoreItems :global(select) {
+    color: #ffffff;
   }
   @media (max-width: 720px) {
     .new-button {

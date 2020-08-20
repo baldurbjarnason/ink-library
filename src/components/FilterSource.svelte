@@ -7,73 +7,96 @@
   import Notebook from "./img/icoNotebook.svelte";
   import ArrowDropDown from "./img/ArrowDropDown.svelte";
   import Stack from "./img/IcoStack.svelte";
+  import { page } from "../stores";
+  import { goto } from "@sapper/app";
 
-  let stacksArr = [];
-  function stackClick(item) {
-    stacksArr.push(item);
-    stacksArr = stacksArr;
-  }
-  function closeStack(item) {
-    var index = stacksArr.indexOf(item);
-    stacksArr.splice(index, 1);
-    stacksArr = stacksArr;
-  }
-  /////////////////////////////////////////// Notebook
-  let dynamicNbk = ["Aliquam", "Fusce", "Integer", "Nullam", "Duis"];
-  let notebooks = [];
-
-  function handleClick(item) {
-    var index = dynamicNbk.indexOf(item);
-    dynamicNbk.splice(index, 1);
-    dynamicNbk = dynamicNbk;
-
-    notebooks.push(item);
-    notebooks = notebooks;
-  }
-  function closeNotebook(item) {
-    var index = notebooks.indexOf(item);
-    notebooks.splice(index, 1);
-    notebooks = notebooks;
-
-    dynamicNbk.push(item);
-    dynamicNbk = dynamicNbk;
-  }
-  /////////////////////////////////////////// Type
-  let dynType = [
-    {
-      component: Text,
-      string: "Text"
-    },
-    {
-      component: Video,
-      string: "Video"
-    },
-    {
-      component: Audio,
-      string: "Audio"
-    },
-    {
-      component: Image,
-      string: "Image"
-    }
+  let stackInput, typeInput;
+  let types = [
+    "Article",
+    "Blog",
+    "Book",
+    "Chapter",
+    "Collection",
+    "Comment",
+    "Conversation",
+    "Course",
+    "Dataset",
+    "Drawing",
+    "Episode",
+    "Manuscript",
+    "Map",
+    "MediaObject",
+    "MusicRecordig",
+    "Painting",
+    "Photograph",
+    "Play",
+    "Poster",
+    "PublicationIssue",
+    "PublicationVolume",
+    "Review",
+    "ShortStory",
+    "Thesis",
+    "VisualArtwork",
+    "WebContent",
+    "Person",
+    "Organization"
   ];
-  let types = [];
 
-  function typeClick(item) {
-    var index = dynType.indexOf(item);
-    dynType.splice(index, 1);
-    dynType = dynType;
+  let createUrl = obj => {
+    Object.keys(obj).forEach((key, index) => {
+      if (Array.isArray(obj[key])) {
+        let test = obj[key].join(`&${key}=`);
+        obj[key] = test;
+      }
+    });
+    let path = $page.path;
 
-    types.push(item);
-    types = types;
-  }
-  function closeType(item) {
-    var index = types.indexOf(item);
-    types.splice(index, 1);
-    types = types;
+    const url =
+      Object.keys(obj).length === 0
+        ? path
+        : `${path}?${decodeURIComponent(new URLSearchParams(obj).toString())}`;
+    goto(url);
+  };
 
-    dynType.push(item);
-    dynType = dynType;
+  let unFilterIt = (a, b) => {
+    let obj = $page.query;
+    if (Array.isArray(obj[a])) obj[a].splice(obj[a].indexOf(b), 1);
+    else delete obj[a];
+
+    createUrl(obj);
+  };
+
+  let filterIt = (a, b) => {
+    let obj = $page.query;
+    if (obj[a]) {
+      if (Array.isArray(obj[a])) obj[a].push(b);
+      else obj[a] = [obj[a], b];
+    } else {
+      obj[a] = b;
+    }
+
+    createUrl(obj);
+    (stackInput = ""), (typeInput = "");
+  };
+
+  let queryTypes, queryStack, arrs;
+  $: if ($page.query) {
+    queryTypes = [];
+    queryStack = [];
+    arrs = [queryTypes, queryStack];
+
+    Object.keys($page.query).forEach((key, index) => {
+      let triggerIt = key === "type" ? "0" : key === "stack" ? "1" : null;
+      if (triggerIt) {
+        if (Array.isArray($page.query[key])) {
+          $page.query[key].map(item => {
+            arrs[Number(triggerIt)].push(item);
+          });
+        } else {
+          arrs[Number(triggerIt)].push($page.query[key]);
+        }
+      }
+    });
   }
 </script>
 
@@ -172,8 +195,16 @@
     display: none;
     margin: 5px 0 0;
     right: 0;
-    min-width: 75%;
+    width: 100%;
     border: 1px solid #eeeeee;
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+  ul li.empty {
+    display: none;
+  }
+  ul li.empty:only-child {
+    display: block;
   }
   ul :global(svg) {
     width: 9px;
@@ -205,8 +236,7 @@
   li:hover {
     background: #f6f6f6;
   }
-  .ntbk li:first-child:hover,
-  .stack li:first-child:hover {
+  li:first-child:hover {
     cursor: default;
     background: transparent;
   }
@@ -228,104 +258,95 @@
   }
 </style>
 
-<div class="filter ntbk">
-  <p>Notebook</p>
+<div class="filter type">
+  <p>Type</p>
   <input class="btn" />
   <div class="inputs">
-    {#each notebooks as notebook}
-      <p class="arr">
-        <Notebook />
-        {notebook}
-        <span on:click={() => closeNotebook(notebook)} />
-      </p>
-    {/each}
-    {#if !notebooks.length}
-      <p class="placeholder" title="hey">
-        <Notebook />
-        Choose notebooks
-      </p>
+    {#if !arrs[0].length}
+      <p class="placeholder">Choose type</p>
+    {:else}
+      {#each arrs[0] as type}
+        <p class="arr {type}">
+          {type}
+          <span on:click={() => unFilterIt('type', type)} />
+        </p>
+      {/each}
     {/if}
     <ArrowDropDown />
   </div>
   <ul>
     <li>
-      <input placeholder="Choose notebook..." />
+      <input placeholder="Search type..." bind:value={typeInput} />
     </li>
-    {#each dynamicNbk as item}
-      <li on:click={() => handleClick(item)}>
-
-        <p>
-          <Notebook />
-          {item}
-        </p>
-      </li>
-    {/each}
-  </ul>
-</div>
-<div class="filter type">
-  <p>Type</p>
-  <input class="btn" />
-  <div class="inputs">
-    {#each types as type}
-      <p class="arr {type.string}">
-        <svelte:component this={type.component} />
-        {type.string}
-        <span on:click={() => closeType(type)} />
-      </p>
-    {/each}
-    {#if !types.length}
-      <p class="placeholder">Choose type</p>
+    {#if typeInput}
+      {#each types as type}
+        {#if !arrs[0].find(item => type === item) && type
+            .toLowerCase()
+            .includes(typeInput.toLowerCase())}
+          <li on:click={() => filterIt('type', type)}>
+            <p class={type.replace(' ', '')}>{type}</p>
+          </li>
+        {/if}
+      {/each}
+    {:else}
+      {#each types as type}
+        {#if !arrs[0].find(item => type === item)}
+          <li on:click={() => filterIt('type', type)}>
+            <p class={type.replace(' ', '')}>{type}</p>
+          </li>
+        {/if}
+      {/each}
     {/if}
-    <ArrowDropDown />
-  </div>
-  <ul>
-    {#each dynType as type}
-      <li on:click={() => typeClick(type)}>
-        <p class={type.string}>
-          <svelte:component this={type.component} />
-          {type.string}
-        </p>
-      </li>
-    {/each}
   </ul>
 </div>
 <div class="filter stack">
   <p>Stack</p>
   <input class="btn" />
   <div class="inputs">
-    {#each stacksArr as stack}
-      <p class="arr {stack.name}">
-        <Stack />
-        {stack.name}
-        <a href="/library/all/all">
-          <span on:click={() => closeStack(stack)} />
-        </a>
-      </p>
-    {/each}
-    {#if !stacksArr.length}
+    {#if !arrs[1].length}
       <p class="placeholder">
         <Stack />
         Choose stack
       </p>
+    {:else}
+      {#each arrs[1] as stack}
+        <p class="arr {stack}">
+          <Stack />
+          {stack}
+          <span on:click={() => unFilterIt('stack', stack)} />
+        </p>
+      {/each}
     {/if}
     <ArrowDropDown />
   </div>
   <ul>
-    <!--
     <li>
-      <input placeholder="Choose stack..." />
-    </li>-->
-    {#each $collections as stack}
-      {#if !stacksArr.length || stack.name !== stacksArr[0].name}
-        <li on:click={() => stackClick(stack)}>
-          <a href="/library/all/{encodeURIComponent(stack.name)}">
+      <input placeholder="Search stack..." bind:value={stackInput} />
+    </li>
+    {#if stackInput}
+      {#each $collections as stack}
+        {#if !arrs[1].find(item => stack.name === item) && stack.name
+            .toLowerCase()
+            .includes(stackInput.toLowerCase())}
+          <li on:click={() => filterIt('stack', stack.name)}>
             <p class={stack.name}>
               <Stack />
               {stack.name}
             </p>
-          </a>
-        </li>
-      {/if}
-    {/each}
+          </li>
+        {/if}
+      {/each}
+    {:else}
+      {#each $collections as stack}
+        {#if !arrs[1].find(item => stack.name === item)}
+          <li on:click={() => filterIt('stack', stack.name)}>
+            <p class={stack.name}>
+              <Stack />
+              {stack.name}
+            </p>
+          </li>
+        {/if}
+      {/each}
+    {/if}
   </ul>
 </div>

@@ -1,17 +1,16 @@
 <script>
   export let body = { content: "" };
   export let edit = false;
-  export let colour = "Colour1"
-  $: console.log(colour)
+  export let colour = "Colour1";
+  $: console.log(colour);
 </script>
 
 <style>
   blockquote {
-    background-color: var(--highlight-color);
-    padding: 0.5rem calc(var(--base) * 1);
     margin: 0;
     font-family: var(--old-style-fonts);
-    font-size: calc(var(--base) * 0.8);
+    font-size: 0.9rem;
+    line-height: 1.1rem;
   }
   .Colour1 {
     background-color: var(--highlight-color1);
@@ -26,10 +25,10 @@
     background-color: var(--highlight-color4);
   }
   .edit {
-    font-size: calc(var(--base) * 1.1);
+    font-size: 0.9rem;
   }
 </style>
 
-<blockquote class:edit class="{colour}">
+<blockquote class:edit class={colour}>
   {@html body.content}
 </blockquote>
