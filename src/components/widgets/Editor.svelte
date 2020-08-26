@@ -7,6 +7,7 @@
     });
   }
   export let richtext = "";
+  export let autofocus = false;
   let container;
   let editor;
   let hasFocus;
@@ -19,6 +20,10 @@
     });
   }
   $: if (editor) {
+    if (autofocus) {
+      editor.focus()
+      autofocus = false
+    }
     editor.on("selection-change", (range, oldRange, source) => {
       if (range) {
         hasFocus = true;
@@ -40,7 +45,7 @@
   .Editor :global(.ql-editor) {
     height: auto;
   }
-  .Editor.hasFocus :global(.ql-editor) {
+  .Editor.hasFocus :global(.ql-editor), .Editor.hasFocus {
     background-color: #fefefe;
   }
   :global(#sapper .ql-snow.ql-toolbar button),

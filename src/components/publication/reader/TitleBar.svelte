@@ -23,8 +23,7 @@
     width: 100%;
     margin: 0;
     padding: 0;
-    background-color: var(--reader-titlebar-background);
-    color: var(--reader-titlebar-color);
+    background-color: var(--main-background-color);
     position: sticky;
     top: 0;
   }
@@ -38,7 +37,8 @@
     padding: 0.6rem 1rem 0.45rem;
   }
   .TitleBar ol li a {
-    color: var(--reader-titlebar-color);
+    /* color: var(--reader-titlebar-color); */
+    color: var(--reader-toolbar-color);
   }
 </style>
 

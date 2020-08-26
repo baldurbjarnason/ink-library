@@ -15,6 +15,7 @@
   import InfoToolBar from "./reader/InfoToolBar.svelte";
   import MainReading from "./reader/MainReading.svelte";
   import MainInfo from "./reader/MainInfo.svelte";
+  import EmptySource from "./EmptySource.svelte"
   export let info = false;
   let hash = "#Description";
   let scroll = false;
@@ -43,6 +44,7 @@
   } else {
     $chapterId = null;
   }
+  $: console.log($chapter, $storedPub)
 </script>
 
 <style>
@@ -59,6 +61,11 @@
   {#if info}
     <InfoToolBar />
     <MainInfo />
+  {:else if  $storedPub.type === "Loading" || $storedPub.type === 404}  
+      <ToolBar root={readerBody} hidden={true} />
+      <MainReading bind:readerBody hidden={true} />
+  {:else if  $storedPub.type === "NoFile"}
+      <EmptySource />
   {:else}
     <ToolBar root={readerBody} />
     <MainReading bind:readerBody />

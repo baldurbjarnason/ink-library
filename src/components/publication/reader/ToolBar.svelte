@@ -6,6 +6,7 @@
   import { saveNote } from "./toolbar/saveNote.js";
   import { dialog } from "../../notes/NoteEditDialog.svelte";
   export let root = null;
+  export let hidden = false
   $: if (root) {
     root.addEventListener("click", handleClick, false);
     // set up event listeners
@@ -113,7 +114,7 @@
   }
 </style>
 
-<div class="ToolBar">
+<div class="ToolBar" hidden={hidden}>
   <ol style="transform: translateX(-10px);">
     <li>
       <svg

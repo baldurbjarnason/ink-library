@@ -3,6 +3,7 @@
   import ToC from "../ToC.svelte";
   import SidebarNotes from "./SidebarNotes.svelte"
   export let readerBody = null;
+  export let hidden = false;
 </script>
 
 <style>
@@ -61,7 +62,7 @@
   {/if}
 </svelte:head>
 
-<div class="Reader">
+<div class="Reader" hidden={hidden}>
   <div class="LeftSidebar">
     <ToC />
   </div>

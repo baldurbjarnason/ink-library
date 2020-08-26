@@ -217,8 +217,8 @@ export const storedPub = derived(
           return res.json();
         } else {
           return {
-            type: "processing",
-            heading: "Processing...",
+            type: "NoFile",
+            heading: "No file",
             readingOrder: []
           };
         }
