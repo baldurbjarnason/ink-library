@@ -1,5 +1,5 @@
 <script>
-  import { addSelected, removeSelected } from "../../stores";
+  import { addSelected, removeSelected, page } from "../../stores";
   import ItemStacks from "./ItemStacks.svelte";
   import { typeName } from "../typeName.js";
   export let item = {};
@@ -212,9 +212,7 @@
     <img src={cover.href} alt="Cover for {item.name}" />
   </div>
   <div class="Name">
-    <a href="{window.location.pathname}/{item.shortId}" class="title">
-      {item.name}
-    </a>
+    <a href={`/library/all/all/${item.shortId}`} class="title">{item.name}</a>
     <div class="Authors">
       {#each item.author as author, i}
         <span class="Author">

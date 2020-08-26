@@ -6,6 +6,8 @@ export { error } from './error'
 export {nodes, intersecting, positions, annotations} from './utilities/nodes'
 
 export { library, refreshDate, searchStore } from './library'
+export { insource, refreshInSource } from './insource'
+export { innote, refreshInNote } from './innote'
 export { notes, refreshNotes, searchNotes } from './notes'
 export { collections, workspaces, tags, refreshCollections, addingWorkspace, addedCollections, addedWorkspaces } from './collections'
 export { note, refreshNote } from './note'

@@ -54,6 +54,10 @@
     font-size: 0.75rem;
     text-transform: uppercase;
   }
+  :global(.Footer .awesomplete > ul) {
+    top: 0;
+    transform: translateY(calc(-100% - 3px));
+  }
 
   :global(.awesomplete > ul:empty) {
     display: none;
