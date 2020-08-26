@@ -44,7 +44,6 @@
   } else {
     $chapterId = null;
   }
-  $: console.log($chapter, $storedPub)
 </script>
 
 <style>

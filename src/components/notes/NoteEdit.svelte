@@ -303,8 +303,8 @@
   }
   .dialog {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 2rem;
+    right: 2.5rem;
   }
 
   /* -------------- Highlight -------------- */

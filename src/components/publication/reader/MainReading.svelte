@@ -14,9 +14,6 @@
     padding-top: 2rem;
     padding-bottom: 2rem;
   }
-  .RightSidebar {
-    position: relative;
-  }
   .Chapter {
     all: initial;
     position: relative;
@@ -69,5 +66,5 @@
   <div class="Body Chapter" id="reader-body" bind:this={readerBody}>
     {@html $chapter.contents}
   </div>
-  <div class="RightSidebar"><SidebarNotes /></div>
+  <SidebarNotes />
 </div>

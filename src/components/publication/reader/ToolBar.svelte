@@ -15,7 +15,8 @@
   function handleClick(event) {
     if (event.target.matches("mark[data-annotation-id]")) {
       const refabEvent = Object.assign({}, event, {
-        currentTarget: event.target
+        currentTarget: event.target,
+        annotationId: event.target.dataset.annotationId
       });
       dialog.show(refabEvent);
     }
