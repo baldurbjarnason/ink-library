@@ -2,20 +2,20 @@
   import Button from '../../widgets/Button.svelte'
   import UploadIcon from '../UploadIcon.svelte'
   import { getToken } from "../../../getToken";
-  import FileInput from "../../workspace/FileInput.svelte";
+  import FileInput from "./EmptySourceFileInput.svelte";
   import {
     publication,
+    refreshPublication
   } from "../../../stores";
   export let uploading = false
+  let form
   async function submit(event) {
     event.preventDefault();
-    close();
-    const { target } = event;
     try {
       const body = Object.fromEntries(
-        new URLSearchParams(new FormData(target)).entries()
+        new URLSearchParams(new FormData(form)).entries()
       );
-      await fetch(target.action, {
+      await fetch(form.action, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -28,6 +28,8 @@
     } catch (err) {
       console.error(err);
     }
+    uploading = false
+    $refreshPublication = { id: $publication.shortId, time: Date.now() };
   }
 </script>
 
@@ -52,16 +54,15 @@
     flex-direction: column;
     padding-top: 35%;
     transition: opacity 100ms cubic-bezier(0.39, 0.575, 0.565, 1);
-    background-color: #ECF1F4;
   }
   .Pane.uploading {
     display: grid;
     grid-template-rows:min-content 1fr 5rem;
-    padding-top: 0;
     justify-content: stretch;
     align-items: stretch;
     padding: 1rem;
     grid-gap: 1rem;
+    padding-top: 35%;
     padding-bottom: 10rem;
   }
   .ButtonRow {
@@ -80,21 +81,20 @@
   <div class="Text">
     <h3>Upload a file to your source</h3>
     <p>Click to upload your file. Processing may take a while after you upload.</p>
+    <form
+          id="newform"
+          class="newForm"
+          action="/api/publication/{$publication.shortId}/attach-file"
+          on:submit={submit}
+          bind:this={form}>
+          
+          
+        <FileInput name="newFile" type="file" />
+        <div class="ButtonRow">
+          <Button click={submit}>Save</Button>
+        </div>
+          </form>
   </div>
-<form
-      id="newform"
-      class="newForm"
-      action="/api/publication/{$publication.shortId}/attach-file"
-      on:submit={submit}>
-      
-      
-  <div class="ButtonRow">
-    <FileInput name="newFile" type="file" />
-  </div>
-  <div class="ButtonRow">
-    <Button click={() => uploading = true}>Upload</Button>
-  </div>
-      </form>
 {:else}
     <UploadIcon />
 

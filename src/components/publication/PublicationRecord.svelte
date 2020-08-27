@@ -60,10 +60,10 @@
   {#if info}
     <InfoToolBar />
     <MainInfo />
-  {:else if  $storedPub.type === "Loading" || $storedPub.type === 404}  
+  {:else if  $storedPub.type === "Loading"}  
       <ToolBar root={readerBody} hidden={true} />
       <MainReading bind:readerBody hidden={true} />
-  {:else if  $storedPub.type === "NoFile"}
+  {:else if  $storedPub.type === "NoFile" || $storedPub.type === 404}
       <EmptySource />
   {:else}
     <ToolBar root={readerBody} />
