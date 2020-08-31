@@ -17,7 +17,8 @@
     "test": "jest src",
     "test:watch": "npm run test -- --watch",
     "deploy-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs10 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize",
-    "deploy-dev": "npm run build && gcloud app deploy app-dev.yaml --project fb-ink-dev"
+    "deploy-dev": "npm run build && gcloud app deploy app-dev.yaml --project fb-ink-dev",
+    "deploy-production": "npm run build && gcloud app deploy app.yaml --project fb-ink-dev"
   },
   "snowpack": {
     "webDependencies": [

@@ -29,7 +29,7 @@ export async function post(req, res, next) {
     }
     return res.json(responses);
   } else {
-    console.log(req.body);
+    // console.log(req.body);
     // Check workspace, if there is one, add
     const ids = req.body.items.map(item => item.id);
     let responses = [];

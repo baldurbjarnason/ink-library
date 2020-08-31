@@ -29,7 +29,7 @@ export async function post(req, res, next) {
         json: body
       })
       .json();
-    console.log(response)
+    // console.log(response)
     return res.json(response);
   } catch (err) {
     res.status(err.response.statusCode);
