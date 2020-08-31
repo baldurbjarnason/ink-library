@@ -1,13 +1,77 @@
 <script>
   import Button from '../../widgets/Button.svelte'
   import EmptySourcePaster from './EmptySourcePaster.svelte'
-  export let pasting = false
-  let textType = "htmlType"
+  import { getToken } from "../../../getToken";
+  import {
+    publication,
+    refreshPublication
+  } from "../../../stores";
+  export let pasting = false;
+  let textType = "htmlType";
   if (process.browser) {
-    textType = "richText"
+    textType = "richText";
   }
-  let richtext = ""
-  let plaintext = ""
+  let richtext = "";
+  let plaintext = "";
+  let processing = false
+  async function submit(event) {
+    event.preventDefault();
+    if (processing) return
+    processing = true
+    const url = `/api/upload-small-file?filePath=${$publication.name}`
+    let file
+    let fileType
+    if (textType === 'richText') {
+      file = richtext
+      fileType = "text/html"
+    } else if (textType === "htmlType") {
+      file = plaintext
+      fileType = "text/html"
+    } else {
+      file = plaintext
+      fileType = "text/markdown"
+    }
+    const body = file
+    const response = await fetch(url, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": fileType,
+        "csrf-token": getToken()
+      },
+      body
+    });
+    const payload = await response.json();
+    const payloadURL = payload.url;
+    const uploadPublication = payload.publication;
+    const type = payload.type;
+    const storageId = payload.storageId;
+    const original = payload.original;
+    const updatedSource = {
+      storageId,
+      uploadType: type,
+      uploadURL: original,
+      uploadPublication
+    }
+    try {
+      await fetch(`/api/publication/${$publication.shortId}/attach-file`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "csrf-token": getToken()
+        },
+        body: JSON.stringify(updatedSource)
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    pasting = false
+    processing = false
+    $refreshPublication = { id: $publication.shortId, time: Date.now() };
+  }
 </script>
 
 <style>
@@ -90,7 +154,7 @@
       <textarea name="html" id="html" cols="40" rows="10" bind:value={plaintext}></textarea>
     {/if}
 <div class="ButtonRow">
-    <Button click={() => pasting = false}>Save</Button></div>
+    <Button click={submit}>Save</Button></div>
   {:else}
   <div class="Icon">
     <svg width="58" height="71" viewBox="0 0 58 71" fill="none" xmlns="http://www.w3.org/2000/svg">
