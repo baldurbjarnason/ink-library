@@ -44,7 +44,7 @@ export async function post(req, res, next) {
     json: { storageId: req.body.storageId },
     name: req.body.name
   };
-  console.log(body);
+  // console.log(body);
   if (req.user && req.user.profile) {
     try {
       const tags = req.body._tags;

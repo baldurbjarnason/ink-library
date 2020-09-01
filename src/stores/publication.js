@@ -60,6 +60,28 @@ export const publicationNotes = derived(
   []
 );
 
+export const placedNotes = function (placed, notes) {
+  return derived([placed, notes], ([$placed, $notes]) => {
+    function getNote (id) {
+      if ($notes) {
+        const note = $notes.find(note => note.id === id)
+        if (note) return note
+      }
+      return {tags: []}
+    }
+
+    if ($placed.length !== 0 && $notes.length !== 0) {
+      const result = $placed.map(place => {
+        place.note = getNote(place.id)
+        return place
+      })
+      return result
+    } else {
+      return []
+    }
+  }, [])
+}
+
 export const publication = derived(
   [publicationId, refreshPublication],
   ([$publicationId, $refreshPublication], set) => {
@@ -217,8 +239,8 @@ export const storedPub = derived(
           return res.json();
         } else {
           return {
-            type: "processing",
-            heading: "Processing...",
+            type: "NoFile",
+            heading: "No file",
             readingOrder: []
           };
         }

@@ -2,7 +2,6 @@
   export let body = { content: "" };
   export let edit = false;
   export let colour = "Colour1";
-  $: console.log(colour);
 </script>
 
 <style>

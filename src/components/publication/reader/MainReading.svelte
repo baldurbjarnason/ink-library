@@ -3,6 +3,7 @@
   import ToC from "../ToC.svelte";
   import SidebarNotes from "./SidebarNotes.svelte"
   export let readerBody = null;
+  export let hidden = false;
 </script>
 
 <style>
@@ -12,9 +13,6 @@
     grid-template-columns: 0.4fr 1fr 0.4fr;
     padding-top: 2rem;
     padding-bottom: 2rem;
-  }
-  .RightSidebar {
-    position: relative;
   }
   .Chapter {
     all: initial;
@@ -61,12 +59,12 @@
   {/if}
 </svelte:head>
 
-<div class="Reader">
+<div class="Reader" hidden={hidden}>
   <div class="LeftSidebar">
     <ToC />
   </div>
   <div class="Body Chapter" id="reader-body" bind:this={readerBody}>
     {@html $chapter.contents}
   </div>
-  <div class="RightSidebar"><SidebarNotes /></div>
+  <SidebarNotes />
 </div>

@@ -85,6 +85,17 @@ export function setup(sapper, options = {}) {
       limit: "100mb"
     })
   );
+  app.use(
+    express.raw({
+      type: [
+        'application/epub+zip',
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/zip",
+        'text/*'
+      ],
+      limit: "1mb"
+    })
+  );
   app.use(sessionMiddleware);
   authSetup(app);
   if (dev) {
