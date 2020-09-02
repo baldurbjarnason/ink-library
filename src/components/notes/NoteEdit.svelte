@@ -76,7 +76,16 @@
       }
     }
   }
-
+  function updateHighlight(id, colour) {
+    document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
+      node.classList.forEach(token => {
+        if (token.startsWith('Colour')) {
+          node.classList.remove(token)
+        }
+      })
+      node.classList.add(colour)
+    });
+  }
   async function save() {
     // Get all tags, filter through them to match name of adding tags, add ids as prop
     try {
@@ -107,6 +116,7 @@
         }
       });
       $refreshNotes = Date.now();
+      updateHighlight(note.id, colour.replace('colour', 'Colour').replace(' ', ''))
     } catch (err) {
       console.error(err);
     }
@@ -293,8 +303,8 @@
   }
   .dialog {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 2rem;
+    right: 2.5rem;
   }
 
   /* -------------- Highlight -------------- */

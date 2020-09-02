@@ -6,6 +6,7 @@
   import { saveNote } from "./toolbar/saveNote.js";
   import { dialog } from "../../notes/NoteEditDialog.svelte";
   export let root = null;
+  export let hidden = false
   $: if (root) {
     root.addEventListener("click", handleClick, false);
     // set up event listeners
@@ -14,7 +15,8 @@
   function handleClick(event) {
     if (event.target.matches("mark[data-annotation-id]")) {
       const refabEvent = Object.assign({}, event, {
-        currentTarget: event.target
+        currentTarget: event.target,
+        annotationId: event.target.dataset.annotationId
       });
       dialog.show(refabEvent);
     }
@@ -113,7 +115,7 @@
   }
 </style>
 
-<div class="ToolBar">
+<div class="ToolBar" hidden={hidden}>
   <ol style="transform: translateX(-10px);">
     <li>
       <svg

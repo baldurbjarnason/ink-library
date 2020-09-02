@@ -1,10 +1,10 @@
 <script>
   import { collections } from "../stores";
-  import Audio from "./img/sTypeAudio.svelte";
-  import Image from "./img/sTypeImage.svelte";
-  import Text from "./img/sTypeText.svelte";
-  import Video from "./img/sTypeVideo.svelte";
-  import Notebook from "./img/icoNotebook.svelte";
+  import Audio from "./img/StypeAudio.svelte";
+  import Image from "./img/StypeImage.svelte";
+  import Text from "./img/StypeText.svelte";
+  import Video from "./img/StypeVideo.svelte";
+  import Notebook from "./img/IcoNotebook.svelte";
   import ArrowDropDown from "./img/ArrowDropDown.svelte";
   import Stack from "./img/IcoStack.svelte";
   import { page } from "../stores";

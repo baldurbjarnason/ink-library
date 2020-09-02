@@ -14,7 +14,7 @@
   let note = { body: [], source: { name: "" } };
   $: if (localDialog) {
     localDialog.on("show", async function(dialogEl, event) {
-      const noteURL = event.currentTarget.dataset.annotationId.split("/");
+      const noteURL = event.annotationId.split("/");
       const noteId = noteURL[noteURL.length - 1];
       const url = `/api/note/${noteId}`;
       const response = await fetch(url).catch(err => {
@@ -43,7 +43,6 @@
   }
 
   .dialog-content {
-    background-color: rgb(255, 255, 255);
     z-index: 11;
     position: fixed;
     top: 50%;
@@ -105,19 +104,19 @@
 
   .dialog-close {
     position: absolute;
-    top: 0.75rem;
-    left: 1em;
+    top: 2.7rem;
+    right: 14em;
     z-index: 12;
     border: 0;
     padding: 0;
     background-color: transparent;
-    font-weight: bold;
-    font-size: 1.25em;
-    width: 1.2em;
+    font-weight: normal;
+    font-size: 0.75em;
     height: 1.2em;
     text-align: center;
     cursor: pointer;
     transition: 0.15s;
+    text-transform: uppercase;
   }
   h1 {
     text-align: center;
@@ -155,9 +154,9 @@
       data-a11y-dialog-hide
       class="dialog-close"
       aria-label="Close this dialog window">
-      &times;
+      close
     </button>
-    <h1 id="dialog-title">Edit Note</h1>
+    <h1 id="dialog-title" class="visually-hidden">Edit Note</h1>
     {#if note.id && process.browser}
       <NoteEdit {note} dialog={true} />
     {/if}
