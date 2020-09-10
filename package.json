@@ -5,7 +5,7 @@
   "description": "The ink library frontend",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "dev": "sapper dev",
+    "dev": "THUMBSIZE=400 THUMBPATH=thumbnails sapper dev",
     "build": "sapper build --legacy",
     "export": "sapper export --legacy",
     "start": "node index.js",
