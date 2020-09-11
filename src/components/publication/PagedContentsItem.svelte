@@ -39,7 +39,7 @@
     position: relative;
   }
   li {
-    padding: calc(var(--base) * 0.25) 0;
+    padding: 0;
     margin: 0;
     list-style: none;
   }
