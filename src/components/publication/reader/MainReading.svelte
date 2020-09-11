@@ -29,13 +29,38 @@
   }
   :global(ink-html) {
     height: 100%;
-    background-color: white;
-    border: 1px solid #dddddd;
     display: block;
   }
   .Chapter :global(#ink-engine ink-body) {
     display: block;
     padding: 2rem;
+    background-color: white;
+    border: 1px solid #dddddd;
+  }
+  .Chapter :global(ink-body#pdf-body) {
+    background-color: var(--light);
+    border-color: var(--light);
+    padding: 0;
+  }
+  .Chapter :global(ink-body#pdf-body ink-page) {
+    /* box-shadow: 2px 2px 8px black; */
+  }
+  .Chapter :global(ink-body#pdf-body ink-page svg) {
+    background-color: white;
+    border: 1px solid #dddddd;
+    display: block;
+    max-height: inherit;
+  }
+  .Chapter :global(ink-body#pdf-body h1), .Chapter :global(ink-body#pdf-body ink-page h2) {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: auto;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
   }
   .Chapter :global(.Colour) {
     background-color: var(--highlight-color1);
