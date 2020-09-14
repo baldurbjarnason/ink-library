@@ -87,7 +87,6 @@
     "passport-local": "^1.0.0",
     "postcss": "^7.0.32",
     "postcss-calc": "^7.0.3",
-    "postcss-custom-properties": "^9.1.1",
     "postcss-easy-import": "^3.0.0",
     "postcss-reporter": "^6.0.1",
     "qsa-observer": "^1.1.5",
