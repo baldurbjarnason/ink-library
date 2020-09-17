@@ -8,7 +8,6 @@ const MarkdownIt = require('markdown-it')
 const md = new MarkdownIt();
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-console.log(process.env.THUMBSIZE, process.env.THUMBPATH)
 
 export async function post(req, res, next) {
   const uploadBucket = storage.bucket(process.env.PUBLICATION_BUCKET)

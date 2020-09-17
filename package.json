@@ -5,7 +5,7 @@
   "description": "The ink library frontend",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "dev": "THUMBSIZE=400 THUMBPATH=thumbnails sapper dev",
+    "dev": "sapper dev",
     "build": "sapper build --legacy",
     "export": "sapper export --legacy",
     "start": "node index.js",
@@ -73,6 +73,7 @@
     "dompurify": "^2.0.12",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "fg-modal": "^0.1.0",
     "got": "^10.7.0",
     "inert-polyfill": "^0.2.5",
     "ink-engine": "github:RebusFoundation/ink-engine",

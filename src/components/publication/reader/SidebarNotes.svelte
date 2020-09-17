@@ -13,7 +13,7 @@
     publicationNotes,
     placedNotes
   } from "../../../stores";
-  import NotesCard from '../../notes/NotesCard.svelte'
+  import NotesCard from './SidebarNotesCard.svelte'
   import {guard} from "../../../stores/utilities/ssr-guard.js"
   import { dialog } from "../../notes/NoteEditDialog.svelte";
   function handleClick(event) {
@@ -27,12 +27,19 @@
       dialog.show(refabEvent);
     }
   }
-  const watched = guard(nodes)("[data-annotation-id]")
-  const visible = guard(intersecting)(watched, {rootMargin: "40px 0px 0px 0px", threshold: 0.1})
-  const positioned = guard(positions)(watched, {rootMargin: "0px 0px 1500px 0px", threshold: 0.1})
-  const placed = guard(annotations)(positioned)
-  const positionedNotes = guard(placedNotes)(placed, publicationNotes)
-  // console.log($positionedNotes)
+  $: console.log($chapter.annotations)
+  let watched
+  let visible
+  let positioned
+  let placed
+  let positionedNotes
+  $: if ($chapter.annotations) {
+    watched = guard(nodes)("[data-annotation-id]")
+    visible = guard(intersecting)(watched, {rootMargin: "40px 0px 0px 0px", threshold: 0.1})
+    positioned = guard(positions)(watched, {rootMargin: "0px 0px 1500px 0px", threshold: 0.1})
+    placed = guard(annotations)(positioned)
+    positionedNotes = guard(placedNotes)(placed, publicationNotes)
+  }
   // $: if ($positionedNotes) {
   //   console.log($positionedNotes.length)
   // }
