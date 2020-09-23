@@ -24,8 +24,6 @@ export async function get(req, res, next) {
     const documentURL = `/${req.params.publicationId}/${req.params.path.join(
       "/"
     )}`;
-    console.log("Where is ", documentURL)
-    console.log(notes.items)
     const linkBase = path.join(
       "/library/all/all/",
       req.params.publicationId,
@@ -92,6 +90,5 @@ function fixItem(item) {
   }
   item.type = "Annotation";
   if (!item.target.selector) return null;
-  console.log(item.target.source)
   return item;
 }

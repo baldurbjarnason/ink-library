@@ -1,5 +1,5 @@
 <script>
-  import { library as libraryStore, page as pageStore, error } from "../stores";
+  import { library as libraryStore, page as pageStore, error, params as paramsStore } from "../stores";
   import Nav from "../components/Nav.svelte";
   import Sidebar from "../components/Sidebar.svelte";
   import NotesSidebar from "../components/NotesSidebar.svelte";
@@ -15,7 +15,7 @@
   let publication = false;
   let betaNotice = true;
   $: if ($page) {
-    pageStore.set($page);
+    pageStore.set($page)
     query = $page.query;
     params = Object.assign({}, $page.params);
     if (segment) {

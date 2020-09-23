@@ -5,7 +5,9 @@ import { fetch } from "./fetch.js";
 
 export const refreshPublication = writable({ id: null, time: Date.now() });
 
-const publicationId = derived(page, $page => $page.params.publicationId);
+const publicationId = derived(page, ($page, set) => {
+  set($page.params.publicationId || null)
+});
 
 const publicationWorkspace = derived(page, $page => $page.params.workspace);
 
@@ -85,7 +87,7 @@ export const placedNotes = function (placed, notes) {
 export const publication = derived(
   [publicationId, refreshPublication],
   ([$publicationId, $refreshPublication], set) => {
-    if (!$refreshPublication.id || $refreshPublication.id !== $publicationId) {
+    if (!$refreshPublication.id || $refreshPublication.id !== $publicationId || !$publicationId) {
       set({ type: "loading", items: [], tags: [], keywords: [], replies: [] });
     }
     if (!process.browser || !$publicationId) return;

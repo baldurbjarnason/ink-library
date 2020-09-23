@@ -13,41 +13,25 @@
   import NavSource from "../../img/NavSource.svelte";
   import Comment from "../../notes/Comment.svelte";
   import Highlight from "../../notes/Highlight.svelte";
-  import { page, publication } from "../../../stores";
-  import { cachedWeb } from "../../../stores/utilities/web.js";
-  import {guard} from "../../../stores/utilities/ssr-guard.js"
+  import {noteStore} from '../../../stores/utilities/noteStore.js'
   export let note = {};
+  export let stores = {}
   let title = "";
-  $: if ($publication) {
-    title = $publication.name;
+  $: if (stores.$publication) {
+    title = stores.$publication.name;
   }
   let noteBody = [];
-  let noteStore
-  $: if (note && note.shortId && !noteStore) {
-    noteStore = guard(cachedWeb)(`/api/note/${note.shortId}`, {initialData: note})
+  let store
+  $: if (note && note.shortId && !store) {
+    store = noteStore(note)
   }
-  let noted, highlighted, flags, colour;
-  $: if ($noteStore && $noteStore.data) {
-    console.log('updating notes card')
-    if ($noteStore.data.body && $noteStore.data.body[0]) {
-      if ($noteStore.data.body.find(item => {
-        return (item.motivation === "commenting" || item.purpose === "commenting")
-      })) {
-        noteBody = [].concat($noteStore.data.body);
-      } else {
-        noteBody = $noteStore.data.body.concat({ motivation: "commenting", content: "" });
-      }
-      noted = $noteStore.data.body.find(item =>  {
-        return (item.motivation === "commenting" || item.purpose === "commenting")
-      });
-      highlighted = $noteStore.data.body.find(item =>  {
-        return (item.motivation === "highlighting" || item.purpose === "highlighting")
-      });
-    }
-    if ($noteStore.data.tags) {
-      flags = $noteStore.data.tags.filter(flag => !flag.name.startsWith("colour"));
-      colour = $noteStore.data.tags.find(flag => flag.name.startsWith("colour"));
-    }
+  let noted, highlighted, flags, colour, annotation;
+  $: if (store) {
+    noted = store.noted
+    highlighted = store.highlighted
+    flags = store.flags
+    colour = store.colour
+    annotation = store.annotation
   }
 
   function assignIco(icon) {
@@ -333,13 +317,13 @@
   }
 </style>
 
-{#if $noteStore.data}
+{#if $annotation}
   
 <div
-  class="NoteItem {colour ? colour.name.replace(' ', '') : ''}"
-  class:Selected={$noteStore.data.selected}>
-  <div class="Top {$noteStore.data.document || highlighted || $noteStore.data.sourceId ? 'two' : ''}">
-    {#if $noteStore.data.document || highlighted || $noteStore.data.source}
+  class="NoteItem {$colour ? $colour.name.replace(' ', '') : ''}"
+  class:Selected={$annotation.selected}>
+  <div class="Top {$annotation.document || $highlighted || $annotation.sourceId ? 'two' : ''}">
+    {#if $annotation.document || $highlighted || $annotation.source}
       <header>
         <div class="column" />
         <div class="info">
@@ -349,19 +333,19 @@
               <p class="Page">Page</p>
             </a>
           {/if} -->
-          {#if highlighted}
+          {#if $highlighted}
             <a
               class="Highlight modal_link"
-              href="#id-{$noteStore.data.shortId}" rel=external>
-              {@html highlighted.content || highlighted.value}
+              href="#id-{$annotation.shortId}" rel=external>
+              {@html $highlighted.content || $highlighted.value}
             </a>
           {/if}
-          {#if $publication && $publication.name}
+          {#if stores.$publication && stores.$publication.name}
             <a
-              href="#id-{$noteStore.data.shortId}"
+              href="#id-{$annotation.shortId}"
               class="Source modal_link" rel=external>
               <NavSource />
-              <p>{$publication.name}</p>
+              <p>{stores.$publication.name}</p>
             </a>
           {/if}
         </div>
@@ -369,9 +353,9 @@
     {/if}
     <a
       class="Note modal_link"
-      href="#id-{$noteStore.data.shortId}" rel=external>
-      {#if noted}
-        {@html noted.content || noted.value}
+      href="#id-{$annotation.shortId}" rel=external>
+      {#if $noted}
+        {@html $noted.content || $noted.value}
       {/if}
     </a>
     <!-- Adjust "Top" div when tags will be implemented
@@ -383,7 +367,7 @@
   </div>
   <div class="Bottom">
     <ul class="Flags">
-      {#each flags as flag}
+      {#each $flags as flag}
         <li>
           <svelte:component this={assignIco(flag.name)} />
           <p>{flag.name}</p>
@@ -393,7 +377,7 @@
     <section>
       <p>
         <strong>Modified:</strong>
-        {new Date($noteStore.data.updated).toLocaleString(undefined, {
+        {new Date($annotation.updated).toLocaleString(undefined, {
           year: 'numeric',
           month: 'numeric',
           day: 'numeric'

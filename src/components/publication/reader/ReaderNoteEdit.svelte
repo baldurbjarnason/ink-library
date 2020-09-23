@@ -13,7 +13,7 @@
   import NavSource from "../../img/NavSource.svelte";
 
   import IcoGoBack from "../../img/IcoGoBack.svelte";
-  import { notes, refreshNotes, page, tags } from "../../../stores";
+  import { tags } from "../../../stores";
   import Comment from "../../notes/Comment.svelte";
   import Highlight from "../../notes/Highlight.svelte";
   import NoteEditor from "../../widgets/NoteEditor.svelte";
@@ -22,56 +22,52 @@
   import { cachedWeb } from "../../../stores/utilities/web.js";
   import { refresh } from "../../../stores/utilities/refresh.js";
   import {guard} from "../../../stores/utilities/ssr-guard.js"
+  import {noteStore} from '../../../stores/utilities/noteStore.js'
   export let note = { body: [], source: { name: "" } };
-  let highlight;
-  let comment;
-  let noteStore
-  $: if (note && note.shortId && !noteStore) {
-    noteStore = guard(cachedWeb)(`/api/note/${note.shortId}`, {initialData: note})
+  export let stores = {}
+  let title = "";
+  $: if (stores.$publication) {
+    title = stores.$publication.name;
+  }
+  let noteBody = [];
+  let store
+  $: if (note && note.shortId && !store) {
+    store = noteStore(note)
   }
   let selectedFlags = []
-  let colour;
-  let flags = []
-  let noteBody
-  $: if ($noteStore && $noteStore.data) {
-    if ($noteStore.data.body && $noteStore.data.body[0]) {
-      if ($noteStore.data.body.find(item => {
-        return (item.motivation === "commenting" || item.purpose === "commenting")
-      })) {
-        noteBody = [].concat($noteStore.data.body);
-      } else {
-        noteBody = $noteStore.data.body.concat({ motivation: "commenting", content: "" });
-      }
-      highlight = $noteStore.data.body.find(item => {
-        return (item.motivation === "highlighting" || item.purpose === "highlighting")
-      });
-      comment = $noteStore.data.body.find(item =>  {
-        return (item.motivation === "commenting" || item.purpose === "commenting")
-      }) || {
-        motivation: "commenting",
-        content: ""
-      }
-      if ($noteStore.data.tags && $noteStore.data.tags.find) {
-        selectedFlags = $noteStore.data.tags
-          .filter(tag => tag.type === "flag" && !tag.name.startsWith("colour"))
-          .map(tag => tag.name);
-        const colourTag = $noteStore.data.tags
-          .find(tag => tag.name.startsWith("colour")) || {name: "Colour 1"}
-        colour = colourTag.name.replace(" ", "") || "colour1";
-        flags = $tags.items.filter(
-          tag => tag.type === "flag" && !tag.name.startsWith("colour")
-        );
-      }
-      if ($noteStore.data.source && $noteStore.data.source.name) {
-        title = $noteStore.data.source.name;
-      } else {
-        title = "";
-      }
-    }
+  let comment, highlighted, flags, colours, annotation;
+  $: if (store) {
+    comment = store.noted
+    highlighted = store.highlighted
+    flags = store.flags
+    selectedFlags = selectedFlags.concat($flags)
+    colours = store.colours
+    annotation = store.annotation
+  }
+  let highlight;
+  let colour
+  $: if (
+    $colours && !colour
+  ) {
+    colour = $colours
+      .find(tag => tag.name.startsWith("colour"))
+      .name.replace(" ", "");
   }
 
-  let title;
+  let availableColours
+  $: availableColours = $tags.items
+    .filter(tag => tag.type == "flag" && tag.name.startsWith("colour"))
+    .map(tag =>
+      tag.name.replace(" ", "")
+    );
 
+
+  let availableFlags = [];
+  $: if ($tags && $tags.items.length !== 0) {
+    availableFlags = $tags.items.filter(
+      tag => tag.type === "flag" && !tag.name.startsWith("colour")
+    );
+  }
   let text = "";
   function clean(obj) {
     for (var propName in obj) {
@@ -93,9 +89,9 @@
   }
   async function save() {
     // Get all tags, filter through them to match name of adding tags, add ids as prop
-    if (!$noteStore.data.document) return
+    if (!$annotation.document) return
     try {
-      const payload = Object.assign({}, $noteStore.data);
+      const payload = Object.assign({}, $annotation);
       payload._tags = $tags.getIds(
         [colour.replace("Colour", "colour ")].concat(selectedFlags)
       );
@@ -111,7 +107,7 @@
           content: text
         });
       }
-      await fetch(`/api/note/${note.shortId}`, {
+      await fetch(`/api/note/${$annotation.shortId}`, {
         method: "PUT",
         credentials: "include",
         body: JSON.stringify(payload),
@@ -121,8 +117,8 @@
           "csrf-token": getToken()
         }
       });
-      refresh(`/api/note/${note.shortId}`)
-      updateHighlight(note.id, colour.replace('colour', 'Colour').replace(' ', ''))
+      refresh(`/api/note/${$annotation.shortId}`)
+      updateHighlight($annotation.id, colour.replace('colour', 'Colour').replace(' ', ''))
     } catch (err) {
       console.error(err);
     }
@@ -150,16 +146,7 @@
         return FlagUrgent;
     }
   }
-
-  let sourceinfo;
-  $: if ($notes)
-    sourceinfo = $notes.items.find(item => item.shortId === note.shortId);
-
-  $: colours = $tags.items
-    .filter(tag => tag.type == "flag" && tag.name.startsWith("colour"))
-    .map(tag =>
-      tag.name.replace(" ", "")
-    ); /*
+ /*
 
   function clickColour(c) {
     colour = c;
@@ -641,16 +628,16 @@
   }
 </style>
 
-{#if $noteStore.data}
+{#if $annotation}
   <div class="Item">
     <div class="Top">
 
         <div class="CardBottom">
           <span />
           <span class="Modified">
-            {#if note && note.updated}
+            {#if $annotation && $annotation.updated}
               <strong>Modified:</strong>
-              {new Date(note.updated).toLocaleString(undefined, {
+              {new Date($annotation.updated).toLocaleString(undefined, {
                 year: 'numeric',
                 month: 'numeric',
                 day: 'numeric'
@@ -663,27 +650,27 @@
     <header class={colour}>
       <div class="column" />
       <div class="info">
-        {#if note.document}
-          <a href="library/all/all{note.document}">
+        {#if $annotation.document}
+          <a href="library/all/all{$annotation.document}">
             <p class="Page">Page</p>
           </a>
         {/if}
-        {#if highlight}
-          <a class="Highlight" href="library/all/all{note.document}">
-            <Highlight body={highlight} edit={true} {colour} />
+        {#if $highlighted}
+          <a class="Highlight" href="library/all/all{$annotation.document}">
+            <Highlight body={$highlighted} edit={true} {colour} />
           </a>
         {/if}
-        {#if sourceinfo && sourceinfo.source}
-          <a href="library/all/all/{sourceinfo.source.shortId}" class="Source">
+        {#if stores.$publication}
+          <a href="library/all/all/{stores.$publication.shortId}" class="Source">
             <NavSource />
-            <p>{sourceinfo.source.name}</p>
+            <p>{stores.$publication.name}</p>
           </a>
         {/if}
       </div>
     </header>
     <section>
       <ul class="colours">
-        {#each colours as theColour}
+        {#each availableColours as theColour}
           <li>
             <input
               name="noteColour"
@@ -694,9 +681,9 @@
           </li>
         {/each}
       </ul>
-      {#if comment.content || comment.value}
+      {#if $comment.content || $comment.value}
         <div class="Editor {colour} {!highlight ? 'bigEditor' : ''}">
-          <NoteEditor html={comment.content || comment.value} bind:richtext={text} />
+          <NoteEditor html={$comment.content || $comment.value} bind:richtext={text} />
         </div>
       {:else}
         <div class="Editor {colour} {!highlight ? 'bigEditor' : ''}">
@@ -704,8 +691,8 @@
         </div>
       {/if}
       <div class="flags {colour}">
-        {#if note.tags && selectedFlags}
-          {#each flags as flag}
+        {#if $annotation.tags && selectedFlags}
+          {#each availableFlags as flag}
             <li>
               <input
                 bind:group={selectedFlags}

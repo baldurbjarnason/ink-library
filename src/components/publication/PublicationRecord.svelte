@@ -1,5 +1,5 @@
 <script>
-  import { onMount, afterUpdate } from "svelte";
+  import { onMount, afterUpdate, onDestroy } from "svelte";
   import {
     publication,
     workspaces,
@@ -33,6 +33,9 @@
       element.scrollIntoView({ behavior: "smooth" });
     }
   });
+  onDestroy(() => {
+    $chapterId = null
+  })
   $: if (
     $chapterId === null &&
     $storedPub.readingOrder[0] &&
