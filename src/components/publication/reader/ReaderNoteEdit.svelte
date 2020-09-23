@@ -88,7 +88,7 @@
       })
       node.classList.add(colour)
     });
-    document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
+    document.querySelectorAll(`[data-annotation-highlight-box="${id}"]`).forEach(node => {
       node.classList.forEach(token => {
         if (token.startsWith('Colour')) {
           node.classList.remove(token)
