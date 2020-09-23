@@ -220,6 +220,14 @@ export const chapter = derived(
   { type: "Loading", contents: "", stylesheets: [] }
 );
 
+export const chapterNotes = derived(chapter, ($chapter, set) => {
+  if ($chapter.annotations) {
+    set($chapter.annotations)
+  } else {
+    set([])
+  }
+}, [])
+
 export const storedPub = derived(
   publication,
   ($publication, set) => {

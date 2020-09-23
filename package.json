@@ -21,9 +21,10 @@
     "deploy-production": "npm run build && gcloud app deploy app.yaml --project fb-ink-dev"
   },
   "snowpack": {
-    "webDependencies": [
+    "install": [
       "intersection-observer",
-      "inert-polyfill"
+      "inert-polyfill",
+      "fg-modal"
     ]
   },
   "postcss": {

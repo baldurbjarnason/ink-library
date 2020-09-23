@@ -3,7 +3,7 @@ import { writable } from "svelte/store";
 const { subscribe, set } = writable(true);
 
 // online
-if (!window) {
+if (!process.browser) {
   set(false);
 } else {
   if (!window.navigator.onLine) {

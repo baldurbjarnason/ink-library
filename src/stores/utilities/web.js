@@ -4,7 +4,8 @@ import { throttledVisible } from "./visible.js";
 import { writable, derived } from "svelte/store";
 import { paths } from "./refresh.js";
 
-export function web(pathOrStore, config) {
+export function web(pathOrStore, config = {}) {
+  const fetchUtility = url => window.fetch(url).then(r => r.json());
   const {
     revalidateOnFocus = true,
     revalidateOnReconnect = true,
@@ -39,9 +40,8 @@ export function web(pathOrStore, config) {
     ([$path, $visible, $online, $refresh], set) => {
       if (($visible || refreshWhenHidden) && ($online || refreshWhenOffline)) {
         // Default fetcher should return a {data, links} object.
-        // TODO: if `links: true` then you expect either a links prop or a HAL+JSON `data._links` prop. Then we could do a `rel` utility that creates a derived web store for a particular rel link from a resource. -> Turns the web store into a path store.
-        // rel utility can also take a `document` object as a link rel source.
-        return fetcher($path.path)
+        // Should prime with cached data if that is provided and delay first fetch.
+        fetcher($path.path)
           .then(data => {
             set({
               data,
@@ -56,11 +56,21 @@ export function web(pathOrStore, config) {
           });
       }
     },
-    initialData
+    {data: initialData, error: null}
   );
 }
 
-const fetchUtility = url => window.fetch(url).then(r => r.json());
+const cache = new Map()
+export function cachedWeb (pathOrStore, config) {
+  if (cache.get(pathOrStore)) {
+    return cache.get(pathOrStore)
+  } else {
+    const store = web(pathOrStore, config)
+    cache.set(pathOrStore, store)
+    return store
+  }
+
+}
 
 function getPathStore(pathOrStore) {
   let path;

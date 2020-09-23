@@ -1,4 +1,5 @@
 <script>
+  // This needs a store for the hover over highlight event.
   import FlagFurtherRead from "../../img/FlagFurtherRead.svelte";
   import FlagIdea from "../../img/FlagIdea.svelte";
   import FlagImportant from "../../img/FlagImportant.svelte";
@@ -12,31 +13,42 @@
   import NavSource from "../../img/NavSource.svelte";
   import Comment from "../../notes/Comment.svelte";
   import Highlight from "../../notes/Highlight.svelte";
-  import { page } from "../../../stores";
+  import { page, publication } from "../../../stores";
+  import { cachedWeb } from "../../../stores/utilities/web.js";
+  import {guard} from "../../../stores/utilities/ssr-guard.js"
   export let note = {};
-  let title;
-  $: if (note.source) {
-    title = note.source.name;
-  } else {
-    title = `Workspace: ${$page.params.workspace}`;
+  let title = "";
+  $: if ($publication) {
+    title = $publication.name;
   }
   let noteBody = [];
-  $: if (note && note.body && note.body[0]) {
-    if (note.body.find(item => item.motivation === "commenting")) {
-      noteBody = [].concat(note.body);
-    } else {
-      noteBody = note.body.concat({ motivation: "commenting", content: "" });
+  let noteStore
+  $: if (note && note.shortId && !noteStore) {
+    noteStore = guard(cachedWeb)(`/api/note/${note.shortId}`, {initialData: note})
+  }
+  let noted, highlighted, flags, colour;
+  $: if ($noteStore && $noteStore.data) {
+    console.log('updating notes card')
+    if ($noteStore.data.body && $noteStore.data.body[0]) {
+      if ($noteStore.data.body.find(item => {
+        return (item.motivation === "commenting" || item.purpose === "commenting")
+      })) {
+        noteBody = [].concat($noteStore.data.body);
+      } else {
+        noteBody = $noteStore.data.body.concat({ motivation: "commenting", content: "" });
+      }
+      noted = $noteStore.data.body.find(item =>  {
+        return (item.motivation === "commenting" || item.purpose === "commenting")
+      });
+      highlighted = $noteStore.data.body.find(item =>  {
+        return (item.motivation === "highlighting" || item.purpose === "highlighting")
+      });
+    }
+    if ($noteStore.data.tags) {
+      flags = $noteStore.data.tags.filter(flag => !flag.name.startsWith("colour"));
+      colour = $noteStore.data.tags.find(flag => flag.name.startsWith("colour"));
     }
   }
-
-  let noted, highlighed;
-  $: if (note && note.body && note.body[0]) {
-    noted = note.body.find(item => item.motivation === "commenting");
-    highlighed = note.body.find(item => item.motivation === "highlighting");
-  }
-
-  $: flags = note.tags.filter(flag => !flag.name.startsWith("colour"));
-  $: colour = note.tags.find(flag => flag.name.startsWith("colour"));
 
   function assignIco(icon) {
     switch (icon) {
@@ -60,13 +72,6 @@
         return FlagUrgent;
     }
   }
-
-  $: pagination =
-    $page.query && $page.query.page
-      ? `/notes/all/all/${note.shortId}?${new URLSearchParams({
-          page: $page.query.page
-        }).toString()}`
-      : false;
 </script>
 
 <style>
@@ -231,8 +236,7 @@
     border: 1px solid #cccccc;
     border-bottom: none;
   }
-  .NoteItem header .column,
-  .NoteItem .Page {
+  .NoteItem header .column {
     background: #999999;
   }
   .NoteItem .Tags li {
@@ -252,8 +256,7 @@
     border: 1px solid #ffe4cb;
     border-bottom: none;
   }
-  .colour1 header .column,
-  .colour1 .Page {
+  .colour1 header .column {
     background: #fea95b;
   }
   .colour1 .Tags li {
@@ -273,8 +276,7 @@
     border: 1px solid #fcd5e5;
     border-bottom: none;
   }
-  .colour2 header .column,
-  .colour2 .Page {
+  .colour2 header .column {
     background: #ff8ebe;
   }
   .colour2 .Tags li {
@@ -294,8 +296,7 @@
     border: 1px solid #7de8f8;
     border-bottom: none;
   }
-  .colour3 header .column,
-  .colour3 .Page {
+  .colour3 header .column {
     background: #57cfea;
   }
   .colour3 .Tags li {
@@ -315,8 +316,7 @@
     border: 1px solid #d3eacc;
     border-bottom: none;
   }
-  .colour4 header .column,
-  .colour4 .Page {
+  .colour4 header .column {
     background: #81d173;
   }
   .colour4 .Tags li {
@@ -333,43 +333,45 @@
   }
 </style>
 
+{#if $noteStore.data}
+  
 <div
   class="NoteItem {colour ? colour.name.replace(' ', '') : ''}"
-  class:Selected={note.selected}>
-  <div class="Top {note.document || highlighed || note.source ? 'two' : ''}">
-    {#if note.document || highlighed || note.source}
+  class:Selected={$noteStore.data.selected}>
+  <div class="Top {$noteStore.data.document || highlighted || $noteStore.data.sourceId ? 'two' : ''}">
+    {#if $noteStore.data.document || highlighted || $noteStore.data.source}
       <header>
         <div class="column" />
         <div class="info">
-          {#if note.document}
+          <!-- {#if note.target.source}
             <a
-              href="{window.location.pathname.replace('notes', 'library')}{note.document}">
+              href="{window.location.pathname.replace('notes', 'library')}{note.target.source}">
               <p class="Page">Page</p>
             </a>
-          {/if}
-          {#if highlighed}
+          {/if} -->
+          {#if highlighted}
             <a
-              class="Highlight"
-              href="{window.location.pathname.replace('notes', 'library')}{note.document}">
-              {@html highlighed.content}
+              class="Highlight modal_link"
+              href="#id-{$noteStore.data.shortId}" rel=external>
+              {@html highlighted.content || highlighted.value}
             </a>
           {/if}
-          {#if note.source && note.source.name}
+          {#if $publication && $publication.name}
             <a
-              href="{window.location.pathname.replace('notes', 'library')}/{note.source.shortId}"
-              class="Source">
+              href="#id-{$noteStore.data.shortId}"
+              class="Source modal_link" rel=external>
               <NavSource />
-              <p>{note.source.name}</p>
+              <p>{$publication.name}</p>
             </a>
           {/if}
         </div>
       </header>
     {/if}
     <a
-      class="Note"
-      href={pagination ? pagination : `/notes/all/all/${note.shortId}`}>
+      class="Note modal_link"
+      href="#id-{$noteStore.data.shortId}" rel=external>
       {#if noted}
-        {@html noted.content}
+        {@html noted.content || noted.value}
       {/if}
     </a>
     <!-- Adjust "Top" div when tags will be implemented
@@ -391,7 +393,7 @@
     <section>
       <p>
         <strong>Modified:</strong>
-        {new Date(note.updated).toLocaleString(undefined, {
+        {new Date($noteStore.data.updated).toLocaleString(undefined, {
           year: 'numeric',
           month: 'numeric',
           day: 'numeric'
@@ -400,3 +402,4 @@
     </section>
   </div>
 </div>
+{/if}
