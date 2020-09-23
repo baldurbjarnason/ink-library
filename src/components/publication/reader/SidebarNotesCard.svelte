@@ -25,12 +25,12 @@
   $: if (note && note.shortId && !store) {
     store = noteStore(note)
   }
-  let noted, highlighted, flags, colour, annotation;
+  let noted, highlighted, flags, colours, annotation;
   $: if (store) {
     noted = store.noted
     highlighted = store.highlighted
     flags = store.flags
-    colour = store.colour
+    colours = store.colours
     annotation = store.annotation
   }
 
@@ -320,7 +320,7 @@
 {#if $annotation}
   
 <div
-  class="NoteItem {$colour ? $colour.name.replace(' ', '') : ''}"
+  class="NoteItem {$colours ? $colours[0].name.replace(' ', '') : ''}"
   class:Selected={$annotation.selected}>
   <div class="Top {$annotation.document || $highlighted || $annotation.sourceId ? 'two' : ''}">
     {#if $annotation.document || $highlighted || $annotation.source}

@@ -64,15 +64,23 @@
   }
   .Chapter :global(.Colour) {
     background-color: var(--highlight-color1);
+    fill: #ffff9866;
+  }
+  .Chapter :global(.Colour1) {
+    background-color: var(--highlight-color1);
+    fill: #FEA95B66;
   }
   .Chapter :global(.Colour2) {
     background-color: var(--highlight-color2);
+    fill: #FF8EBE66
   }
   .Chapter :global(.Colour3) {
     background-color: var(--highlight-color3);
+    fill: #FF8EBE66
   }
   .Chapter :global(.Colour4) {
     background-color: var(--highlight-color4);
+    fill: #6FE1FA66
   }
 </style>
 

@@ -34,15 +34,17 @@
   $: if (note && note.shortId && !store) {
     store = noteStore(note)
   }
-  let selectedFlags = []
+  let selectedFlags
   let comment, highlighted, flags, colours, annotation;
   $: if (store) {
     comment = store.noted
     highlighted = store.highlighted
     flags = store.flags
-    selectedFlags = selectedFlags.concat($flags)
     colours = store.colours
     annotation = store.annotation
+  }
+  $: if ($flags && !selectedFlags) {
+    selectedFlags = $flags.map(flag => flag.name)
   }
   let highlight;
   let colour
@@ -86,15 +88,25 @@
       })
       node.classList.add(colour)
     });
+    document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
+      node.classList.forEach(token => {
+        if (token.startsWith('Colour')) {
+          node.classList.remove(token)
+        }
+      })
+      node.classList.add(colour)
+    });
   }
   async function save() {
     // Get all tags, filter through them to match name of adding tags, add ids as prop
     if (!$annotation.document) return
     try {
       const payload = Object.assign({}, $annotation);
-      payload._tags = $tags.getIds(
-        [colour.replace("Colour", "colour ")].concat(selectedFlags)
-      );
+      payload.tags = $tags.getIds(
+        [colour.replace("colour", "colour ")].concat(selectedFlags)
+      ).map(id => {
+        return {id: id}
+      });
       if (payload.body.find(body => body.motivation === "commenting")) {
         const body = payload.body.find(
           body => body.motivation === "commenting"
@@ -215,57 +227,6 @@
     text-align: right;
     color: #888;
     font-size: 0.75rem;
-  }
-  .CardColors {
-    background: #fff;
-  }
-  .CardColors div {
-    max-width: 300px;
-    margin: 0 auto;
-  }
-  @supports (--webkit-appearance: none) {
-    .CardColors input[type="radio"] {
-      -webkit-appearance: none;
-      width: 1.4rem;
-      height: 1.4rem;
-      border-radius: 50%;
-      border: none;
-      padding: 0;
-      margin-right: 0.5rem;
-    }
-    .CardColors input[type="radio"]:checked {
-      position: relative;
-      /* Do a bug fix to keep iOS from adding dark background. */
-      background: none;
-    }
-    .CardColors input[type="radio"]:checked::after {
-      position: absolute;
-
-      top: 0.4rem;
-      left: 0.4rem;
-      width: 0.6rem;
-      height: 0.6rem;
-
-      background: #0c4364;
-      border-radius: 50%;
-      content: "";
-    }
-    .CardColors input[type="radio"].Colour1,
-    .CardColors input[type="radio"].Colour1:checked {
-      background-color: var(--highlight-color1);
-    }
-    .CardColors input[type="radio"].Colour2,
-    .CardColors input[type="radio"].Colour2:checked {
-      background-color: var(--highlight-color2);
-    }
-    .CardColors input[type="radio"].Colour3,
-    .CardColors input[type="radio"].Colour3:checked {
-      background-color: var(--highlight-color3);
-    }
-    .CardColors input[type="radio"].Colour4,
-    .CardColors input[type="radio"].Colour4:checked {
-      background-color: var(--highlight-color4);
-    }
   }
 
   .Item :global(p) {

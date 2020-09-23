@@ -90,5 +90,9 @@ function fixItem(item) {
   }
   item.type = "Annotation";
   if (!item.target.selector) return null;
+  const colour =  [].concat(item.tags).find(tag => tag.name.startsWith('colour'))
+  if (colour) {
+    item.styleClass = "Colour" + colour.name.split(" ")[1]
+  }
   return item;
 }

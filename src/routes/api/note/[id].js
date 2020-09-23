@@ -30,7 +30,7 @@ export async function get(req, res, next) {
 // This needs to filter by workspace
 export async function put(req, res, next) {
   const url = `${process.env.API_SERVER}notes/${req.params.id}`;
-  delete req.body._tags;
+  console.log("request: ", req.body)
   try {
     const response = await got.put(url, {
       headers: {
@@ -39,6 +39,7 @@ export async function put(req, res, next) {
       },
       json: req.body
     });
+    console.log("response: ", response.body, req.body)
     return res.sendStatus(response.statusCode);
   } catch (err) {
     console.log(err);
