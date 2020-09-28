@@ -6,7 +6,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "sapper dev",
-    "build": "sapper build --legacy",
+    "build": "sapper build sapper --legacy",
     "export": "sapper export --legacy",
     "start": "node index.js",
     "snowpack": "snowpack --dest static/web_modules/ --babel",
@@ -17,7 +17,7 @@
     "test": "jest src",
     "test:watch": "npm run test -- --watch",
     "deploy-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs10 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize",
-    "deploy-dev": "npm run build && gcloud app deploy app-dev.yaml --project fb-ink-dev",
+    "deploy-dev": "npm run build && gcloud app deploy app-dev.yaml --project ink-frontend-server-dev",
     "deploy-production": "npm run build && gcloud app deploy app.yaml --project fb-ink-dev"
   },
   "snowpack": {
