@@ -38,9 +38,11 @@ export function web(pathOrStore, config = {}) {
   return derived(
     stores,
     ([$path, $visible, $online, $refresh], set) => {
+      // If we don't have a path, return and leave the store unchanged.
+      if (!$path.path) return
       if (($visible || refreshWhenHidden) && ($online || refreshWhenOffline)) {
-        // Default fetcher should return a {data, links} object.
-        // Should prime with cached data if that is provided and delay first fetch.
+        // Todo: Links support. Default fetcher should return a {data, links} object.
+        // Todo: Should prime with cached data if that is provided and delay first fetch.
         fetcher($path.path)
           .then(data => {
             set({
@@ -69,7 +71,6 @@ export function cachedWeb (pathOrStore, config) {
     cache.set(pathOrStore, store)
     return store
   }
-
 }
 
 function getPathStore(pathOrStore) {

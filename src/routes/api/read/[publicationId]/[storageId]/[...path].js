@@ -19,6 +19,8 @@ export async function get(req, res, next) {
     const file = bucket.file(basePath);
     const [exists] = await file.exists();
     if (!exists) return res.sendStatus(404);
+    const [metadata] = await file
+      .getMetadata();
     const [data] = await file.download();
     const chapter = JSON.parse(data);
     const documentURL = `/${req.params.publicationId}/${req.params.path.join(
@@ -41,6 +43,7 @@ export async function get(req, res, next) {
       mediaBase,
       linkBase
     });
+    res.append('Last-Modified', (new Date(metadata.updated)).toUTCString());
     res.json(response);
   } catch (err) {
     console.error(err);

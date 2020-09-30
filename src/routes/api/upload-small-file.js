@@ -46,7 +46,7 @@ export async function post(req, res, next) {
     for await (const vfile of formats({
       mediaType,
       data: body,
-      thumbnails: true
+      thumbnails: false
     })) {
       console.log(vfile.path, vfile.contentType, vfile.data, vfile.contents.length)
       if (!vfile.data && !vfile.data.resource) {

@@ -4,28 +4,17 @@
   import SidebarNoteModal from "./SidebarNoteModal.svelte";
   import NoteEdit from "./ReaderNoteEdit.svelte";
   import {publicationStores} from '../../../stores/utilities/publicationStores.js'
-  import {
-    chapterId
-  } from "../../../stores";
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   // $: if ($positionedNotes) {
   //   console.log($positionedNotes.length)
   // }
-  let pubStores
-  let notes
-  let positionedNotes
-  let chapter
-  let publication
-  let publicationId
-  if (process.browser) {
-    pubStores = publicationStores($page.params.publicationId, $chapterId)
-    notes = pubStores.notes
-    positionedNotes = pubStores.positionedNotes
-    chapter = pubStores.chapter
-    publication = pubStores.publication
-    publicationId = pubStores.publicationId
-  }
+  const pubStores = publicationStores(page)  
+  const notes = pubStores.notes
+  const positionedNotes = pubStores.positionedNotes
+  const chapter = pubStores.chapter
+  const publication = pubStores.publication
+  const publicationId = pubStores.publicationId
 </script>
 
 <style>

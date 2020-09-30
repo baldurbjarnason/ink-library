@@ -1,9 +1,12 @@
 <script>
-  import { publication, workspaces, page, chapter } from "../../../stores";
+  import {publicationStores} from '../../../stores/utilities/publicationStores.js'
   import ToC from "../ToC.svelte";
   import SidebarNotes from "./SidebarNotes.svelte"
+  import { stores } from "@sapper/app";
+  const { page, session } = stores();
   export let readerBody = null;
   export let hidden = false;
+  const {chapter} = publicationStores(page)
 </script>
 
 <style>
@@ -42,9 +45,9 @@
     border-color: var(--light);
     padding: 0;
   }
-  .Chapter :global(ink-body#pdf-body ink-page) {
-    /* box-shadow: 2px 2px 8px black; */
-  }
+  /* .Chapter :global(ink-body#pdf-body ink-page) {
+    box-shadow: 2px 2px 8px black;
+  } */
   .Chapter :global(ink-body#pdf-body ink-page svg) {
     background-color: white;
     border: 1px solid #dddddd;
@@ -97,7 +100,9 @@
     <ToC />
   </div>
   <div class="Body Chapter" id="reader-body" bind:this={readerBody}>
+  {#if $chapter}
     {@html $chapter.contents}
+  {/if}
   </div>
   <SidebarNotes />
 </div>

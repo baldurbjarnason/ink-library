@@ -1,4 +1,4 @@
-import {cachedWeb} from './web.js'
+import {web} from './web.js'
 import {nodes, annotations, intersecting, positions} from './nodes.js'
 import { derived, writable } from "svelte/store";
 
@@ -25,111 +25,90 @@ const placedNotes = function (placed, notes) {
   }, [])
 }
 
-const publicationId = writable(null)
-const chapterId = writable(null)
 
-export function publicationStores (pubId, chapId) {
-  publicationId.set(pubId)
-  chapterId.set(chapId)
-  const url = derived(publicationId, $publicationId => `/api/publication/${$publicationId}`)
-  const publicationData = cachedWeb(url, {initialData: { type: "loading", items: [], tags: [], keywords: [], replies: [] }})
+// Use cachedWeb for all requests.
+// If contents/chapter isn't initial data but 404s, then it's processing
+// Turn on polling for chapter endpoint and publication
+// Make sure all end points support if-modified-since.
+// Make sure updating refreshes publication
+// Add error derived
+let stores
+export function publicationStores (page) {
+  if (stores) return stores
+  if (!process.browser) {
+    return {publication: writable({ type: "loading", items: [], tags: [], keywords: [], replies: [] }), chapter: writable({ type: "Loading", contents: "", stylesheets: [] }), contents: writable({ type: "loading", children: [] }), notes: writable([]), visible: writable(), positionedNotes: writable(), chapterId: writable(), errors: writable()}
+  }
+  const url = derived(page, ($page) => {
+    return `/api/publication/${$page.params.publicationId}/`
+  })
+  const publicationData = web(url, {initialData: { type: "loading", items: [], tags: [], keywords: [], replies: [] }, refreshInterval: 30000})
 
   const publication = derived(publicationData, $publicationData => {
-    if ($publicationData.error) console.error($publicationData.error)
     return $publicationData.data
   })
+  const chapterId = derived([page, publication], ([$page, $publication = {}]) => {
+    if (!$page.params.path && $page.params.publicationId && $publication.readingOrder) {
+      return $publication.readingOrder[0].url;
+    } else if ($page.params.path && $page.params.publicationId) {
+      return $page.params.path.join("/");
+    } else {
+      return null;
+    }
+  }, null)
 
-  const contents = derived(
-    publication,
-    ($publication, set) => {
-      if ($publication.json && $publication.json.contents) {
-        set($publication.json.contents);
-        return;
-      }
-      if (!$publication.links) {
-        set({
-          type: 404,
-          heading: "",
-          children: []
-        });
-        return;
-      }
-      const contentsLink = $publication.links.find(
-        link => link.rel === "contents"
-      );
-      if (!contentsLink) return;
-      const url = contentsLink.url;
-      return window
-        .fetch(url)
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return {
-              type: "processing",
-              heading: "Processing...",
-              children: []
-            };
-          }
-        })
-        .then(contents => {
-          set(contents);
-        })
-        .catch(err => {
-          set({ type: "failed" });
-          console.error(err);
-        });
-    },
-    { type: "loading", children: [] }
-  );
+  const chapterURL = derived([chapterId, publication], ([$chapterId, $publication]) => {
+    if (!$publication || !$publication.json || !$publication.json.storageId) return null
+    const storageId = $publication.json.storageId;
+    return `/api/read/${$publication.shortId}/${storageId}/${$chapterId}`
+  }, null)
+
+  const chapterData = web(chapterURL, {
+    initialData: { type: "Loading", contents: "", stylesheets: [] }
+  })
   const chapter = derived(
-    [chapterId, publication],
-    ([$chapterId, $publication], set) => {
-      if (!process.browser) return;
-      if (!$chapterId) {
-        set({ type: "Loading", contents: "", stylesheets: [] });
-        return;
-      }
-      if (!$publication.json) return;
-      const storageId = $publication.json.storageId;
-      if (!storageId) return;
-      return window
-        .fetch(`/api/read/${$publication.shortId}/${storageId}/${$chapterId}`)
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return {
-              type: "processing",
-              heading: "Processing...",
-              contents: "",
-              stylesheets: []
-            };
-          }
-        })
-        .then(contents => {
-          set(contents);
-        })
-        .catch(err => {
-          set({ type: "failed", stylesheets: [], contents: "" });
-          console.error(err);
-        });
+    chapterData,
+    ($chapterData = {}) => {
+      return $chapterData.data
     },
     { type: "Loading", contents: "", stylesheets: [] }
   );
 
+  const contents = derived(
+    chapter,
+    ($chapter, set) => {
+      if ($chapter) {
+        return $chapter.toc
+      } else {
+        return { type: "loading", children: [] }
+      }
+    },
+    { type: "loading", children: [] }
+  );
+
   const notes = derived(chapter, ($chapter, set) => {
-    if ($chapter.annotations) {
-      set($chapter.annotations)
+    if ($chapter && $chapter.annotations) {
+      return $chapter.annotations
     } else {
-      set([])
+      return []
     }
   }, [])
+
+  const errors = derived([publicationData, chapterData], ([$publicationData, $chapterData]) => {
+    if ($publicationData.error) {
+      console.error($publicationData.error)
+      return $publicationData.error
+    } else if ($chapterData.error) {
+      console.error($chapterData.error)
+      return $chapterData.error
+    } else {
+      return null
+    }
+  }, null)
   const watched = nodes("[data-annotation-id]")
   const visible = intersecting(watched, {rootMargin: "40px 0px 0px 0px", threshold: 0.1})
   const positioned = positions(watched, {rootMargin: "0px 0px 1500px 0px", threshold: 0.1})
   const placed = annotations(positioned)
   const positionedNotes = placedNotes(placed, notes)
-
-  return {publication, chapter, contents, notes, visible, positionedNotes, chapterId, publicationId}
+  stores = {publication, chapter, contents, notes, visible, positionedNotes, chapterId, errors}
+  return stores
 }

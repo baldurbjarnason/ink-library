@@ -1,9 +1,10 @@
-import got from "got";
-import ISO6391 from "iso-639-1";
 
-// Make a list of fake notes: motivation, lang, id, body
+const ISO6391 = require("iso-639-1")
+const got = require('got')
+const { Storage } = require("@google-cloud/storage");
+const storage = new Storage();
+const path = require("path");
 
-// This needs to filter by workspace
 export async function get(req, res, next) {
   if (!req.user.profile) return res.sendStatus(401);
   const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`;
@@ -21,6 +22,31 @@ export async function get(req, res, next) {
       };
     });
     response.keywords = response.keywords || [];
+    if (!response.json && !response.json.storageId) {
+      response._empty = true
+    } else if (response.json && response.json.storageId) {
+      const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
+      try {
+        const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "");
+        const basePath = path.join(userPrefix, response.json.storageId, "index.json");
+        const file = bucket.file(basePath);
+        const [exists] = await file.exists();
+        if (!exists) {
+          response._processing = true
+        } else {
+          const [data] = await file.download();
+          const stored = JSON.parse(data)
+          response.readingOrder = stored.readingOrder
+          response.resources = stored.resources
+        }
+      } catch (err) {
+        console.error(err);
+        response._empty = true
+      }
+    }
+    // Get stored publication, add readingorder and resources from there
+    // Add last-modified header
+    res.append('Last-Modified', (new Date(response.updated)).toUTCString());
     res.json(response);
   } catch (err) {
     res.status(err.response.statusCode);
