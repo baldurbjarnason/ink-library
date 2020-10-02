@@ -38,6 +38,12 @@ export async function get(req, res, next) {
           const stored = JSON.parse(data)
           response.readingOrder = stored.readingOrder
           response.resources = stored.resources
+          if (stored._processing) {
+            response._processing = stored._processing
+          }
+          if (stored._unsupported) {
+            response._unsupported = stored._unsupported
+          }
         }
       } catch (err) {
         console.error(err);
