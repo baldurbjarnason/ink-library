@@ -41,7 +41,7 @@ export function publicationStores (page) {
   const url = derived(page, ($page) => {
     return `/api/publication/${$page.params.publicationId}/`
   })
-  const publicationData = web(url, {initialData: { type: "loading", items: [], tags: [], keywords: [], replies: [] }, refreshInterval: 30000})
+  const publicationData = web(url, {initialData: { type: "loading", items: [], tags: [], keywords: [], replies: [] }})
 
   const publication = derived(publicationData, $publicationData => {
     return $publicationData.data
