@@ -55,8 +55,8 @@
     ]
   },
   "dependencies": {
-    "@google-cloud/firestore": "^3.8.6",
-    "@google-cloud/storage": "^4.7.0",
+    "@google-cloud/firestore": "^4.4.0",
+    "@google-cloud/storage": "^5.3.0",
     "a11y-dialog": "^5.3.2",
     "autoprefixer": "^9.8.6",
     "awesomplete": "^1.1.5",
@@ -83,6 +83,7 @@
     "jsonwebtoken": "^8.5.1",
     "markdown-it": "^11.0.0",
     "mime": "^2.4.6",
+    "mime-types": "^2.1.27",
     "passport": "^0.4.1",
     "passport-auth0": "^1.3.3",
     "passport-http": "^0.3.0",
