@@ -1,5 +1,6 @@
 <script>
   import { onMount, afterUpdate, onDestroy } from "svelte";
+  import { derived, writable } from "svelte/store";
   import {
     workspaces,
     chapterId,
@@ -34,8 +35,18 @@
     }
   });
   onDestroy(() => {
-    // $chapterId = null
+    // poller = null
   })
+  $: if ($publication._error) {
+    console.log($publication._error)
+  }
+  // $: console.dir($publication)
+  let download
+  $: if ($publication && $publication.json && $publication.json.storageId) {
+    download = `/api/download/${$publication.json.storageId}`
+  } else {
+    download = ""
+  }
 </script>
 
 <style>
@@ -63,6 +74,11 @@
     {:else if $publication._processing}  
       <ToolBar root={readerBody} hidden={true} />
       <div class="Processing">Processing...</div>
+      <MainReading bind:readerBody hidden={true} />
+    {:else if $publication._unsupported}
+      <ToolBar root={readerBody} hidden={true} />
+      <MainReading bind:readerBody hidden={true} />
+      <div class="Processing">Ink doesn't support displaying this file but you can <a href="{download}">download it.</a></div>
     {:else if !$publication._empty}
       <ToolBar root={readerBody} />
       <MainReading bind:readerBody />
