@@ -70,7 +70,7 @@ async function onFinalize(object, context, done) {
       thumbSize: THUMBSIZE,
       thumbPath: thumbnailPath
     })) {
-      if (!vfile.data && !vfile.data.resource) {
+      if (!vfile.data) {
         book = vfile
       } else {
         const metadata = {
@@ -101,7 +101,7 @@ async function onFinalize(object, context, done) {
     const unsupported = {
       name: fileName,
       _unsupported: true,
-      _error: err.message,
+      _error: JSON.stringify(err),
       resources: [
         {
           type: "LinkedResource",
