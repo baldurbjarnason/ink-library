@@ -34,20 +34,30 @@ const placedNotes = function (placed, notes) {
 // Add error derived
 let stores
 export function publicationStores (page) {
-  if (stores) return stores
+  if (stores) {
+    console.log("returning cached stores")
+    return stores
+  } else {
+    console.log("building stores")
+  }
   if (!process.browser) {
     return {publication: writable({ type: "loading", items: [], tags: [], keywords: [], replies: [] }), chapter: writable({ type: "Loading", contents: "", stylesheets: [] }), contents: writable({ type: "loading", children: [] }), notes: writable([]), visible: writable(), positionedNotes: writable(), chapterId: writable(), errors: writable()}
   }
   const url = derived(page, ($page) => {
-    return `/api/publication/${$page.params.publicationId}/`
+    console.log($page.params)
+    if ($page.params.publicationId) {
+      return `/api/publication/${$page.params.publicationId}/`
+    } else {
+      return `/api/publication/placeholder/`
+    }
   })
-  const publicationData = web(url, {initialData: { type: "loading", items: [], tags: [], keywords: [], replies: [] }})
+  const publicationData = web(url, {refreshInterval: 25000, initialData: { type: "loading", items: [], tags: [], keywords: [], replies: [] }})
 
   const publication = derived(publicationData, $publicationData => {
     return $publicationData.data
   })
   const chapterId = derived([page, publication], ([$page, $publication = {}]) => {
-    if (!$page.params.path && $page.params.publicationId && $publication.readingOrder) {
+    if (!$page.params.path && $page.params.publicationId && $publication.readingOrder && $publication.readingOrder[0]) {
       return $publication.readingOrder[0].url;
     } else if ($page.params.path && $page.params.publicationId) {
       return $page.params.path.join("/");
@@ -68,7 +78,7 @@ export function publicationStores (page) {
   const chapter = derived(
     chapterData,
     ($chapterData = {}) => {
-      return $chapterData.data
+      return $chapterData.data || { type: "Loading", contents: "", stylesheets: [] }
     },
     { type: "Loading", contents: "", stylesheets: [] }
   );

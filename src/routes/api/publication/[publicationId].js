@@ -44,6 +44,9 @@ export async function get(req, res, next) {
           if (stored._unsupported) {
             response._unsupported = stored._unsupported
           }
+          if (stored._error) {
+            response._error = stored._error
+          }
         }
       } catch (err) {
         console.error(err);

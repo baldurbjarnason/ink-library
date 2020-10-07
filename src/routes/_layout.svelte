@@ -1,5 +1,6 @@
 <script>
   import { library as libraryStore, page as pageStore, error, params as paramsStore } from "../stores";
+  import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
   import Sidebar from "../components/Sidebar.svelte";
   import NotesSidebar from "../components/NotesSidebar.svelte";
@@ -24,6 +25,7 @@
       params.segment = "front";
     }
   }
+  const {chapter} = publicationStores(page)
   $: if ($page.params && $page.params.publicationId) {
     publication = true;
   } else {
@@ -47,8 +49,8 @@
     margin: 0;
     box-sizing: border-box;
   }
-  .content {
-  }
+  /* .content {
+  } */
   .grid {
     display: grid;
     grid-template-columns: calc(var(--base) * 4) 1fr;
@@ -167,7 +169,7 @@
       </span>
     </div>
   {/if}
-  <main class="grid" class:publication>
+  <main class="grid" class:publication class:inChapter={$chapter.id}>
     <Nav {params} />
     <div class="content {params.workspace || 'unfinished'}" class:publication>
       <slot />
