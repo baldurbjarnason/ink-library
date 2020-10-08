@@ -1,12 +1,12 @@
 <script>
-  import {publicationStores} from '../../../stores/utilities/publicationStores.js'
+  import { publicationStores } from "../../../stores/utilities/publicationStores.js";
   import ToC from "../ToC.svelte";
-  import SidebarNotes from "./SidebarNotes.svelte"
+  import SidebarNotes from "./SidebarNotes.svelte";
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   export let readerBody = null;
   export let hidden = false;
-  const {chapter} = publicationStores(page)
+  const { chapter } = publicationStores(page);
 </script>
 
 <style>
@@ -54,7 +54,8 @@
     display: block;
     max-height: inherit;
   }
-  .Chapter :global(ink-body#pdf-body h1), .Chapter :global(ink-body#pdf-body ink-page h2) {
+  .Chapter :global(ink-body#pdf-body h1),
+  .Chapter :global(ink-body#pdf-body ink-page h2) {
     border: 0;
     clip: rect(0 0 0 0);
     height: auto;
@@ -71,19 +72,19 @@
   }
   .Chapter :global(.Colour1) {
     background-color: var(--highlight-color1);
-    fill: #FEA95B66;
+    fill: #fea95b66;
   }
   .Chapter :global(.Colour2) {
     background-color: var(--highlight-color2);
-    fill: #FF8EBE66
+    fill: #ff8ebe66;
   }
   .Chapter :global(.Colour3) {
     background-color: var(--highlight-color3);
-    fill: #FF8EBE66
+    fill: #ff8ebe66;
   }
   .Chapter :global(.Colour4) {
     background-color: var(--highlight-color4);
-    fill: #6FE1FA66
+    fill: #6fe1fa66;
   }
 </style>
 
@@ -95,14 +96,14 @@
   {/if}
 </svelte:head>
 
-<div class="Reader" hidden={hidden}>
+<div class="Reader" {hidden}>
   <div class="LeftSidebar">
     <ToC />
   </div>
   <div class="Body Chapter" id="reader-body" bind:this={readerBody}>
-  {#if $chapter}
-    {@html $chapter.contents}
-  {/if}
+    {#if $chapter}
+      {@html $chapter.contents}
+    {/if}
   </div>
   <SidebarNotes />
 </div>

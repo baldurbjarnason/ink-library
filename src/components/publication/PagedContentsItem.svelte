@@ -80,7 +80,9 @@
   {#if item.children && item.children.length}
     <details open>
       <summary>
-        <span class="PageLevel"><img src="/api/stored/{storageId}/{item.image}" alt="{item.label}"></span>
+        <span class="PageLevel">
+          <img src="/api/stored/{storageId}/{item.image}" alt={item.label} />
+        </span>
       </summary>
       <ol>
         {#each item.children as item}
@@ -92,9 +94,11 @@
     <a
       href="/library/{$page.params.workspace}/{$page.params.collection}/{$page.params.publicationId}/{item.url}"
       class="PageLevel">
-      <img src="/api/stored/{storageId}/{item.image}" alt="{item.label}">
+      <img src="/api/stored/{storageId}/{item.image}" alt={item.label} />
     </a>
   {:else}
-    <span class="PageLevel"><img src="/api/stored/{storageId}/{item.image}" alt="{item.label}"></span>
+    <span class="PageLevel">
+      <img src="/api/stored/{storageId}/{item.image}" alt={item.label} />
+    </span>
   {/if}
 </li>

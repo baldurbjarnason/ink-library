@@ -6,7 +6,7 @@ import { fetch } from "./fetch.js";
 export const refreshPublication = writable({ id: null, time: Date.now() });
 
 const publicationId = derived(page, ($page, set) => {
-  set($page.params.publicationId || null)
+  set($page.params.publicationId || null);
 });
 
 const publicationWorkspace = derived(page, $page => $page.params.workspace);
@@ -62,32 +62,40 @@ export const publicationNotes = derived(
   []
 );
 
-export const placedNotes = function (placed, notes) {
-  return derived([placed, notes], ([$placed, $notes]) => {
-    function getNote (id) {
-      if ($notes) {
-        const note = $notes.find(note => note.id === id)
-        if (note) return note
+export const placedNotes = function(placed, notes) {
+  return derived(
+    [placed, notes],
+    ([$placed, $notes]) => {
+      function getNote(id) {
+        if ($notes) {
+          const note = $notes.find(note => note.id === id);
+          if (note) return note;
+        }
+        return { tags: [] };
       }
-      return {tags: []}
-    }
 
-    if ($placed.length !== 0 && $notes.length !== 0) {
-      const result = $placed.map(place => {
-        place.note = getNote(place.id)
-        return place
-      })
-      return result
-    } else {
-      return []
-    }
-  }, [])
-}
+      if ($placed.length !== 0 && $notes.length !== 0) {
+        const result = $placed.map(place => {
+          place.note = getNote(place.id);
+          return place;
+        });
+        return result;
+      } else {
+        return [];
+      }
+    },
+    []
+  );
+};
 
 export const publication = derived(
   [publicationId, refreshPublication],
   ([$publicationId, $refreshPublication], set) => {
-    if (!$refreshPublication.id || $refreshPublication.id !== $publicationId || !$publicationId) {
+    if (
+      !$refreshPublication.id ||
+      $refreshPublication.id !== $publicationId ||
+      !$publicationId
+    ) {
       set({ type: "loading", items: [], tags: [], keywords: [], replies: [] });
     }
     if (!process.browser || !$publicationId) return;
@@ -222,13 +230,17 @@ export const chapter = derived(
   { type: "Loading", contents: "", stylesheets: [] }
 );
 
-export const chapterNotes = derived(chapter, ($chapter, set) => {
-  if ($chapter.annotations) {
-    set($chapter.annotations)
-  } else {
-    set([])
-  }
-}, [])
+export const chapterNotes = derived(
+  chapter,
+  ($chapter, set) => {
+    if ($chapter.annotations) {
+      set($chapter.annotations);
+    } else {
+      set([]);
+    }
+  },
+  []
+);
 
 export const storedPub = derived(
   publication,

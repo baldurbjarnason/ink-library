@@ -1,14 +1,11 @@
 <script>
-  import Button from '../../widgets/Button.svelte'
-  import UploadIcon from '../UploadIcon.svelte'
+  import Button from "../../widgets/Button.svelte";
+  import UploadIcon from "../UploadIcon.svelte";
   import { getToken } from "../../../getToken";
   import FileInput from "./EmptySourceFileInput.svelte";
-  import {
-    publication,
-    refreshPublication
-  } from "../../../stores";
-  export let uploading = false
-  let form
+  import { publication, refreshPublication } from "../../../stores";
+  export let uploading = false;
+  let form;
   async function submit(event) {
     event.preventDefault();
     try {
@@ -28,7 +25,7 @@
     } catch (err) {
       console.error(err);
     }
-    uploading = false
+    uploading = false;
     $refreshPublication = { id: $publication.shortId, time: Date.now() };
   }
 </script>
@@ -57,7 +54,7 @@
   }
   .Pane.uploading {
     display: grid;
-    grid-template-rows:min-content 1fr 5rem;
+    grid-template-rows: min-content 1fr 5rem;
     justify-content: stretch;
     align-items: stretch;
     padding: 1rem;
@@ -73,37 +70,39 @@
   }
 </style>
 
-
 <div class="Pane" class:uploading>
-{#if uploading}
-<UploadIcon />
+  {#if uploading}
+    <UploadIcon />
 
-  <div class="Text">
-    <h3>Upload a file to your source</h3>
-    <p>Click to upload your file. Processing may take a while after you upload.</p>
-    <form
-          id="newform"
-          class="newForm"
-          action="/api/publication/{$publication.shortId}/attach-file"
-          on:submit={submit}
-          bind:this={form}>
-          
-          
+    <div class="Text">
+      <h3>Upload a file to your source</h3>
+      <p>
+        Click to upload your file. Processing may take a while after you upload.
+      </p>
+      <form
+        id="newform"
+        class="newForm"
+        action="/api/publication/{$publication.shortId}/attach-file"
+        on:submit={submit}
+        bind:this={form}>
+
         <FileInput name="newFile" type="file" />
         <div class="ButtonRow">
           <Button click={submit}>Save</Button>
         </div>
-          </form>
-  </div>
-{:else}
+      </form>
+    </div>
+  {:else}
     <UploadIcon />
 
-  <div class="Text">
-    <h3>Upload a file to your source</h3>
-    <p>Click to upload your file. Processing may take a while after you upload.</p>
-  </div>
-  <div class="ButtonRow">
-    <Button click={() => uploading = true}>Upload</Button>
-  </div>
-{/if}
+    <div class="Text">
+      <h3>Upload a file to your source</h3>
+      <p>
+        Click to upload your file. Processing may take a while after you upload.
+      </p>
+    </div>
+    <div class="ButtonRow">
+      <Button click={() => (uploading = true)}>Upload</Button>
+    </div>
+  {/if}
 </div>

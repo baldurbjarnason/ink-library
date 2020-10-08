@@ -60,7 +60,8 @@
     font-weight: 600;
     margin: 0;
   }
-  .PDF ol, .PDF.ToC {
+  .PDF ol,
+  .PDF.ToC {
     padding: 0;
     margin: 0;
   }
@@ -68,19 +69,19 @@
 
 <div class="ToC {$contents.type}">
   {#if $contents.type !== 'loading'}
-    {#if $contents.type ==="PDF"}
-    <ol>
-      {#each $contents.children as item}
-        <PagedContentsItem {item} storageId={$contents.storageId} />
-      {/each}
-    </ol>
+    {#if $contents.type === 'PDF'}
+      <ol>
+        {#each $contents.children as item}
+          <PagedContentsItem {item} storageId={$contents.storageId} />
+        {/each}
+      </ol>
     {:else}
-    <h2>{$contents.heading || 'Table of Contents'}</h2>
-    <ol>
-      {#each $contents.children as item}
-        <ContentsItem {item} />
-      {/each}
-    </ol>
+      <h2>{$contents.heading || 'Table of Contents'}</h2>
+      <ol>
+        {#each $contents.children as item}
+          <ContentsItem {item} />
+        {/each}
+      </ol>
     {/if}
   {:else}
     <Loading />

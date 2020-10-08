@@ -13,9 +13,8 @@ export async function get(req, res, next) {
     const [exists] = await file.exists();
     if (!exists) return res.sendStatus(404);
     const [data] = await file.download();
-    const [metadata] = await file
-      .getMetadata();
-    res.append('Last-Modified', (new Date(metadata.updated)).toUTCString());
+    const [metadata] = await file.getMetadata();
+    res.append("Last-Modified", new Date(metadata.updated).toUTCString());
     res.json(JSON.parse(data));
   } catch (err) {
     console.error(err);

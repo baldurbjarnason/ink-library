@@ -21,48 +21,43 @@
   import Button from "../../widgets/Button.svelte";
   import { cachedWeb } from "../../../stores/utilities/web.js";
   import { refresh } from "../../../stores/utilities/refresh.js";
-  import {guard} from "../../../stores/utilities/ssr-guard.js"
-  import {noteStore} from '../../../stores/utilities/noteStore.js'
+  import { guard } from "../../../stores/utilities/ssr-guard.js";
+  import { noteStore } from "../../../stores/utilities/noteStore.js";
   export let note = { body: [], source: { name: "" } };
-  export let stores = {}
+  export let stores = {};
   let title = "";
   $: if (stores.$publication) {
     title = stores.$publication.name;
   }
   let noteBody = [];
-  let store
+  let store;
   $: if (note && note.shortId && !store) {
-    store = noteStore(note)
+    store = noteStore(note);
   }
-  let selectedFlags
+  let selectedFlags;
   let comment, highlighted, flags, colours, annotation;
   $: if (store) {
-    comment = store.noted
-    highlighted = store.highlighted
-    flags = store.flags
-    colours = store.colours
-    annotation = store.annotation
+    comment = store.noted;
+    highlighted = store.highlighted;
+    flags = store.flags;
+    colours = store.colours;
+    annotation = store.annotation;
   }
   $: if ($flags && !selectedFlags) {
-    selectedFlags = $flags.map(flag => flag.name)
+    selectedFlags = $flags.map(flag => flag.name);
   }
   let highlight;
-  let colour
-  $: if (
-    $colours && !colour
-  ) {
+  let colour;
+  $: if ($colours && !colour) {
     colour = $colours
       .find(tag => tag.name.startsWith("colour"))
       .name.replace(" ", "");
   }
 
-  let availableColours
+  let availableColours;
   $: availableColours = $tags.items
     .filter(tag => tag.type == "flag" && tag.name.startsWith("colour"))
-    .map(tag =>
-      tag.name.replace(" ", "")
-    );
-
+    .map(tag => tag.name.replace(" ", ""));
 
   let availableFlags = [];
   $: if ($tags && $tags.items.length !== 0) {
@@ -79,34 +74,36 @@
     }
   }
   function updateHighlight(id, colour) {
-    console.log(colour)
+    console.log(colour);
     document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
       node.classList.forEach(token => {
-        if (token.startsWith('Colour')) {
-          node.classList.remove(token)
+        if (token.startsWith("Colour")) {
+          node.classList.remove(token);
         }
-      })
-      node.classList.add(colour)
+      });
+      node.classList.add(colour);
     });
-    document.querySelectorAll(`[data-annotation-highlight-box="${id}"]`).forEach(node => {
-      node.classList.forEach(token => {
-        if (token.startsWith('Colour')) {
-          node.classList.remove(token)
-        }
-      })
-      node.classList.add(colour)
-    });
+    document
+      .querySelectorAll(`[data-annotation-highlight-box="${id}"]`)
+      .forEach(node => {
+        node.classList.forEach(token => {
+          if (token.startsWith("Colour")) {
+            node.classList.remove(token);
+          }
+        });
+        node.classList.add(colour);
+      });
   }
   async function save() {
     // Get all tags, filter through them to match name of adding tags, add ids as prop
-    if (!$annotation.document) return
+    if (!$annotation.document) return;
     try {
       const payload = Object.assign({}, $annotation);
-      payload.tags = $tags.getIds(
-        [colour.replace("colour", "colour ")].concat(selectedFlags)
-      ).map(id => {
-        return {id: id}
-      });
+      payload.tags = $tags
+        .getIds([colour.replace("colour", "colour ")].concat(selectedFlags))
+        .map(id => {
+          return { id: id };
+        });
       if (payload.body.find(body => body.motivation === "commenting")) {
         const body = payload.body.find(
           body => body.motivation === "commenting"
@@ -129,8 +126,11 @@
           "csrf-token": getToken()
         }
       });
-      refresh(`/api/note/${$annotation.shortId}`)
-      updateHighlight($annotation.id, colour.replace('colour', 'Colour').replace(' ', ''))
+      refresh(`/api/note/${$annotation.shortId}`);
+      updateHighlight(
+        $annotation.id,
+        colour.replace("colour", "Colour").replace(" ", "")
+      );
     } catch (err) {
       console.error(err);
     }
@@ -158,7 +158,7 @@
         return FlagUrgent;
     }
   }
- /*
+  /*
 
   function clickColour(c) {
     colour = c;
@@ -593,19 +593,19 @@
   <div class="Item">
     <div class="Top">
 
-        <div class="CardBottom">
-          <span />
-          <span class="Modified">
-            {#if $annotation && $annotation.updated}
-              <strong>Modified:</strong>
-              {new Date($annotation.updated).toLocaleString(undefined, {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric'
-              })}
-            {/if}
-          </span>
-        </div>
+      <div class="CardBottom">
+        <span />
+        <span class="Modified">
+          {#if $annotation && $annotation.updated}
+            <strong>Modified:</strong>
+            {new Date($annotation.updated).toLocaleString(undefined, {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric'
+            })}
+          {/if}
+        </span>
+      </div>
     </div>
 
     <header class={colour}>
@@ -622,7 +622,9 @@
           </a>
         {/if}
         {#if stores.$publication}
-          <a href="library/all/all/{stores.$publication.shortId}" class="Source">
+          <a
+            href="library/all/all/{stores.$publication.shortId}"
+            class="Source">
             <NavSource />
             <p>{stores.$publication.name}</p>
           </a>
@@ -644,7 +646,9 @@
       </ul>
       {#if $comment.content || $comment.value}
         <div class="Editor {colour} {!highlight ? 'bigEditor' : ''}">
-          <NoteEditor html={$comment.content || $comment.value} bind:richtext={text} />
+          <NoteEditor
+            html={$comment.content || $comment.value}
+            bind:richtext={text} />
         </div>
       {:else}
         <div class="Editor {colour} {!highlight ? 'bigEditor' : ''}">

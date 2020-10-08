@@ -13,25 +13,25 @@
   import NavSource from "../../img/NavSource.svelte";
   import Comment from "../../notes/Comment.svelte";
   import Highlight from "../../notes/Highlight.svelte";
-  import {noteStore} from '../../../stores/utilities/noteStore.js'
+  import { noteStore } from "../../../stores/utilities/noteStore.js";
   export let note = {};
-  export let stores = {}
+  export let stores = {};
   let title = "";
   $: if (stores.$publication) {
     title = stores.$publication.name;
   }
   let noteBody = [];
-  let store
+  let store;
   $: if (note && note.shortId && !store) {
-    store = noteStore(note)
+    store = noteStore(note);
   }
   let noted, highlighted, flags, colours, annotation;
   $: if (store) {
-    noted = store.noted
-    highlighted = store.highlighted
-    flags = store.flags
-    colours = store.colours
-    annotation = store.annotation
+    noted = store.noted;
+    highlighted = store.highlighted;
+    flags = store.flags;
+    colours = store.colours;
+    annotation = store.annotation;
   }
 
   function assignIco(icon) {
@@ -318,72 +318,76 @@
 </style>
 
 {#if $annotation}
-  
-<div
-  class="NoteItem {$colours ? $colours[0].name.replace(' ', '') : ''}"
-  class:Selected={$annotation.selected}>
-  <div class="Top {$annotation.document || $highlighted || $annotation.sourceId ? 'two' : ''}">
-    {#if $annotation.document || $highlighted || $annotation.source}
-      <header>
-        <div class="column" />
-        <div class="info">
-          <!-- {#if note.target.source}
+
+  <div
+    class="NoteItem {$colours ? $colours[0].name.replace(' ', '') : ''}"
+    class:Selected={$annotation.selected}>
+    <div
+      class="Top {$annotation.document || $highlighted || $annotation.sourceId ? 'two' : ''}">
+      {#if $annotation.document || $highlighted || $annotation.source}
+        <header>
+          <div class="column" />
+          <div class="info">
+            <!-- {#if note.target.source}
             <a
               href="{window.location.pathname.replace('notes', 'library')}{note.target.source}">
               <p class="Page">Page</p>
             </a>
           {/if} -->
-          {#if $highlighted}
-            <a
-              class="Highlight modal_link"
-              href="#id-{$annotation.shortId}" rel=external>
-              {@html $highlighted.content || $highlighted.value}
-            </a>
-          {/if}
-          {#if stores.$publication && stores.$publication.name}
-            <a
-              href="#id-{$annotation.shortId}"
-              class="Source modal_link" rel=external>
-              <NavSource />
-              <p>{stores.$publication.name}</p>
-            </a>
-          {/if}
-        </div>
-      </header>
-    {/if}
-    <a
-      class="Note modal_link"
-      href="#id-{$annotation.shortId}" rel=external>
-      {#if $noted}
-        {@html $noted.content || $noted.value}
+            {#if $highlighted}
+              <a
+                class="Highlight modal_link"
+                href="#id-{$annotation.shortId}"
+                rel="external">
+                {@html $highlighted.content || $highlighted.value}
+              </a>
+            {/if}
+            {#if stores.$publication && stores.$publication.name}
+              <a
+                href="#id-{$annotation.shortId}"
+                class="Source modal_link"
+                rel="external">
+                <NavSource />
+                <p>{stores.$publication.name}</p>
+              </a>
+            {/if}
+          </div>
+        </header>
       {/if}
-    </a>
-    <!-- Adjust "Top" div when tags will be implemented
+      <a
+        class="Note modal_link"
+        href="#id-{$annotation.shortId}"
+        rel="external">
+        {#if $noted}
+          {@html $noted.content || $noted.value}
+        {/if}
+      </a>
+      <!-- Adjust "Top" div when tags will be implemented
     <ul class="Tags">
       <li>
         <p>#tag</p>
       </li>
     </ul>-->
+    </div>
+    <div class="Bottom">
+      <ul class="Flags">
+        {#each $flags as flag}
+          <li>
+            <svelte:component this={assignIco(flag.name)} />
+            <p>{flag.name}</p>
+          </li>
+        {/each}
+      </ul>
+      <section>
+        <p>
+          <strong>Modified:</strong>
+          {new Date($annotation.updated).toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric'
+          })}
+        </p>
+      </section>
+    </div>
   </div>
-  <div class="Bottom">
-    <ul class="Flags">
-      {#each $flags as flag}
-        <li>
-          <svelte:component this={assignIco(flag.name)} />
-          <p>{flag.name}</p>
-        </li>
-      {/each}
-    </ul>
-    <section>
-      <p>
-        <strong>Modified:</strong>
-        {new Date($annotation.updated).toLocaleString(undefined, {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric'
-        })}
-      </p>
-    </section>
-  </div>
-</div>
 {/if}

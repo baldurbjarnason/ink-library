@@ -6,7 +6,7 @@ const { Storage } = require("@google-cloud/storage");
 const storage = new Storage();
 
 // Prefix with user id and with random id.
-export async function generateURL (fileName, id) {
+export async function generateURL(fileName, id) {
   const suffix = path.extname(fileName);
   const type = mime.getType(suffix);
   const publication = suffix === ".epub" || suffix === ".docx";
@@ -22,5 +22,12 @@ export async function generateURL (fileName, id) {
     .file(`${userPrefix}/${filePrefix}`)
     .getSignedUrl(config);
   const original = `https://storage.cloud.google.com/${process.env.GOOGLE_STORAGE_BUCKET}/${userPrefix}/${filePrefix}`;
-  return { url, type, publication, storageId: filePrefix, original, userPrefix }
+  return {
+    url,
+    type,
+    publication,
+    storageId: filePrefix,
+    original,
+    userPrefix
+  };
 }
