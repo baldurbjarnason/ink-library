@@ -58,6 +58,7 @@ typings/
 .env
 
 __sapper__
+sapper
 
 keyfile.json
 app-dev.yaml

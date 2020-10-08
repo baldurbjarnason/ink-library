@@ -17,7 +17,7 @@
     let url
     let body
     let fileType
-    if (file.size < 1024 * 750) {
+    if (file.size < 1024 * 1024) {
       url = `/api/upload-small-file?filePath=${file.name}`
       body = file
       fileType= file.type

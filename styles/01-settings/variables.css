@@ -29,10 +29,11 @@
 }
 /* Reader highlight colours */
 :root {
-  --highlight-color1: #ffff98;
-  --highlight-color2: #FEA95B;
-  --highlight-color3: #FF8EBE;
-  --highlight-color4: #6FE1FA;
+  --highlight-color: #ffff98;
+  --highlight-color1: #fea95b;
+  --highlight-color2: #ff8ebe;
+  --highlight-color3: #57cfea;
+  --highlight-color4: #81d173;
 }
 
 :root {
@@ -45,7 +46,6 @@
   --sidebar-background-color: #f3f7fa;
   --main-background-color: #F1F5F8;
   --warm-background-color: #f7f6f4;
-  --highlight-color: #ffff98;
   --dark: #333333;
   --medium: #555555;
   --light: #fafafa;

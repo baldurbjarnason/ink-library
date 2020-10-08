@@ -4,7 +4,7 @@ const { subscribe, set } = writable(true);
 const QUERY = "(prefers-reduced-motion: reduce)";
 
 // online
-if (!window) {
+if (!process.browser) {
   set(false);
 } else {
   if (!window.matchMedia) {

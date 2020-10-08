@@ -91,6 +91,7 @@ export function setup(sapper, options = {}) {
         'application/epub+zip',
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/zip",
+        "application/pdf",
         'text/*'
       ],
       limit: "1mb"

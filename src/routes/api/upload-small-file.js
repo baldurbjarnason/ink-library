@@ -1,7 +1,7 @@
 import {generateURL} from './_generate-url.js'
 const path = require("path");
-const fs = require("fs");
-const os = require("os");
+// const fs = require("fs");
+// const os = require("os");
 const formats = require("ink-engine/src/formats");
 const compressible = require('compressible')
 const MarkdownIt = require('markdown-it')
@@ -12,56 +12,66 @@ const storage = new Storage();
 export async function post(req, res, next) {
   const uploadBucket = storage.bucket(process.env.PUBLICATION_BUCKET)
   const fileName = path.basename(req.query.filePath || 'index');
-  let contentType
+  let mediaType
   let suffix
   let body
   if (req.is("html")) {
-    contentType = "text/html"
+    mediaType = "text/html"
     suffix = "html"
     body = req.body
   } else if (req.is('application/epub+zip')) {
-    contentType = "application/epub+zip"
+    mediaType = "application/epub+zip"
     suffix = "epub"
     body = req.body
   } else if (req.is("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
-    contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    mediaType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     suffix = "docx"
     body = req.body
   } else if (req.is("text/*")) {
-    contentType = "text/markdown"
+    mediaType = "text/markdown"
     suffix = "md"
     const text = req.body.toString()
     body = wrap(md.render(text), fileName)
+  } else if (req.is("application/pdf")) {
+    mediaType = "application/pdf"
+    suffix = "pdf"
+    body = req.body
   }
   const {storageId, url, userPrefix} = await generateURL(`${fileName}.${suffix}`, req.user.profile.id)
   const filePrefix = storageId;
-  const Format = formats[contentType]
-  const tempFilePath = path.join(os.tmpdir(), userPrefix, filePrefix, fileName);
   const targetPath = path.join(userPrefix, filePrefix);
-  await fs.promises.mkdir(path.join(os.tmpdir(), userPrefix, filePrefix), {recursive: true})
-  await fs.promises.writeFile(tempFilePath, body)
-  const processor = new Format(tempFilePath, { extract, type: contentType })
-  const book = await processor.process();
-  fs.unlinkSync(tempFilePath);
-  if (book) {
-    extract({contents: JSON.stringify(book)}, Object.assign({ url: "index.json" }, book), {contentType: "application/json"})
+  let book
+  console.log(mediaType)
+  try {
+    for await (const vfile of formats({
+      mediaType,
+      data: body,
+      thumbnails: false
+    })) {
+      console.log(vfile.path, vfile.contentType, vfile.data, vfile.contents.length)
+      if (!vfile.data && !vfile.data.resource) {
+        book = vfile
+      } else {
+        const metadata = {
+          contentType:  vfile.contentType
+        }
+        const gzip = vfile.contentType && compressible(vfile.contentType)
+        const filename = path.join(targetPath, vfile.path);
+        const storageFile = uploadBucket.file(filename);
+        await storageFile.save(vfile.contents, {
+          metadata,
+          gzip,
+          resumable: false
+        });
+      }
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500);
+    return res.json(err.body);
   }
   // Return upload url for the front end to upload the original to.
   res.json({ storageId: filePrefix, book, url });
-  async function extract(file, resource) {
-    const metadata = {
-      contentType:  resource.encodingFormat
-    }
-    const gzip = resource.encodingFormat && compressible(resource.encodingFormat)
-    const filename = path.join(targetPath, resource.url);
-    const storageFile = uploadBucket.file(filename);
-    await storageFile.save(file.contents, {
-      metadata,
-      gzip,
-      resumable: false
-    });
-    return filename;
-  }
 }
 
 function wrap (body, title) {
