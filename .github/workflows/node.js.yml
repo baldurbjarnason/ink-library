@@ -21,7 +21,7 @@ jobs:
 
     steps:
     - env:
-        SUPER_SECRET: ${{ secrets.APP_ENGINE_YAML }}
+        APP_ENGINE_YAML: ${{ secrets.APP_ENGINE_YAML }}
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
