@@ -10,8 +10,8 @@ export async function get(req, res, next) {
   const [exists] = await file.exists();
   if (exists) {
     const [data] = await file.download();
-    const result = JSON.parse(data.toString("utf8"))
-    result.storageId = req.params.storageId
+    const result = JSON.parse(data.toString("utf8"));
+    result.storageId = req.params.storageId;
     return res.json(result);
   } else {
     return res.sendStatus(404);

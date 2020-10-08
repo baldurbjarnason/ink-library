@@ -10,15 +10,15 @@
     "export": "sapper export --legacy",
     "start": "node index.js",
     "snowpack": "snowpack --dest static/web_modules/ --babel",
-    "lint": "healthier && prettier --write --plugin-search-dir=. '**/*.{js,json,css,yml,svelte}'",
-    "pretest": "npm run lint",
+    "lint": "healthier",
     "prepublishOnly": "npm run lint",
-    "snapshots": "TAP_SNAPSHOT=1 npm run test && prettier --write --plugin-search-dir=. '**/*.{js,json,css,yml,svelte}'",
-    "test": "jest src",
+    "snapshots": "TAP_SNAPSHOT=1 npm run test && prettier --write --plugin-search-dir=. 'src/**/*.{js,json,css,yml,svelte}'",
+    "test": "npm run lint",
     "test:watch": "npm run test -- --watch",
     "deploy-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs10 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize",
     "deploy-dev": "npm run build && gcloud app deploy app-dev.yaml --project ink-frontend-server-dev",
-    "deploy-production": "npm run build && gcloud app deploy app.yaml --project fb-ink-dev"
+    "deploy-production": "npm run build && gcloud app deploy app.yaml --project fb-ink-dev",
+    "save-config": "node save-config.js"
   },
   "snowpack": {
     "install": [

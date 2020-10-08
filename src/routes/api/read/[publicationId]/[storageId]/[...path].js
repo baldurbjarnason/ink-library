@@ -19,8 +19,7 @@ export async function get(req, res, next) {
     const file = bucket.file(basePath);
     const [exists] = await file.exists();
     if (!exists) return res.sendStatus(404);
-    const [metadata] = await file
-      .getMetadata();
+    const [metadata] = await file.getMetadata();
     const [data] = await file.download();
     const chapter = JSON.parse(data);
     const documentURL = `/${req.params.publicationId}/${req.params.path.join(
@@ -43,7 +42,7 @@ export async function get(req, res, next) {
       mediaBase,
       linkBase
     });
-    res.append('Last-Modified', (new Date(metadata.updated)).toUTCString());
+    res.append("Last-Modified", new Date(metadata.updated).toUTCString());
     res.json(response);
   } catch (err) {
     console.error(err);
@@ -88,14 +87,19 @@ function fixItem(item) {
       purpose: body.motivation
     };
   });
-  if (item.tags && item.tags.find(tag => tag.name.startsWith('colour'))) {
-    item.target.styleClass = item.tags.find(tag => tag.name.startsWith('colour')).name.replace(' ', '').replace('c', 'C')
+  if (item.tags && item.tags.find(tag => tag.name.startsWith("colour"))) {
+    item.target.styleClass = item.tags
+      .find(tag => tag.name.startsWith("colour"))
+      .name.replace(" ", "")
+      .replace("c", "C");
   }
   item.type = "Annotation";
   if (!item.target.selector) return null;
-  const colour =  [].concat(item.tags).find(tag => tag.name.startsWith('colour'))
+  const colour = []
+    .concat(item.tags)
+    .find(tag => tag.name.startsWith("colour"));
   if (colour) {
-    item.styleClass = "Colour" + colour.name.split(" ")[1]
+    item.styleClass = "Colour" + colour.name.split(" ")[1];
   }
   return item;
 }

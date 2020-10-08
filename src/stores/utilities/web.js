@@ -39,7 +39,7 @@ export function web(pathOrStore, config = {}) {
     stores,
     ([$path, $visible, $online, $refresh], set) => {
       // If we don't have a path, return and leave the store unchanged.
-      if (!$path.path) return
+      if (!$path.path) return;
       if (($visible || refreshWhenHidden) && ($online || refreshWhenOffline)) {
         // Todo: Links support. Default fetcher should return a {data, links} object.
         // Todo: Should prime with cached data if that is provided and delay first fetch.
@@ -58,18 +58,18 @@ export function web(pathOrStore, config = {}) {
           });
       }
     },
-    {data: initialData, error: null}
+    { data: initialData, error: null }
   );
 }
 
-const cache = new Map()
-export function cachedWeb (pathOrStore, config) {
+const cache = new Map();
+export function cachedWeb(pathOrStore, config) {
   if (cache.get(pathOrStore)) {
-    return cache.get(pathOrStore)
+    return cache.get(pathOrStore);
   } else {
-    const store = web(pathOrStore, config)
-    cache.set(pathOrStore, store)
-    return store
+    const store = web(pathOrStore, config);
+    cache.set(pathOrStore, store);
+    return store;
   }
 }
 

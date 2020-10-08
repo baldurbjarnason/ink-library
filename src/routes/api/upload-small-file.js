@@ -1,61 +1,74 @@
-import {generateURL} from './_generate-url.js'
+import { generateURL } from "./_generate-url.js";
 const path = require("path");
 // const fs = require("fs");
 // const os = require("os");
 const formats = require("ink-engine/src/formats");
-const compressible = require('compressible')
-const MarkdownIt = require('markdown-it')
+const compressible = require("compressible");
+const MarkdownIt = require("markdown-it");
 const md = new MarkdownIt();
-const {Storage} = require('@google-cloud/storage');
+const { Storage } = require("@google-cloud/storage");
 const storage = new Storage();
 
 export async function post(req, res, next) {
-  const uploadBucket = storage.bucket(process.env.PUBLICATION_BUCKET)
-  const fileName = path.basename(req.query.filePath || 'index');
-  let mediaType
-  let suffix
-  let body
+  const uploadBucket = storage.bucket(process.env.PUBLICATION_BUCKET);
+  const fileName = path.basename(req.query.filePath || "index");
+  let mediaType;
+  let suffix;
+  let body;
   if (req.is("html")) {
-    mediaType = "text/html"
-    suffix = "html"
-    body = req.body
-  } else if (req.is('application/epub+zip')) {
-    mediaType = "application/epub+zip"
-    suffix = "epub"
-    body = req.body
-  } else if (req.is("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
-    mediaType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    suffix = "docx"
-    body = req.body
+    mediaType = "text/html";
+    suffix = "html";
+    body = req.body;
+  } else if (req.is("application/epub+zip")) {
+    mediaType = "application/epub+zip";
+    suffix = "epub";
+    body = req.body;
+  } else if (
+    req.is(
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
+  ) {
+    mediaType =
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    suffix = "docx";
+    body = req.body;
   } else if (req.is("text/*")) {
-    mediaType = "text/markdown"
-    suffix = "md"
-    const text = req.body.toString()
-    body = wrap(md.render(text), fileName)
+    mediaType = "text/markdown";
+    suffix = "md";
+    const text = req.body.toString();
+    body = wrap(md.render(text), fileName);
   } else if (req.is("application/pdf")) {
-    mediaType = "application/pdf"
-    suffix = "pdf"
-    body = req.body
+    mediaType = "application/pdf";
+    suffix = "pdf";
+    body = req.body;
   }
-  const {storageId, url, userPrefix} = await generateURL(`${fileName}.${suffix}`, req.user.profile.id)
+  const { storageId, url, userPrefix } = await generateURL(
+    `${fileName}.${suffix}`,
+    req.user.profile.id
+  );
   const filePrefix = storageId;
   const targetPath = path.join(userPrefix, filePrefix);
-  let book
-  console.log(mediaType)
+  let book;
+  console.log(mediaType);
   try {
     for await (const vfile of formats({
       mediaType,
       data: body,
       thumbnails: false
     })) {
-      console.log(vfile.path, vfile.contentType, vfile.data, vfile.contents.length)
+      console.log(
+        vfile.path,
+        vfile.contentType,
+        vfile.data,
+        vfile.contents.length
+      );
       if (!vfile.data && !vfile.data.resource) {
-        book = vfile
+        book = vfile;
       } else {
         const metadata = {
-          contentType:  vfile.contentType
-        }
-        const gzip = vfile.contentType && compressible(vfile.contentType)
+          contentType: vfile.contentType
+        };
+        const gzip = vfile.contentType && compressible(vfile.contentType);
         const filename = path.join(targetPath, vfile.path);
         const storageFile = uploadBucket.file(filename);
         await storageFile.save(vfile.contents, {
@@ -66,7 +79,7 @@ export async function post(req, res, next) {
       }
     }
   } catch (err) {
-    console.error(err)
+    console.error(err);
     res.status(500);
     return res.json(err.body);
   }
@@ -74,7 +87,7 @@ export async function post(req, res, next) {
   res.json({ storageId: filePrefix, book, url });
 }
 
-function wrap (body, title) {
+function wrap(body, title) {
   return `<!doctype html>
   <html>
   <head>

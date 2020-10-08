@@ -1,6 +1,5 @@
-
-const ISO6391 = require("iso-639-1")
-const got = require('got')
+const ISO6391 = require("iso-639-1");
+const got = require("got");
 const { Storage } = require("@google-cloud/storage");
 const storage = new Storage();
 const path = require("path");
@@ -23,39 +22,46 @@ export async function get(req, res, next) {
     });
     response.keywords = response.keywords || [];
     if (!response.json && !response.json.storageId) {
-      response._empty = true
+      response._empty = true;
     } else if (response.json && response.json.storageId) {
       const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
       try {
-        const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "");
-        const basePath = path.join(userPrefix, response.json.storageId, "index.json");
+        const userPrefix = new URL(req.user.profile.id).pathname.replace(
+          "/",
+          ""
+        );
+        const basePath = path.join(
+          userPrefix,
+          response.json.storageId,
+          "index.json"
+        );
         const file = bucket.file(basePath);
         const [exists] = await file.exists();
         if (!exists) {
-          response._processing = true
+          response._processing = true;
         } else {
           const [data] = await file.download();
-          const stored = JSON.parse(data)
-          response.readingOrder = stored.readingOrder
-          response.resources = stored.resources
+          const stored = JSON.parse(data);
+          response.readingOrder = stored.readingOrder;
+          response.resources = stored.resources;
           if (stored._processing) {
-            response._processing = stored._processing
+            response._processing = stored._processing;
           }
           if (stored._unsupported) {
-            response._unsupported = stored._unsupported
+            response._unsupported = stored._unsupported;
           }
           if (stored._error) {
-            response._error = stored._error
+            response._error = stored._error;
           }
         }
       } catch (err) {
         console.error(err);
-        response._empty = true
+        response._empty = true;
       }
     }
     // Get stored publication, add readingorder and resources from there
     // Add last-modified header
-    res.append('Last-Modified', (new Date(response.updated)).toUTCString());
+    res.append("Last-Modified", new Date(response.updated).toUTCString());
     res.json(response);
   } catch (err) {
     res.status(err.response.statusCode);

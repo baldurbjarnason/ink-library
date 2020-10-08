@@ -14,17 +14,17 @@
   let original;
   async function change(event) {
     file = event.target.files[0];
-    let url
-    let body
-    let fileType
+    let url;
+    let body;
+    let fileType;
     if (file.size < 1024 * 1024) {
-      url = `/api/upload-small-file?filePath=${file.name}`
-      body = file
-      fileType= file.type
+      url = `/api/upload-small-file?filePath=${file.name}`;
+      body = file;
+      fileType = file.type;
     } else {
-      url = `/api/upload-url`
-      body = JSON.stringify({ file: file.name })
-      fileType = "application/json"
+      url = `/api/upload-url`;
+      body = JSON.stringify({ file: file.name });
+      fileType = "application/json";
     }
     const response = await fetch(url, {
       method: "POST",
