@@ -31,3 +31,8 @@ jobs:
     - run: npm run save-config --if-present
       env:
         APP_ENGINE_YAML: ${{ secrets.APP_ENGINE_YAML }}
+    - id: deploy
+      uses: GoogleCloudPlatform/github-actions/appengine-deploy@master
+      with:
+        credentials: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ secrets.PROJECT_ID }}
