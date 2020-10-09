@@ -34,5 +34,5 @@ jobs:
     - id: deploy
       uses: GoogleCloudPlatform/github-actions/appengine-deploy@master
       with:
-        credentials: ${{ secrets.GCP_SA_KEY }}
+        credentials: ${{ secrets.GOOGLE_KEY }}
         project_id: ${{ secrets.PROJECT_ID }}
