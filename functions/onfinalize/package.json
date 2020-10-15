@@ -16,7 +16,7 @@
     "test": "jest src",
     "test:watch": "npm run test -- --watch",
     "deploy-function": "gcloud functions deploy triggerWrapper --runtime nodejs12 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize --memory=1024MB --timeout=300s --project fb-ink-dev",
-    "deploy-dev-function": "gcloud functions deploy triggerWrapper --runtime nodejs12 --trigger-resource ink-frontend-server-dev-uploads --trigger-event google.storage.object.finalize --project ink-frontend-server-dev --memory=1024MB --timeout=300s"
+    "deploy-dev-function": "gcloud functions deploy triggerWrapper --runtime nodejs12 --trigger-resource ink-frontend-server-dev-uploads --trigger-event google.storage.object.finalize --project ink-frontend-server-dev --memory=2048MB --timeout=300s"
   },
   "snowpack": {
     "webDependencies": [

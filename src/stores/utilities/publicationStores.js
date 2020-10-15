@@ -89,7 +89,7 @@ export function publicationStores(page) {
       } else if ($page.params.path && $page.params.publicationId) {
         return $page.params.path.join("/");
       } else {
-        return null;
+        return "";
       }
     },
     null
