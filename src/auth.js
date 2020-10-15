@@ -56,10 +56,9 @@ async function deserialise(user) {
       user.profile = await getProfile(user);
     } catch (err) {
       try {
-        console.error("Auth failed: ", err.response.body);
-      } catch (err) {
-        console.error("Auth failed: ", err)
-      }
+        console.error("Auth failed error: ", err)
+        console.error("Auth failed, response body: ", err.response.body);
+      } catch (err) {}
       if (err.response && err.response.statusCode === 404) {
         try {
           await got.post(`${process.env.API_SERVER}readers`, {
@@ -86,11 +85,11 @@ async function deserialise(user) {
 
 export function setup(app) {
   passport.serializeUser((user, done) => {
-    console.log('serialise: ', user)
+    // console.log('serialise: ', user)
     done(null, user);
   });
   passport.deserializeUser((user, done) => {
-    console.log('deserialise: ', user)
+    // console.log('deserialise: ', user)
     return deserialise(user)
       .then(user => done(null, user))
       .catch(err => done(err));
