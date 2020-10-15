@@ -41,21 +41,21 @@ export async function get(req, res, next) {
           console.log("publication does not exist")
           response._processing = true;
         } else {
-          console.log("publication exists")
+          // console.log("publication exists")
           const [data] = await file.download();
           const stored = JSON.parse(data);
           response.readingOrder = stored.readingOrder;
           response.resources = stored.resources;
           if (stored._processing) {
-            console.log("publication processing")
+            // console.log("publication processing")
             response._processing = stored._processing;
           }
           if (stored._unsupported) {
-            console.log("publication unsupported")
+            // console.log("publication unsupported")
             response._unsupported = stored._unsupported;
           }
           if (stored._error) {
-            console.log("publication error")
+            // console.log("publication error")
             response._error = stored._error;
           }
         }
