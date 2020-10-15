@@ -42,6 +42,9 @@
   } else {
     menu = false;
   }
+  $: if (process.browser) {
+    console.log($session)
+  }
 </script>
 
 <style global>
