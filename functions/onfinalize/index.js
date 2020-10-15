@@ -5,10 +5,8 @@ const formats = require("ink-engine/src/formats");
 const compressible = require('compressible')
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-const uploadBucket = storage.bucket(process.env.PUBLICATION_BUCKET)
-const downloadPrefix = `/api/download`
-
-const THUMBSIZE = 400;
+const uploadBucket = storage.bucket(process.env.PUBLICATION_BUCKET);
+const downloadPrefix = `/api/download`;
 
 module.exports.triggerWrapper = triggerWrapper;
 
@@ -57,7 +55,6 @@ async function onFinalize(object, context, done) {
     gzip: true,
     resumable: false
   });
-  const thumbnailPath = [userType, userId, "thumbnails", pubId].join("/");
   const bucket = storage.bucket(fileBucket);
   const tempFilePath = path.join(os.tmpdir(), fileName);
   await bucket.file(filePath).download({ destination: tempFilePath });
@@ -65,10 +62,7 @@ async function onFinalize(object, context, done) {
   try {
     for await (const vfile of formats({
       mediaType: contentType,
-      filename: tempFilePath,
-      thumbnails: true,
-      thumbSize: THUMBSIZE,
-      thumbPath: thumbnailPath
+      filename: tempFilePath
     })) {
       if (!vfile.data) {
         book = vfile
@@ -101,7 +95,7 @@ async function onFinalize(object, context, done) {
     const unsupported = {
       name: fileName,
       _unsupported: true,
-      _error: JSON.stringify(err),
+      _error: err.message,
       resources: [
         {
           type: "LinkedResource",

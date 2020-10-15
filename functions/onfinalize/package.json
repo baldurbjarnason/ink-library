@@ -15,7 +15,8 @@
     "snapshots": "TAP_SNAPSHOT=1 npm run test && prettier --write --plugin-search-dir=. '**/*.{js,json,css,yml,svelte}'",
     "test": "jest src",
     "test:watch": "npm run test -- --watch",
-    "deploy-function": "gcloud functions deploy triggerWrapper --runtime nodejs10 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize"
+    "deploy-function": "gcloud functions deploy triggerWrapper --runtime nodejs12 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize --memory=1024MB --timeout=300s --project fb-ink-dev",
+    "deploy-dev-function": "gcloud functions deploy triggerWrapper --runtime nodejs12 --trigger-resource ink-frontend-server-dev-uploads --trigger-event google.storage.object.finalize --project ink-frontend-server-dev --memory=1024MB --timeout=300s"
   },
   "snowpack": {
     "webDependencies": [
@@ -42,7 +43,7 @@
     ]
   },
   "engines": {
-    "node": "10"
+    "node": "12"
   },
   "healthier": {
     "ignore": [
@@ -53,7 +54,6 @@
   "dependencies": {
     "@google-cloud/storage": "^5.3.0",
     "compressible": "^2.0.18",
-    "ink-engine": "git+https://github.com/RebusFoundation/ink-engine.git",
-    "sharp": "^0.24.0"
+    "ink-engine": "git+https://github.com/RebusFoundation/ink-engine.git"
   }
 }
