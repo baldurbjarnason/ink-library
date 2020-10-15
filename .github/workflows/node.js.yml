@@ -5,12 +5,10 @@
 
 name: Node.js CI
 
-# This particular workflow should try to build and deploy to dev whenever the main branch updates
+# This particular workflow should try to build and deploy to dev whenever the main branch updates. But no point in running it on pull requests as it does no testing.
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
 jobs:
