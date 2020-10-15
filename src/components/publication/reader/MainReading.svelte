@@ -89,7 +89,7 @@
 </style>
 
 <svelte:head>
-  {#if $chapter.stylesheets.length !== 0}
+  {#if $chapter.stylesheets && $chapter.stylesheets.length !== 0}
     {#each $chapter.stylesheets as stylesheet}
       <link rel="stylesheet" href={stylesheet} />
     {/each}
