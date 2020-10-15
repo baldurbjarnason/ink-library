@@ -36,12 +36,6 @@ const placedNotes = function(placed, notes) {
 // Add error derived
 let stores;
 export function publicationStores(page) {
-  if (stores) {
-    console.log("returning cached stores");
-    return stores;
-  } else {
-    console.log("building stores");
-  }
   if (!process.browser) {
     return {
       publication: writable({
