@@ -56,7 +56,8 @@ async function deserialise(user) {
       user.profile = await getProfile(user);
     } catch (err) {
       try {
-        console.error("Auth failed: ", err.response.body);
+        console.error("Auth failed error: ", err)
+        console.error("Auth failed, response body: ", err.response.body);
       } catch (err) {}
       if (err.response && err.response.statusCode === 404) {
         try {
@@ -107,7 +108,7 @@ export function setup(app) {
           callbackURL: process.env.CALLBACK_URL
         },
         (accessToken, refreshToken, extraParams, profile, done) => {
-          return done(null, { id: profile.id });
+          return done(null, { id: profile.id, email: profile.email, email_verified: profile.email_verified, name: profile.name, nickname: profile.nickname, picture: profile.picture });
         }
       )
     );
