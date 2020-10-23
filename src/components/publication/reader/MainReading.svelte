@@ -1,9 +1,12 @@
 <script>
-  import { publication, workspaces, page, chapter } from "../../../stores";
+  import { publicationStores } from "../../../stores/utilities/publicationStores.js";
   import ToC from "../ToC.svelte";
-  import SidebarNotes from "./SidebarNotes.svelte"
+  import SidebarNotes from "./SidebarNotes.svelte";
+  import { stores } from "@sapper/app";
+  const { page, session } = stores();
   export let readerBody = null;
   export let hidden = false;
+  const { chapter } = publicationStores(page);
 </script>
 
 <style>
@@ -29,42 +32,78 @@
   }
   :global(ink-html) {
     height: 100%;
-    background-color: white;
-    border: 1px solid #dddddd;
     display: block;
   }
   .Chapter :global(#ink-engine ink-body) {
     display: block;
     padding: 2rem;
+    background-color: white;
+    border: 1px solid #dddddd;
+  }
+  .Chapter :global(ink-body#pdf-body) {
+    background-color: var(--light);
+    border-color: var(--light);
+    padding: 0;
+  }
+  /* .Chapter :global(ink-body#pdf-body ink-page) {
+    box-shadow: 2px 2px 8px black;
+  } */
+  .Chapter :global(ink-body#pdf-body ink-page svg) {
+    background-color: white;
+    border: 1px solid #dddddd;
+    display: block;
+    max-height: inherit;
+  }
+  .Chapter :global(ink-body#pdf-body h1),
+  .Chapter :global(ink-body#pdf-body ink-page h2) {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: auto;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
   }
   .Chapter :global(.Colour) {
     background-color: var(--highlight-color1);
+    fill: #ffff9866;
+  }
+  .Chapter :global(.Colour1) {
+    background-color: var(--highlight-color1);
+    fill: #fea95b66;
   }
   .Chapter :global(.Colour2) {
     background-color: var(--highlight-color2);
+    fill: #ff8ebe66;
   }
   .Chapter :global(.Colour3) {
     background-color: var(--highlight-color3);
+    fill: #ff8ebe66;
   }
   .Chapter :global(.Colour4) {
     background-color: var(--highlight-color4);
+    fill: #6fe1fa66;
   }
 </style>
 
 <svelte:head>
-  {#if $chapter.stylesheets.length !== 0}
+  {#if $chapter.stylesheets && $chapter.stylesheets.length !== 0}
     {#each $chapter.stylesheets as stylesheet}
       <link rel="stylesheet" href={stylesheet} />
     {/each}
   {/if}
 </svelte:head>
 
-<div class="Reader" hidden={hidden}>
+<div class="Reader" {hidden}>
   <div class="LeftSidebar">
     <ToC />
   </div>
   <div class="Body Chapter" id="reader-body" bind:this={readerBody}>
-    {@html $chapter.contents}
+    {#if $chapter}
+      {@html $chapter.contents}
+    {/if}
   </div>
   <SidebarNotes />
 </div>

@@ -1,6 +1,7 @@
 <script>
   import { contents, page } from "../../stores";
   import ContentsItem from "./ContentsItem.svelte";
+  import PagedContentsItem from "./PagedContentsItem.svelte";
   import Loading from "../widgets/Loading.svelte";
 </script>
 
@@ -59,16 +60,29 @@
     font-weight: 600;
     margin: 0;
   }
+  .PDF ol,
+  .PDF.ToC {
+    padding: 0;
+    margin: 0;
+  }
 </style>
 
-<div class="ToC">
+<div class="ToC {$contents.type}">
   {#if $contents.type !== 'loading'}
-    <h2>{$contents.heading || 'Table of Contents'}</h2>
-    <ol>
-      {#each $contents.children as item}
-        <ContentsItem {item} />
-      {/each}
-    </ol>
+    {#if $contents.type === 'PDF'}
+      <ol>
+        {#each $contents.children as item}
+          <PagedContentsItem {item} storageId={$contents.storageId} />
+        {/each}
+      </ol>
+    {:else}
+      <h2>{$contents.heading || 'Table of Contents'}</h2>
+      <ol>
+        {#each $contents.children as item}
+          <ContentsItem {item} />
+        {/each}
+      </ol>
+    {/if}
   {:else}
     <Loading />
   {/if}

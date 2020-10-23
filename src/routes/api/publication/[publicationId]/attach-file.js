@@ -2,7 +2,7 @@ import got from "got";
 
 export async function post(req, res, next) {
   const url = `${process.env.API_SERVER}sources/${req.params.publicationId}`;
-  if (!req.body.storageId) return res.sendStatus(400)
+  if (!req.body.storageId) return res.sendStatus(400);
   const links = [
     {
       rel: "alternate",

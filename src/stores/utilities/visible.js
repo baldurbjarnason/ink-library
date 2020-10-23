@@ -3,11 +3,9 @@ import { writable, derived } from "svelte/store";
 const { subscribe, set } = writable(Date.now());
 
 // online
-if (!window) {
+if (!process.browser) {
   set(false);
-}
-
-if (window) {
+} else {
   if (!isVisible()) {
     set(false);
   }
