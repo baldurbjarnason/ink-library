@@ -18,8 +18,8 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    border-top: 1px solid #ddd;
     margin-bottom: 2rem;
+    padding-bottom: 30px;
   }
   .Target {
     display: block;
@@ -35,10 +35,12 @@
   }
 </style>
 
+<!--
 <div
   class="Card {tab}Tab"
   transition:scale|local={{ delay: 250, duration: 350, easing: elasticInOut }}
-  id="{id}Card">
+  id="{id}Card">-->
+<div class="Card {tab}Tab" id="{id}Card">
   <span class="Target" {id} />
   {#if save}
     {#if editing}

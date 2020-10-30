@@ -43,7 +43,7 @@
     menu = false;
   }
   $: if (process.browser) {
-    console.log($session)
+    console.log($session);
   }
 </script>
 
@@ -63,6 +63,9 @@
     display: grid;
     grid-template-columns: calc(var(--base) * 4) 1fr;
     min-height: 100vh;
+  }
+  .grid.publication {
+    grid-template-columns: 1fr;
   }
   @media (max-width: 720px) {
     .grid {
@@ -85,7 +88,6 @@
   .content.Research {
     --workspace-color: var(--research-workspace);
   }
-  .content.publication,
   .content.unfinished {
     grid-column: 2 / -1;
     padding: 0;
@@ -178,7 +180,9 @@
     </div>
   {/if}
   <main class="grid" class:publication class:inChapter={$chapter.id}>
-    <Nav {params} />
+    {#if !publication}
+      <Nav {params} />
+    {/if}
     <div class="content {params.workspace || 'unfinished'}" class:publication>
       <slot />
     </div>

@@ -62,7 +62,7 @@ export const publicationNotes = derived(
   []
 );
 
-export const placedNotes = function(placed, notes) {
+export const placedNotes = function (placed, notes) {
   return derived(
     [placed, notes],
     ([$placed, $notes]) => {

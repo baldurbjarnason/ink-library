@@ -1,5 +1,6 @@
 <script>
   import { typeName } from "../typeName.js";
+  import ArrowDropDown from "../img/ArrowDropDown.svelte";
   const types = [
     "Source",
     "Article",
@@ -81,6 +82,12 @@
     font-weight: 500;
     font-size: 0.8rem;
   }
+  label > :global(svg) {
+    right: 15px !important;
+    top: inherit !important;
+    color: #ffffff !important;
+    bottom: 18px;
+  }
   @media (max-width: 720px) {
     .LabelText {
       font-size: 0.85rem;
@@ -92,6 +99,7 @@
   <div class="LabelText">
     <slot />
   </div>
+  <ArrowDropDown />
   <select name="pubType" id="select-pubType">
     {#if noDefault}
       <option value="none">None</option>

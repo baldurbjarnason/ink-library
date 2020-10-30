@@ -108,7 +108,7 @@ export function setup(app) {
           callbackURL: process.env.CALLBACK_URL
         },
         (accessToken, refreshToken, extraParams, profile, done) => {
-          return done(null, { id: profile.id });
+          return done(null, { id: profile.id, email: profile._json.email, email_verified: profile._json.email_verified, name: profile.name, nickname: profile.nickname, picture: profile.picture });
         }
       )
     );

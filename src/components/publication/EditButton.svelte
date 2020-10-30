@@ -11,7 +11,7 @@
     flex: 0 1 auto;
     line-height: 1;
 
-    display: flex;
+    display: none;
 
     padding: 0;
 
@@ -34,9 +34,10 @@
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: 1px solid currentColor;
     position: absolute;
+    top: 15px;
+    right: 0; /*
     top: 0;
-    right: 0;
-    transform: translateY(-50%);
+    transform: translateY(-50%);*/
     background-color: var(--reader-info-background);
   }
   .Button:hover {
@@ -44,6 +45,11 @@
   }
   .Button:active {
     color: var(--active);
+  }
+  @media (max-width: 720px) {
+    .Button {
+      display: flex;
+    }
   }
 </style>
 

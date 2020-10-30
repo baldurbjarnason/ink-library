@@ -35,8 +35,12 @@
     highlighed = note.body.find(item => item.motivation === "highlighting");
   }
 
-  $: flags = note.tags.filter(flag => !flag.name.startsWith("colour"));
-  $: colour = note.tags.find(flag => flag.name.startsWith("colour"));
+  $: flags = note.tags
+    ? note.tags.filter(flag => !flag.name.startsWith("colour"))
+    : "";
+  $: colour = note.tags
+    ? note.tags.find(flag => flag.name.startsWith("colour"))
+    : "";
 
   function assignIco(icon) {
     switch (icon) {
@@ -79,7 +83,7 @@
     border-radius: 20px 20px 0 0;
     padding: 16px;
     display: grid;
-    grid-gap: 17px;
+    grid-gap: 19px;
     /*grid-template-rows: auto 1fr auto;*/
     grid-template-rows: 1fr;
     height: 200px;
@@ -115,10 +119,13 @@
     line-height: 0.9rem;
     color: #333333;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
+  }
+  .noNote {
+    -webkit-line-clamp: 8;
   }
   .Source {
     display: grid;
@@ -342,23 +349,16 @@
       <header>
         <div class="column" />
         <div class="info">
-          {#if note.document}
-            <a
-              href="{window.location.pathname.replace('notes', 'library')}{note.document}">
-              <p class="Page">Page</p>
-            </a>
-          {/if}
           {#if highlighed}
             <a
-              class="Highlight"
-              href="{window.location.pathname.replace('notes', 'library')}{note.document}">
-              {@html highlighed.content}
+              class="Highlight {noted && noted.content ? '' : 'noNote'}"
+              href={`/library/all/all${note.target.source}`}>
+              <!--{@html highlighed.content}-->
+              <p>{note.target.selector.exact}</p>
             </a>
           {/if}
           {#if note.source && note.source.name}
-            <a
-              href="{window.location.pathname.replace('notes', 'library')}/{note.source.shortId}"
-              class="Source">
+            <a href={`/library/all/all/${note.source.shortId}`} class="Source">
               <NavSource />
               <p>{note.source.name}</p>
             </a>
@@ -370,7 +370,13 @@
       class="Note"
       href={pagination ? pagination : `/notes/all/all/${note.shortId}`}>
       {#if noted}
-        {@html noted.content}
+        {#if !noted.content.startsWith('<p>') || !noted.content.startsWith('<span>')}
+          <p>
+            {@html noted.content}
+          </p>
+        {:else}
+          {@html noted.content}
+        {/if}
       {:else}
         <p class="empty">Add note...</p>
       {/if}

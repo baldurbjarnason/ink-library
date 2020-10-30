@@ -1,5 +1,4 @@
 <script>
-  import Notebook from "./img/IcoNotebook.svelte";
   import IcoNotebook from "./img/IcoNotebook.svelte";
   import ArrowDropDown from "./img/ArrowDropDown.svelte";
   import FlagFurtherRead from "./img/FlagFurtherRead.svelte";
@@ -15,7 +14,19 @@
   import IcoColor from "./img/IcoColor.svelte";
   import { page, tags } from "../stores";
   import { goto } from "@sapper/app";
+  import { noteAddNotebooks } from "../stores/note/notebooks.js";
+  import SearchNotebooks from "./notebooks/Tools/SearchNotebooks.svelte";
+  import Loader from "./Loader.svelte";
 
+  $: getNotebook = notebookArr.find(
+    item => $page.query.notebook === item.shortId
+  );
+  $: notebookArr = $noteAddNotebooks.items;
+  let notebookInput;
+
+  let currentNotebook;
+  $: if (getNotebook) currentNotebook = getNotebook;
+  $: if (!$page.query.notebook) currentNotebook = undefined;
   /////////////////////////////////////////// Colour
   function assignCol(icon) {
     switch (icon) {
@@ -29,22 +40,12 @@
         return "Green";
     }
   }
-  $: colorArr = $tags.items.filter(
-    item => item.type === "flag" && item.name.startsWith("colour")
-  );
+
+  let colorArr = ["colour 1", "colour 2", "colour 3", "colour 4"];
   $: currentColor =
     $page.query.flag && $page.query.flag.startsWith("colour")
       ? $page.query.flag
       : undefined;
-
-  function colorClick(item) {
-    let flagged = { flag: item.toLowerCase() };
-    let path = $page.path;
-
-    const url = `${path}?${new URLSearchParams(flagged).toString()}`;
-    goto(url);
-  }
-
   /////////////////////////////////////////// Flags
   function assignIco(icon) {
     switch (icon) {
@@ -72,27 +73,27 @@
   $: flagsArr = $tags.items.filter(
     item => item.type === "flag" && !item.name.startsWith("colour")
   );
+
   $: currentFlag =
     $page.query.flag && !$page.query.flag.startsWith("colour")
       ? $page.query.flag
       : undefined;
+  /////////////////////////////////////////// Flags
 
-  function flagClick(item) {
-    let flagged = { flag: item.toLowerCase() };
-    let path = $page.path;
+  let unFilterIt = a => {
+    let queries = Object.assign({}, $page.query);
+    delete queries[a];
 
-    const url = `${path}?${new URLSearchParams(flagged).toString()}`;
-    goto(url);
-  }
+    let mark = Object.keys(queries).length ? "?" : "";
+    goto(`${$page.path}${mark}${new URLSearchParams(queries).toString()}`);
+  };
 
-  function removeFilter(item) {
-    //if (Object.keys($page.query).length
-    /*
-    Object.keys($page.query).forEach((key, index) => {
-      console.log(key, $page.query[key]);
-    });*/
-    goto($page.path);
-  }
+  let filterIt = (a, b) => {
+    let queries = Object.assign({}, $page.query);
+    queries[a] = b;
+
+    goto(`${$page.path}?${new URLSearchParams(queries).toString()}`);
+  };
 </script>
 
 <style>
@@ -100,9 +101,9 @@
     position: relative;
   }
   p {
-    font-size: var(--item-font-size);
+    font-size: 0.75rem;
     color: var(--workspace-color);
-    font-weight: 700;
+    font-weight: 600;
     margin: 0;
   }
   .inputs {
@@ -119,7 +120,7 @@
   .inputs:active ~ ul {
     display: none !important;
   }
-  .arr {
+  .query {
     font-weight: 500;
     border: 1px solid #dde8ed;
     border-radius: 6px;
@@ -131,20 +132,27 @@
     margin-bottom: 4px;
     z-index: 2;
     float: left;
+    align-items: center;
+    display: grid;
+    grid-template-columns: max-content 1fr max-content;
+    grid-gap: 3px;
   }
-  .arr span {
+  .query span.Remove {
     width: 18px;
     height: 18px;
     float: right;
     margin-left: 1px;
     position: relative;
   }
-  .arr span:hover::before,
-  .arr span:hover::after {
-    background: #15536d;
+  .query p {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: inherit;
   }
-  .arr span::before,
-  .arr span::after {
+  .query span.Remove::before,
+  .query span.Remove::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -152,12 +160,12 @@
     background: var(--workspace-color);
     border-radius: 10px;
   }
-  .arr span::before {
+  .query span.Remove::before {
     width: 50%;
     height: 2px;
     transform: translate(-50%, -50%) rotate(45deg);
   }
-  .arr span::after {
+  .query span.Remove::after {
     width: 2px;
     height: 50%;
     transform: translate(-50%, -50%) rotate(45deg);
@@ -184,19 +192,22 @@
     height: 11px;
   }
   ul {
+    display: none;
     position: absolute;
     z-index: 1;
     bottom: 0;
+    width: 100%;
     transform: translateY(calc(100% + 5px));
     background: #ffffff;
     list-style: none;
     padding: 0;
     border-radius: 10px;
     box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.1);
-    display: none;
     margin: 5px 0 0;
     right: 0;
-    min-width: 75%;
+    border: 1px solid #eee;
+    max-height: 300px;
+    overflow-y: scroll;
   }
   input.btn {
     outline: none;
@@ -215,18 +226,27 @@
     display: block;
   }
   li {
-    padding: 10px 20px;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    float: left;
+    padding: 5px 10px;
+    align-items: center;
+    grid-gap: 5px;
     cursor: pointer;
+    margin: 0 5px;
+    background: transparent;
+    transition: all 0.2s ease;
+    width: calc(100% - 10px);
+    border-radius: 10px;
+  }
+  li:first-of-type {
+    margin-top: 5px;
   }
   li:last-child {
-    border-bottom: none;
+    margin-bottom: 5px;
   }
   li:hover {
-    background: #f6f6f6;
-  }
-  .ntbk li:first-child:hover {
-    cursor: default;
-    background: transparent;
+    background: var(--main-background-color);
   }
   li input {
     border: none;
@@ -240,173 +260,251 @@
   li input::placeholder {
     color: #bbd2db;
   }
+  :global(.SearchNotebooks li p),
   li p {
+    text-overflow: ellipsis;
+    font-size: 0.8rem;
     font-weight: 500;
+    color: #333;
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: inherit;
   }
-  ul :global(svg) {
+  .Icon {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    float: left;
+    position: relative;
+    background: var(--main-background-color);
+    border-radius: 50%;
+  }
+  ul .Icon :global(svg) {
     width: 9px;
-    margin-right: 3px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
-
-  .color ul li p::before,
-  .color .arr::before {
-    content: "";
+  /*------------- Notes Colours ---------------*/
+  .color .query {
+    border: none;
+  }
+  .color .query.colour1 p {
+    color: #d86801;
+  }
+  .color .query.colour2 p {
+    color: #c0004e;
+  }
+  .color .query.colour3 p {
+    color: #0693b2;
+  }
+  .color .query.colour4 p {
+    color: #589b4c;
+  }
+  .color .Icon {
+    width: 16px;
+    height: 16px;
+    margin: 0 auto;
+  }
+  .color .query .Icon {
     width: 10px;
     height: 10px;
-    border-radius: 50%;
-    margin-top: 3px;
-    float: left;
-    margin-right: 4px;
   }
-
-  .arr.colour2 {
-    color: #c0004e;
-    background: #ffe4f0;
-    border: none;
-  }
-  ul .colour2 {
-    color: #c0004e;
-  }
-  ul .colour2::before,
-  .arr.colour2::before,
-  .arr.colour2 span::before,
-  .arr.colour2 span::after {
-    background: #c0004e;
-  }
-
-  .arr.colour1 {
-    color: #d86801;
-    background: #ffebda;
-    border: none;
-  }
-  ul .colour1 {
-    color: #d86801;
-  }
-  ul .colour1::before,
-  .arr.colour1::before,
-  .arr.colour1 span::before,
-  .arr.colour1 span::after {
+  .color .colour1 .Remove::before,
+  .color .colour1 .Remove::after,
+  .color .colour1 .Icon {
     background: #d86801;
   }
-
-  .arr.colour4 {
-    color: #589b4c;
-    background: #e6f8e4;
-    border: none;
+  .color li.colour1:hover {
+    background: #ffebda;
   }
-  ul .colour4 {
-    color: #589b4c;
+  .color .colour2 .Remove::before,
+  .color .colour2 .Remove::after,
+  .color .colour2 .Icon {
+    background: #c0004e;
   }
-  ul .colour4::before,
-  .arr.colour4::before,
-  .arr.colour4 span::before,
-  .arr.colour4 span::after {
+  .color li.colour2:hover {
+    background: #ffe4f0;
+  }
+  .color .colour3 .Remove::before,
+  .color .colour3 .Remove::after,
+  .color .colour3 .Icon {
+    background: #0693b2;
+  }
+  .color li.colour3:hover {
+    background: #e2f7fa;
+  }
+  .color .colour4 .Remove::before,
+  .color .colour4 .Remove::after,
+  .color .colour4 .Icon {
     background: #589b4c;
   }
-
-  .arr.colour3 {
-    color: #0693b2;
+  .color li.colour4:hover {
+    background: #e6f8e4;
+  }
+  .color .colour1.query {
+    background: #ffebda;
+  }
+  .color .colour2.query {
+    background: #ffe4f0;
+  }
+  .color .colour3.query {
     background: #e2f7fa;
+  }
+  .color .colour4.query {
+    background: #e6f8e4;
+  }
+  /*------------- Flags List ---------------*/
+  .flag li {
+    grid-gap: 10px;
+  }
+  .flag .Icon {
+    border: 1px solid #dde8ed;
+  }
+  .flag li:hover .Icon {
     border: none;
   }
-  ul .colour3 {
-    color: #0693b2;
+  .flag li p,
+  .flag .query p {
+    text-transform: capitalize;
   }
-  ul .colour3::before,
-  .arr.colour3::before,
-  .arr.colour3 span::before,
-  .arr.colour3 span::after {
-    background: #0693b2;
+  /*------------- Notebooks Colours ---------------*/
+  ul :global(.SearchBox) {
+    width: calc(100% - 10px);
+    border-radius: 10px;
+    margin: 5px;
+    position: relative;
+    left: 0;
+  }
+  .notebook .query {
+    border: none;
+  }
+  .notebook .query :global(svg) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: auto;
+  }
+  .notebook .query .Icon {
+    background: #ffffff;
+  }
+  .notebook .notebook li:hover .Icon,
+  .notebook .notebook .query .Icon {
+    background: #ffffff !important;
+  }
+  .notebook .query.colour1 span.Remove::before,
+  .notebook .query.colour1 span.Remove::after {
+    background: #a43939;
+  }
+  .notebook li.colour1:hover,
+  .notebook li.colour1 .Icon,
+  .notebook .query.colour1 {
+    background: #f5d2d2;
+  }
+  .notebook .query.colour1 .Icon :global(svg),
+  .notebook li.colour1 .Icon :global(svg) {
+    color: #a43939;
+  }
+  .notebook .query.colour2 span.Remove::before,
+  .notebook .query.colour2 span.Remove::after {
+    background: #6f4c9b;
+  }
+  .notebook li.colour2:hover,
+  .notebook li.colour2 .Icon,
+  .notebook .query.colour2 {
+    background: #d4ccea;
+  }
+  .notebook .query.colour2 .Icon :global(svg),
+  .notebook li.colour2 .Icon :global(svg) {
+    color: #6f4c9b;
+  }
+  .notebook .query.colour3 span.Remove::before,
+  .notebook .query.colour3 span.Remove::after {
+    background: #8f7000;
+  }
+  .notebook li.colour3:hover,
+  .notebook li.colour3 .Icon,
+  .notebook .query.colour3 {
+    background: #cceadf;
+  }
+  .notebook .query.colour3 .Icon :global(svg),
+  .notebook li.colour3 .Icon :global(svg) {
+    color: #8f7000;
+  }
+  .notebook .query.colour4 span.Remove::before,
+  .notebook .query.colour4 span.Remove::after {
+    background: #4c9b92;
+  }
+  .notebook li.colour4:hover,
+  .notebook li.colour4 .Icon,
+  .notebook .query.colour4 {
+    background: #cceadf;
+  }
+  .notebook .query.colour4 .Icon :global(svg),
+  .notebook li.colour4 .Icon :global(svg) {
+    color: #4c9b92;
   }
 </style>
 
-<!--
-<div class="filter ntbk">
+<div class="filter notebook">
   <p>Notebook</p>
-  <input class="btn" />
+  <input class="btn" readonly />
   <div class="inputs">
-    {#each notebooks as notebook}
-      <p class="arr">
-        <Notebook />
-        {notebook}
-        <span on:click={() => closeNotebook(notebook)} />
-      </p>
-    {/each}
-    {#if !notebooks.length}
+    {#if !currentNotebook}
       <p class="placeholder">
-        <Notebook />
-        Choose notebooks
-      </p>
-    {/if}
-  </div>
-  <ul>
-    <li>
-      <input placeholder="Choose notebook..." />
-    </li>
-    {#each dynamicNbk as item}
-      <li on:click={() => handleClick(item)}>
-        <p>
-          <Notebook />
-          {item}
-        </p>
-      </li>
-    {/each}
-  </ul>
-</div>-->
-
-<div class="filter color">
-  <p>Color</p>
-  <input class="btn" />
-  <div class="inputs">
-    <!--
-    {#each colorArr as color}
-      <p class="arr {color}">
-        {color}
-        <span on:click={() => closeColor(color)} />
-      </p>
-    {/each}-->
-    {#if currentColor}
-      <p class="arr {currentColor.replace(' ', '')}">
-        {assignCol(currentColor)}
-        <span on:click={() => removeFilter(currentColor)} />
+        <IcoNotebook />
+        Choose notebook
       </p>
     {:else}
-      <p class="placeholder">
-        <IcoColor />
-        Choose color
+      <p class="query {currentNotebook.settings.colour}">
+        <span class="Icon">
+          <IcoNotebook />
+        </span>
+        {currentNotebook.name}
+        <span class="Remove" on:click={() => unFilterIt('notebook')} />
       </p>
     {/if}
     <ArrowDropDown />
   </div>
   <ul>
-    {#each colorArr as color}
-      {#if !currentColor || currentColor !== color.name}
-        <li on:click={() => colorClick(color.name)}>
-          <p class={color.name.replace(' ', '')}>{assignCol(color.name)}</p>
-        </li>
-      {/if}
-    {/each}
+    <SearchNotebooks />
+    {#if $noteAddNotebooks.type === 'loading'}
+      <Loader />
+    {:else if notebookArr.length}
+      {#each notebookArr as notebook}
+        {#if (!currentNotebook || currentNotebook.shortId !== notebook.shortId) && (!notebookInput || notebook.name
+              .toLowerCase()
+              .includes(notebookInput.toLowerCase()))}
+          <li
+            class={notebook.settings.colour}
+            on:click={() => filterIt('notebook', notebook.shortId)}>
+            <span class="Icon">
+              <IcoNotebook />
+            </span>
+            <p class={notebook.settings.colour}>{notebook.name}</p>
+          </li>
+        {/if}
+      {/each}
+    {/if}
   </ul>
 </div>
 
-<div class="filter type">
+<div class="filter flag">
   <p>Flag</p>
-  <input class="btn" />
+  <input class="btn" readonly />
   <div class="inputs">
-    <!--
-    {#each flags as flag}
-      <p class="arr {flag.string}">
-        <svelte:component this={assignIco(flag.string)} />
-        {flag.string}
-        <span on:click={() => closeFlag(flag)} />
-      </p>
-    {/each}-->
     {#if currentFlag}
-      <p class="arr {currentFlag.replace(' ', '')}">
+      <div class="query">
         <svelte:component this={assignIco(currentFlag)} />
-        {currentFlag}
-        <span on:click={() => removeFilter(currentFlag)} />
-      </p>
+        <p>{currentFlag}</p>
+        <span class="Remove" on:click={() => unFilterIt('flag')} />
+      </div>
     {:else}
       <p class="placeholder">
         <IcoFlag />
@@ -418,11 +516,43 @@
   <ul>
     {#each flagsArr as flag}
       {#if !currentFlag || currentFlag !== flag.name}
-        <li on:click={() => flagClick(flag.name)}>
-          <p class={flag.name}>
+        <li on:click={() => filterIt('flag', flag.name)}>
+          <span class="Icon">
             <svelte:component this={assignIco(flag.name)} />
-            {flag.name}
-          </p>
+          </span>
+          <p class={flag.name}>{flag.name}</p>
+        </li>
+      {/if}
+    {/each}
+  </ul>
+</div>
+
+<div class="filter color">
+  <p>Color</p>
+  <input class="btn" readonly />
+  <div class="inputs">
+    {#if currentColor}
+      <div class="query {currentColor.replace(' ', '')}">
+        <span class="Icon" />
+        <p>{assignCol(currentColor)}</p>
+        <span class="Remove" on:click={() => unFilterIt('flag')} />
+      </div>
+    {:else}
+      <p class="placeholder">
+        <IcoColor />
+        Choose color
+      </p>
+    {/if}
+    <ArrowDropDown />
+  </div>
+  <ul>
+    {#each colorArr as color}
+      {#if !currentColor || currentColor !== color}
+        <li
+          class={color.replace(' ', '')}
+          on:click={() => filterIt('flag', color)}>
+          <span class="Icon" />
+          <p>{assignCol(color)}</p>
         </li>
       {/if}
     {/each}

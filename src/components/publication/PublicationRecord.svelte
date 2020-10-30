@@ -8,7 +8,7 @@
   import ToolBar from "./reader/ToolBar.svelte";
   import InfoToolBar from "./reader/InfoToolBar.svelte";
   import MainReading from "./reader/MainReading.svelte";
-  import MainInfo from "./reader/MainInfo.svelte";
+  import MainInfo from "./SourceInfo/MainInfo.svelte";
   import EmptySource from "./EmptySource.svelte";
   import { publicationStores } from "../../stores/utilities/publicationStores.js";
   import { stores } from "@sapper/app";
@@ -52,6 +52,9 @@
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr minmax(100vh, auto);
   }
+  .Publication.Info {
+    grid-template-rows: 1fr minmax(100vh, auto);
+  }
   .Processing {
     grid-row: 2 / -1;
     display: flex;
@@ -62,11 +65,13 @@
 </style>
 
 <svelte:window on:hashchange={hashchange} />
-<div class="Publication {hash.replace('#', '')}TabSelected">
+<div
+  class="Publication {hash.replace('#', '')}TabSelected {$page.path.endsWith('info') ? 'Info' : ''}">
   <TitleBar />
   {#if $publication}
     {#if info}
-      <InfoToolBar />
+      <!--
+      <InfoToolBar />-->
       <MainInfo />
     {:else if $publication._processing}
       <ToolBar root={readerBody} hidden={true} />

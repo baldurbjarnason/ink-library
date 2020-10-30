@@ -104,9 +104,18 @@
     display: none;
   }
   .NotesEditor :global(.Cards) {
-    padding: 20px;
+    padding: 20px 20px 0 20px;
     height: 100vh;
     overflow-y: scroll;
+    position: sticky;
+    top: 0;
+  }
+  .NotesEditor :global(.Cards:last-child::after) {
+    content: "";
+    background: transparent;
+    width: 100%;
+    height: 1px;
+    float: left;
   }
 </style>
 
@@ -123,7 +132,7 @@
         <h3>Notes library</h3>
       </div>
     </section>
-    <NewNote {workspace} />
+    <NewNote ntbkClose={false} />
   </nav>
 {/if}
 <div class="Body {id ? 'noteColumn' : ''}" class:NotesEditor={id}>

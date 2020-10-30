@@ -17,17 +17,30 @@
       rel: ["cover"]
     };
   }
+  //$: console.log(cover, $publication);
 </script>
 
 <style>
   .Image {
     width: 100%;
     height: auto;
-    margin: auto;
-    margin-bottom: var(--base);
-    border: 1px solid #bdbdbd;
-    max-width: 320px;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    margin: 0 auto;
+    max-width: 200px;
+    -webkit-box-shadow: 2px 2px 7px 0px rgba(0, 0, 0, 0.13);
+    -moz-box-shadow: 2px 2px 7px 0px rgba(0, 0, 0, 0.13);
+    box-shadow: 2px 2px 7px 0px rgba(0, 0, 0, 0.13);
+  }
+
+  @media (max-width: 720px) {
+    .Image {
+      width: 150px;
+    }
   }
 </style>
 
-<img src={cover.href} alt="Cover for {$publication.name}" class="Image Cover" />
+<img
+  src={cover.href ? cover.href : `/img/placeholder-cover.jpg`}
+  alt="Cover for {$publication.name}"
+  class="Image Cover" />
