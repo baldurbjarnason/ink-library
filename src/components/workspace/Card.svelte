@@ -31,6 +31,13 @@
       rel: ["cover"]
     };
   }
+
+  let stacks;
+  if (item.tags) {
+    stacks = item.tags.filter(tag => {
+      if (tag.type === "stack") return tag;
+    });
+  }
 </script>
 
 <style>
@@ -56,6 +63,13 @@
   a {
     cursor: pointer;
     text-decoration: none;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 1;
   }
   .circle {
     position: absolute;
@@ -74,10 +88,6 @@
     border-radius: 10px;
     position: relative;
   }
-  footer {
-    text-align: left;
-    margin-top: 10px;
-  }
   h5,
   p {
     overflow: hidden;
@@ -89,7 +99,6 @@
     -webkit-box-orient: vertical;
   }
   h5 {
-    margin-bottom: 3px;
     font-weight: 600;
     color: #333;
   }
@@ -99,6 +108,13 @@
   }
   .selected {
     background: #f9fbfc;
+  }
+  .Stacks {
+    position: relative;
+    z-index: 1;
+  }
+  .Stacks:empty {
+    display: none;
   }
   @supports (-webkit-appearance: none) {
     input[type="checkbox"] {
@@ -112,6 +128,7 @@
       margin: 0;
       padding: 0;
       cursor: pointer;
+      z-index: 1;
     }
     input[type="checkbox"]::before {
       width: 14px;
@@ -136,76 +153,54 @@
   .Modified {
     text-align: right;
   }
+  footer *,
+  footer :global(ul) {
+    margin: 0;
+    padding: 0;
+  }
+  footer {
+    display: grid;
+    grid-gap: 2px;
+    text-align: left;
+    margin-top: 10px;
+  }
+  .Authors,
+  .Title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: inherit;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+  }
+  .Authors {
+    font-weight: 400;
+  }
 </style>
 
 <div class="Item" class:selected>
+  <a href="library/all/all/{item.shortId}">_</a>
   <input type="checkbox" bind:checked={selected} on:click={() => selection()} />
   <span class="circle" />
-  <a href="{window.location.pathname}/{item.shortId}">
-    <img src={cover.href} alt="Cover for {item.name}" />
-  </a>
+  <img
+    src={cover.href ? cover.href : `/img/placeholder-cover.jpg`}
+    alt="Cover for {item.name}" />
   <footer>
-    <a href="{window.location.pathname}/{item.shortId}">
-      <h5>{item.name}</h5>
-    </a>
+    <h5 class="Title">{item.name}</h5>
     <div class="Authors">
-      {#each item.author as author, i}
+      {#if item.author}
         <p class="Author">
-          {author.name}
-          {#if i !== item.author.length - 1},{/if}
+          {#each item.author as author, i}
+            {#if i !== item.author.length - 1 && i !== 0},{/if}
+            {author.name}
+          {/each}
         </p>
-      {/each}
-      <div class="Stacks">
+      {/if}
+    </div>
+    <div class="Stacks">
+      {#if stacks}
         <ItemStacks {item} {selected} />
-      </div>
+      {/if}
     </div>
   </footer>
-  <!--
-  <div class="Top">
-    {#if selecting}
-      <label>
-        <span class="visually-hidden">Select this item</span>
-        <input type="checkbox" bind:checked={selected} />
-      </label>
-    {:else}
-      <span>&nbsp;</span>
-    {/if}  
-  <span>{typeName(item.type)}</span>
-    <span class="Modified">
-      Modified:
-      <strong>
-        {new Date(item.updated).toLocaleString(undefined, {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric'
-        })}
-      </strong>
-    </span>
-  </div>
-  <div class="CardMain">
-    <div class="Image">
-      <img src={cover.href} alt="Cover for {item.name}" />
-    </div>
-    <div class="Name">
-      <a href="{window.location.pathname}/{item.shortId}" class="title">
-        {item.name}
-      </a>
-      <span class="title">{item.name}</span>
-      <div class="Authors">
-        {#each item.author as author, i}
-          <span class="Author">
-            {author.name}
-            {#if i !== item.author.length - 1},{/if}
-          </span>
-        {/each}
-      </div>
-    </div>
-    <!-- Need to add authors! --
-  </div>
-  <div class="Stacks">
-    <ItemStacks {item} {selected} />
-  </div>
-  <div class="ItemEntry">
-    <span />
-  </div>-->
 </div>

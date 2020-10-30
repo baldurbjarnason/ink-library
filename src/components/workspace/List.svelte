@@ -16,26 +16,24 @@
   const { page, session } = stores();
   let selecting = true;
   let filterOn = false;
+  let clicked = false;
   let items;
-  $: if ($library) {
-    items = $library.items;
-  }
-  let query = {};
-  let params = {};
-  $: if ($page) {
-    query = Object.assign({}, $page.query);
-    params = Object.assign({}, $page.params);
-  }
+
+  $: if ($library) items = $library.items;
 
   let selection = function() {
     if (!selecting) selecting = true;
   };
 
-  if ($page.query.page) {
-    filterOn = Object.keys($page.query).length > 2 ? true : false;
-  } else {
-    filterOn = Object.keys($page.query).length > 0 ? true : false;
-  }
+  $: query = Object.assign({}, $page.query) || "";
+
+  $: if ((query.stack || query.notebook || query.type) && !clicked)
+    filterOn = true;
+
+  let filter = () => {
+    filterOn = !filterOn;
+    clicked = true;
+  };
 </script>
 
 <style>
@@ -47,6 +45,7 @@
   .Cards {
     position: relative;
     display: grid;
+    z-index: 0;
     padding: calc(var(--base) * 2);
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     grid-gap: var(--base);
@@ -93,6 +92,7 @@
     float: right;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   .filter:not(.active):hover {
     background: var(--main-background-color);
@@ -101,17 +101,7 @@
     font-size: var(--item-font-size);
     margin: 0 8px 0 0;
     float: left;
-  }
-  .filter input {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    outline: none;
-    opacity: 0;
-    cursor: pointer;
+    font-weight: 600;
   }
   .active p,
   .active > :global(svg) {
@@ -120,11 +110,10 @@
   .active {
     background: var(--action);
   }
-
   .formFilter {
     background: #f9fbfc;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     grid-gap: var(--base);
     grid-auto-rows: -webkit-max-content;
     grid-auto-rows: max-content;
@@ -184,7 +173,7 @@
     margin: auto;
   }
   @media (min-width: 721px) {
-    :global(.Item:only-child) {
+    :global(.Cards > .Item:only-child) {
       width: calc(50% - (var(--base) / 2));
     }
   }
@@ -195,7 +184,7 @@
       position: relative;
     }
     .formFilter {
-      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      grid-template-columns: 1fr;
     }
   }
   @media (max-width: 640px) {
@@ -203,7 +192,7 @@
       padding-top: 50px;
     }
     .formFilter {
-      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      grid-template-columns: 1fr;
     }
   }
 </style>
@@ -214,10 +203,9 @@
   </div>
   <div>
     <Search />
-    <section class="filter {filterOn ? 'active' : ''}">
+    <section class="filter {filterOn ? 'active' : ''}" on:click={filter}>
       <p>Filter</p>
       <IcoFilter />
-      <input type="checkbox" bind:checked={filterOn} />
     </section>
   </div>
 </div>

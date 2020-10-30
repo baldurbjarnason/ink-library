@@ -23,9 +23,13 @@
     width: 100%;
     margin: 0;
     padding: 0;
-    background-color: var(--main-background-color);
+    background-color: var(--all-workspace);
     position: sticky;
     top: 0;
+    z-index: 2;
+  }
+  .TitleBar * {
+    color: #ffffff;
   }
   ol {
     list-style: none;

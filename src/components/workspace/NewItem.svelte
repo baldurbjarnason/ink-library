@@ -18,10 +18,13 @@
     collections,
     addingWorkspace,
     addedCollections,
-    addedWorkspaces
+    addedWorkspaces,
+    refreshNotebook
   } from "../../stores";
   import { getToken } from "../../getToken";
   export let workspace;
+  export let ntbkClose;
+
   let open = false;
   let input;
   let newToggle;
@@ -31,26 +34,31 @@
   }
 
   async function close() {
-    open = false;
-    await tick();
-    newToggle.querySelector("button").focus();
+    if (atNotebook) {
+      ntbkClose("cancel");
+    } else {
+      open = false;
+      await tick();
+      newToggle.querySelector("button").focus();
+    }
   }
+
   afterUpdate(() => {
     if (open) {
       input.focus();
     }
   });
+
   async function submit(event) {
     event.preventDefault();
-    close();
+    if (!atNotebook) close();
+    else ntbkClose();
+
     const { target } = event;
     const newInput = window.document.getElementById("new-input").value;
     //if (newInput[0] === "#") {
     if (itemType === "stack") {
-      const value =
-        workspace === "all"
-          ? newInput.slice(1)
-          : `${workspace}/${newInput.slice(1)}`;
+      const value = workspace === "all" ? newInput : `${workspace}/${newInput}`;
       try {
         await fetch("/api/create-collection", {
           method: "POST",
@@ -78,7 +86,12 @@
         body.addedWorkspaces = $addedWorkspaces;
         $addedWorkspaces = [];
         $addedCollections = [];
-        await fetch(target.action, {
+
+        let url = atNotebook
+          ? `/api/notebooks/${$page.params.id}/sources/`
+          : `/api/create-publication`;
+
+        await fetch(url, {
           method: "POST",
           credentials: "include",
           headers: {
@@ -90,6 +103,8 @@
         });
 
         if ($page.path === "/") $refreshInSource = Date.now();
+        else if (atNotebook)
+          $refreshNotebook = { id: $page.params.id, time: Date.now() };
         else $refreshDate = Date.now();
       } catch (err) {
         console.error(err);
@@ -101,6 +116,8 @@
   function changeType(value) {
     itemType = value;
   }
+
+  $: atNotebook = $page.path.startsWith("/notebooks/") ? true : false;
 </script>
 
 <style>
@@ -261,6 +278,9 @@
       border-radius: 100%;
       height: 60px;
       width: 60px;
+      justify-content: center;
+      align-items: center;
+      display: flex;
     }
     .new-button :global(svg) {
       float: inherit;
@@ -290,9 +310,6 @@
       align-items: center;
       display: flex;
     }
-    .footer {
-      margin-top: 50px;
-    }
     .footer.stack {
       width: 100%;
       padding: 0 40px;
@@ -306,9 +323,21 @@
       grid-template-columns: 1fr;
     }
   }
+  .author div {
+    font-size: 0.8rem;
+  }
+  .author input {
+    width: 100%;
+    padding: calc(var(--base) * 0.5);
+    margin: calc(var(--base) * 0.25) 0;
+    border-radius: 10px;
+  }
+  .typeDiv {
+    position: relative;
+  }
 </style>
 
-{#if open}
+{#if open || atNotebook}
   <div
     class="NewBox"
     out:send|local={{ key: 'new-box' }}
@@ -319,25 +348,27 @@
       action="/api/create-publication"
       on:submit={submit}>
       <section class="header">
-        <section class="typeOfItem">
-          <label>
-            <input
-              aria-label="source"
-              name="typeOfItem"
-              type="radio"
-              checked
-              on:click={() => changeType('source')} />
-            <p>New source</p>
-          </label>
-          <label>
-            <input
-              aria-label="stack"
-              name="typeOfItem"
-              type="radio"
-              on:click={() => changeType('stack')} />
-            <p>New stack</p>
-          </label>
-        </section>
+        {#if !atNotebook}
+          <section class="typeOfItem">
+            <label>
+              <input
+                aria-label="source"
+                name="typeOfItem"
+                type="radio"
+                checked
+                on:click={() => changeType('source')} />
+              <p>New source</p>
+            </label>
+            <label>
+              <input
+                aria-label="stack"
+                name="typeOfItem"
+                type="radio"
+                on:click={() => changeType('stack')} />
+              <p>New stack</p>
+            </label>
+          </section>
+        {/if}
         <label class="visually-hidden" id="new-label" for="new-input">
           New item:
         </label>
@@ -366,6 +397,17 @@
             <TypeSelect dark={true}>Type</TypeSelect>
           </div>
           <AddCollections dark={true} />
+          <div class="author">
+            <label for="input-author">
+              <div>Authors (comma separated)</div>
+              <input
+                id="input-author"
+                name="author"
+                type="text"
+                placeholder="First Author, Second Author" />
+            </label>
+          </div>
+          <div />
           <div class="footer">
             <WhiteButton>Create</WhiteButton>
             <Closer click={close} dark={true} />

@@ -1,21 +1,39 @@
 <script>
   import { send, receive } from "./_crossfade.js";
-  import { innote, clearSelected, insource } from "../stores";
+  import { innote, clearSelected, insource, inntbk } from "../stores";
   import NotesCard from "../components/notes/NotesCard.svelte";
   import NotesList from "../components/notes/NotesList.svelte";
+  import NotebookCard from "../components/notebooks/NotebookCard.svelte";
   import NewNote from "../components/notes/NewNote.svelte";
+  import NewNotebook from "../components/notebooks/NewNotebook.svelte";
   import NoteEdit from "../components/notes/NoteEdit.svelte";
   import NewItem from "../components/workspace/NewItem.svelte";
   import NoNotes from "../components/img/NoNotes.svelte";
   import NoNotebooks from "../components/img/NoNotebooks.svelte";
   import NoSources from "../components/img/NoSources.svelte";
   import Item from "../components/workspace/Item.svelte";
-  export let id = false;
-  export let workspace = "all";
+  import Loader from "../components/Loader.svelte";
+  import { stores } from "@sapper/app";
+  const { session } = stores();
 
-  let items, itemsNotes;
+  let items = [],
+    itemsNotes = [],
+    itemsNtbk = [];
   $: if ($innote) itemsNotes = $innote.items;
   $: if ($insource) items = $insource.items;
+  $: if ($inntbk) itemsNtbk = $inntbk.items;
+
+  let date = new Date(),
+    weekday = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ];
+  let day = weekday[date.getDay()];
 </script>
 
 <style>
@@ -35,22 +53,29 @@
     grid-gap: 30px;
   }
   .Toolbar {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr max-content;
     align-items: center;
   }
-  .Toolbar div :global(span.new-button) {
-    margin-right: 20px;
-    float: left;
+  .Toolbar .Buttons {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    gap: 15px;
+    max-height: 38px;
+    height: 100%;
   }
-  .Toolbar div :global(span:last-child) {
-    margin-right: 0;
+  .Toolbar h1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .Cards:not(.align) {
     position: relative;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 1fr 1fr; /*repeat(auto-fit, minmax(200px, 227px));*/
     grid-gap: var(--base);
     grid-auto-rows: max-content;
   }
@@ -77,9 +102,6 @@
     padding-top: 20px;
     height: calc(100% - 40px);
   }
-  .contNotes {
-    height: 400px;
-  }
   .align {
     background: #f9fbfc;
     border-radius: 30px;
@@ -97,19 +119,29 @@
     justify-content: space-between;
     flex-direction: column;
   }
-  .indexNotes {
-    height: 375px;
-  }
   .indexNotes :global(.Top) {
-    height: 147px;
+    height: 146px;
     grid-gap: 7px;
   }
   .indexNotes :global(.Highlight) {
-    -webkit-line-clamp: 1;
-    max-height: 15px;
+    -webkit-line-clamp: 3;
   }
-  .Sources :global(.Item:nth-last-of-type(-n + 1)) {
-    display: none;
+  .indexNotes :global(.Highlight.noNote) {
+    -webkit-line-clamp: 5;
+  }
+  .notebooks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-gap: 20px;
+  }
+  .notebooks .Loading {
+    margin: 75px auto;
+  }
+  .notebooks :global(.Info) {
+    padding: 10px 15px;
+  }
+  .contNotebooks.align h5 {
+    transform: translateY(-22px);
   }
   @media (max-width: 1289px) {
     .Cards:not(.align) {
@@ -118,38 +150,49 @@
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
   }
-  @media (min-width: 1070px) and (max-width: 1289px) {
-    .indexNotes :global(.Item:nth-last-of-type(-n + 2)) {
+  @media (min-width: 1051px) {
+    .notebooks {
+      max-height: 170px;
+      overflow: hidden;
+    }
+    .notebooks > :global(a .Item) {
+      grid-template-rows: 110px auto;
+    }
+    .Cards.indexNotes.align {
+      min-height: 360px;
+    }
+    .Cards:not(.align) {
+      max-height: 375px;
+      overflow: hidden;
+    }
+    .Sources :global(.Item:nth-child(n + 7)) {
       display: none;
     }
   }
-  @media (min-width: 850px) and (max-width: 1069px) {
-    .indexNotes :global(.Item:nth-last-of-type(-n + 4)) {
-      display: none;
-    }
-  }
-  @media (max-width: 849px) {
+  @media (max-width: 1050px) {
     .index .Toolbar :global(.new-button) {
       position: inherit;
     }
     .index {
       grid-template-columns: 1fr;
-      grid-gap: 50px;
+      grid-gap: 70px;
       height: inherit;
+    }
+    .left {
+      display: grid !important;
+      grid-template-columns: 1fr;
+      grid-gap: 20px;
     }
     .Cards:not(.align) {
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
-    .indexNotes :global(.Item:nth-last-of-type(-n + 2)) {
+    .Cards :global(.Item:nth-child(n + 7)) {
       display: none;
     }
     .contNotebooks {
       margin-top: 30px;
     }
-    .Sources :global(.Item:nth-last-of-type(-n + 1)) {
-      display: block;
-    }
-    .Sources {
+    .Sources:not(.align) {
       display: grid;
       grid-gap: var(--base);
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -162,24 +205,61 @@
       position: absolute;
       top: -25px;
     }
+    .notebooks :global(a:nth-child(n + 3)) {
+      display: none;
+    }
+  }
+  @media (max-width: 720px) {
+    .Cards :global(.Item:nth-child(n + 5)),
+    .Sources :global(.Item:nth-child(n + 6)) {
+      display: none;
+    }
+    .Toolbar .Buttons {
+      max-height: inherit;
+    }
+    .Toolbar .Buttons :global(span.new-button button.Button) {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .Toolbar .Buttons :global(button.Button svg) {
+      transform: scale(0.8);
+    }
+  }
+  .Sources :global(.Loading) {
+    margin: auto;
+  }
+  @media (min-width: 721px) {
+    .Toolbar .Buttons :global(button.Button) {
+      padding: 0 20px !important;
+      height: 40px;
+      border-radius: 15px !important;
+    }
   }
 </style>
 
 <div class="index">
   <div class="left">
     <nav class="Toolbar">
-      <h1 out:send={{ key: 'h1' }} in:receive={{ key: 'h1' }}>Welcome</h1>
-      <div>
-        <NewNote {workspace} />
-        <NewItem {workspace} />
+      <h1 out:send={{ key: 'h1' }} in:receive={{ key: 'h1' }}>
+        Happy {day}, {$session.user.name.givenName}.
+      </h1>
+      <div class="Buttons">
+        <NewNote ntbkOpen={false} />
+        <NewItem ntbkOpen={false} />
+        <NewNotebook />
       </div>
     </nav>
-    <!--
-    <div class="Body" class:NotesEditor={id}>-->
     <div class="contNotes">
       <h5>Recent notes</h5>
-      <div class="Cards indexNotes {!itemsNotes.length ? 'align' : null}">
-        {#if itemsNotes}
+      <div
+        class="Cards indexNotes {!itemsNotes.length && $innote.type !== 'loading' ? 'align' : null}">
+        {#if $innote.type === 'loading'}
+          <Loader />
+        {:else if itemsNotes}
           {#each itemsNotes as note, i}
             {#if i < 8}
               <NotesCard {note} />
@@ -190,24 +270,37 @@
         {/if}
       </div>
     </div>
-    <div class="contNotebooks">
+    <div
+      class="contNotebooks {!itemsNtbk.length && $inntbk.type !== 'loading' ? 'align' : null}">
       <h5>Recent notebooks</h5>
-      <div class="notebooks align">
-        <NoNotebooks />
+      <div class="notebooks">
+        {#if $inntbk.type === 'loading'}
+          <Loader />
+        {:else if itemsNtbk}
+          {#each itemsNtbk as notebook, i}
+            {#if i < 3}
+              <NotebookCard {notebook} />
+            {/if}
+          {:else}
+            <NoNotebooks />
+          {/each}
+        {/if}
       </div>
     </div>
   </div>
-  <div class="Sources">
+  <div
+    class="Sources {!items.length && $insource.type !== 'loading' ? 'align' : null}">
     <h5>Recent sources</h5>
-    {#if items}
+    {#if $insource.type === 'loading'}
+      <Loader />
+    {:else if items}
       {#each items as item, i}
         {#if i < 6}
-          <Item {item} />
+          <Item {item} selecting={false} />
         {/if}
+      {:else}
+        <NoSources />
       {/each}
-    {:else}
-      <NoSources />
-      <span />
     {/if}
   </div>
 </div>

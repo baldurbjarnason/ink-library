@@ -3,7 +3,13 @@
   import { fly } from "svelte/transition";
   import NavSource from "./img/NavSource.svelte";
   import NavNotes from "./img/NavNotes.svelte";
+  import NavNotebook from "./img/NavNotebook.svelte";
   export let params;
+
+  import { stores } from "@sapper/app";
+  const { session } = stores();
+
+  $: url = `/readers/${$session.user.profile.shortId}` || "";
 </script>
 
 <style>
@@ -17,6 +23,14 @@
     flex-direction: column;
     justify-content: flex-start;
     max-height: 100vh;
+  }
+  :global(nav.ntbkModal::after) {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1;
   }
   ul {
     list-style: none;
@@ -174,6 +188,21 @@
         Notes
       </a>
     </li>
+    <li>
+      <a
+        href="/notebooks"
+        class:selected={params.segment === 'notebooks'}
+        aria-current={params.segment === 'notebooks' ? 'page' : null}>
+        {#if params.segment === 'notebooks'}
+          <span
+            class="marker"
+            out:send|local|local={{ key: 'nav-marker' }}
+            in:receive|local={{ key: 'nav-marker' }} />
+        {/if}
+        <NavNotebook />
+        Notebooks
+      </a>
+    </li>
     <li style="display: none;">
       <a
         href="/discovery"
@@ -265,7 +294,7 @@
     </a></li> -->
     <li>
       <a
-        href="/profile/settings"
+        href={url}
         aria-label="Settings"
         aria-current={params.segment === 'profile' ? 'page' : null}>
         <svg

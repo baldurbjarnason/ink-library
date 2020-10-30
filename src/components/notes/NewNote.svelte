@@ -60,11 +60,13 @@
         return FlagUrgent;
     }
   }
-
+  export let ntbkClose;
   let open = false;
   let newToggle;
   let expanded = false;
-  let noteColour;
+  let noteColour = { name: "colour 1" };
+
+  $: if (colours[0] && !noteColour.id) noteColour = colours[0];
 
   function click() {
     open = !open;
@@ -72,9 +74,13 @@
   }
 
   async function close() {
-    open = false;
-    await tick();
-    newToggle.querySelector("button").focus();
+    if (atNotebook) {
+      ntbkClose("cancel");
+    } else {
+      open = false;
+      await tick();
+      newToggle.querySelector("button").focus();
+    }
   }
   let text;
   $: flagsArr = $tags.items.filter(
@@ -83,7 +89,8 @@
 
   async function submit(event) {
     event.preventDefault();
-    close();
+    if (!atNotebook) close();
+    else ntbkClose();
     // Get all tags, filter through them to match name of adding tags, add ids as prop
     try {
       const payload = Object.assign({}, note);
@@ -103,7 +110,11 @@
         });
       }
 
-      await window.fetch(`/api/notes`, {
+      let url = atNotebook
+        ? `/api/notebooks/${$page.params.id}/notes/`
+        : `/api/notes`;
+
+      await window.fetch(url, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(payload),
@@ -112,12 +123,15 @@
           "csrf-token": getToken()
         }
       });
+
       if ($page.path === "/") $refreshInNote = Date.now();
+      else if (atNotebook) ntbkClose();
       else $refreshNotes = Date.now();
     } catch (err) {
       console.error(err);
     }
   }
+  $: atNotebook = $page.path.startsWith("/notebooks/") ? true : false;
 </script>
 
 <style>
@@ -251,6 +265,7 @@
   }
   .Editor :global(.Editor) {
     background: var(--main-background-color);
+    overflow: hidden;
     min-height: 30vh;
     display: grid;
     border-radius: 10px 10px 0 0;
@@ -414,6 +429,9 @@
       border-radius: 100%;
       height: 60px;
       width: 60px;
+      justify-content: center;
+      align-items: center;
+      display: flex;
     }
     .new-button :global(svg) {
       float: inherit;
@@ -452,7 +470,7 @@
   }
 </style>
 
-{#if open}
+{#if open || atNotebook}
   <div
     class="NewBox newNote"
     out:send|local={{ key: 'new-box' }}

@@ -1,14 +1,24 @@
 <script>
   import { collections } from "../stores";
-  import Audio from "./img/StypeAudio.svelte";
-  import Image from "./img/StypeImage.svelte";
-  import Text from "./img/StypeText.svelte";
-  import Video from "./img/StypeVideo.svelte";
-  import Notebook from "./img/IcoNotebook.svelte";
+  import IcoSearch from "./img/IcoSearch.svelte";
+  import IcoNotebook from "./img/IcoNotebook.svelte";
   import ArrowDropDown from "./img/ArrowDropDown.svelte";
   import Stack from "./img/IcoStack.svelte";
   import { page } from "../stores";
   import { goto } from "@sapper/app";
+  import { noteAddNotebooks } from "../stores/note/notebooks.js";
+  import SearchNotebooks from "./notebooks/Tools/SearchNotebooks.svelte";
+  import Loader from "./Loader.svelte";
+
+  $: getNotebook = notebookArr.find(
+    item => $page.query.notebook === item.shortId
+  );
+  $: notebookArr = $noteAddNotebooks.items;
+  let notebookInput;
+
+  let currentNotebook;
+  $: if (getNotebook) currentNotebook = getNotebook;
+  $: if (!$page.query.notebook) currentNotebook = undefined;
 
   let stackInput, typeInput;
   let types = [
@@ -37,67 +47,26 @@
     "ShortStory",
     "Thesis",
     "VisualArtwork",
-    "WebContent",
-    "Person",
-    "Organization"
+    "WebContent"
   ];
 
-  let createUrl = obj => {
-    Object.keys(obj).forEach((key, index) => {
-      if (Array.isArray(obj[key])) {
-        let test = obj[key].join(`&${key}=`);
-        obj[key] = test;
-      }
-    });
-    let path = $page.path;
+  let unFilterIt = a => {
+    let queries = Object.assign({}, $page.query);
+    delete queries[a];
 
-    const url =
-      Object.keys(obj).length === 0
-        ? path
-        : `${path}?${decodeURIComponent(new URLSearchParams(obj).toString())}`;
-    goto(url);
-  };
-
-  let unFilterIt = (a, b) => {
-    let obj = $page.query;
-    if (Array.isArray(obj[a])) obj[a].splice(obj[a].indexOf(b), 1);
-    else delete obj[a];
-
-    createUrl(obj);
+    let mark = Object.keys(queries).length ? "?" : "";
+    goto(`${$page.path}${mark}${new URLSearchParams(queries).toString()}`);
   };
 
   let filterIt = (a, b) => {
-    let obj = $page.query;
-    if (obj[a]) {
-      if (Array.isArray(obj[a])) obj[a].push(b);
-      else obj[a] = [obj[a], b];
-    } else {
-      obj[a] = b;
-    }
+    let queries = Object.assign({}, $page.query);
+    queries[a] = b;
 
-    createUrl(obj);
-    (stackInput = ""), (typeInput = "");
+    goto(`${$page.path}?${new URLSearchParams(queries).toString()}`);
   };
 
-  let queryTypes, queryStack, arrs;
-  $: if ($page.query) {
-    queryTypes = [];
-    queryStack = [];
-    arrs = [queryTypes, queryStack];
-
-    Object.keys($page.query).forEach((key, index) => {
-      let triggerIt = key === "type" ? "0" : key === "stack" ? "1" : null;
-      if (triggerIt) {
-        if (Array.isArray($page.query[key])) {
-          $page.query[key].map(item => {
-            arrs[Number(triggerIt)].push(item);
-          });
-        } else {
-          arrs[Number(triggerIt)].push($page.query[key]);
-        }
-      }
-    });
-  }
+  $: currentType = $page.query.type;
+  $: currentStack = $page.query.stack;
 </script>
 
 <style>
@@ -105,9 +74,9 @@
     position: relative;
   }
   p {
-    font-size: var(--item-font-size);
+    font-size: 0.75rem;
     color: var(--workspace-color);
-    font-weight: 700;
+    font-weight: 600;
     margin: 0;
   }
   .inputs {
@@ -124,7 +93,7 @@
   .inputs:active ~ ul {
     display: none !important;
   }
-  .arr {
+  .query {
     font-weight: 500;
     border: 1px solid #dde8ed;
     border-radius: 6px;
@@ -134,22 +103,29 @@
     position: relative;
     margin-right: 4px;
     margin-bottom: 4px;
-    z-index: 1;
+    z-index: 2;
     float: left;
+    align-items: center;
+    display: grid;
+    grid-template-columns: max-content 1fr max-content;
+    grid-gap: 3px;
   }
-  .arr span {
+  .query span.Remove {
     width: 18px;
     height: 18px;
     float: right;
     margin-left: 1px;
     position: relative;
   }
-  .arr span:hover::before,
-  .arr span:hover::after {
-    background: #15536d;
+  .query p {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: inherit;
   }
-  .arr span::before,
-  .arr span::after {
+  .query span.Remove::before,
+  .query span.Remove::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -157,15 +133,21 @@
     background: var(--workspace-color);
     border-radius: 10px;
   }
-  .arr span::before {
+  .query span.Remove::before {
     width: 50%;
     height: 2px;
     transform: translate(-50%, -50%) rotate(45deg);
   }
-  .arr span::after {
+  .query span.Remove::after {
     width: 2px;
     height: 50%;
     transform: translate(-50%, -50%) rotate(45deg);
+  }
+  .arrow {
+    position: absolute;
+    right: 8px;
+    top: 10px;
+    color: var(--action);
   }
   .inputs .placeholder {
     color: #bbd2db;
@@ -183,32 +165,22 @@
     height: 11px;
   }
   ul {
+    display: none;
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     bottom: 0;
+    width: 100%;
     transform: translateY(calc(100% + 5px));
     background: #ffffff;
     list-style: none;
     padding: 0;
     border-radius: 10px;
     box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.1);
-    display: none;
     margin: 5px 0 0;
     right: 0;
-    width: 100%;
-    border: 1px solid #eeeeee;
+    border: 1px solid #eee;
     max-height: 300px;
     overflow-y: scroll;
-  }
-  ul li.empty {
-    display: none;
-  }
-  ul li.empty:only-child {
-    display: block;
-  }
-  ul :global(svg) {
-    width: 9px;
-    margin-right: 3px;
   }
   input.btn {
     outline: none;
@@ -227,18 +199,27 @@
     display: block;
   }
   li {
-    padding: 10px 20px;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    float: left;
+    padding: 5px 10px;
+    align-items: center;
+    grid-gap: 5px;
     cursor: pointer;
+    margin: 0 5px;
+    background: transparent;
+    transition: all 0.2s ease;
+    width: calc(100% - 10px);
+    border-radius: 10px;
+  }
+  li:first-of-type {
+    margin-top: 5px;
   }
   li:last-child {
-    border-bottom: none;
+    margin-bottom: 5px;
   }
   li:hover {
-    background: #f6f6f6;
-  }
-  li:first-child:hover {
-    cursor: default;
-    background: transparent;
+    background: var(--main-background-color);
   }
   li input {
     border: none;
@@ -248,105 +229,287 @@
     font-size: var(--item-font-size);
     padding: 10px;
     outline: none;
-    width: 100%;
   }
   li input::placeholder {
     color: #bbd2db;
   }
+  :global(.SearchNotebooks li p),
   li p {
+    text-overflow: ellipsis;
+    font-size: 0.8rem;
     font-weight: 500;
+    color: #333;
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: inherit;
+  }
+  .Icon {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    float: left;
+    position: relative;
+    background: var(--main-background-color);
+    border-radius: 50%;
+    text-align: center;
+  }
+  ul .Icon :global(svg) {
+    width: 9px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  /*------------- Notebooks Colours ---------------*/
+  .notebook .query {
+    border: none;
+  }
+  .notebook .query :global(svg) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: auto;
+  }
+  .notebook .query .Icon {
+    background: #ffffff;
+  }
+  .notebook .notebook li:hover .Icon,
+  .notebook .notebook .query .Icon {
+    background: #ffffff !important;
+  }
+  .notebook .query.colour1 span.Remove::before,
+  .notebook .query.colour1 span.Remove::after {
+    background: #a43939;
+  }
+  .notebook li.colour1:hover,
+  .notebook li.colour1 .Icon,
+  .notebook .query.colour1 {
+    background: #f5d2d2;
+  }
+  .notebook .query.colour1 .Icon :global(svg),
+  .notebook li.colour1 .Icon :global(svg) {
+    color: #a43939;
+  }
+  .notebook .query.colour2 span.Remove::before,
+  .notebook .query.colour2 span.Remove::after {
+    background: #6f4c9b;
+  }
+  .notebook li.colour2:hover,
+  .notebook li.colour2 .Icon,
+  .notebook .query.colour2 {
+    background: #d4ccea;
+  }
+  .notebook .query.colour2 .Icon :global(svg),
+  .notebook li.colour2 .Icon :global(svg) {
+    color: #6f4c9b;
+  }
+  .notebook .query.colour3 span.Remove::before,
+  .notebook .query.colour3 span.Remove::after {
+    background: #8f7000;
+  }
+  .notebook li.colour3:hover,
+  .notebook li.colour3 .Icon,
+  .notebook .query.colour3 {
+    background: #cceadf;
+  }
+  .notebook .query.colour3 .Icon :global(svg),
+  .notebook li.colour3 .Icon :global(svg) {
+    color: #8f7000;
+  }
+  .notebook .query.colour4 span.Remove::before,
+  .notebook .query.colour4 span.Remove::after {
+    background: #4c9b92;
+  }
+  .notebook li.colour4:hover,
+  .notebook li.colour4 .Icon,
+  .notebook .query.colour4 {
+    background: #cceadf;
+  }
+  .notebook .query.colour4 .Icon :global(svg),
+  .notebook li.colour4 .Icon :global(svg) {
+    color: #4c9b92;
+  }
+  /*------------- Stack List ---------------*/
+  .stack li {
+    grid-gap: 10px;
+  }
+  .stack .query .Icon {
+    width: 14px;
+  }
+  .stack .query .Icon :global(svg) {
+    width: 14px;
+    height: auto;
+    transform: translateY(1px);
+  }
+  .stack li:hover .Icon {
+    border: none;
+  }
+  /*------------- Type List ---------------*/
+  .type li {
+    grid-template-columns: 1fr;
+  }
+  /*------------- Notebooks Colours ---------------*/
+  ul :global(.SearchBox),
+  .SearchBox {
+    width: calc(100% - 10px);
+    border-radius: 10px;
+    margin: 5px;
+    position: relative;
+    height: 34px;
+    left: 0;
+    background: var(--main-background-color);
+  }
+  .SearchBox input {
+    font-family: var(--sans-fonts);
+    font-size: var(--item-font-size);
+    border: none;
+    font-weight: 700;
+    background: transparent;
+    position: absolute;
+    top: 50%;
+    left: 40px;
+    width: calc(100% - 50px);
+    height: 100%;
+    transform: translateY(-50%);
+    color: var(--action);
+    transition: all 0.25s ease-out;
+    outline: none;
+    margin: 0;
+  }
+  .SearchBox input::placeholder {
+    color: var(--action);
+    font-weight: 500;
+    opacity: 0.6;
+  }
+  .SearchBox :global(svg) {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    margin: 0;
+    width: 15px;
+    height: 15px;
   }
 </style>
 
-<div class="filter type">
-  <p>Type</p>
-  <input class="btn" />
+<div class="filter notebook">
+  <p>Notebook</p>
+  <input class="btn" readonly />
   <div class="inputs">
-    {#if !arrs[0].length}
-      <p class="placeholder">Choose type</p>
+    {#if !currentNotebook}
+      <p class="placeholder">
+        <IcoNotebook />
+        Choose notebook
+      </p>
     {:else}
-      {#each arrs[0] as type}
-        <p class="arr {type}">
-          {type}
-          <span on:click={() => unFilterIt('type', type)} />
-        </p>
-      {/each}
+      <p class="query {currentNotebook.settings.colour}">
+        <span class="Icon">
+          <IcoNotebook />
+        </span>
+        {currentNotebook.name}
+        <span class="Remove" on:click={() => unFilterIt('notebook')} />
+      </p>
     {/if}
     <ArrowDropDown />
   </div>
   <ul>
-    <li>
-      <input placeholder="Search type..." bind:value={typeInput} />
-    </li>
-    {#if typeInput}
-      {#each types as type}
-        {#if !arrs[0].find(item => type === item) && type
-            .toLowerCase()
-            .includes(typeInput.toLowerCase())}
-          <li on:click={() => filterIt('type', type)}>
-            <p class={type.replace(' ', '')}>{type}</p>
-          </li>
-        {/if}
-      {/each}
-    {:else}
-      {#each types as type}
-        {#if !arrs[0].find(item => type === item)}
-          <li on:click={() => filterIt('type', type)}>
-            <p class={type.replace(' ', '')}>{type}</p>
+    <SearchNotebooks />
+    {#if $noteAddNotebooks.type === 'loading'}
+      <Loader />
+    {:else if notebookArr.length}
+      {#each notebookArr as notebook}
+        {#if (!currentNotebook || currentNotebook.shortId !== notebook.shortId) && (!notebookInput || notebook.name
+              .toLowerCase()
+              .includes(notebookInput.toLowerCase()))}
+          <li
+            class={notebook.settings.colour}
+            on:click={() => filterIt('notebook', notebook.shortId)}>
+            <span class="Icon">
+              <IcoNotebook />
+            </span>
+            <p class={notebook.settings.colour}>{notebook.name}</p>
           </li>
         {/if}
       {/each}
     {/if}
   </ul>
 </div>
+
 <div class="filter stack">
   <p>Stack</p>
-  <input class="btn" />
+  <input class="btn SearchBox" readonly />
   <div class="inputs">
-    {#if !arrs[1].length}
+    {#if !currentStack}
       <p class="placeholder">
         <Stack />
         Choose stack
       </p>
     {:else}
-      {#each arrs[1] as stack}
-        <p class="arr {stack}">
+      <p class="query {currentStack}">
+        <span class="Icon">
           <Stack />
-          {stack}
-          <span on:click={() => unFilterIt('stack', stack)} />
-        </p>
-      {/each}
+        </span>
+        {currentStack}
+        <span class="Remove" on:click={() => unFilterIt('stack')} />
+      </p>
     {/if}
     <ArrowDropDown />
   </div>
   <ul>
-    <li>
-      <input placeholder="Search stack..." bind:value={stackInput} />
-    </li>
-    {#if stackInput}
-      {#each $collections as stack}
-        {#if !arrs[1].find(item => stack.name === item) && stack.name
+    <div class="SearchBox">
+      <IcoSearch />
+      <input
+        placeholder="Filter by stack..."
+        bind:value={stackInput}
+        class="SearchBox" />
+    </div>
+    {#each $collections as stack}
+      {#if currentStack !== stack.name && (!stackInput || stack.name
             .toLowerCase()
-            .includes(stackInput.toLowerCase())}
-          <li on:click={() => filterIt('stack', stack.name)}>
-            <p class={stack.name}>
-              <Stack />
-              {stack.name}
-            </p>
-          </li>
-        {/if}
-      {/each}
+            .includes(stackInput.toLowerCase()))}
+        <li on:click={() => filterIt('stack', stack.name)}>
+          <span class="Icon">
+            <Stack />
+          </span>
+          <p class={stack.name}>{stack.name}</p>
+        </li>
+      {/if}
+    {/each}
+  </ul>
+</div>
+
+<div class="filter type">
+  <p>Type</p>
+  <input class="btn" readonly />
+  <div class="inputs">
+    {#if !currentType}
+      <p class="placeholder">Choose type</p>
     {:else}
-      {#each $collections as stack}
-        {#if !arrs[1].find(item => stack.name === item)}
-          <li on:click={() => filterIt('stack', stack.name)}>
-            <p class={stack.name}>
-              <Stack />
-              {stack.name}
-            </p>
-          </li>
-        {/if}
-      {/each}
+      <p class="query {currentType}">
+        {currentType}
+        <span class="Remove" on:click={() => unFilterIt('type')} />
+      </p>
     {/if}
+    <ArrowDropDown />
+  </div>
+  <ul>
+    <div class="SearchBox">
+      <IcoSearch />
+      <input placeholder="Filter by type..." bind:value={typeInput} />
+    </div>
+    {#each types as type}
+      {#if currentType !== type && (!typeInput || type
+            .toLowerCase()
+            .includes(typeInput.toLowerCase()))}
+        <li on:click={() => filterIt('type', type)}>
+          <p class={type.replace(' ', '')}>{type}</p>
+        </li>
+      {/if}
+    {/each}
   </ul>
 </div>

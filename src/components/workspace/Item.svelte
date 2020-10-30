@@ -30,34 +30,42 @@
       rel: ["cover"]
     };
   }
+
+  let stacks;
+  if (item.tags) {
+    stacks = item.tags.filter(tag => {
+      if (tag.type === "stack") return tag;
+    });
+  }
 </script>
 
 <style>
   /* your styles go here */
-  .Item .Name {
-    justify-content: center;
-  }
   .title,
-  .Author,
+  .Authors,
   .Stacks :global(ul) {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: inherit;
     -webkit-box-orient: vertical;
     display: -webkit-box;
-  }
-  .title {
-    max-height: 31px;
     -webkit-line-clamp: 2;
   }
-  .Author {
-    max-height: 15px;
-    -webkit-line-clamp: 1;
+  .title {
+    font-size: 0.9rem;
+    color: #333333;
+    font-weight: 600;
+    margin: 0;
+  }
+  .Stacks {
+    position: relative;
+    z-index: 2;
+    width: max-content;
   }
   .Stacks :global(ul) {
-    padding-top: 7px;
-    max-height: 22px;
+    padding: 0;
     -webkit-line-clamp: 1;
+    margin: 0;
   }
 
   .Item {
@@ -68,13 +76,23 @@
     display: grid;
     grid-gap: 30px;
     border-radius: 15px;
+    align-items: center;
     position: relative;
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1),
       box-shadow 250ms cubic-bezier(0.075, 0.82, 0.165, 1),
       transform 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
   }
+  .Overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 2;
+    top: 0;
+    left: 0;
+  }
   .Image {
-    display: flex;
+    display: block;
     border-radius: 10px;
     position: relative;
   }
@@ -97,14 +115,20 @@
     object-fit: contain;
     border-radius: 10px;
     z-index: 1;
+    position: relative;
   }
   .Name {
     font-size: var(--item-font-size);
     font-weight: 600;
     padding: calc(var(--base) * 0.5) 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: grid;
+    grid-gap: 2px;
+    grid-template-rows: repeat(3, max-content);
+    align-items: center;
+    justify-content: left;
+    z-index: 2;
+    position: relative;
+    padding: 0;
   }
   .ItemEntry {
     font-size: var(--item-font-size);
@@ -115,12 +139,12 @@
   .ItemEntry label {
     margin: auto 0;
   }
-  .Author {
-    color: var(--medium);
-    font-weight: 300;
-    font-style: italic;
+  .Authors {
+    color: #333333;
+    font-weight: 400;
+    font-size: 0.75rem;
   }
-  .selected .Author {
+  .selected .Authors {
     color: white;
   }
   .selecting {
@@ -183,7 +207,7 @@
     color: var(--hover);
     text-decoration: underline;
   }
-  @media (max-width: 849px) {
+  @media (max-width: 1050px) {
     .Item {
       display: block;
       background-color: #fff;
@@ -191,13 +215,12 @@
       border: 1px solid #eee;
       border-radius: 15px;
       padding: 28px 30px 20px;
-      text-align: center;
       box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.03);
     }
     .Image {
       width: 68px;
       position: relative;
-      margin: 0 auto;
+      margin: 0 auto 10px;
     }
     .Image::before {
       top: -10px;
@@ -208,46 +231,26 @@
 </style>
 
 <div class="Item" class:selecting class:selected>
+  <a href={`/library/all/all/${item.shortId}`} class="Overlay">_</a>
   <div class="Image">
-    <img src={cover.href} alt="Cover for {item.name}" />
+    <img
+      src={cover.href ? cover.href : `/img/placeholder-cover.jpg`}
+      alt="Cover for {item.name}" />
   </div>
   <div class="Name">
-    <a href={`/library/all/all/${item.shortId}`} class="title">{item.name}</a>
+    <a href={`/library/all/all/${item.shortId}`} class="Overlay">_</a>
+    <h5 class="title">{item.name}</h5>
     <div class="Authors">
       {#each item.author as author, i}
         <span class="Author">
-          {author.name}
-          {#if i !== item.author.length - 1},{/if}
+          {author.name}{i !== item.author.length - 1 ? ',' : ''}
         </span>
       {/each}
     </div>
-
     <div class="Stacks">
-      <ItemStacks {item} {selected} />
+      {#if stacks}
+        <ItemStacks {item} {selected} />
+      {/if}
     </div>
   </div>
-  <!--
-  <div class="Stacks">
-    <ItemStacks {item} {selected} />
-  </div>
-  <div class="ItemEntry">
-    <span>{typeName(item.type)}</span>
-  </div>
-  <div class="ItemEntry">
-    <span>
-      {new Date(item.updated).toLocaleString(undefined, {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric'
-      })}
-    </span>
-  </div>
-  <div class="ItemEntry Last">
-    {#if selecting}
-      <label>
-        <span class="visually-hidden">Select this item</span>
-        <input type="checkbox" bind:checked={selected} />
-      </label>
-    {/if}
-  </div>-->
 </div>
