@@ -180,7 +180,9 @@
     </div>
   {/if}
   <main class="grid" class:publication class:inChapter={$chapter.id}>
-    <Nav {params} />
+    {#if !publication}
+      <Nav {params} />
+    {/if}
     <div class="content {params.workspace || 'unfinished'}" class:publication>
       <slot />
     </div>
