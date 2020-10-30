@@ -1,4 +1,4 @@
-const { sapper, setup } = require("./__sapper__/build/server/server.js");
+const { sapper, setup } = require("./sapper/server/server.js");
 
 const PORT = process.env.PORT || 8080;
 

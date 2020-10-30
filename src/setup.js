@@ -88,10 +88,11 @@ export function setup(sapper, options = {}) {
   app.use(
     express.raw({
       type: [
-        'application/epub+zip',
+        "application/epub+zip",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/zip",
-        'text/*'
+        "application/pdf",
+        "text/*"
       ],
       limit: "1mb"
     })
@@ -108,9 +109,7 @@ export function setup(sapper, options = {}) {
     (req, res, next) => {
       if (req.path === "/callback") {
         return next();
-      } /*else if (req.path === "/") {
-        return res.redirect("/library/all/all/");
-      } */else {
+      } else {
         return csurf()(req, res, next);
       }
     },

@@ -1,5 +1,11 @@
 <script>
   import { publication, workspaces, page } from "../../../stores";
+  let download
+  $: if ($publication && $publication.json && $publication.json.storageID) {
+    download = `/api/download/${$publication.json.storageId}`
+  } else {
+    download = ""
+  }
 </script>
 
 <style>
@@ -141,8 +147,9 @@
         </svg>
       </button>
     </li>
+    {#if download}
     <li>
-      <button class="Button" aria-label="Download Source">
+      <a href="{download}" class="Button" aria-label="Download Source">
         <svg
           width="34"
           height="34"
@@ -181,9 +188,10 @@
             fill="#002230" />
         </svg>
 
-      </button>
+      </a>
 
     </li>
+    {/if}
     <li class="Spacer" />
     <li>
       <button class="Button">

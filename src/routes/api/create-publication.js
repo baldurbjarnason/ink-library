@@ -25,9 +25,9 @@ export async function post(req, res, next) {
   } else if (req.body.storageId) {
     links = [
       {
-        rel: "alternate",
+        rel: ["alternate", "enclosure"],
         encodingFormat: "application/json",
-        url: `/api/stored/${req.body.storageId}`
+        url: `/api/download/${req.body.storageId}`
       },
       {
         rel: "contents",

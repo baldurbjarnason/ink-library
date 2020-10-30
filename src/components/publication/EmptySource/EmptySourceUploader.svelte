@@ -1,6 +1,6 @@
 <script>
-  import Button from '../../widgets/Button.svelte'
-  export let uploading = false
+  import Button from "../../widgets/Button.svelte";
+  export let uploading = false;
 </script>
 
 <style>
@@ -15,10 +15,8 @@
   }
 </style>
 
+<div class="Wrapper">
+  Uploading
+  <Button click={() => (uploading = false)}>Toggle</Button>
 
-
-   <div class="Wrapper">Uploading
-   
-  <Button click={() => uploading = false}>Toggle</Button>
-   
-   </div>
+</div>

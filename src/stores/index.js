@@ -1,7 +1,7 @@
 
 import { writable } from 'svelte/store';
-export { page } from './page'
-export { publication, contents, refreshPublication, addingStacks, availableStacks, workingStacks, removingStacks, publicationNotes, notesSearch, chapter, chapterId, storedPub, placedNotes } from './publication'
+export { page, params } from './page'
+export { publication, contents, refreshPublication, addingStacks, availableStacks, workingStacks, removingStacks, publicationNotes, notesSearch, chapter, chapterId, storedPub, placedNotes, chapterNotes } from './publication'
 export { error } from './error'
 export { nodes, intersecting, positions, annotations } from './utilities/nodes'
 
