@@ -1,5 +1,4 @@
 import got from "got";
-import ISO6391 from "iso-639-1";
 
 export async function get(req, res, next) {
   if (!req.user.profile) return res.sendStatus(401);

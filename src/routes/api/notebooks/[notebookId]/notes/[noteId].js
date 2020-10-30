@@ -30,7 +30,6 @@ export async function get(req, res, next) {
 // This needs to filter by workspace
 export async function put(req, res, next) {
   const url = `${process.env.API_SERVER}notebooks/${req.params.notebookId}/notes/${req.params.noteId}`;
-  const tags = req.body._tags;
   delete req.body._tags;
   try {
     const response = await got.put(url, {
