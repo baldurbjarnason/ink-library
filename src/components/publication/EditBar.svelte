@@ -9,7 +9,7 @@
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
-    font-size: var(--item-font-size);
+    font-size: 0.8rem;
     flex: 0 1 auto;
     line-height: 1;
 
@@ -31,15 +31,14 @@
     touch-action: manipulation;
     /* transition: box-shadow 0.15s ease-in-out; */
     background: transparent;
-    border-radius: 3px;
+    border-radius: 10px;
     text-decoration: none !important;
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: 1px solid transparent;
     margin-left: 1rem;
     background-color: var(--workspace-color);
     color: white;
-    padding: 0.25rem 0.5rem;
-    text-transform: uppercase;
+    padding: 10px 30px;
     font-weight: 400;
   }
   .Button:hover {
@@ -52,9 +51,8 @@
     display: flex;
     position: absolute;
 
-    top: 0;
+    bottom: 0;
     right: 0;
-    transform: translateY(-50%);
     width: min-content;
     justify-content: space-between;
     background-color: var(--reader-info-background);

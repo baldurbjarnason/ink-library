@@ -1,4 +1,5 @@
 <script>
+  import ArrowDropDown from "../img/ArrowDropDown.svelte";
   import Awesomplete from "awesomplete";
   export let name;
   export let placeholder = "";
@@ -93,6 +94,12 @@
   .dark input::placeholder {
     color: rgb(0, 34, 48, 0.5);
   }
+  label > :global(svg) {
+    right: 15px !important;
+    top: inherit !important;
+    color: #ffffff !important;
+    bottom: 18px;
+  }
   @media (max-width: 720px) {
     .LabelText {
       font-size: 0.85rem;
@@ -104,6 +111,7 @@
   <div class="LabelText">
     <slot />
   </div>
+  <ArrowDropDown />
   <input
     data-minchars="0"
     {type}

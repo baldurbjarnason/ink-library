@@ -4,7 +4,13 @@
   import Closer from "./widgets/Closer.svelte";
   import { afterUpdate, tick } from "svelte";
   import { goto } from "@sapper/app";
-  import { searchStore } from "../stores";
+  import {
+    searchStore,
+    searchAddSources,
+    sourceSearched,
+    page
+  } from "../stores";
+
   let open = false;
   let input;
   let searchToggle;
@@ -14,8 +20,15 @@
   $: if (!open) {
     $searchStore = null;
   }
+
   function loadSearch(ev) {
-    $searchStore = input.value;
+    if ($page.path.startsWith("/notebooks/")) {
+      $searchAddSources = input.value;
+    } else if ($page.path.startsWith("/notes/all/all/")) {
+      $sourceSearched = input.value;
+    } else {
+      $searchStore = input.value;
+    }
   }
   async function close() {
     open = false;
@@ -77,6 +90,12 @@
     margin: 0;
     width: 15px;
     height: 15px;
+  }
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    display: none;
   } /*
   .svgButton {
     font-family: var(--sans-fonts);

@@ -62,12 +62,12 @@ export const publicationNotes = derived(
 
 export const placedNotes = function (placed, notes) {
   return derived([placed, notes], ([$placed, $notes]) => {
-    function getNote (id) {
+    function getNote(id) {
       if ($notes) {
         const note = $notes.find(note => note.id === id)
         if (note) return note
       }
-      return {tags: []}
+      return { tags: [] }
     }
 
     if ($placed.length !== 0 && $notes.length !== 0) {

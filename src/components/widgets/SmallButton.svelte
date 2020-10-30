@@ -9,7 +9,7 @@
   .Button,
   .Button:link {
     font-family: var(--sans-fonts);
-    font-size: var(--item-font-size);
+    font-size: 0.8rem;
     flex: 0 1 auto;
     line-height: 1;
 
@@ -36,7 +36,7 @@
     transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
     border: 1px solid var(--workspace-color);
     background-color: white;
-    color: var(--action);
+    color: var(--workspace-color);
     padding: 0;
     border: none;
     background-color: transparent;

@@ -8,14 +8,14 @@
     storedPub,
     chapter
   } from "../../stores";
-  import {guard} from "../../stores/utilities/ssr-guard.js"
+  import { guard } from "../../stores/utilities/ssr-guard.js";
   import { elasticInOut } from "svelte/easing";
   import TitleBar from "./reader/TitleBar.svelte";
   import ToolBar from "./reader/ToolBar.svelte";
   import InfoToolBar from "./reader/InfoToolBar.svelte";
   import MainReading from "./reader/MainReading.svelte";
-  import MainInfo from "./reader/MainInfo.svelte";
-  import EmptySource from "./EmptySource.svelte"
+  import MainInfo from "./SourceInfo/MainInfo.svelte";
+  import EmptySource from "./EmptySource.svelte";
   export let info = false;
   let hash = "#Description";
   let scroll = false;
@@ -52,19 +52,24 @@
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr minmax(100vh, auto);
   }
+  .Publication.Info {
+    grid-template-rows: 1fr minmax(100vh, auto);
+  }
 </style>
 
 <svelte:window on:hashchange={hashchange} />
-<div class="Publication {hash.replace('#', '')}TabSelected">
+<div
+  class="Publication {hash.replace('#', '')}TabSelected {$page.path.endsWith('info') ? 'Info' : ''}">
   <TitleBar />
   {#if info}
-    <InfoToolBar />
+    <!--
+    <InfoToolBar />-->
     <MainInfo />
-  {:else if  $storedPub.type === "Loading"}  
-      <ToolBar root={readerBody} hidden={true} />
-      <MainReading bind:readerBody hidden={true} />
-  {:else if  $storedPub.type === "NoFile" || $storedPub.type === 404}
-      <EmptySource />
+  {:else if $storedPub.type === 'Loading'}
+    <ToolBar root={readerBody} hidden={true} />
+    <MainReading bind:readerBody hidden={true} />
+  {:else if $storedPub.type === 'NoFile' || $storedPub.type === 404}
+    <EmptySource />
   {:else}
     <ToolBar root={readerBody} />
     <MainReading bind:readerBody />

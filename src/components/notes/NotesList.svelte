@@ -13,20 +13,20 @@
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   let filterOn = false;
+  let clicked = false;
   let items;
   $: if ($notes) {
     items = $notes.items;
   }
-  let query = {};
-  let params = {};
-  $: if ($page) {
-    query = Object.assign({}, $page.query);
-    params = Object.assign({}, $page.params);
-  }
 
-  if (Object.keys($page.query).length > 0) {
-    filterOn = true;
-  }
+  $: query = Object.assign({}, $page.query) || "";
+
+  $: if ((query.notebook || query.flag) && !clicked) filterOn = true;
+
+  let filter = () => {
+    filterOn = !filterOn;
+    clicked = true;
+  };
 </script>
 
 <style>
@@ -89,6 +89,7 @@
     float: right;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   .filter:not(.active):hover {
     background: var(--main-background-color);
@@ -97,17 +98,7 @@
     font-size: var(--item-font-size);
     margin: 0 8px 0 0;
     float: left;
-  }
-  .filter input {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    outline: none;
-    opacity: 0;
-    cursor: pointer;
+    font-weight: 600;
   }
   .active p,
   .active > :global(svg) {
@@ -120,7 +111,7 @@
   .formFilter {
     background: #f9fbfc;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     grid-gap: var(--base);
     grid-auto-rows: -webkit-max-content;
     grid-auto-rows: max-content;
@@ -178,6 +169,9 @@
     width: 50%;
     max-width: 250px;
   }
+  .Cards :global(.Item:only-child) {
+    width: 50%;
+  }
   @media (min-width: 641px) and (max-width: 720px) {
     .CardHeader {
       top: 0;
@@ -185,7 +179,7 @@
       position: relative;
     }
     .formFilter {
-      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      grid-template-columns: 1fr;
     }
   }
   @media (max-width: 640px) {
@@ -193,7 +187,7 @@
       padding-top: 50px;
     }
     .formFilter {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: 1fr;
     }
   }
 </style>
@@ -204,15 +198,14 @@
   </div>
   <div>
     <NotesSearch />
-    <section class="filter {filterOn ? 'active' : ''}">
+    <section class="filter {filterOn ? 'active' : ''}" on:click={filter}>
       <p>Filter</p>
       <IcoFilter />
-      <input type="checkbox" bind:checked={filterOn} />
     </section>
   </div>
 </div>
 <section class="formFilter {filterOn ? 'active' : ''}">
-  <FilterNote {items} />
+  <FilterNote />
 </section>
 <div class="Cards">
   {#if $notes.type === 'loading'}

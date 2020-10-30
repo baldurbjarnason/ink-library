@@ -1,4 +1,5 @@
 <script>
+  import IcoStack from "../img/IcoStack.svelte";
   export let item = {
     tags: []
   };
@@ -20,6 +21,9 @@
       return name;
     }
   }
+  $: stackLength = item.tags.filter(tag => {
+    if (tag.type === "stack") return tag;
+  });
 </script>
 
 <style>
@@ -40,15 +44,8 @@
     color: var(--research-workspace);
   }
   ul {
-    margin: 0;
-    padding: calc(var(--base) * 0.5) 0 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: inherit;
-    max-height: 42px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    position: relative;
+    display: grid;
   }
   li {
     list-style: none;
@@ -72,59 +69,27 @@
   li a:hover .linkText {
     color: var(--link);
   }
+  .More {
+    font-weight: 400;
+    color: #888888;
+    font-size: 0.75rem;
+  }
 </style>
 
 <ul>
-  {#each item.tags.filter(tag => tag.type !== 'workspace') as tag}
+  {#each item.tags.filter(tag => tag.type !== 'workspace') as tag, i}
     <!-- We need to figure out a way to check the workspace of a tag -->
-    <li class:selected>
-      <a href="/library/all/{encodeURIComponent(tag.name)}">
-        <span class="hash {getWorkspace(tag.name)}">
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 158 158"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M65.5251 31.7012C66.256 31.3148 67.1307 31.3148 67.8617
-              31.7012L129.069 64.0553C130.626 64.8781 130.677 67.0892 129.16
-              67.983L67.9625 104.044C67.1793 104.505 66.2074 104.505 65.4242
-              104.044L4.22665 67.983C2.70979 67.0892 2.7609 64.8781 4.31744
-              64.0553L65.5251 31.7012Z"
-              fill="currentColor" />
-            <rect
-              x="8.41211"
-              y="81.5928"
-              width="76.4469"
-              height="11.6562"
-              rx="5.8281"
-              transform="rotate(30 8.41211 81.5928)"
-              fill="currentColor" />
-            <rect
-              width="76.4176"
-              height="11.6562"
-              rx="5.8281"
-              transform="matrix(-0.866025 0.5 0.5 0.866025 124.974 81.5928)"
-              fill="currentColor" />
-            <rect
-              x="8.41211"
-              y="108.791"
-              width="76.4469"
-              height="11.6562"
-              rx="5.8281"
-              transform="rotate(30 8.41211 108.791)"
-              fill="currentColor" />
-            <rect
-              width="76.4176"
-              height="11.6562"
-              rx="5.8281"
-              transform="matrix(-0.866025 0.5 0.5 0.866025 124.974 108.791)"
-              fill="currentColor" />
-          </svg>
-        </span>
-        <span class="linkText">{getName(tag.name)}</span>
-      </a>
-    </li>
+    {#if i < 1}
+      <li class:selected>
+        <a href="/library/all/{encodeURIComponent(tag.name)}">
+          <span class="hash {getWorkspace(tag.name)}">
+            <IcoStack />
+          </span>
+          <span class="linkText">{getName(tag.name)}</span>
+        </a>
+      </li>
+    {:else if i === 1}
+      <span class="More">+{stackLength.length - 1} more stacks</span>
+    {/if}
   {/each}
 </ul>

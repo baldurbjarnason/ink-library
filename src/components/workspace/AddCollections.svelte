@@ -89,6 +89,9 @@
 </script>
 
 <style>
+  div {
+    position: relative;
+  }
   .Collection {
     width: auto;
     float: left;

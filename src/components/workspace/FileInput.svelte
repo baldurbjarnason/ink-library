@@ -70,6 +70,10 @@
     line-height: 1rem;
     position: relative;
     text-align: center;
+    padding-right: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .input:hover {
     background: rgba(255, 255, 255, 0.1);

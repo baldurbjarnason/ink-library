@@ -19,7 +19,7 @@ export const notes = derived(
     } else if ($page.params.workspace && $page.params.workspace !== "all") {
       query.workspace = $page.params.workspace.replace("_", " ");
     }
-
+    
     if ($searchNotes) {
       query.search = $searchNotes;
     } else if ($page.query.search) {
