@@ -1,5 +1,4 @@
 import got from "got";
-import ISO6391 from "iso-639-1";
 
 // Make a list of fake notes: motivation, lang, id, body
 
@@ -7,7 +6,6 @@ import ISO6391 from "iso-639-1";
 // This needs to filter by workspace
 export async function put(req, res, next) {
   const url = `${process.env.API_SERVER}notebooks/${req.params.notebookId}/notes/${req.params.noteId}`;
-  const tags = req.body._tags;
   delete req.body._tags;
   try {
     const response = await got.put(url, {

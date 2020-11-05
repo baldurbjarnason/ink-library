@@ -13,8 +13,8 @@ export const noteAddSources = derived(
     if ($page.query.returnTo) return;
     set({ type: "loading", items: [] });
 
-    let state = $sourceSearched ? `?search=${$sourceSearched}` : '';
-    let url = `/api/library${state}`;
+    const state = $sourceSearched ? `?search=${$sourceSearched}` : '';
+    const url = `/api/library${state}`;
 
     return fetch(url)
       .then(lib => {

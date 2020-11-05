@@ -9,13 +9,13 @@ export const noteAddNotebooks = derived(
   [page, notebookSearched],
   ([$page, $notebookSearched], set) => {
     if (!process.browser) return;
-    //if (!$page.path || !$page.path.startsWith("/notes/all/all")) return;
+    // if (!$page.path || !$page.path.startsWith("/notes/all/all")) return;
     if (!$page.path) return;
     if ($page.query.returnTo) return;
     set({ type: "loading", items: [] });
 
-    let state = $notebookSearched ? `?search=${$notebookSearched}` : '';
-    let url = `/api/notebooks${state}`;
+    const state = $notebookSearched ? `?search=${$notebookSearched}` : '';
+    const url = `/api/notebooks${state}`;
 
     return fetch(url)
       .then(lib => {
