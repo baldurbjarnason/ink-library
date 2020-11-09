@@ -1,5 +1,4 @@
 import got from "got";
-import ISO6391 from "iso-639-1";
 
 // Make a list of fake notes: motivation, lang, id, body
 
@@ -10,17 +9,9 @@ export async function get(req, res, next) {
   try {
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
-    response._inLanguage = [].concat(response.inLanguage).map(code => {
-      return {
-        code,
-        english: ISO6391.getName(code),
-        native: ISO6391.getNativeName(code)
-      };
-    });
-    response.keywords = response.keywords || [];
     res.json(response);
   } catch (err) {
     res.status(err.response.statusCode);
@@ -32,15 +23,15 @@ export async function put(req, res, next) {
   const url = `${process.env.API_SERVER}notes/${req.params.id}`;
   const tags = req.body._tags;
   delete req.body._tags;
-  
+
   console.log("request: ", req.body);
   try {
     const response = await got.put(url, {
       headers: {
         "content-type": "application/json",
-        Authorization: `Bearer ${req.user.token}`
+        Authorization: `Bearer ${req.user.token}`,
       },
-      json: req.body
+      json: req.body,
     });
 
     if (tags && tags.length !== 0) {
@@ -48,8 +39,8 @@ export async function put(req, res, next) {
         await got.put(`${url}/tags/${tag}`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
-          }
+            Authorization: `Bearer ${req.user.token}`,
+          },
         });
       }
     }
