@@ -47,8 +47,9 @@
 
   let selectAll = false;
   let chooseAll = () => {
-    if ($selectedItems.size < 10) selectAll = true;
+    if ($selectedItems.size !== items.length) selectAll = true;
   };
+  $: fullList = $selectedItems.size == items.length ? true : false;
 </script>
 
 <style>
@@ -244,6 +245,7 @@
   <NotesListFooter
     type="source"
     {chooseAll}
+    {fullList}
     endSelection={() => {
       selecting = false;
       clearSelected();
