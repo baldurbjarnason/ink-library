@@ -56,13 +56,7 @@ export async function post(req, res, next) {
       data: body,
       thumbnails: false
     })) {
-      console.log(
-        vfile.path,
-        vfile.contentType,
-        vfile.data,
-        vfile.contents.length
-      );
-      if (!vfile.data && !vfile.data.resource) {
+      if (!vfile.data) {
         book = vfile;
       } else {
         const metadata = {
@@ -84,7 +78,7 @@ export async function post(req, res, next) {
     return res.json(err.body);
   }
   // Return upload url for the front end to upload the original to.
-  res.json({ storageId: filePrefix, book, url });
+  res.json({ storageId: filePrefix, book, url, type: mediaType });
 }
 
 function wrap(body, title) {
