@@ -97,7 +97,7 @@
       <h3>Source library</h3>
     </div>
   </section>
-  <NewItem {workspace} />
+  <NewItem {workspace} ntbkClose={false} />
   <!--<Search />
   <ItemToggle />-->
 </nav>

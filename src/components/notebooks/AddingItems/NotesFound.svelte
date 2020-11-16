@@ -9,15 +9,15 @@
   if (itemType === "note") {
     source = item.source;
 
-    colour = item.tags.find(tag => {
+    colour = item.tags.find((tag) => {
       if (tag.name.startsWith("colour")) return tag;
     });
 
-    highlight = item.body.find(note => {
+    highlight = item.body.find((note) => {
       if (note.motivation === "highlighting") return note;
     });
 
-    comment = item.body.find(note => {
+    comment = item.body.find((note) => {
       if (note.motivation === "commenting") return note;
     });
 

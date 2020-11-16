@@ -53,7 +53,7 @@
     grid-template-rows: 1fr 1fr minmax(100vh, auto);
   }
   .Publication.Info {
-    grid-template-rows: 1fr minmax(100vh, auto);
+    grid-template-rows: max-content max-content minmax(100vh, auto);
   }
   .Processing {
     grid-row: 2 / -1;
@@ -70,8 +70,7 @@
   <TitleBar />
   {#if $publication}
     {#if info}
-      <!--
-      <InfoToolBar />-->
+      <InfoToolBar />
       <MainInfo />
     {:else if $publication._processing}
       <ToolBar root={readerBody} hidden={true} />

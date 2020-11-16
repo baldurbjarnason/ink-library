@@ -6,7 +6,7 @@
 
   let colours = ["colour1", "colour2", "colour3", "colour4"];
 
-  $: if (!colour && noteTest.tags) testColour();
+  $: if (!colour && noteTest && noteTest.tags) testColour();
   $: if ($page.params.id) if (noteTest.tags) testColour();
 </script>
 
