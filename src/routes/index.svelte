@@ -31,7 +31,7 @@
       "Wednesday",
       "Thursday",
       "Friday",
-      "Saturday"
+      "Saturday",
     ];
   let day = weekday[date.getDay()];
 </script>
@@ -133,6 +133,9 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     grid-gap: 20px;
+  }
+  .index .notebooks :global(.Item) {
+    grid-template-rows: 100px auto;
   }
   .notebooks .Loading {
     margin: 75px auto;
@@ -245,7 +248,7 @@
   <div class="left">
     <nav class="Toolbar">
       <h1 out:send={{ key: 'h1' }} in:receive={{ key: 'h1' }}>
-        Happy {day}, {$session.user.name.givenName}.
+        Happy {day}{$session.user.nickname ? `, ${$session.user.name.givenName}` : '!'}.
       </h1>
       <div class="Buttons">
         <NewNote ntbkOpen={false} />
@@ -262,7 +265,11 @@
         {:else if itemsNotes}
           {#each itemsNotes as note, i}
             {#if i < 8}
-              <NotesCard {note} />
+              <NotesCard
+                {note}
+                selecting={false}
+                selection={false}
+                selectAll={false} />
             {/if}
           {:else}
             <NoNotes />
@@ -279,7 +286,11 @@
         {:else if itemsNtbk}
           {#each itemsNtbk as notebook, i}
             {#if i < 3}
-              <NotebookCard {notebook} />
+              <NotebookCard
+                {notebook}
+                selecting={false}
+                selection={false}
+                selectAll={false} />
             {/if}
           {:else}
             <NoNotebooks />

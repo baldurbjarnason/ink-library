@@ -1,54 +1,109 @@
 <script>
-  import { page } from "../../stores";
+  import { page, addSelected, removeSelected } from "../../stores";
   import IcoNotebook from "../img/IcoNotebook.svelte";
+  import DateFormat from "../notes/Date.svelte";
+
   export let notebook = {};
+  export let selecting;
+  export let selection = function() {};
+  export let selectAll;
 
-  let created = notebook.updated ? notebook.updated : "0000-00-00";
-  let replyYear = Number(created.substr(0, 4));
-  let replyMonth = Number(created.substr(5, 2));
-  let replyDay = Number(created.substr(8, 2));
+  let selected = false;
 
-  let currentDate = new Date();
-  let oldDate = new Date(replyYear, replyMonth - 1, replyDay);
-  let oneDay = 1000 * 60 * 60 * 24;
-  let daysSince = Math.floor(
-    (currentDate.getTime() - oldDate.getTime()) / oneDay
-  );
+  $: if (!selecting && selected) selected = false;
+  $: if (selected && notebook.id) addSelected(notebook);
+  else removeSelected(notebook);
 
-  let display =
-    daysSince <= 0
-      ? "today"
-      : daysSince === 1
-      ? "yesterday"
-      : daysSince > 1 && daysSince < 32
-      ? `${daysSince} days ago`
-      : daysSince > 31 && daysSince < 63
-      ? "a month ago"
-      : daysSince > 62 && daysSince < 366
-      ? `${Math.floor(daysSince / 30)} months ago`
-      : daysSince > 365 && daysSince < 730
-      ? `1 year ago`
-      : `${Math.floor(daysSince / 365)} years ago`;
+  $: selectable =
+    $page.path === "/notebooks" || $page.path === "/notebooks/" ? true : false;
 
-  //console.log(notebook);
+  $: if (selectAll) {
+    selected = true;
+    selection();
+  }
 </script>
 
 <style>
-  a {
-    text-decoration: inherit !important;
-    color: inherit;
-  }
   .Item {
     display: grid;
     grid-template-rows: 150px auto;
     background-color: #fff;
     border: 1px solid #eeeeee;
     overflow: hidden;
+    position: relative;
     border-radius: 15px;
     -webkit-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
   }
+  a {
+    text-decoration: inherit !important;
+    color: inherit;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  /* -------------- Input -------------- */
+  .BulkSelector {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+  }
+  .BulkSelector::before,
+  .BulkSelector::after {
+    content: "";
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    position: absolute;
+    transition: all 0.25s ease-out;
+  }
+  .BulkSelector::before {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #888888;
+    background: #ffffff;
+  }
+  .BulkSelector::after {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+  }
+  .BulkSelector:checked::after {
+    background: #888888;
+  }
+  .colour1 .BulkSelector::before {
+    border: 1px solid #a43939;
+  }
+  .colour2 .BulkSelector::before {
+    border: 1px solid #6f4c9b;
+  }
+  .colour3 .BulkSelector::before {
+    border: 1px solid #8f7000;
+  }
+  .colour4 .BulkSelector::before {
+    border: 1px solid #4c9b92;
+  }
+  .colour1 .BulkSelector:checked::after {
+    background: #a43939;
+  }
+  .colour2 .BulkSelector:checked::after {
+    background: #6f4c9b;
+  }
+  .colour3 .BulkSelector:checked::after {
+    background: #8f7000;
+  }
+  .colour4 .BulkSelector:checked::after {
+    background: #4c9b92;
+  }
+  /* ---------- Cover image --------------*/
   .Img {
     background-size: cover;
     background-repeat: no-repeat;
@@ -125,28 +180,31 @@
   }
 </style>
 
-<a href={`notebooks/${notebook.shortId}`}>
-  <div class="Item">
-    {#if notebook.settings.coverImg}
-      <div
-        class="Img"
-        style={`background-image: url("/img/NotebookImg/${notebook.settings.coverImg}.jpg")`} />
-    {:else}
-      <div class="Img" style={'background-color: red'} />
-    {/if}
-    <div class="Info">
-      <div class="Icon {notebook.settings.colour}">
-        <IcoNotebook />
-      </div>
-      <div class="InfoContent">
-        <h5 class="name">{notebook.name}</h5>
-        <p class="Date">
-          <strong>
-            {notebook.published.substring(0, 16) === notebook.updated.substring(0, 16) ? 'Created' : 'Updated'}
-          </strong>
-          {display}
-        </p>
-      </div>
+<div class="Item {notebook.settings.colour}">
+  <a href={`notebooks/${notebook.shortId}`}>{notebook.name}</a>
+  {#if selectable}
+    <input
+      class="BulkSelector"
+      type="checkbox"
+      bind:checked={selected}
+      on:click={() => selection()} />
+  {/if}
+  {#if notebook.settings.coverImg}
+    <div
+      class="Img"
+      style={`background-image: url("/img/NotebookImg/${notebook.settings.coverImg}.jpg")`} />
+  {:else}
+    <div class="Img" style={'background-color: red'} />
+  {/if}
+  <div class="Info">
+    <div class="Icon {notebook.settings.colour}">
+      <IcoNotebook />
+    </div>
+    <div class="InfoContent">
+      <h5 class="name">{notebook.name}</h5>
+      <p class="Date">
+        <DateFormat updated={notebook.updated} published={notebook.published} />
+      </p>
     </div>
   </div>
-</a>
+</div>

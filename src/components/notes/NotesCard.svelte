@@ -8,21 +8,27 @@
   import FlagRevisit from "../img/FlagRevisit.svelte";
   import FlagToDo from "../img/FlagToDo.svelte";
   import FlagUrgent from "../img/FlagUrgent.svelte";
-
   import NavSource from "../img/NavSource.svelte";
   import Comment from "./Comment.svelte";
   import Highlight from "./Highlight.svelte";
-  import { page } from "../../stores";
+  import { page, addSelected, removeSelected } from "../../stores";
+  export let selecting;
+  export let selection = function() {};
   export let note = {};
+  export let selectAll;
+
+  let selected = false;
   let title;
+
   $: if (note.source) {
     title = note.source.name;
   } else {
     title = `Workspace: ${$page.params.workspace}`;
   }
+
   let noteBody = [];
   $: if (note && note.body && note.body[0]) {
-    if (note.body.find(item => item.motivation === "commenting")) {
+    if (note.body.find((item) => item.motivation === "commenting")) {
       noteBody = [].concat(note.body);
     } else {
       noteBody = note.body.concat({ motivation: "commenting", content: "" });
@@ -31,15 +37,15 @@
 
   let noted, highlighed;
   $: if (note && note.body && note.body[0]) {
-    noted = note.body.find(item => item.motivation === "commenting");
-    highlighed = note.body.find(item => item.motivation === "highlighting");
+    noted = note.body.find((item) => item.motivation === "commenting");
+    highlighed = note.body.find((item) => item.motivation === "highlighting");
   }
 
   $: flags = note.tags
-    ? note.tags.filter(flag => !flag.name.startsWith("colour"))
+    ? note.tags.filter((flag) => !flag.name.startsWith("colour"))
     : "";
   $: colour = note.tags
-    ? note.tags.find(flag => flag.name.startsWith("colour"))
+    ? note.tags.find((flag) => flag.name.startsWith("colour"))
     : "";
 
   function assignIco(icon) {
@@ -68,8 +74,22 @@
   $: pagination =
     $page.query && $page.query.page
       ? `/notes/all/all/${note.shortId}?${new URLSearchParams({
-          page: $page.query.page
+          page: $page.query.page,
         }).toString()}`
+      : false;
+
+  $: if (!selecting && selected) selected = false;
+  $: if (selected && note.id) addSelected(note);
+  else removeSelected(note);
+
+  $: if (selectAll) {
+    selected = true;
+    selection();
+  }
+
+  $: selectable =
+    $page.path === "/notes/all/all" || $page.path === "/notes/all/all/"
+      ? true
       : false;
 </script>
 
@@ -87,9 +107,69 @@
     /*grid-template-rows: auto 1fr auto;*/
     grid-template-rows: 1fr;
     height: 200px;
+    position: relative;
   }
   .Top.two {
     grid-template-rows: auto 1fr;
+  }
+  /* -------------- Input -------------- */
+  .BulkSelector {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+  }
+  .BulkSelector::before,
+  .BulkSelector::after {
+    content: "";
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    position: absolute;
+    transition: all 0.25s ease-out;
+  }
+  .BulkSelector::before {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #888888;
+    background: #ffffff;
+  }
+  .BulkSelector::after {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+  }
+  .BulkSelector:checked::after {
+    background: #888888;
+  }
+  .colour1 .BulkSelector::before {
+    border: 1px solid #fea95b;
+  }
+  .colour2 .BulkSelector::before {
+    border: 1px solid #ff8ebe;
+  }
+  .colour3 .BulkSelector::before {
+    border: 1px solid #57cfea;
+  }
+  .colour4 .BulkSelector::before {
+    border: 1px solid #81d173;
+  }
+  .colour1 .BulkSelector:checked::after {
+    background: #fea95b;
+  }
+  .colour2 .BulkSelector:checked::after {
+    background: #ff8ebe;
+  }
+  .colour3 .BulkSelector:checked::after {
+    background: #57cfea;
+  }
+  .colour4 .BulkSelector:checked::after {
+    background: #81d173;
   }
   /* -------------- Highlight -------------- */
   header {
@@ -233,7 +313,6 @@
     margin-right: 3px;
     height: 16px;
   }
-
   /* ------------ No colour ------------ */
   .Item .Top {
     border: 1px solid #cccccc;
@@ -345,6 +424,13 @@
   class="Item {colour ? colour.name.replace(' ', '') : ''}"
   class:Selected={note.selected}>
   <div class="Top {note.document || highlighed || note.source ? 'two' : ''}">
+    {#if selectable}
+      <input
+        class="BulkSelector"
+        type="checkbox"
+        bind:checked={selected}
+        on:click={() => selection()} />
+    {/if}
     {#if note.document || highlighed || note.source}
       <header>
         <div class="column" />
@@ -403,7 +489,7 @@
         {new Date(note.updated).toLocaleString(undefined, {
           year: 'numeric',
           month: 'numeric',
-          day: 'numeric'
+          day: 'numeric',
         })}
       </p>
     </section>

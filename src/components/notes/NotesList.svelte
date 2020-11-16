@@ -1,5 +1,5 @@
 <script>
-  import { notes, clearSelected } from "../../stores";
+  import { notes, clearSelected, selectedItems } from "../../stores";
   import Button from "../widgets/Button.svelte";
   import NotesCard from "./NotesCard.svelte";
   import SmallButton from "../widgets/SmallButton.svelte";
@@ -9,23 +9,40 @@
   import IcoFilter from "../img/IcoFilter.svelte";
   import NotesSearch from "../NotesSearch.svelte";
   import FilterNote from "../FilterNote.svelte";
-
+  import NotesListFooter from "./NotesListFooter.svelte";
   import { stores } from "@sapper/app";
+
   const { page, session } = stores();
   let filterOn = false;
   let clicked = false;
   let items;
-  $: if ($notes) {
-    items = $notes.items;
-  }
 
+  $: if ($notes) items = $notes.items;
   $: query = Object.assign({}, $page.query) || "";
-
   $: if ((query.notebook || query.flag) && !clicked) filterOn = true;
 
   let filter = () => {
     filterOn = !filterOn;
     clicked = true;
+  };
+
+  let selecting = true;
+  let selection = function() {
+    selectAll = false;
+    if (!selecting) selecting = true;
+  };
+
+  $: selectable =
+    $page.path === "/notes/all/all" || $page.path === "/notes/all/all/"
+      ? true
+      : false;
+  $: if (!selectable) clearSelected();
+
+  clearSelected();
+
+  let selectAll = false;
+  let chooseAll = () => {
+    if ($selectedItems.size < 10) selectAll = true;
   };
 </script>
 
@@ -212,7 +229,7 @@
     <div class="Loading" />
   {:else}
     {#each items as note}
-      <NotesCard {note} />
+      <NotesCard {note} {selecting} {selection} {selectAll} />
     {:else}
       <div class="Empty">
         <NoNotes />
@@ -220,3 +237,12 @@
     {/each}
   {/if}
 </div>
+{#if selecting && $selectedItems.size && selectable}
+  <NotesListFooter
+    type="note"
+    {chooseAll}
+    endSelection={() => {
+      selecting = false;
+      clearSelected();
+    }} />
+{/if}

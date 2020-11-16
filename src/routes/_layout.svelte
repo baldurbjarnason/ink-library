@@ -3,7 +3,7 @@
     library as libraryStore,
     page as pageStore,
     error,
-    params as paramsStore
+    params as paramsStore,
   } from "../stores";
   import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
@@ -41,9 +41,6 @@
     menu = true;
   } else {
     menu = false;
-  }
-  $: if (process.browser) {
-    console.log($session);
   }
 </script>
 

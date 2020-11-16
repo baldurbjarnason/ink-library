@@ -10,14 +10,14 @@ export async function get(req, res, next) {
   try {
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
-    response._inLanguage = [].concat(response.inLanguage).map(code => {
+    response._inLanguage = [].concat(response.inLanguage).map((code) => {
       return {
         code,
         english: ISO6391.getName(code),
-        native: ISO6391.getNativeName(code)
+        native: ISO6391.getNativeName(code),
       };
     });
     response.keywords = response.keywords || [];
@@ -38,7 +38,7 @@ export async function get(req, res, next) {
         const file = bucket.file(basePath);
         const [exists] = await file.exists();
         if (!exists) {
-          console.log("publication does not exist")
+          console.log("publication does not exist");
           response._processing = true;
         } else {
           // console.log("publication exists")
@@ -84,9 +84,9 @@ export async function put(req, res, next) {
       .patch(url, {
         headers: {
           "content-type": "application/ld+json",
-          Authorization: `Bearer ${req.user.token}`
+          Authorization: `Bearer ${req.user.token}`,
         },
-        json: req.body
+        json: req.body,
       })
       .json();
     // In theory this should let us add tags on updates
@@ -95,11 +95,27 @@ export async function put(req, res, next) {
         await got.put(`${url}/tags/${tag}`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
-          }
+            Authorization: `Bearer ${req.user.token}`,
+          },
         });
       }
     }
+    return res.json(response);
+  } catch (err) {
+    res.status(err.response.statusCode);
+    return res.json(JSON.parse(err.response.body));
+  }
+}
+
+export async function del(req, res, next) {
+  try {
+    const response = await got
+      .delete(`${process.env.API_SERVER}sources/${req.params.publicationId}`, {
+        headers: {
+          Authorization: `Bearer ${req.user.token}`,
+        },
+      })
+      .json();
     return res.json(response);
   } catch (err) {
     res.status(err.response.statusCode);

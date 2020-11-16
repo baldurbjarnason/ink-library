@@ -6,7 +6,7 @@
     collections,
     addingWorkspace,
     addedCollections,
-    addedWorkspaces
+    addedWorkspaces,
   } from "../../stores";
   import RiskyButton from "../widgets/RiskyButton.svelte";
   import SecondaryButton from "../widgets/SecondaryButton.svelte";
@@ -17,8 +17,8 @@
   import { getToken } from "../../getToken";
   import AddCollections from "./AddCollections.svelte";
 
-  let editing = false;
   export let endSelection = function() {};
+  export let editing;
 
   async function submit(event) {
     event.preventDefault();
@@ -35,41 +35,42 @@
     endSelection();
     try {
       await fetch(target.action, {
-        method: "POST",
+        method: "PUT",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "csrf-token": getToken()
+          "csrf-token": getToken(),
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
       $refreshDate = Date.now();
     } catch (err) {
       console.error(err);
     }
   }
+  /*
   async function remove(event) {
     event.preventDefault();
     editing = false;
-    const body = { action: "delete", items: Array.from($selectedItems) };
+    const body = { items: Array.from($selectedItems) };
     endSelection();
     try {
       await fetch("/api/batch-update", {
-        method: "POST",
+        method: "DELETE",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "csrf-token": getToken()
+          "csrf-token": getToken(),
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
       $refreshDate = Date.now();
     } catch (err) {
       console.error(err);
     }
-  }
+  }*/
 </script>
 
 <style>
@@ -77,6 +78,10 @@
     display: grid;
     grid-gap: calc(var(--base) * 2);
     grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+  .FooterButtons :global(button) {
+    height: 40px;
   }
   .FooterNumber {
     font-size: 1rem;
@@ -94,14 +99,20 @@
     font-size: var(--item-font-size);
     position: fixed;
     bottom: 0;
-    left: 40px;
-    background-color: var(--main-background-color);
+    left: 0;
+    align-items: end;
     box-shadow: 0px -7px 15px rgba(0, 0, 0, 0.1);
   }
   .Footer.editing {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: var(--base);
+    width: 100%;
+    padding: 40px;
+    border-radius: 50px 50px 0 0;
+    bottom: 0;
+    border: none;
+    background: #ffffff;
   }
   @media (max-width: 720px) {
     .Footer {
@@ -135,35 +146,38 @@
   class:editing
   action="/api/batch-update"
   on:submit={submit}>
-  {#if editing}
-    <div>
-      <Input placeholder="First Author, Second Author" name="updateAddAuthors">
-        Add authors:
-      </Input>
-    </div>
-    <div>
-      <TypeSelect noDefault={true}>Change type:</TypeSelect>
-    </div>
-    <!--
+  <!--
+  {#if editing}-->
+  <div>
+    <Input placeholder="First Author, Second Author" name="updateAddAuthors">
+      Add authors:
+    </Input>
+  </div>
+  <div>
+    <TypeSelect noDefault={true}>Change type:</TypeSelect>
+  </div>
+  <!--
     <div>
       <ChooseWorkspaces>Change workspace:</ChooseWorkspaces>
     </div>-->
-    <AddCollections />
-    <!--
+  <AddCollections />
+  <!--
     <span class="FooterNumber">
       Editing {$selectedItems.size}
       {#if $selectedItems.size === 1}item{:else}items{/if}
     </span>
     <span />-->
-    <span class="FooterButtons">
-      <SecondaryButton
-        click={() => {
-          editing = false;
-        }}>
-        Cancel
-      </SecondaryButton>
-      <Button type="submit">Save</Button>
-    </span>
+  <span class="FooterButtons">
+    <SecondaryButton
+      click={() => {
+        editing = false;
+      }}>
+      Cancel
+    </SecondaryButton>
+    <Button type="submit">Save</Button>
+  </span>
+</form>
+<!--
   {:else}
     <span class="FooterNumber">
       <SecondaryButton
@@ -183,4 +197,4 @@
       </Button>
     </span>
   {/if}
-</form>
+</form>-->

@@ -53,3 +53,19 @@ export async function put(req, res, next) {
     return res.json(JSON.parse(err.response.body));
   }
 }
+
+export async function del(req, res, next) {
+  try {
+    const response = await got
+      .delete(`${process.env.API_SERVER}notes/${req.params.id}`, {
+        headers: {
+          Authorization: `Bearer ${req.user.token}`,
+        },
+      })
+      .json();
+    return res.json(response);
+  } catch (err) {
+    res.status(err.response.statusCode);
+    return res.json(JSON.parse(err.response.body));
+  }
+}

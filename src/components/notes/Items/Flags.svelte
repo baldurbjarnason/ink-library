@@ -15,7 +15,7 @@
   export let selectedFlags;
   export let noteTest;
 
-  $: if (!selectedFlags && noteTest.tags) test();
+  $: if (!selectedFlags && noteTest && noteTest.tags) test();
   $: if ($page.params.id) if (noteTest.tags) test();
 
   let flags = [

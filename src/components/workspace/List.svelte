@@ -1,5 +1,6 @@
 <script>
   import { library, selectedItems, clearSelected } from "../../stores";
+  import NotesListFooter from "../notes/NotesListFooter.svelte";
   import FilterSource from "../FilterSource.svelte";
   import Footer from "./Footer.svelte";
   import Button from "../widgets/Button.svelte";
@@ -22,6 +23,7 @@
   $: if ($library) items = $library.items;
 
   let selection = function() {
+    selectAll = false;
     if (!selecting) selecting = true;
   };
 
@@ -33,6 +35,19 @@
   let filter = () => {
     filterOn = !filterOn;
     clicked = true;
+  };
+
+  clearSelected();
+
+  $: selectable =
+    $page.path === "/library/all/all" || $page.path === "/library/all/all/"
+      ? true
+      : false;
+  $: if (!selectable) clearSelected();
+
+  let selectAll = false;
+  let chooseAll = () => {
+    if ($selectedItems.size < 10) selectAll = true;
   };
 </script>
 
@@ -217,7 +232,7 @@
     <div class="Loading" />
   {:else}
     {#each items as item}
-      <Card {item} {selecting} {selection} />
+      <Card {item} {selecting} {selection} {selectAll} />
     {:else}
       <div class="Empty">
         <NoSources />
@@ -225,8 +240,10 @@
     {/each}
   {/if}
 </div>
-{#if selecting && $selectedItems.size}
-  <Footer
+{#if selecting && $selectedItems.size && selectable}
+  <NotesListFooter
+    type="source"
+    {chooseAll}
     endSelection={() => {
       selecting = false;
       clearSelected();
