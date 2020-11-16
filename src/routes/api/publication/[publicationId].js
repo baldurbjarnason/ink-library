@@ -21,7 +21,7 @@ export async function get(req, res, next) {
       };
     });
     response.keywords = response.keywords || [];
-    if (!response.json && !response.json.storageId) {
+    if (!response.json || !response.json.storageId) {
       response._empty = true;
     } else if (response.json && response.json.storageId) {
       const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
