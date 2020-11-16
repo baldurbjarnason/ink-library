@@ -3,7 +3,6 @@
   import Button from "../widgets/Button.svelte";
   import WhiteButton from "./WhiteButton.svelte";
   import { send, receive } from "../../routes/_crossfade.js";
-  import AddWorkspace from "./AddWorkspace.svelte";
   import Input from "./Input.svelte";
   import FileInput from "./FileInput.svelte";
   import TypeSelect from "./TypeSelect.svelte";
@@ -15,8 +14,6 @@
     refreshDate,
     refreshInSource,
     refreshCollections,
-    collections,
-    addingWorkspace,
     addedCollections,
     addedWorkspaces,
     refreshNotebook

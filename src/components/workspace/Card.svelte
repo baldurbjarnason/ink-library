@@ -1,7 +1,6 @@
 <script>
   import ItemStacks from "./ItemStacks.svelte";
   import { addSelected, removeSelected } from "../../stores";
-  import { typeName } from "../typeName.js";
   export let item = {};
   export let selecting;
   let selected = false;
@@ -149,9 +148,6 @@
       border: 1px solid var(--workspace-color);
       background: var(--workspace-color);
     }
-  }
-  .Modified {
-    text-align: right;
   }
   footer *,
   footer :global(ul) {

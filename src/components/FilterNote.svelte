@@ -248,18 +248,6 @@
   li:hover {
     background: var(--main-background-color);
   }
-  li input {
-    border: none;
-    background: var(--main-background-color);
-    border-radius: 10px;
-    color: var(--action);
-    font-size: var(--item-font-size);
-    padding: 10px;
-    outline: none;
-  }
-  li input::placeholder {
-    color: #bbd2db;
-  }
   :global(.SearchNotebooks li p),
   li p {
     text-overflow: ellipsis;

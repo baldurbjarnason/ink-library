@@ -3,10 +3,8 @@
   import SortSelectNotebooks from "./Tools/SortSelectNotebooks.svelte";
   import NoNotebooks from "../img/NoNotebooks.svelte";
   import IcoFilter from "../img/IcoFilter.svelte";
-  import NotesSearch from "../NotesSearch.svelte";
   import FilterNote from "../FilterNote.svelte";
   import FilterSource from "../FilterSource.svelte";
-  import NotebookCard from "./NotebookCard.svelte";
   import NotesCard from "../notes/NotesCard.svelte";
   import Card from "../workspace/Card.svelte";
   import Loader from "../Loader.svelte";
@@ -16,7 +14,7 @@
   import { stores } from "@sapper/app";
   export let notebook = {};
 
-  const { page, session } = stores();
+  const { page } = stores();
   let filterOn = false;
   let clicked = false;
   let Items;
@@ -33,10 +31,6 @@
   } else if (menuTabs === "notes") {
     Items =
       $searchedNotes.type === "loading" ? $searchedNotes : $searchedNotes.items;
-  } else {
-    {
-      type: "loading";
-    }
   }
 
   $: if (Items.type !== "loading" || (menuTabs === "all" && !Items[0])) {

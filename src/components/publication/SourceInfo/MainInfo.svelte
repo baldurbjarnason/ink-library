@@ -1,5 +1,4 @@
 <script>
-  import { publication, workspaces, page } from "../../../stores";
   import AboutCard from "../AboutCard.svelte";
   import DescriptionCard from "../DescriptionCard.svelte";
   import InfoMenu from "./InfoMenu.svelte";

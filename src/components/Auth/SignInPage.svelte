@@ -6,14 +6,7 @@
   $: if (token && process.browser) {
     token.value = getToken();
   }
-  let confirmInput;
   let passwordInput;
-  function change() {
-    if (confirmInput.value !== passwordInput.value) {
-      confirmInput.setCustomValidity("Both passwords must match");
-      confirmInput.reportValidity();
-    }
-  }
 </script>
 
 <style>

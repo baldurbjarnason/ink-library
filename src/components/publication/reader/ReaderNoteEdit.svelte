@@ -1,6 +1,5 @@
 <script>
   // This needs a reference to the fg-modal element
-  import { onMount } from "svelte";
   import FlagFurtherRead from "../../img/FlagFurtherRead.svelte";
   import FlagIdea from "../../img/FlagIdea.svelte";
   import FlagImportant from "../../img/FlagImportant.svelte";
@@ -12,24 +11,15 @@
   import FlagUrgent from "../../img/FlagUrgent.svelte";
   import NavSource from "../../img/NavSource.svelte";
 
-  import IcoGoBack from "../../img/IcoGoBack.svelte";
   import { tags } from "../../../stores";
-  import Comment from "../../notes/Comment.svelte";
   import Highlight from "../../notes/Highlight.svelte";
   import NoteEditor from "../../widgets/NoteEditor.svelte";
   import { getToken } from "../../../getToken";
   import Button from "../../widgets/Button.svelte";
-  import { cachedWeb } from "../../../stores/utilities/web.js";
   import { refresh } from "../../../stores/utilities/refresh.js";
-  import { guard } from "../../../stores/utilities/ssr-guard.js";
   import { noteStore } from "../../../stores/utilities/noteStore.js";
   export let note = { body: [], source: { name: "" } };
   export let stores = {};
-  let title = "";
-  $: if (stores.$publication) {
-    title = stores.$publication.name;
-  }
-  let noteBody = [];
   let store;
   $: if (note && note.shortId && !store) {
     store = noteStore(note);

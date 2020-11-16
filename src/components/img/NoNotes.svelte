@@ -9,12 +9,6 @@
   .st0 {
     fill: #e9f0f4;
   }
-  h2 {
-    margin-top: 20px;
-    margin-bottom: 0;
-    color: var(--action);
-    opacity: 0.2;
-  }
 </style>
 
 <svg class="empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 134">

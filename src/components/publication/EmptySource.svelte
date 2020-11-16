@@ -1,9 +1,5 @@
 <script>
-  import UploadIcon from "./UploadIcon.svelte";
-  import Button from "../widgets/Button.svelte";
   import EmptySourcePasteForm from "./EmptySource/EmptySourcePasteForm.svelte";
-  import EmptySourcePaster from "./EmptySource/EmptySourcePaster.svelte";
-  import EmptySourceUploader from "./EmptySource/EmptySourceUploader.svelte";
   import EmptySourceUploadForm from "./EmptySource/EmptySourceUploadForm.svelte";
   let uploading = false;
   let pasting = false;

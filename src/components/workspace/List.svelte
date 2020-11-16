@@ -2,18 +2,13 @@
   import { library, selectedItems, clearSelected } from "../../stores";
   import FilterSource from "../FilterSource.svelte";
   import Footer from "./Footer.svelte";
-  import Button from "../widgets/Button.svelte";
   import Card from "./Card.svelte";
-  import Item from "./Item.svelte";
-  import HeaderArrows from "./HeaderArrows.svelte";
-  import SmallButton from "../widgets/SmallButton.svelte";
   import SortSelect from "./SortSelect.svelte";
-  import SortButton from "./SortButton.svelte";
   import Search from "../Search.svelte";
   import NoSources from "../img/NoSources.svelte";
   import IcoFilter from "../img/IcoFilter.svelte";
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   let selecting = true;
   let filterOn = false;
   let clicked = false;
@@ -165,12 +160,6 @@
   .Empty :global(svg) {
     width: 50%;
     max-width: 250px;
-  }
-  code {
-    background-color: transparent;
-    color: #c4cdd1;
-    font-size: 4rem;
-    margin: auto;
   }
   @media (min-width: 721px) {
     :global(.Cards > .Item:only-child) {

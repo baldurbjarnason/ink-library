@@ -1,20 +1,16 @@
 <script>
   import NotesCard from "./SidebarNotesCard.svelte";
-  import { guard } from "../../../stores/utilities/ssr-guard.js";
   import SidebarNoteModal from "./SidebarNoteModal.svelte";
   import NoteEdit from "./ReaderNoteEdit.svelte";
   import { publicationStores } from "../../../stores/utilities/publicationStores.js";
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   // $: if ($positionedNotes) {
   //   console.log($positionedNotes.length)
   // }
   const pubStores = publicationStores(page);
   const notes = pubStores.notes;
   const positionedNotes = pubStores.positionedNotes;
-  const chapter = pubStores.chapter;
-  const publication = pubStores.publication;
-  const publicationId = pubStores.publicationId;
 </script>
 
 <style>

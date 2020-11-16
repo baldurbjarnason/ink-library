@@ -1,5 +1,5 @@
 <script>
-  import { contents, page } from "../../stores";
+  import { contents } from "../../stores";
   import ContentsItem from "./ContentsItem.svelte";
   import PagedContentsItem from "./PagedContentsItem.svelte";
   import Loading from "../widgets/Loading.svelte";

@@ -1,6 +1,5 @@
 <script>
   import { send, receive } from "../routes/_crossfade.js";
-  import { fly } from "svelte/transition";
   import NavSource from "./img/NavSource.svelte";
   import NavNotes from "./img/NavNotes.svelte";
   import NavNotebook from "./img/NavNotebook.svelte";

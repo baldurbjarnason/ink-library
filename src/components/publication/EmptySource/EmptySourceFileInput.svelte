@@ -4,7 +4,6 @@
   export let placeholder = "";
   export let dark = false;
   let file;
-  let url;
   let publication;
   let type;
   let working;
@@ -44,7 +43,7 @@
     original = payload.original;
     try {
       working = true;
-      const uploaded = await fetch(url, {
+      await fetch(url, {
         method: "PUT",
         mode: "cors",
         headers: {

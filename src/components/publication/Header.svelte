@@ -1,5 +1,5 @@
 <script>
-  import { publication, workspaces, page } from "../../stores";
+  import { publication, page } from "../../stores";
   import { fly } from "svelte/transition";
   import { elasticInOut } from "svelte/easing";
   import Tab from "./Tab.svelte";
@@ -45,13 +45,13 @@
   }
   function getReadDate(publication) {
     if (!publication.status) {
-      return new Date($publication.updated).toLocaleString(undefined, {
+      return new Date(publication.updated).toLocaleString(undefined, {
         year: "numeric",
         month: "numeric",
         day: "numeric"
       });
     } else {
-      return new Date($publication.published).toLocaleString(undefined, {
+      return new Date(publication.published).toLocaleString(undefined, {
         year: "numeric",
         month: "numeric",
         day: "numeric"

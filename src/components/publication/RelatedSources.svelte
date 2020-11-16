@@ -16,7 +16,7 @@
     for (let i = 0; i < stacks.length; i++) {
       fetch(`/api/library?stack=${stacks[i].name}`)
         .then(resp => {
-          resp.items.map((item, index) => {
+          resp.items.map((item) => {
             if (
               item.shortId !== $publication.shortId &&
               !sources.find(arr => arr.shortId === item.shortId)

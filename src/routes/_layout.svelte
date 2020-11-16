@@ -1,22 +1,15 @@
 <script>
   import {
-    library as libraryStore,
     page as pageStore,
-    error,
-    params as paramsStore
+    error
   } from "../stores";
   import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
-  import Sidebar from "../components/Sidebar.svelte";
-  import NotesSidebar from "../components/NotesSidebar.svelte";
   import SignIn from "../components/Auth/SignIn.svelte";
-  import SignUp from "../components/Auth/SignUp.svelte";
-  import SignInPage from "../components/Auth/SignInPage.svelte";
   import NoteEditDialog from "../components/notes/NoteEditDialog.svelte";
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   export let segment;
-  let query;
   let params;
   let publication = false;
   let betaNotice = true;
@@ -35,12 +28,6 @@
     publication = true;
   } else {
     publication = false;
-  }
-  let menu = true;
-  $: if (segment === "library" && $page.query && $page.query.returnTo) {
-    menu = true;
-  } else {
-    menu = false;
   }
   $: if (process.browser) {
     console.log($session);

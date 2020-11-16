@@ -3,9 +3,8 @@
   import Closer from "../../widgets/Closer.svelte";
   import WhiteButton from "../../workspace/WhiteButton.svelte";
   import { send, receive } from "../../../routes/_crossfade.js";
-  import { afterUpdate, tick } from "svelte";
   import { getToken } from "../../../getToken";
-  import { notebooks, refreshNotebook } from "../../../stores";
+  import { refreshNotebook } from "../../../stores";
 
   export let notebook;
   let colours = ["colour1", "colour2", "colour3", "colour4"];
@@ -46,15 +45,6 @@
     "tools-for-motivation-KvTOwKoji7g",
     "wengang-zhai-ywfKB54yidY"
   ];
-
-  let inputBody = {
-    name: "",
-    description: "",
-    settings: {
-      colour: "",
-      coverImg: ""
-    }
-  };
 
   async function submit(event) {
     event.preventDefault();

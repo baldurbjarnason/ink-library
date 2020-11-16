@@ -1,5 +1,5 @@
 <script>
-  import { notebooks, clearSelected } from "../../stores";
+  import { notebooks } from "../../stores";
   import SortSelect from "../workspace/SortSelect.svelte";
   import NoNotebooks from "../img/NoNotebooks.svelte";
   import IcoFilter from "../img/IcoFilter.svelte";
@@ -8,7 +8,7 @@
   import NotebookCard from "./NotebookCard.svelte";
 
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   let filterOn = false;
   let clicked = false;
   let items;

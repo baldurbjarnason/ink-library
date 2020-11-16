@@ -1,17 +1,14 @@
 <script>
-  import { notes, clearSelected } from "../../stores";
-  import Button from "../widgets/Button.svelte";
+  import { notes } from "../../stores";
   import NotesCard from "./NotesCard.svelte";
-  import SmallButton from "../widgets/SmallButton.svelte";
   import SortSelect from "../workspace/SortSelect.svelte";
-  import SortButton from "../workspace/SortButton.svelte";
   import NoNotes from "../img/NoNotes.svelte";
   import IcoFilter from "../img/IcoFilter.svelte";
   import NotesSearch from "../NotesSearch.svelte";
   import FilterNote from "../FilterNote.svelte";
 
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   let filterOn = false;
   let clicked = false;
   let items;

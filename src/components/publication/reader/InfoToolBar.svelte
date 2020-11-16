@@ -1,5 +1,5 @@
 <script>
-  import { publication, workspaces, page } from "../../../stores";
+  import { publication } from "../../../stores";
   let download
   $: if ($publication && $publication.json && $publication.json.storageID) {
     download = `/api/download/${$publication.json.storageId}`

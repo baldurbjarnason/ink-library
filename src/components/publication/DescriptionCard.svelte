@@ -1,6 +1,5 @@
 <script>
   import Card from "./Card.svelte";
-  import Cover from "./Cover.svelte";
   import Loader from "../Loader.svelte";
   import { publication, refreshPublication } from "../../stores";
   import IcoEdit from "../img/IcoEdit.svelte";
@@ -26,7 +25,7 @@
     textarea.focus();
   }
 
-  let updating, text;
+  let text;
   $: if (!editing) {
     text = $publication.description;
     //if ($publication.description !== undefined) updating = true;

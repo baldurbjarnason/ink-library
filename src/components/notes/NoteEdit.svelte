@@ -1,15 +1,12 @@
 <script>
-  import { onMount } from "svelte";
   import DateFormat from "./DateFormat.svelte";
   import Loader from "../Loader.svelte";
   import Flags from "./Items/Flags.svelte";
   import Colours from "./Items/Colours.svelte";
-  import ListAssigment from "./Items/ListAssigment.svelte";
   import ListNotebooks from "./Items/ListNotebooks.svelte";
   import ListSources from "./Items/ListSources.svelte";
   import IcoGoBack from "../img/IcoGoBack.svelte";
   import {
-    notes,
     refreshNotes,
     refreshNote,
     page,
@@ -17,7 +14,6 @@
     note
   } from "../../stores";
   import { goto } from "@sapper/app";
-  import Comment from "./Comment.svelte";
   import Highlight from "./Highlight.svelte";
   import NoteEditor from "../widgets/NoteEditor.svelte";
   import { getToken } from "../../getToken";
@@ -31,7 +27,6 @@
     replaceSource = "",
     selectedFlags = "",
     addNotebook = [],
-    edited,
     text = "",
     removeNotebook = [];
 

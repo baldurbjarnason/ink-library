@@ -1,18 +1,13 @@
 <script>
   import { onMount, afterUpdate, onDestroy } from "svelte";
-  import { derived, writable } from "svelte/store";
-  import { workspaces, chapterId } from "../../stores";
-  import { guard } from "../../stores/utilities/ssr-guard.js";
-  import { elasticInOut } from "svelte/easing";
   import TitleBar from "./reader/TitleBar.svelte";
   import ToolBar from "./reader/ToolBar.svelte";
-  import InfoToolBar from "./reader/InfoToolBar.svelte";
   import MainReading from "./reader/MainReading.svelte";
   import MainInfo from "./SourceInfo/MainInfo.svelte";
   import EmptySource from "./EmptySource.svelte";
   import { publicationStores } from "../../stores/utilities/publicationStores.js";
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   const { publication } = publicationStores(page);
   export let info = false;
   let hash = "#Description";

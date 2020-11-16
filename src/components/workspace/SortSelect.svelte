@@ -25,17 +25,6 @@
       goto(url);
     }
   }
-  function length(event) {
-    if (event.target.value.includes("title")) {
-      event.target.style.width = `11ch`;
-    } else if (event.target.value.includes("type")) {
-      event.target.style.width = `11ch`;
-    } else if (event.target.value.includes("modified")) {
-      event.target.style.width = `23ch`;
-    } else if (event.target.value.includes("added")) {
-      event.target.style.width = `18ch`;
-    }
-  }
   function changed(event) {
     //length(event);
     return sortItems(event.target.value);
@@ -106,7 +95,7 @@
   <select
     name="sort-select"
     id="sort-select"
-    on:change={changed}
+    on:blur={changed}
     bind:this={selectElement}>
     <option value="modified-asc" selected={selectedOption === 'modified-asc'}>
       Date, Asc

@@ -1,5 +1,4 @@
 <script>
-  import { page } from "../../stores";
   import IcoNotebook from "../img/IcoNotebook.svelte";
   export let notebook = {};
 

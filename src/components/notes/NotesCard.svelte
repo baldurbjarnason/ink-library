@@ -10,24 +10,8 @@
   import FlagUrgent from "../img/FlagUrgent.svelte";
 
   import NavSource from "../img/NavSource.svelte";
-  import Comment from "./Comment.svelte";
-  import Highlight from "./Highlight.svelte";
   import { page } from "../../stores";
   export let note = {};
-  let title;
-  $: if (note.source) {
-    title = note.source.name;
-  } else {
-    title = `Workspace: ${$page.params.workspace}`;
-  }
-  let noteBody = [];
-  $: if (note && note.body && note.body[0]) {
-    if (note.body.find(item => item.motivation === "commenting")) {
-      noteBody = [].concat(note.body);
-    } else {
-      noteBody = note.body.concat({ motivation: "commenting", content: "" });
-    }
-  }
 
   let noted, highlighed;
   $: if (note && note.body && note.body[0]) {
@@ -239,8 +223,7 @@
     border: 1px solid #cccccc;
     border-bottom: none;
   }
-  .Item header .column,
-  .Item .Page {
+  .Item header .column {
     background: #999999;
   }
   .Item .Tags li {
@@ -260,8 +243,7 @@
     border: 1px solid #ffe4cb;
     border-bottom: none;
   }
-  .colour1 header .column,
-  .colour1 .Page {
+  .colour1 header .column {
     background: #fea95b;
   }
   .colour1 .Tags li {
@@ -281,8 +263,7 @@
     border: 1px solid #fcd5e5;
     border-bottom: none;
   }
-  .colour2 header .column,
-  .colour2 .Page {
+  .colour2 header .column {
     background: #ff8ebe;
   }
   .colour2 .Tags li {
@@ -302,8 +283,7 @@
     border: 1px solid #7de8f8;
     border-bottom: none;
   }
-  .colour3 header .column,
-  .colour3 .Page {
+  .colour3 header .column {
     background: #57cfea;
   }
   .colour3 .Tags li {
@@ -323,8 +303,7 @@
     border: 1px solid #d3eacc;
     border-bottom: none;
   }
-  .colour4 header .column,
-  .colour4 .Page {
+  .colour4 header .column {
     background: #81d173;
   }
   .colour4 .Tags li {

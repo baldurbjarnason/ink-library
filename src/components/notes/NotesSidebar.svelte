@@ -1,5 +1,4 @@
 <script>
-  import { page } from "../../stores";
 </script>
 
 <style>

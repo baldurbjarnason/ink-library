@@ -14,25 +14,18 @@
   import Closer from "../widgets/Closer.svelte";
   import WhiteButton from "../workspace/WhiteButton.svelte";
   import { send, receive } from "../../routes/_crossfade.js";
-  import { afterUpdate, tick } from "svelte";
+  import { tick } from "svelte";
   import NoteEditor from "../widgets/NoteEditor.svelte";
   import { getToken } from "../../getToken";
   import {
-    notes,
     refreshNotes,
     refreshInNote,
     page,
-    tags,
-    workspaces,
-    collections
+    tags
   } from "../../stores";
-  import Comment from "./Comment.svelte";
-  import Highlight from "./Highlight.svelte";
   export let note = { body: [], source: { name: "" } };
 
   let selectedFlags = [];
-  let highlight;
-  let comment;
 
   $: colours = $tags.items.filter(
     tag => tag.type == "flag" && tag.name.startsWith("colour")
@@ -63,7 +56,6 @@
   export let ntbkClose;
   let open = false;
   let newToggle;
-  let expanded = false;
   let noteColour = { name: "colour 1" };
 
   $: if (colours[0] && !noteColour.id) noteColour = colours[0];

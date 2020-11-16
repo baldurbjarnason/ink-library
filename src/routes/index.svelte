@@ -1,12 +1,10 @@
 <script>
   import { send, receive } from "./_crossfade.js";
-  import { innote, clearSelected, insource, inntbk } from "../stores";
+  import { innote, insource, inntbk } from "../stores";
   import NotesCard from "../components/notes/NotesCard.svelte";
-  import NotesList from "../components/notes/NotesList.svelte";
   import NotebookCard from "../components/notebooks/NotebookCard.svelte";
   import NewNote from "../components/notes/NewNote.svelte";
   import NewNotebook from "../components/notebooks/NewNotebook.svelte";
-  import NoteEdit from "../components/notes/NoteEdit.svelte";
   import NewItem from "../components/workspace/NewItem.svelte";
   import NoNotes from "../components/img/NoNotes.svelte";
   import NoNotebooks from "../components/img/NoNotebooks.svelte";
@@ -95,13 +93,6 @@
     justify-content: space-between;
     padding: 30px 20px;
   }
-  .Body {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    padding-top: 20px;
-    height: calc(100% - 40px);
-  }
   .align {
     background: #f9fbfc;
     border-radius: 30px;
@@ -133,9 +124,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     grid-gap: 20px;
-  }
-  .notebooks .Loading {
-    margin: 75px auto;
   }
   .notebooks :global(.Info) {
     padding: 10px 15px;
