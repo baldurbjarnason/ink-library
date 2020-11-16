@@ -66,12 +66,18 @@ async function getNotes(req) {
   );
   query.delete("dir");
   url = `${url}?${query.toString()}`;
-  const response = await got(url, {
-    headers: {
-      Authorization: `Bearer ${req.user.token}`
-    }
-  }).json();
-  return response;
+  try {
+    const response = await got(url, {
+      headers: {
+        Authorization: `Bearer ${req.user.token}`
+      }
+    });
+    return JSON.parse(response.body);
+  } catch (err) {
+    console.error(err)
+    console.error(err.response.body)
+    return {items:[]}
+  }
 }
 
 function fixItems(items) {
