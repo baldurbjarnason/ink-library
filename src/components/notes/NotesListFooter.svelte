@@ -20,6 +20,7 @@
   export let endSelection = function() {};
   export let chooseAll;
   export let type;
+  export let fullList;
 
   let editing = false;
   let colours = ["colour 1", "colour 2", "colour 3", "colour 4"];
@@ -57,8 +58,10 @@
     const body = createObj();
     endSelection();
 
+    const updateUrl =
+      type === "source" ? "/api/batch-update" : `/api/note${url}sbatch-update`;
     try {
-      await fetch(`/api/note${url}sbatch-update`, {
+      await fetch(updateUrl, {
         method: "PUT",
         credentials: "include",
         headers: {
@@ -361,7 +364,7 @@
         {#each menu as button}
           <li
             class="Button {button.replace(' ', '')}
-            {button === 'Check all' && $selectedItems.size === 10 ? 'allChecked' : ''}"
+            {button === 'Check all' && fullList ? 'allChecked' : ''}"
             on:click={() => react(button)}>
             <span class="Icon">
               <svelte:component this={assignIco(button)} />
