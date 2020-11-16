@@ -58,6 +58,7 @@
   }
   .Modal .Footer .Button {
     width: 130px;
+    max-height: 40px;
     padding: 10px 0;
     text-align: center;
     border-radius: 10px;
@@ -96,19 +97,7 @@
   }
   .Modal section ul.Notes :global(.Found:hover) {
     background: #ffffff;
-  } /*
-  .Modal section ul.Notes :global(.Found.colour1:hover) {
-    background: #fff9f5;
   }
-  .Modal section ul.Notes :global(.Found.colour2:hover) {
-    background: #fdfafc;
-  }
-  .Modal section ul.Notes :global(.Found.colour3:hover) {
-    background: #fafeff;
-  }
-  .Modal section ul.Notes :global(.Found.colour4:hover) {
-    background: #fafffa;
-  }*/
   .Modal :global(.Found),
   .Modal ul.Notes :global(li:last-child) {
     background: #ffffff;
@@ -235,6 +224,17 @@
   }
   .Notebook.colour4 :global(svg) {
     color: #4c9b92;
+  }
+  @media (max-width: 640px) {
+    .Modal section {
+      top: 0;
+      left: 0;
+      transform: translate(0, 0);
+      border-radius: 0;
+      width: 100vw;
+      height: 100vh;
+      grid-template-rows: repeat(4, max-content);
+    }
   }
 </style>
 
