@@ -1,5 +1,5 @@
 <script>
-  import { publication, workspaces, page } from "../../stores";
+  import { publication } from "../../stores";
   export let form;
   let languages;
   if ($publication.inLanguage) {

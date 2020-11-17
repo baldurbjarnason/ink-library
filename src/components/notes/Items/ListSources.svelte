@@ -1,5 +1,4 @@
 <script>
-  import Search from "../../Search.svelte";
   import { noteAddSources } from "../../../stores/note/sources.js";
   import ListAssigment from "./../Items/ListAssigment.svelte";
   import NavSource from "../../img/NavSource.svelte";

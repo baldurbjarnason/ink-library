@@ -1,5 +1,5 @@
 <script>
-  import { publication, workspaces, page, chapter } from "../../../stores";
+  import { publication, page, chapter } from "../../../stores";
   import { selection } from "../../../stores/utilities/selection.js";
   import { highlightRange, updateHighlight } from "./toolbar/highlightRange.js";
   import { positionToAnnotation } from "./toolbar/positionToAnnotation.js";

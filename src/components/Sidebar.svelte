@@ -2,8 +2,6 @@
   // import { flip } from 'svelte/animate';
   import { send, receive } from "../routes/_crossfade.js";
   import { fly } from "svelte/transition";
-  import { stores } from "@sapper/app";
-  const { page, session } = stores();
   import { collections } from "../stores";
   import { getWorkspaceAsLabel } from "./getWorkspaceAsLabel.js";
   export let params;

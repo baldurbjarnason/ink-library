@@ -1,6 +1,5 @@
 <script>
   import Card from "./Card.svelte";
-  import Cover from "./Cover.svelte";
   import Keyword from "./Keyword.svelte";
   import KeywordInput from "./KeywordInput.svelte";
   import { publication, refreshPublication } from "../../stores";

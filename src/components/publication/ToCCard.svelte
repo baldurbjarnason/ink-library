@@ -1,6 +1,5 @@
 <script>
   import Card from "./Card.svelte";
-  import Cover from "./Cover.svelte";
   import ToC from "./ToC.svelte";
   import ToCEdit from "./ToCEdit.svelte";
   import { publication, refreshPublication, contents } from "../../stores";

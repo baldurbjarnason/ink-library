@@ -32,7 +32,7 @@
     original = payload.original;
     try {
       working = true;
-      const uploaded = await fetch(url, {
+      await fetch(url, {
         method: "PUT",
         mode: "cors",
         headers: {

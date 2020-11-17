@@ -1,7 +1,6 @@
 <script>
-  import { addSelected, removeSelected, page } from "../../stores";
+  import { addSelected, removeSelected } from "../../stores";
   import ItemStacks from "./ItemStacks.svelte";
-  import { typeName } from "../typeName.js";
   export let item = {};
   export let selecting;
   let selected = false;
@@ -130,15 +129,6 @@
     position: relative;
     padding: 0;
   }
-  .ItemEntry {
-    font-size: var(--item-font-size);
-    font-weight: 300;
-    display: flex;
-  }
-  .ItemEntry span,
-  .ItemEntry label {
-    margin: auto 0;
-  }
   .Authors {
     color: #333333;
     font-weight: 400;
@@ -149,14 +139,6 @@
   }
   .selecting {
     box-shadow: 0 0 0 2px var(--light);
-  }
-  .selecting label::before {
-    content: " ";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
   }
   .selected {
     box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.05);

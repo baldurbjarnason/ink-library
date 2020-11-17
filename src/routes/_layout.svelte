@@ -1,22 +1,16 @@
 <script>
   import {
-    library as libraryStore,
     page as pageStore,
     error,
     params as paramsStore,
   } from "../stores";
   import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
-  import Sidebar from "../components/Sidebar.svelte";
-  import NotesSidebar from "../components/NotesSidebar.svelte";
   import SignIn from "../components/Auth/SignIn.svelte";
-  import SignUp from "../components/Auth/SignUp.svelte";
-  import SignInPage from "../components/Auth/SignInPage.svelte";
   import NoteEditDialog from "../components/notes/NoteEditDialog.svelte";
   import { stores } from "@sapper/app";
   const { page, session } = stores();
   export let segment;
-  let query;
   let params;
   let publication = false;
   let betaNotice = true;

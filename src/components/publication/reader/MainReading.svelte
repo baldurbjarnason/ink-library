@@ -3,7 +3,7 @@
   import ToC from "../ToC.svelte";
   import SidebarNotes from "./SidebarNotes.svelte";
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   export let readerBody = null;
   export let hidden = false;
   const { chapter } = publicationStores(page);

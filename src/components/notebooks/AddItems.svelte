@@ -2,13 +2,10 @@
   //import { afterUpdate, tick } from "svelte";
   import { send, receive } from "../../routes/_crossfade.js";
   //////////May leave
-  import IcoNewNotebook from "../img/IcoNewNotebook.svelte";
   ///////////Change for add item icon or something
   import NotesSearch from "../NotesSearch.svelte";
   import Search from "../Search.svelte";
   import Button from "../widgets/Button.svelte";
-  import Closer from "../widgets/Closer.svelte";
-  import WhiteButton from "../workspace/WhiteButton.svelte";
   import NewNote from "../notes/NewNote.svelte";
   import NewItem from "../workspace/NewItem.svelte";
   import { getToken } from "../../getToken";
@@ -24,7 +21,6 @@
   export let notebook;
   let open = false;
   let newToggle;
-  let expanded = false;
 
   function click() {
     open = !open;
@@ -329,10 +325,6 @@
       margin: 0 !important;
       font-size: 0.9rem;
       border-radius: 20px !important;
-    }
-    .colours {
-      margin: 0 0 15px 0;
-      width: 100%;
     }
     .AddItem {
       width: 100%;

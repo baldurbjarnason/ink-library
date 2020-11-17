@@ -1,16 +1,11 @@
 <script>
   import { note } from "../stores";
   import NewNote from "./notes/NewNote.svelte";
-  import Search from "./Search.svelte";
-  import ItemToggle from "./ItemToggle.svelte";
-  import WorkspaceMenu from "./WorkspaceMenu.svelte";
   import NotesList from "./notes/NotesList.svelte";
   import NoteEdit from "./notes/NoteEdit.svelte";
-  import Button from "./widgets/Button.svelte";
   import IcoGoBack from "./img/IcoGoBack.svelte";
   import NavNotes from "./img/NavNotes.svelte";
   export let id = false;
-  export let workspace;
 </script>
 
 <style>

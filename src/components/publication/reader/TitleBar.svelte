@@ -1,5 +1,5 @@
 <script>
-  import { publication, workspaces, page } from "../../../stores";
+  import { publication, page } from "../../../stores";
   let returnLink;
   $: if ($page.path.endsWith("info") && $page.query.path) {
     returnLink = `/library/${$page.params.workspace}/${$page.params.collection}/${$page.params.publicationId}/${$page.query.path}`;

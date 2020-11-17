@@ -1,6 +1,4 @@
 <script>
-  import { scale } from "svelte/transition";
-  import { elasticInOut } from "svelte/easing";
   import EditButton from "./EditButton.svelte";
   import EditBar from "./EditBar.svelte";
   export let id;
@@ -48,7 +46,7 @@
     {:else}
       <EditButton
         label="Edit {id}"
-        click={event => {
+        click={() => {
           editing = true;
         }} />
     {/if}

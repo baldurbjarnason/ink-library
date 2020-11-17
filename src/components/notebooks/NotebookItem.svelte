@@ -1,14 +1,10 @@
 <script>
   import AddItems from "./AddItems.svelte";
-  import Search from "../Search.svelte";
-  import ItemToggle from "../ItemToggle.svelte";
-  import WorkspaceMenu from "../WorkspaceMenu.svelte";
   import SingleNotebook from "./SingleNotebook.svelte";
-  import Button from "../widgets/Button.svelte";
   import IcoGoBack from "../img/IcoGoBack.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
 
-  import { page, notebook } from "../../stores";
+  import { notebook } from "../../stores";
   //export let notebook = {};
 </script>
 

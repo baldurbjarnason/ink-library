@@ -3,7 +3,7 @@
   import { scale } from "svelte/transition";
   import { expoInOut } from "svelte/easing";
   import MenuCollections from "../../../components/workspace/MenuCollections.svelte";
-  const { page, session } = stores();
+  const { page } = stores();
   let returnTo = $page.query.returnTo;
 </script>
 

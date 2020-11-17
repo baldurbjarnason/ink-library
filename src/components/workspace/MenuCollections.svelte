@@ -1,7 +1,7 @@
 <script>
   import { collections } from "../../stores";
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   let workspace;
   let tags;
   let collection;

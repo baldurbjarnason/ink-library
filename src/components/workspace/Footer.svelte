@@ -1,10 +1,7 @@
 <script>
   import {
-    library,
     selectedItems,
     refreshDate,
-    collections,
-    addingWorkspace,
     addedCollections,
     addedWorkspaces,
   } from "../../stores";
@@ -12,7 +9,6 @@
   import SecondaryButton from "../widgets/SecondaryButton.svelte";
   import Button from "../widgets/Button.svelte";
   import TypeSelect from "./TypeSelect.svelte";
-  import ChooseWorkspaces from "./ChooseWorkspaces.svelte";
   import Input from "./Input.svelte";
   import { getToken } from "../../getToken";
   import AddCollections from "./AddCollections.svelte";

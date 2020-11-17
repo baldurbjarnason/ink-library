@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import Card from "./Card.svelte";
   import CreateNoteCard from "./CreateNoteCard.svelte";
-  import Cover from "./Cover.svelte";
   import Note from "./Note.svelte";
   import NotesSearch from "./NotesSearch.svelte";
   import { getToken } from "../../getToken";
@@ -10,7 +9,6 @@
     publication,
     refreshPublication,
     publicationNotes,
-    notesSearch,
     page,
     workspaces,
     collections

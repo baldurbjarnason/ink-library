@@ -1,8 +1,5 @@
 <script>
   import {
-    publication,
-    refreshPublication,
-    collections,
     addingStacks,
     availableStacks,
     workingStacks,

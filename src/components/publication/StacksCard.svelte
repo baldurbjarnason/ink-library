@@ -4,7 +4,6 @@
   import StacksCardItems from "./StacksCardItems.svelte";
   import {
     publication,
-    addedCollections,
     refreshPublication,
     addingStacks,
     removingStacks

@@ -1,8 +1,5 @@
 <script>
   import NewItem from "./workspace/NewItem.svelte";
-  import Search from "./Search.svelte";
-  import ItemToggle from "./ItemToggle.svelte";
-  import WorkspaceMenu from "./WorkspaceMenu.svelte";
   import List from "./workspace/List.svelte";
   import NavSource from "./img/NavSource.svelte";
   import IcoGoBack from "./img/IcoGoBack.svelte";

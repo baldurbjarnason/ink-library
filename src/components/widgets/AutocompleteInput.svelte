@@ -121,7 +121,7 @@
     autocomplete="off"
     on:change={change}
     bind:this={input}
-    on:focus={ev => {
+    on:focus={() => {
       if (awesomplete.ul.childNodes.length === 0) {
         awesomplete.minChars = 0;
         awesomplete.evaluate();

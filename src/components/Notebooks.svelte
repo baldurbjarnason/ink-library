@@ -1,12 +1,7 @@
 <script>
-  import { page } from "../stores";
   import NewNotebook from "./notebooks/NewNotebook.svelte";
-  import Search from "./Search.svelte";
-  import ItemToggle from "./ItemToggle.svelte";
-  import WorkspaceMenu from "./WorkspaceMenu.svelte";
   import NotebooksList from "./notebooks/NotebooksList.svelte";
   import SingleNotebook from "./notebooks/SingleNotebook.svelte";
-  import Button from "./widgets/Button.svelte";
   import IcoGoBack from "./img/IcoGoBack.svelte";
   import NavNotebook from "./img/NavNotebook.svelte";
   export let id = false;
@@ -83,9 +78,6 @@
       float: inherit !important;
       display: inline-table;
     }
-    .NotesEditor.noteColumn {
-      grid-template-columns: 1fr;
-    }
     .noteColumn .notesList {
       display: none;
     }
@@ -94,18 +86,6 @@
   .Body {
     display: grid; /*
     grid-gap: 1rem;*/
-  }
-  .NotesEditor {
-    grid-template-columns: 300px 1fr;
-    grid-gap: 0;
-  }
-  .NotesEditor :global(.CardHeader) {
-    display: none;
-  }
-  .NotesEditor :global(.Cards) {
-    padding: 20px;
-    height: 100vh;
-    overflow-y: scroll;
   }
 </style>
 
