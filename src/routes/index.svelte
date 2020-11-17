@@ -128,9 +128,6 @@
   .index .notebooks :global(.Item) {
     grid-template-rows: 100px auto;
   }
-  .notebooks .Loading {
-    margin: 75px auto;
-  }
   .notebooks :global(.Info) {
     padding: 10px 15px;
   }
