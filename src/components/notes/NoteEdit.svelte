@@ -6,18 +6,20 @@
   import ListNotebooks from "./Items/ListNotebooks.svelte";
   import ListSources from "./Items/ListSources.svelte";
   import IcoGoBack from "../img/IcoGoBack.svelte";
+  import IcoDelete from "../img/IcoDelete.svelte";
   import {
     refreshNotes,
     refreshNote,
     page,
     tags,
-    note
+    note,
   } from "../../stores";
   import { goto } from "@sapper/app";
   import Highlight from "./Highlight.svelte";
   import NoteEditor from "../widgets/NoteEditor.svelte";
   import { getToken } from "../../getToken";
   import Button from "../widgets/Button.svelte";
+  import DeletionModal from "./Items/DeletionModal.svelte";
 
   export let dialog = false;
 
@@ -28,13 +30,15 @@
     selectedFlags = "",
     addNotebook = [],
     text = "",
-    removeNotebook = [];
+    removeNotebook = [],
+    activeModal = false,
+    deleting = false;
 
   $: noteTest = $note;
   /////////////////// Set colours
   let testColour = () => {
     colour = "";
-    noteTest.tags.map(tag => {
+    noteTest.tags.map((tag) => {
       if (tag.name.startsWith("colour")) {
         colour = tag.name.replace(" ", "");
       }
@@ -45,16 +49,20 @@
   let test = () => {
     selectedFlags = [];
     selectedFlags = noteTest.tags
-      .filter(tag => tag.type === "flag" && !tag.name.startsWith("colour"))
-      .map(tag => tag.name);
+      .filter((tag) => tag.type === "flag" && !tag.name.startsWith("colour"))
+      .map((tag) => tag.name);
   };
 
   /////////////////// Set notes
   $: if (noteTest && noteTest.body && noteTest.body.find) {
-    highlight = noteTest.body.find(item => item.motivation === "highlighting");
-    comment = noteTest.body.find(item => item.motivation === "commenting") || {
+    highlight = noteTest.body.find(
+      (item) => item.motivation === "highlighting"
+    );
+    comment = noteTest.body.find(
+      (item) => item.motivation === "commenting"
+    ) || {
       motivation: "commenting",
-      content: ""
+      content: "",
     };
   }
 
@@ -66,14 +74,16 @@
     }
   }
   function updateHighlight(id, colour) {
-    document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
-      node.classList.forEach(token => {
-        if (token.startsWith("Colour")) {
-          node.classList.remove(token);
-        }
+    document
+      .querySelectorAll(`[data-annotation-id="${id}"]`)
+      .forEach((node) => {
+        node.classList.forEach((token) => {
+          if (token.startsWith("Colour")) {
+            node.classList.remove(token);
+          }
+        });
+        node.classList.add(colour);
       });
-      node.classList.add(colour);
-    });
   }
 
   async function save() {
@@ -83,16 +93,16 @@
       payload._tags = $tags.getIds(
         [colour.replace("colour", "colour ")].concat(selectedFlags)
       );
-      if (payload.body.find(body => body.motivation === "commenting")) {
+      if (payload.body.find((body) => body.motivation === "commenting")) {
         const body = payload.body.find(
-          body => body.motivation === "commenting"
+          (body) => body.motivation === "commenting"
         );
         body.content = text;
         clean(body);
       } else {
         payload.body = payload.body.concat({
           motivation: "commenting",
-          content: text
+          content: text,
         });
       }
 
@@ -133,8 +143,8 @@
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "csrf-token": getToken()
-        }
+          "csrf-token": getToken(),
+        },
       });
 
       if ($page.query.page) goto($page.path);
@@ -144,6 +154,25 @@
         noteTest.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
+      console.log(selectedFlags);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function remove(event) {
+    goto(`notes/all/all/`);
+
+    try {
+      await fetch(`/api/note/${noteTest.shortId}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "csrf-token": getToken(),
+        },
+      });
     } catch (err) {
       console.error(err);
     }
@@ -172,7 +201,7 @@
   }
   .Top {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: max-content 1fr max-content;
     position: relative;
     margin-bottom: 10px;
   }
@@ -188,6 +217,7 @@
   .CardBottom {
     text-align: right;
     background: transparent;
+    color: #f05657;
   }
 
   :global(#sapper .Item .ql-toolbar.ql-snow),
@@ -344,6 +374,19 @@
   .Editor :global(.Editor span) {
     background: transparent !important;
   }
+  .deletion {
+    color: #f05657;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: grid;
+    grid-template-rows: max-content max-content;
+    gap: 5px;
+    text-align: center;
+  }
+  .deletion :global(svg) {
+    margin: 0 auto;
+  }
 </style>
 
 <div class="Item">
@@ -354,11 +397,21 @@
           <IcoGoBack />
           <h5>Notes Library</h5>
         </a>
+        <span />
         <div class="CardBottom">
           {#if noteTest.updated && noteTest.published}
+            <!--
             <DateFormat
               updated={noteTest.updated}
-              published={noteTest.published} />
+              published={noteTest.published} />-->
+            <span
+              class="deletion"
+              on:click={() => {
+                activeModal = true;
+              }}>
+              <IcoDelete />
+              Delete
+            </span>
           {/if}
         </div>
       {/if}
@@ -397,3 +450,6 @@
     <Loader />
   {/if}
 </div>
+{#if activeModal}
+  <DeletionModal {remove} bind:activeModal type="note" items={[noteTest]} />
+{/if}

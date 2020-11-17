@@ -1,5 +1,6 @@
 <script>
-  import { notebooks } from "../../stores";
+  import { notebooks, clearSelected, selectedItems } from "../../stores";
+  import NotesListFooter from "../notes/NotesListFooter.svelte";
   import SortSelect from "../workspace/SortSelect.svelte";
   import NoNotebooks from "../img/NoNotebooks.svelte";
   import IcoFilter from "../img/IcoFilter.svelte";
@@ -22,6 +23,27 @@
     filterOn = !filterOn;
     clicked = true;
   };
+
+  let selecting = true;
+  let selection = function() {
+    selectAll = false;
+    if (!selecting) selecting = true;
+  };
+
+  $: selectable =
+    $page.path === "/notebooks/" || $page.path === "/notebooks" ? true : false;
+  $: if (!selectable) {
+    clearSelected();
+    console.log(selectable);
+  }
+
+  clearSelected();
+
+  let selectAll = false;
+  let chooseAll = () => {
+    if ($selectedItems.size !== items.length) selectAll = true;
+  };
+  $: fullList = $selectedItems.size == items.length ? true : false;
 </script>
 
 <style>
@@ -201,7 +223,7 @@
     <div class="Loading" />
   {:else}
     {#each items as notebook}
-      <NotebookCard {notebook} />
+      <NotebookCard {notebook} {selecting} {selection} {selectAll} />
     {:else}
       <div class="Empty">
         <NoNotebooks />
@@ -209,3 +231,13 @@
     {/each}
   {/if}
 </div>
+{#if selecting && $selectedItems.size && selectable}
+  <NotesListFooter
+    type="notebook"
+    {chooseAll}
+    {fullList}
+    endSelection={() => {
+      selecting = false;
+      clearSelected();
+    }} />
+{/if}

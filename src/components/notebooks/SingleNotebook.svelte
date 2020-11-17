@@ -3,8 +3,32 @@
   import SingleNotebookList from "./SingleNotebookList.svelte";
   import IcoGoBack from "../img/IcoGoBack.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
-  import { notebook } from "../../stores";
+  import IcoDelete from "../img/IcoDelete.svelte";
+  import { page, notebook } from "../../stores";
+  import DeletionModal from "../notes/Items/DeletionModal.svelte";
   import EditSingleNotebook from "./Tools/EditSingleNotebook.svelte";
+  import Loader from "../Loader.svelte";
+  import { goto } from "@sapper/app";
+  import { getToken } from "../../getToken";
+
+  let activeModal = false;
+  async function remove() {
+    goto(`notebooks`);
+
+    try {
+      await fetch(`/api/notebooks/${$notebook.shortId}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "csrf-token": getToken(),
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
 </script>
 
 <style>
@@ -44,7 +68,7 @@
   }
   .Header {
     display: grid;
-    grid-template-columns: max-content 1fr;
+    grid-template-columns: max-content max-content 1fr;
     grid-gap: 20px;
   }
   .breadcrumbs {
@@ -130,6 +154,11 @@
   .Icon.colour4 :global(svg) {
     color: #4c9b92;
   }
+  .Delete {
+    color: #f05657;
+    text-decoration: underline;
+    cursor: pointer;
+  }
   @media (max-width: 720px) {
     nav.Toolbar::before {
       content: none;
@@ -163,6 +192,13 @@
         <h5>Notebooks library</h5>
       </a>
       <EditSingleNotebook notebook={$notebook} />
+      <h5
+        class="Delete"
+        on:click={() => {
+          activeModal = true;
+        }}>
+        Delete notebook
+      </h5>
     </div>
     <div class="library">
       {#if $notebook.shortId}
@@ -195,3 +231,10 @@
     <SingleNotebookList notebook={$notebook} />
   </div>
 </div>
+{#if activeModal}
+  <DeletionModal
+    {remove}
+    bind:activeModal
+    type="notebook"
+    items={[$notebook]} />
+{/if}

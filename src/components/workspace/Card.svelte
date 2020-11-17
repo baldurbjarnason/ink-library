@@ -1,10 +1,13 @@
 <script>
   import ItemStacks from "./ItemStacks.svelte";
-  import { addSelected, removeSelected } from "../../stores";
+  import { addSelected, removeSelected, page } from "../../stores";
+  import { typeName } from "../typeName.js";
   export let item = {};
   export let selecting;
-  let selected = false;
   export let selection = function() {};
+  export let selectAll;
+  let selected = false;
+
   $: if (!selecting && selected) {
     selected = false;
   }
@@ -16,27 +19,37 @@
   let cover;
   $: if (item.resources) {
     cover = item.resources.find(
-      resource => resource.rel.indexOf("cover") !== -1
+      (resource) => resource.rel.indexOf("cover") !== -1
     );
     if (!cover) {
       cover = {
         href: "/img/placeholder-cover.jpg",
-        rel: ["cover"]
+        rel: ["cover"],
       };
     }
   } else {
     cover = {
       href: "/img/placeholder-cover.jpg",
-      rel: ["cover"]
+      rel: ["cover"],
     };
   }
 
   let stacks;
   if (item.tags) {
-    stacks = item.tags.filter(tag => {
+    stacks = item.tags.filter((tag) => {
       if (tag.type === "stack") return tag;
     });
   }
+
+  $: if (selectAll) {
+    selected = true;
+    selection();
+  }
+
+  $: selectable =
+    $page.path === "/library/all/all" || $page.path === "/library/all/all/"
+      ? true
+      : false;
 </script>
 
 <style>
@@ -56,9 +69,6 @@
     -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
   }
-  .Item.selected {
-    border: 1px solid var(--workspace-color);
-  }
   a {
     cursor: pointer;
     text-decoration: none;
@@ -70,6 +80,43 @@
     position: absolute;
     z-index: 1;
   }
+  /* -------------- Input -------------- */
+  .BulkSelector {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .BulkSelector::before,
+  .BulkSelector::after {
+    content: "";
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    position: absolute;
+    transition: all 0.25s ease-out;
+  }
+  .BulkSelector::before {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--workspace-color);
+    background: #ffffff;
+  }
+  .BulkSelector::after {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+  }
+  .BulkSelector:checked::after {
+    background: var(--workspace-color);
+  }
+  /*--------------------------------*/
   .circle {
     position: absolute;
     width: 102px;
@@ -115,39 +162,8 @@
   .Stacks:empty {
     display: none;
   }
-  @supports (-webkit-appearance: none) {
-    input[type="checkbox"] {
-      -webkit-appearance: none;
-      width: 40px;
-      height: 40px;
-      position: absolute;
-      top: 0;
-      right: 0;
-      outline: none;
-      margin: 0;
-      padding: 0;
-      cursor: pointer;
-      z-index: 1;
-    }
-    input[type="checkbox"]::before {
-      width: 14px;
-      height: 14px;
-      border: 1px solid #cccccc;
-      content: "";
-      transform: translate(-50%, -50%);
-      top: 50%;
-      left: 50%;
-      border-radius: 50%;
-      position: absolute;
-      transition: all 0.25s ease-out;
-    }
-    input[type="checkbox"]:hover::before {
-      background: #eeeeee;
-    }
-    input[type="checkbox"]:checked::before {
-      border: 1px solid var(--workspace-color);
-      background: var(--workspace-color);
-    }
+  .Modified {
+    text-align: right;
   }
   footer *,
   footer :global(ul) {
@@ -176,7 +192,11 @@
 
 <div class="Item" class:selected>
   <a href="library/all/all/{item.shortId}">_</a>
-  <input type="checkbox" bind:checked={selected} on:click={() => selection()} />
+  <input
+    class="BulkSelector"
+    type="checkbox"
+    bind:checked={selected}
+    on:click={() => selection()} />
   <span class="circle" />
   <img
     src={cover.href ? cover.href : `/img/placeholder-cover.jpg`}

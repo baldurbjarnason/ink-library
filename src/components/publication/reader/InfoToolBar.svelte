@@ -1,10 +1,35 @@
 <script>
-  import { publication } from "../../../stores";
-  let download
+  import { publication, workspaces, page } from "../../../stores";
+  import IcoDelete from "../../img/IcoDelete.svelte";
+  import DeletionModal from "../../notes/Items/DeletionModal.svelte";
+  import { goto } from "@sapper/app";
+  import { getToken } from "../../../getToken";
+
+  let download;
   $: if ($publication && $publication.json && $publication.json.storageID) {
-    download = `/api/download/${$publication.json.storageId}`
+    download = `/api/download/${$publication.json.storageId}`;
   } else {
-    download = ""
+    download = "";
+  }
+
+  let activeModal = false;
+
+  async function remove(event) {
+    goto(`library/all/all/`);
+
+    try {
+      await fetch(`/api/publication/${$publication.shortId}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "csrf-token": getToken(),
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 </script>
 
@@ -30,7 +55,7 @@
     padding: 0;
     display: flex;
     justify-content: space-between;
-    padding: 0 1rem;
+    padding: 7px 1rem;
     align-items: stretch;
   }
   .ToolBar ol li button {
@@ -87,10 +112,24 @@
     outline: none;
     box-shadow: 0 0 0 3px #68d6d499;
   }
+  .deletion {
+    color: #f05657;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: grid;
+    grid-template-rows: max-content max-content;
+    gap: 5px;
+    text-align: center;
+  }
+  .deletion :global(svg) {
+    margin: 0 auto;
+  }
 </style>
 
 <div class="ToolBar">
-  <ol style="transform: translateX(10px);">
+  <ol>
+    <!--
     <li>
       <button class="Button" aria-label="Export Source">
         <svg
@@ -244,6 +283,21 @@
             fill-opacity="0.8" />
         </svg>
       </button>
-    </li>
+    </li>-->
+    <span
+      class="deletion"
+      on:click={() => {
+        activeModal = true;
+      }}>
+      <IcoDelete />
+      Delete
+    </span>
   </ol>
 </div>
+{#if activeModal}
+  <DeletionModal
+    {remove}
+    bind:activeModal
+    type="source"
+    items={[$publication]} />
+{/if}

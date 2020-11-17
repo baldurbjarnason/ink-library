@@ -237,19 +237,19 @@
 {/if}
 
 <div class="Cards">
-  {#if Items.type === 'loading' || (menuTabs === 'all' && !Items[0])}
+  {#if Items.type === 'loading'}
     <Loader />
-  {:else}
+  {:else if Items[0]}
     {#each Items as item}
       {#if item.type === 'Note'}
-        <NotesCard note={item} />
+        <NotesCard note={item} selecting={false} selection={false} />
       {:else}
         <Card {item} selecting={true} selection={false} />
       {/if}
-    {:else}
-      <div class="Empty">
-        <NoNotebooks />
-      </div>
     {/each}
+  {:else}
+    <div class="Empty">
+      <NoNotebooks />
+    </div>
   {/if}
 </div>

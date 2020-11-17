@@ -12,15 +12,15 @@
 
   $: notebookList = $noteAddNotebooks.items;
 
-  let removeItem = item => {
+  let removeItem = (item) => {
     addNotebook.splice(addNotebook.indexOf(item), 1);
     addNotebook = addNotebook;
   };
 
-  let removeCurrent = item => {
+  let removeCurrent = (item) => {
     removeNotebook = [...removeNotebook, item];
   };
-  let revert = item => {
+  let revert = (item) => {
     removeNotebook.splice(removeNotebook.indexOf(item), 1);
     removeNotebook = removeNotebook;
   };
@@ -63,7 +63,7 @@
   .Notebook.colour3,
   :global(.SearchNotebooks .colour3 span),
   :global(.SearchNotebooks li.colour3:hover) {
-    background: #efd445;
+    background: #fae59b;
   }
   .Notebook.colour4,
   :global(.SearchNotebooks .colour4 span),
@@ -295,14 +295,14 @@
       {#each noteTest.notebooks as notebook}
         <li
           class="Notebook {notebook.settings.colour}
-          {removeNotebook.find(item => item.shortId === notebook.shortId) ? 'Removing' : ''}">
+          {removeNotebook.find((item) => item.shortId === notebook.shortId) ? 'Removing' : ''}">
           <a href={`notebooks/${notebook.id}`}>
             <span>
               <IcoNotebook />
             </span>
             <p>{notebook.name}</p>
           </a>
-          {#if removeNotebook.find(item => item.shortId === notebook.shortId)}
+          {#if removeNotebook.find((item) => item.shortId === notebook.shortId)}
             <div class="deleteNotebook" on:click={revert(notebook)}>
               <IcoRevert />
             </div>

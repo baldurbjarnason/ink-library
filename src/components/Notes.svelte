@@ -135,6 +135,6 @@
     <NotesList />
   </div>
   {#if id}
-    <NoteEdit note={$note} />
+    <NoteEdit />
   {/if}
 </div>

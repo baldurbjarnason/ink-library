@@ -24,7 +24,7 @@
     margin: calc(var(--base) * 0.25) 0;
     border-radius: 10px;
     background-color: white;
-    border: none;
+    border: 1px solid #eeeeee;
   }
 
   .dark input {

@@ -1,29 +1,47 @@
 <script>
-  import { notes } from "../../stores";
+  import { notes, clearSelected, selectedItems } from "../../stores";
+  import Button from "../widgets/Button.svelte";
   import NotesCard from "./NotesCard.svelte";
   import SortSelect from "../workspace/SortSelect.svelte";
   import NoNotes from "../img/NoNotes.svelte";
   import IcoFilter from "../img/IcoFilter.svelte";
   import NotesSearch from "../NotesSearch.svelte";
   import FilterNote from "../FilterNote.svelte";
-
+  import NotesListFooter from "./NotesListFooter.svelte";
   import { stores } from "@sapper/app";
-  const { page } = stores();
+  const { page, session } = stores();
   let filterOn = false;
   let clicked = false;
   let items;
-  $: if ($notes) {
-    items = $notes.items;
-  }
 
+  $: if ($notes) items = $notes.items;
   $: query = Object.assign({}, $page.query) || "";
-
   $: if ((query.notebook || query.flag) && !clicked) filterOn = true;
 
   let filter = () => {
     filterOn = !filterOn;
     clicked = true;
   };
+
+  let selecting = true;
+  let selection = function() {
+    selectAll = false;
+    if (!selecting) selecting = true;
+  };
+
+  $: selectable =
+    $page.path === "/notes/all/all" || $page.path === "/notes/all/all/"
+      ? true
+      : false;
+  $: if (!selectable) clearSelected();
+
+  clearSelected();
+
+  let selectAll = false;
+  let chooseAll = () => {
+    if ($selectedItems.size !== items.length) selectAll = true;
+  };
+  $: fullList = $selectedItems.size == items.length ? true : false;
 </script>
 
 <style>
@@ -209,7 +227,7 @@
     <div class="Loading" />
   {:else}
     {#each items as note}
-      <NotesCard {note} />
+      <NotesCard {note} {selecting} {selection} {selectAll} />
     {:else}
       <div class="Empty">
         <NoNotes />
@@ -217,3 +235,13 @@
     {/each}
   {/if}
 </div>
+{#if selecting && $selectedItems.size && selectable}
+  <NotesListFooter
+    type="note"
+    {chooseAll}
+    {fullList}
+    endSelection={() => {
+      selecting = false;
+      clearSelected();
+    }} />
+{/if}

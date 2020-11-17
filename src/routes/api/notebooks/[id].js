@@ -6,8 +6,8 @@ export async function get(req, res, next) {
     const url = `${process.env.API_SERVER}notebooks/${req.params.id}`;
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
     res.json(response);
   } catch (err) {
@@ -29,9 +29,9 @@ export async function put(req, res, next) {
         .put(`${process.env.API_SERVER}notebooks/${req.params.id}`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
+            Authorization: `Bearer ${req.user.token}`,
           },
-          json: req.body
+          json: req.body,
         })
         .json();
       return res.json(response);
@@ -40,5 +40,21 @@ export async function put(req, res, next) {
       res.status(err.response.statusCode);
       return res.json(JSON.parse(err.response.body));
     }
+  }
+}
+
+export async function del(req, res, next) {
+  try {
+    const response = await got
+      .delete(`${process.env.API_SERVER}notebooks/${req.params.id}`, {
+        headers: {
+          Authorization: `Bearer ${req.user.token}`,
+        },
+      })
+      .json();
+    return res.json(response);
+  } catch (err) {
+    res.status(err.response.statusCode);
+    return res.json(JSON.parse(err.response.body));
   }
 }

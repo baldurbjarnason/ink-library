@@ -1,7 +1,8 @@
 <script>
   import {
     page as pageStore,
-    error
+    error,
+    params as paramsStore,
   } from "../stores";
   import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
@@ -29,8 +30,11 @@
   } else {
     publication = false;
   }
-  $: if (process.browser) {
-    console.log($session);
+  let menu = true;
+  $: if (segment === "library" && $page.query && $page.query.returnTo) {
+    menu = true;
+  } else {
+    menu = false;
   }
 </script>
 
