@@ -14,7 +14,6 @@ export const searchedSources = derived(
     if ($page.query.returnTo) return;
     set({ type: "loading", items: [] });
     const query = Object.assign({}, $page.query);
-
     if ($searchAddSources) {
       query.search = $searchAddSources;
     } else if ($page.query.search) {
