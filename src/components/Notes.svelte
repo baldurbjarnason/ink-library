@@ -1,5 +1,4 @@
 <script>
-  import { note } from "../stores";
   import NewNote from "./notes/NewNote.svelte";
   import NotesList from "./notes/NotesList.svelte";
   import NoteEdit from "./notes/NoteEdit.svelte";

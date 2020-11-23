@@ -4,6 +4,7 @@ const path = require("path");
 
 // This needs to filter by workspace
 export async function get(req, res, next) {
+  // Does this need to load notes as well?
   if (!req.user.profile) return res.sendStatus(401);
   const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
   try {

@@ -1,7 +1,6 @@
 <script>
   import ItemStacks from "./ItemStacks.svelte";
   import { addSelected, removeSelected, page } from "../../stores";
-  import { typeName } from "../typeName.js";
   export let item = {};
   export let selecting;
   export let selection = function() {};
@@ -161,9 +160,6 @@
   }
   .Stacks:empty {
     display: none;
-  }
-  .Modified {
-    text-align: right;
   }
   footer *,
   footer :global(ul) {

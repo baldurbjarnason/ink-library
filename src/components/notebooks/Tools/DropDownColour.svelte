@@ -1,8 +1,6 @@
 <script>
   import ArrowDropDown from "../../img/ArrowDropDown.svelte";
   import IcoColor from "../../img/IcoColor.svelte";
-  import { page, tags } from "../../../stores";
-  import Loader from "../../Loader.svelte";
   export let colour;
 
   function assignCol(icon) {

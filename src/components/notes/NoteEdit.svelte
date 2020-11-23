@@ -1,5 +1,4 @@
 <script>
-  import DateFormat from "./DateFormat.svelte";
   import Loader from "../Loader.svelte";
   import Flags from "./Items/Flags.svelte";
   import Colours from "./Items/Colours.svelte";
@@ -31,8 +30,7 @@
     addNotebook = [],
     text = "",
     removeNotebook = [],
-    activeModal = false,
-    deleting = false;
+    activeModal = false;
 
   $: noteTest = $note;
   /////////////////// Set colours
@@ -160,7 +158,7 @@
     }
   }
 
-  async function remove(event) {
+  async function remove() {
     goto(`notes/all/all/`);
 
     try {

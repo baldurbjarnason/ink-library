@@ -9,8 +9,6 @@
   import FlagToDo from "../img/FlagToDo.svelte";
   import FlagUrgent from "../img/FlagUrgent.svelte";
   import NavSource from "../img/NavSource.svelte";
-  import Comment from "./Comment.svelte";
-  import Highlight from "./Highlight.svelte";
   import { page, addSelected, removeSelected } from "../../stores";
   export let selecting;
   export let selection = function() {};
@@ -18,22 +16,6 @@
   export let selectAll;
 
   let selected = false;
-  let title;
-
-  $: if (note.source) {
-    title = note.source.name;
-  } else {
-    title = `Workspace: ${$page.params.workspace}`;
-  }
-
-  let noteBody = [];
-  $: if (note && note.body && note.body[0]) {
-    if (note.body.find((item) => item.motivation === "commenting")) {
-      noteBody = [].concat(note.body);
-    } else {
-      noteBody = note.body.concat({ motivation: "commenting", content: "" });
-    }
-  }
 
   let noted, highlighed;
   $: if (note && note.body && note.body[0]) {

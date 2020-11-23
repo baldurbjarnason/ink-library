@@ -2,6 +2,7 @@
   import { onMount, afterUpdate, onDestroy } from "svelte";
   import TitleBar from "./reader/TitleBar.svelte";
   import ToolBar from "./reader/ToolBar.svelte";
+  import InfoToolBar from "./reader/InfoToolBar.svelte";
   import MainReading from "./reader/MainReading.svelte";
   import MainInfo from "./SourceInfo/MainInfo.svelte";
   import EmptySource from "./EmptySource.svelte";
