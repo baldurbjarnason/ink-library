@@ -43,7 +43,7 @@
     "photos-hobby-F7X3ADFWeNM",
     "steve-johnson-4ZD1g5oxwTo",
     "tools-for-motivation-KvTOwKoji7g",
-    "wengang-zhai-ywfKB54yidY"
+    "wengang-zhai-ywfKB54yidY",
   ];
 
   async function submit(event) {
@@ -64,8 +64,8 @@
           body: JSON.stringify(payload),
           headers: {
             "Content-Type": "application/json",
-            "csrf-token": getToken()
-          }
+            "csrf-token": getToken(),
+          },
         });
 
         $refreshNotebook = Date.now();
@@ -271,11 +271,11 @@
   .footer .Closer:hover {
     text-decoration: underline;
   }
-  .modal :global(.Closer svg) {
+  .NotebookModal :global(.Closer svg) {
     display: none;
   }
   /* ------ Modal ------ */
-  .modal {
+  .NotebookModal {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -284,13 +284,13 @@
     left: 0;
     z-index: 5;
   }
-  .modal section {
+  .NotebookModal section {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
-  .modal section {
+  .NotebookModal section {
     background: var(--main-background-color);
     border-radius: 10px;
     width: 50vw;
@@ -299,7 +299,7 @@
     padding: 40px;
     overflow-y: scroll;
   }
-  .modal ul {
+  .NotebookModal ul {
     list-style: none;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -307,7 +307,7 @@
     padding: 0;
     grid-gap: 20px;
   }
-  .modal li {
+  .NotebookModal li {
     height: 70px;
     cursor: pointer;
     position: relative;
@@ -317,10 +317,10 @@
     background-position: center;
     transition: all 0.25s ease;
   }
-  .modal li:hover:not(.active) {
+  .NotebookModal li:hover:not(.active) {
     opacity: 0.6;
   }
-  .modal li.active::after {
+  .NotebookModal li.active::after {
     content: "";
     position: absolute;
     border: 2px solid var(--workspace-color);
@@ -330,12 +330,12 @@
     height: calc(100% + 10px);
     border-radius: 15px;
   }
-  .modal p {
+  .NotebookModal p {
     margin: 0;
     font-size: 0.9rem;
     margin-bottom: 30px;
   }
-  .modal .footer {
+  .NotebookModal .footer {
     float: left;
     position: fixed;
     left: 50%;
@@ -343,17 +343,17 @@
     transform: translateX(-50%);
     top: calc(80vh + 20px);
   }
-  .modal .Closer {
+  .NotebookModal .Closer {
     float: right;
     cursor: pointer;
     color: var(--main-background-color);
   }
-  .modal .Accept {
+  .NotebookModal .Accept {
     background: var(--main-background-color);
     color: var(--workspace-color);
     border-radius: 10px;
   }
-  .modal .Accept:hover {
+  .NotebookModal .Accept:hover {
     text-decoration: inherit;
   }
   .Edition {
@@ -427,18 +427,18 @@
     .footer :global(button.Submit) {
       max-width: 150px;
     }
-    .modal section {
+    .NotebookModal section {
       width: 80vw;
       height: 70vh;
     }
-    .modal .footer {
+    .NotebookModal .footer {
       top: calc(85vh + 20px);
       width: 80vw;
     }
-    .modal ul {
+    .NotebookModal ul {
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     }
-    .modal li {
+    .NotebookModal li {
       height: 90px;
     }
     .Edition {
@@ -449,7 +449,7 @@
 
 {#if open}
   {#if modal}
-    <div class="modal">
+    <div class="NotebookModal">
       <section>
         <p>Assign a coverture for you notebook :</p>
         <ul>
