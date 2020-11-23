@@ -1,6 +1,5 @@
 <script>
   import Card from "./Card.svelte";
-  import Cover from "./Cover.svelte";
   import { publication, refreshPublication } from "../../stores";
   import { getToken } from "../../getToken";
   let editing = false;

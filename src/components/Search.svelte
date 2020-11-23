@@ -1,9 +1,6 @@
 <script>
   // your script goes here
-  import { send, receive } from "../routes/_crossfade.js";
-  import Closer from "./widgets/Closer.svelte";
-  import { afterUpdate, tick } from "svelte";
-  import { goto } from "@sapper/app";
+  import { afterUpdate } from "svelte";
   import {
     searchStore,
     searchAddSources,
@@ -13,15 +10,11 @@
 
   let open = false;
   let input;
-  let searchToggle;
-  function click() {
-    open = !open;
-  }
   $: if (!open) {
     $searchStore = null;
   }
 
-  function loadSearch(ev) {
+  function loadSearch() {
     if ($page.path.startsWith("/notebooks/")) {
       $searchAddSources = input.value;
     } else if ($page.path.startsWith("/notes/all/all/")) {
@@ -29,11 +22,6 @@
     } else {
       $searchStore = input.value;
     }
-  }
-  async function close() {
-    open = false;
-    await tick();
-    searchToggle.focus();
   }
   afterUpdate(() => {
     if (open) {

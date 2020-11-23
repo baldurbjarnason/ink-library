@@ -1,11 +1,8 @@
 <script>
   import {
     publication,
-    refreshPublication,
-    workspaces,
-    page
+    refreshPublication
   } from "../../stores";
-  import { typeName } from "../typeName.js";
   import IcoEdit from "../img/IcoEdit.svelte";
   import ArrowDropDown from "../img/ArrowDropDown.svelte";
   import MetadataLists from "./SourceInfo/MetadataLists.svelte";
@@ -164,8 +161,7 @@
       sendValue = prop.value ? prop.value : "";
     }
   };
-  let newArr = [],
-    langArr = [];
+  let newArr = [];
 
   let clearAll = () => {
     $refreshPublication = { id: $publication.shortId, time: Date.now() };
@@ -360,7 +356,7 @@
 </style>
 
 <div class="Metadata">
-  {#each metaProps as prop, i}
+  {#each metaProps as prop}
     {#if prop.req || (!prop.req && !Array.isArray(prop.value) && prop.value) || (!prop.req && Array.isArray(prop.value) && prop.value.length)}
       {#if editing === prop.key}
         <section class="active">
@@ -377,7 +373,7 @@
                 name={prop.key}
                 min="0"
                 bind:value={sendValue}
-                use:created={(this, prop)}
+                use:created={prop}
                 on:input={test(sendValue, prop)} />
             {:else if prop.type === 'list'}
               <MetadataLists
@@ -388,7 +384,7 @@
               <input
                 type="text"
                 name={prop.key}
-                use:created={(this, prop)}
+                use:created={prop}
                 bind:value={sendValue}
                 on:input={test(sendValue, prop)} />
             {/if}
@@ -422,7 +418,7 @@
     </p>
     <input type="text" />
     <ul>
-      {#each metaProps as prop, i}
+      {#each metaProps as prop}
         {#if !prop.req && ((!Array.isArray(prop.value) && !prop.value) || (Array.isArray(prop.value) && !prop.value.length))}
           <li on:click={() => ((prop.req = true), (editing = prop.key))}>
             {prop.prop}

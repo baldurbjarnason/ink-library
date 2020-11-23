@@ -40,7 +40,6 @@
       body
     });
     const payload = await response.json();
-    const payloadURL = payload.url;
     const uploadPublication = payload.publication;
     const type = payload.type;
     const storageId = payload.storageId;

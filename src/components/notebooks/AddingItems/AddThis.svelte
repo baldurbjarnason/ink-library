@@ -1,5 +1,4 @@
 <script>
-  import NavSource from "../../img/NavSource.svelte";
   import NotesFound from "./NotesFound.svelte";
   export let addItem;
   export let itemType;

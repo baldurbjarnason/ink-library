@@ -14,8 +14,7 @@
     profileNotebooks,
     profileSources,
     refreshReader,
-    reader,
-    page
+    reader
   } from "../../stores";
   const { session } = stores();
 
@@ -62,7 +61,7 @@
 
   let editInst = false;
 
-  async function submit(event) {
+  async function submit() {
     editInst = false;
     inputLoad = true;
     try {
@@ -368,7 +367,7 @@
           <div class="Inputs">
             <input
               placeholder="Add an institution"
-              use:created={(this, institution)}
+              use:created={institution}
               bind:value={sendValue} />
             <span on:click={submit}>Save</span>
           </div>

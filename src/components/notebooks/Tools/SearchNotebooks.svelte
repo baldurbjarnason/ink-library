@@ -1,11 +1,9 @@
 <script>
-  import { afterUpdate, tick } from "svelte";
-  import { goto } from "@sapper/app";
   import { notebookSearched, page, searchNotebooks } from "../../../stores";
 
   let input;
 
-  function loadSearch(ev) {
+  function loadSearch() {
     if (
       $page.path.startsWith("/notes/all/all") ||
       $page.path.startsWith("/library/all/all")

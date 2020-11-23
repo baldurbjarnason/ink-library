@@ -1,7 +1,4 @@
 <script>
-  import { send, receive } from "../../../routes/_crossfade.js";
-  import { fly } from "svelte/transition";
-  import Cover from "../Cover.svelte";
   let menu = ["About", "Metadata", "Related sources"];
   export let state;
   export let navState;

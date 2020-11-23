@@ -1,7 +1,7 @@
 <script>
   import { notesSearch } from "../../stores";
   let search;
-  function input(event) {
+  function input() {
     if (search && search.value) {
       $notesSearch = search.value;
     } else {

@@ -11,16 +11,12 @@
   import FlagUrgent from "../../img/FlagUrgent.svelte";
 
   import NavSource from "../../img/NavSource.svelte";
-  import Comment from "../../notes/Comment.svelte";
-  import Highlight from "../../notes/Highlight.svelte";
   import { noteStore } from "../../../stores/utilities/noteStore.js";
   export let note = {};
   export let stores = {};
-  let title = "";
   $: if (stores.$publication) {
     title = stores.$publication.name;
   }
-  let noteBody = [];
   let store;
   $: if (note && note.shortId && !store) {
     store = noteStore(note);

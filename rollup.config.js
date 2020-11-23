@@ -8,6 +8,7 @@ import config from "sapper/config/rollup.js";
 import pkg from "./package.json";
 import json from "rollup-plugin-json";
 import autoPreprocess from "svelte-preprocess";
+import typescript from '@rollup/plugin-typescript';
 
 const mode = process.env.NODE_ENV;
 const dev = mode === "development";
@@ -43,7 +44,7 @@ export default {
         dedupe
       }),
       commonjs(),
-
+      typescript({ sourceMap: dev }),
       legacy &&
         babel({
           extensions: [".js", ".mjs", ".html", ".svelte"],
@@ -98,7 +99,8 @@ export default {
       resolve({
         dedupe
       }),
-      commonjs()
+      commonjs(),
+      typescript({ sourceMap: dev })
     ],
     external: Object.keys(pkg.dependencies).concat(
       require("module").builtinModules

@@ -22,7 +22,7 @@
       });
       note = await response.json();
     });
-    localDialog.on("hide", async function(dialogEl, event) {
+    localDialog.on("hide", async function() {
       note = { body: [], source: { name: "" } };
     });
   }

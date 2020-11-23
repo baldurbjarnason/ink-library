@@ -1,5 +1,4 @@
 <script>
-  import SearchNotebooks from "../../notebooks/Tools/SearchNotebooks.svelte";
   import { noteAddNotebooks } from "../../../stores/note/notebooks.js";
   import ListAssigment from "./../Items/ListAssigment.svelte";
   import IcoNotebook from "../../img/IcoNotebook.svelte";

@@ -1,10 +1,6 @@
 <script>
   import AddItems from "./AddItems.svelte";
-  import Search from "../Search.svelte";
-  import ItemToggle from "../ItemToggle.svelte";
-  import WorkspaceMenu from "../WorkspaceMenu.svelte";
   import SingleNotebookList from "./SingleNotebookList.svelte";
-  import Button from "../widgets/Button.svelte";
   import IcoGoBack from "../img/IcoGoBack.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
   import IcoDelete from "../img/IcoDelete.svelte";

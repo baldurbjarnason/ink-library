@@ -1,5 +1,4 @@
 <script>
-  import { onMount, tick } from "svelte";
   let Quill;
   if (process.browser) {
     import("quill").then(module => {
@@ -24,7 +23,7 @@
       editor.focus()
       autofocus = false
     }
-    editor.on("selection-change", (range, oldRange, source) => {
+    editor.on("selection-change", (range) => {
       if (range) {
         hasFocus = true;
       } else {

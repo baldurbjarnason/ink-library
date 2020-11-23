@@ -78,7 +78,7 @@
     <button
       class="Button"
       aria-label="Remove keywords"
-      on:click={event => {
+      on:click={() => {
         removed = true;
       }}>
       <svg

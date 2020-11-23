@@ -9,7 +9,7 @@
   import NotebookCard from "./NotebookCard.svelte";
 
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   let filterOn = false;
   let clicked = false;
   let items;

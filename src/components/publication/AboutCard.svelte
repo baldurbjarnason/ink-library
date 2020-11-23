@@ -1,9 +1,8 @@
 <script>
   import Card from "./Card.svelte";
-  import Cover from "./Cover.svelte";
   import Metadata from "./Metadata.svelte";
   import MetadataForm from "./MetadataForm.svelte";
-  import { publication, refreshPublication, page } from "../../stores";
+  import { publication, refreshPublication } from "../../stores";
   import { getToken } from "../../getToken";
   let editing = false;
   let formElement;
@@ -18,7 +17,6 @@
         console.log(entries, body);
         let inLanguage = [];
         const newEntries = {};
-        let author;
         for (const prop in body) {
           if (prop === "wordCount" || prop === "numberOfPages") {
             body[prop] = parseInt(body[prop], 10);

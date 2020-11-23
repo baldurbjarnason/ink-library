@@ -6,21 +6,16 @@
   import Closer from "../widgets/Closer.svelte";
   import WhiteButton from "../workspace/WhiteButton.svelte";
   import { send, receive } from "../../routes/_crossfade.js";
-  import { afterUpdate, tick } from "svelte";
-  import NoteEditor from "../widgets/NoteEditor.svelte";
+  import { tick } from "svelte";
   import { getToken } from "../../getToken";
   import {
-    notebooks,
-    refreshNotebooks,
-    searchNotebooks,
-    page,
+    refreshNotebooks
   } from "../../stores";
 
   let colours = ["colour1", "colour2", "colour3", "colour4"];
   let modal = false;
   let open = false;
   let newToggle;
-  let expanded = false;
   let noteColour;
 
   function click() {
@@ -36,7 +31,7 @@
     await tick();
     newToggle.querySelector("button").focus();
   }
-  let text, title, description;
+  let title, description;
   $: characters = description ? 150 - description.length : 150;
 
   let inputBody = {

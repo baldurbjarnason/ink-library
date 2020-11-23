@@ -1,6 +1,6 @@
 <script>
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   let card;
   let items;
   let selected;

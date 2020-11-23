@@ -9,7 +9,6 @@
   import Closer from "../widgets/Closer.svelte";
   import AutocompleteInput from "../widgets/AutocompleteInput.svelte";
   export let dark = false;
-  let currentCollections = [];
   let filteredCollections = $collections.map(collection => collection.name);
   $: if ($addingWorkspace) {
     if ($addingWorkspace !== "all") {
@@ -69,9 +68,6 @@
       collection => collection.value !== removedCollection
     );
     $addedWorkspaces = getWorkspaces();
-  }
-  function collectionId(name) {
-    return $collections.find(tag => tag.name === name).id;
   }
   function getCollection(suggestion) {
     return $collections.find(collection => collection.id === suggestion.value);
@@ -133,7 +129,7 @@
 {:else}
   <div class="Wide Tags" class:dark>
     <div class="LabelText svelte-rmvtnc">Assign stacks</div>
-    {#each $addedCollections as collection, i}
+    {#each $addedCollections as collection}
       <span class="Collection">
         {collection.label}
         <Closer

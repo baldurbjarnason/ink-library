@@ -2,15 +2,10 @@
   // import { flip } from 'svelte/animate';
   import {send, receive} from '../routes/_crossfade.js';
   import { fly } from 'svelte/transition';
-  import { stores } from "@sapper/app";
   import NotesSearch from './NotesSearch.svelte'
   import Input from './workspace/Input.svelte'
-  import AddCollections from './workspace/AddCollections.svelte'
   import {collections} from '../stores'
-  import {getWorkspaceAsLabel} from './getWorkspaceAsLabel.js'
-  const { page, session } = stores();
   export let params
-  let tags
   let workspace
   $: if (params && $collections) {
     if (params.publicationId) {
@@ -21,29 +16,6 @@
       workspace = 'all'
     } else {
       workspace = null
-    }
-    // Need to figure out a better way to filter collections by workspace
-    if (workspace !== 'all') {
-      tags = $collections.filter(tag => tag.name.split('/')[0] === workspace)
-    } else {
-      tags = $collections
-    }
-  }
-  const spaces = ['Research', 'Public_Scholarships', 'Teaching', 'Personal']
-  function getWorkspace (name) {
-    const space = name.split('/')[0].replace(' ', '_')
-    if (spaces.includes(space)) {
-      return space.toLowerCase()
-    } else {
-      return ''
-    }
-  }
-  function getName (name) {
-    const space = name.split('/')[0].replace(' ', '_')
-    if (spaces.includes(space)) {
-      return name.replace(space + '/', '')
-    } else {
-      return name
     }
   }
 </script>

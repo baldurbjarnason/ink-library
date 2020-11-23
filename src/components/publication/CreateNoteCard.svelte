@@ -1,8 +1,5 @@
 <script>
-  import Cover from "./Cover.svelte";
-  import { publication, refreshPublication } from "../../stores";
   import NoteEditor from "../widgets/NoteEditor.svelte";
-  let editing = false;
   export let text = "";
 </script>
 
