@@ -5,12 +5,7 @@
   import { publicationStores } from "../../../stores/utilities/publicationStores.js";
   import { stores } from "@sapper/app";
   const { page } = stores();
-  // $: if ($positionedNotes) {
-  //   console.log($positionedNotes.length)
-  // }
   const pubStores = publicationStores(page);
-  const notes = pubStores.notes;
-  const positionedNotes = pubStores.positionedNotes;
 </script>
 
 <style>
@@ -26,8 +21,8 @@
 
 {#if stores}
   <div class="Root">
-    {#if $positionedNotes}
-      {#each $positionedNotes as position}
+    {#if pubStores.$positionedNotes}
+      {#each pubStores.$positionedNotes as position}
         <div
           style="top: {position.top - 113}px; left: 0;right: 0;"
           data-sidenote-id={position.id}>
@@ -36,8 +31,8 @@
       {/each}
     {/if}
     <div class="Modals">
-      {#if pubStores}
-        {#each $notes as note}
+      {#if pubStores.$notes}
+        {#each pubStores.$notes as note}
           <SidebarNoteModal id={note.shortId}>
             <NoteEdit {note} dialog={true} stores={pubStores} />
           </SidebarNoteModal>

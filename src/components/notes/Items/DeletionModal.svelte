@@ -1,10 +1,8 @@
 <script>
-  import RiskyButton from "../../widgets/RiskyButton.svelte";
   import NotesFound from "../..//notebooks/AddingItems/NotesFound.svelte";
   import NoDeletion from "../../img/NoDeletion.svelte";
   import IcoNotebook from "../../img/IcoNotebook.svelte";
   import NavSource from "../../img/NavSource.svelte";
-  import Loader from "../../Loader.svelte";
 
   export let remove;
   export let activeModal;

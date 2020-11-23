@@ -79,12 +79,6 @@
   .FooterButtons :global(button) {
     height: 40px;
   }
-  .FooterNumber {
-    font-size: 1rem;
-    font-style: italic;
-    color: var(--medium);
-    font-weight: 300;
-  }
   .Footer {
     display: flex;
     justify-content: space-between;
@@ -157,12 +151,6 @@
       <ChooseWorkspaces>Change workspace:</ChooseWorkspaces>
     </div>-->
   <AddCollections />
-  <!--
-    <span class="FooterNumber">
-      Editing {$selectedItems.size}
-      {#if $selectedItems.size === 1}item{:else}items{/if}
-    </span>
-    <span />-->
   <span class="FooterButtons">
     <SecondaryButton
       click={() => {

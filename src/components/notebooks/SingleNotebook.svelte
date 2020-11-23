@@ -3,11 +3,9 @@
   import SingleNotebookList from "./SingleNotebookList.svelte";
   import IcoGoBack from "../img/IcoGoBack.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
-  import IcoDelete from "../img/IcoDelete.svelte";
-  import { page, notebook } from "../../stores";
+  import { notebook } from "../../stores";
   import DeletionModal from "../notes/Items/DeletionModal.svelte";
   import EditSingleNotebook from "./Tools/EditSingleNotebook.svelte";
-  import Loader from "../Loader.svelte";
   import { goto } from "@sapper/app";
   import { getToken } from "../../getToken";
 

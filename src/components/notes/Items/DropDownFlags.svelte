@@ -10,7 +10,7 @@
   import FlagToDo from "../../img/FlagToDo.svelte";
   import FlagUrgent from "../../img/FlagUrgent.svelte";
   import IcoFlag from "../../img/IcoFlag.svelte";
-  import { page, tags } from "../../../stores";
+  import { tags } from "../../../stores";
   export let selectedFlags;
 
   function assignIco(icon) {

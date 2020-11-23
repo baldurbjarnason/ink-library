@@ -16,7 +16,6 @@
   let betaNotice = true;
   $: if ($page) {
     pageStore.set($page);
-    query = $page.query;
     params = Object.assign({}, $page.params);
     if (segment) {
       params.segment = segment;
