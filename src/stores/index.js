@@ -14,6 +14,8 @@ export { notebooks, refreshNotebooks, searchNotebooks } from './notebooks'
 export { collections, workspaces, tags, refreshCollections, addingWorkspace, addedCollections, addedWorkspaces } from './collections'
 export { note, refreshNote } from './note'
 export { notebook, refreshNotebook } from './notebook'
+export { pageItem, refreshPageItem } from "./pageitem";
+export { pages, refreshPages, searchPages } from "./pages";
 export { searchedNotes, refreshSearchNotes, searchAddNotes } from './notebook/notes'
 export { searchedSources, refreshSearchSources, searchAddSources } from './notebook/sources'
 export { noteAddSources, sourceSearched } from './note/sources'

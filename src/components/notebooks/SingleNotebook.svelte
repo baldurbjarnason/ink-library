@@ -3,9 +3,10 @@
   import SingleNotebookList from "./SingleNotebookList.svelte";
   import IcoGoBack from "../img/IcoGoBack.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
-  import { notebook } from "../../stores";
+  import { notebook, refreshNotebook } from "../../stores";
   import DeletionModal from "../notes/Items/DeletionModal.svelte";
   import EditSingleNotebook from "./Tools/EditSingleNotebook.svelte";
+  import NewPage from "../pages/NewPage.svelte";
   import { goto } from "@sapper/app";
   import { getToken } from "../../getToken";
 
@@ -197,6 +198,7 @@
         }}>
         Delete notebook
       </h5>
+      <NewPage notebook={$notebook} />
     </div>
     <div class="library">
       {#if $notebook.shortId}
