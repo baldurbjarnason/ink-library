@@ -2,7 +2,6 @@
   import {
     page as pageStore,
     error,
-    params as paramsStore,
   } from "../stores";
   import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
@@ -28,12 +27,6 @@
     publication = true;
   } else {
     publication = false;
-  }
-  let menu = true;
-  $: if (segment === "library" && $page.query && $page.query.returnTo) {
-    menu = true;
-  } else {
-    menu = false;
   }
 </script>
 

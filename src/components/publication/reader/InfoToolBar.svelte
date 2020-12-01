@@ -1,20 +1,20 @@
 <script>
-  import { publication, workspaces, page } from "../../../stores";
+  import { publication } from "../../../stores";
   import IcoDelete from "../../img/IcoDelete.svelte";
   import DeletionModal from "../../notes/Items/DeletionModal.svelte";
   import { goto } from "@sapper/app";
   import { getToken } from "../../../getToken";
 
-  let download;
-  $: if ($publication && $publication.json && $publication.json.storageID) {
-    download = `/api/download/${$publication.json.storageId}`;
-  } else {
-    download = "";
-  }
+  // let download;
+  // $: if ($publication && $publication.json && $publication.json.storageID) {
+  //   download = `/api/download/${$publication.json.storageId}`;
+  // } else {
+  //   download = "";
+  // }
 
   let activeModal = false;
 
-  async function remove(event) {
+  async function remove() {
     goto(`library/all/all/`);
 
     try {

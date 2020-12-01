@@ -1,6 +1,5 @@
 <script>
   import { notes, clearSelected, selectedItems } from "../../stores";
-  import Button from "../widgets/Button.svelte";
   import NotesCard from "./NotesCard.svelte";
   import SortSelect from "../workspace/SortSelect.svelte";
   import NoNotes from "../img/NoNotes.svelte";
@@ -9,7 +8,7 @@
   import FilterNote from "../FilterNote.svelte";
   import NotesListFooter from "./NotesListFooter.svelte";
   import { stores } from "@sapper/app";
-  const { page, session } = stores();
+  const { page } = stores();
   let filterOn = false;
   let clicked = false;
   let items;

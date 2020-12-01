@@ -1,6 +1,6 @@
 <script>
   import ItemStacks from "./ItemStacks.svelte";
-  import { addSelected, removeSelected, page } from "../../stores";
+  import { addSelected, removeSelected } from "../../stores";
   export let item = {};
   export let selecting;
   export let selection = function() {};
@@ -44,11 +44,6 @@
     selected = true;
     selection();
   }
-
-  $: selectable =
-    $page.path === "/library/all/all" || $page.path === "/library/all/all/"
-      ? true
-      : false;
 </script>
 
 <style>

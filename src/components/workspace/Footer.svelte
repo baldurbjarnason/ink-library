@@ -5,7 +5,7 @@
     addedCollections,
     addedWorkspaces,
   } from "../../stores";
-  import RiskyButton from "../widgets/RiskyButton.svelte";
+  // import RiskyButton from "../widgets/RiskyButton.svelte";
   import SecondaryButton from "../widgets/SecondaryButton.svelte";
   import Button from "../widgets/Button.svelte";
   import TypeSelect from "./TypeSelect.svelte";
