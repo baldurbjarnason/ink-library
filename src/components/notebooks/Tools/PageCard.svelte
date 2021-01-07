@@ -118,7 +118,7 @@
       {#if item.noteContexts.length}
         {#each item.noteContexts as project}
           <a
-            href={`pages/${item.shortId}/${project.type}s/${project.shortId}`}
+            href={`pages/${item.shortId}/${project.type}s/${project.shortId}?notebook=${item.notebookId}`}
             class="Project">
             <PageIcoOutline />
             <p>{project.type}</p>
