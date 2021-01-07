@@ -3,7 +3,7 @@
   import SingleNotebookList from "./SingleNotebookList.svelte";
   import IcoGoBack from "../img/IcoGoBack.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
-  import { notebook, refreshNotebook } from "../../stores";
+  import { notebook } from "../../stores";
   import DeletionModal from "../notes/Items/DeletionModal.svelte";
   import EditSingleNotebook from "./Tools/EditSingleNotebook.svelte";
   import NewPage from "../pages/NewPage.svelte";
@@ -67,7 +67,7 @@
   }
   .Header {
     display: grid;
-    grid-template-columns: max-content max-content 1fr;
+    grid-template-columns: max-content max-content max-content 1fr;
     grid-gap: 20px;
   }
   .breadcrumbs {

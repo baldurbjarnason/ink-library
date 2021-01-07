@@ -26,17 +26,17 @@ export const post = async function post(req, res, next) {
 
 export async function get(req, res, next) {
   if (!req.user.profile) return res.sendStatus(401);
+
   try {
-    let url = `${process.env.API_SERVER}/canvas`;
+    let url = `${process.env.API_SERVER}canvas`;
     const query = new URLSearchParams(req.query);
-    if (req.query.dir === "desc") {
-      query.append("reverse", "true");
-    }
-    if (req.query.orderBy === "modified") {
-      query.delete("orderBy");
-    }
+
+    if (req.query.dir === "desc") query.append("reverse", "true");
+    if (req.query.orderBy === "modified") query.delete("orderBy");
+
     query.delete("dir");
     url = `${url}?${query.toString()}`;
+
     const response = await got(url, {
       headers: {
         Authorization: `Bearer ${req.user.token}`,

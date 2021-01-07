@@ -5,7 +5,8 @@
   import { send, receive } from "../../routes/_crossfade.js";
   import { tick } from "svelte";
   import { getToken } from "../../getToken";
-  import { refreshNotebook } from "../../stores";
+  import { refreshNotebook, page } from "../../stores";
+  import { goto } from "@sapper/app";
   export let notebook;
 
   let open = false;
@@ -13,8 +14,8 @@
 
   async function close() {
     open = false;
-    await tick();
-    newToggle.querySelector("button").focus();
+    //await tick();
+    //newToggle.querySelector("button").focus();
   }
   let title;
 
@@ -43,8 +44,8 @@
           },
         });
 
-        $refreshNotebook = Date.now();
-        console.log(payload);
+        goto($page.path); //To be fixed
+        $refreshNotebook = { id: notebook.id, time: Date.now() };
       } catch (err) {
         console.error(err);
       }
@@ -58,22 +59,6 @@
 </script>
 
 <style>
-  .new-button {
-    justify-content: center;
-    flex-direction: column;
-    display: flex;
-  }
-  .new-button :global(.Button) {
-    padding: 0.65rem 1.95rem 0.6rem;
-  }
-  .new-button :global(svg) {
-    float: left;
-  }
-  .new-button :global(span) {
-    float: left;
-    margin-top: 2px;
-    margin-left: 10px;
-  }
   .NewBox {
     position: absolute;
     background-color: var(--workspace-color);
@@ -129,29 +114,6 @@
     display: none;
   }
   @media (max-width: 720px) {
-    .new-button {
-      position: fixed;
-      right: var(--base);
-      bottom: 50px;
-    }
-    .new-button :global(.Button) {
-      box-shadow: 3px 1px 7px rgba(0, 0, 0, 0.2);
-      padding: 0.65rem;
-      border-radius: 100%;
-      height: 60px;
-      width: 60px;
-      justify-content: center;
-      align-items: center;
-      display: flex;
-    }
-    .new-button :global(svg) {
-      float: inherit;
-      width: 25px;
-      height: 25px;
-    }
-    .NewButtonLabel {
-      display: none;
-    }
     .NewBox {
       left: 0;
       top: 0;
@@ -179,6 +141,12 @@
       max-width: 150px;
     }
   }
+  h5 {
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: underline;
+    color: var(--action);
+  }
 </style>
 
 {#if open}
@@ -190,7 +158,7 @@
       <input
         type="text"
         required
-        placeholder="Enter a new notebook tilte"
+        placeholder="Enter a new page tilte"
         bind:value={title} />
       <div class="footer">
         <WhiteButton>Create</WhiteButton>
@@ -199,15 +167,5 @@
     </form>
   </div>
 {:else}
-  <!--
-  <span
-    class="new-button"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}
-    bind:this={newToggle}>
-    <Button {click}>
-      <span class="NewButtonLabel">New page</span>
-    </Button>
-  </span>-->
   <h5 on:click={click}>New page</h5>
 {/if}

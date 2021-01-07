@@ -16,10 +16,13 @@ export { note, refreshNote } from './note'
 export { notebook, refreshNotebook } from './notebook'
 export { pageItem, refreshPageItem } from "./pageitem";
 export { pages, refreshPages, searchPages } from "./pages";
+export { outline, refreshOutline } from "./outline";
+export { outlines, refreshOutlines, searchOutlines } from "./outlines";
 export { searchedNotes, refreshSearchNotes, searchAddNotes } from './notebook/notes'
 export { searchedSources, refreshSearchSources, searchAddSources } from './notebook/sources'
 export { noteAddSources, sourceSearched } from './note/sources'
 export { noteAddNotebooks, notebookSearched } from './note/notebooks'
+export { pageNotes, refreshPageNotes, searchPageNotes } from './page/notes'
 export { profileNotebooks } from './profile/notebooks'
 export { profileNotes } from './profile/notes'
 export { profileSources } from './profile/sources'

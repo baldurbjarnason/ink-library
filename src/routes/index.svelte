@@ -32,6 +32,8 @@
       "Saturday",
     ];
   let day = weekday[date.getDay()];
+  $: console.log($session.user);
+  $: currentUser = $session.user.name.givenName || "!";
 </script>
 
 <style>
@@ -88,9 +90,8 @@
   .Sources {
     background: #ffffff;
     border-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: grid;
+    gap: 30px;
     padding: 30px 20px;
   }
   .align {
@@ -236,7 +237,7 @@
   <div class="left">
     <nav class="Toolbar">
       <h1 out:send={{ key: 'h1' }} in:receive={{ key: 'h1' }}>
-        Happy {day}{$session.user.nickname ? `, ${$session.user.name.givenName}` : '!'}.
+        Happy {day} {currentUser}
       </h1>
       <div class="Buttons">
         <NewNote ntbkOpen={false} />
@@ -288,7 +289,8 @@
     </div>
   </div>
   <div
-    class="Sources {!items.length && $insource.type !== 'loading' ? 'align' : null}">
+    class="Sources {!items.length && $insource.type !== 'loading' ? 'align' : null}"
+    style={`grid-template-rows: repeat(${items.length + 1}, max-content);`}>
     <h5>Recent sources</h5>
     {#if $insource.type === 'loading'}
       <Loader />

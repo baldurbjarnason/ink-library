@@ -10,31 +10,12 @@ export const pages = derived(
   [page, refreshPages, searchPages],
   ([$page, $refreshPages, $searchPages], set) => {
     if (!process.browser) return;
-    if (!$page.path || !$page.path.startsWith("/pages")) return;
+    if (!$page.path || !$page.path.startsWith("/notebooks")) return;
     if ($page.query.returnTo) return;
     set({ type: "loading", items: [] });
-    const query = Object.assign({}, $page.query);
 
-    if ($searchPages) {
-      query.search = $searchPages;
-    } else if ($page.query.search) {
-      query.search = $page.query.search;
-    }
-
-    let url;
-    if (query) {
-      url = `/api/canvas?${new URLSearchParams(query).toString()}`;
-    } else {
-      url = `/api/canvas`;
-    }
-    return fetch(url)
+    return fetch(`/api/pages?notebook=${$page.params.id}`)
       .then((lib) => {
-        if ($page.params.id) {
-          const listPages = lib.items.find(
-            (item) => item.shortId === $page.params.id
-          );
-          listPages.selected = true;
-        }
         set(lib);
       })
       .catch((err) => {

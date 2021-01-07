@@ -4,7 +4,7 @@ import { fetch } from "./fetch.js";
 
 export const refreshNotebook = writable({ id: null, time: Date.now() });
 
-const notebookId = derived(page, $page => $page.params.id);
+const notebookId = derived(page, ($page) => $page.params.id);
 
 export const notebook = derived(
   [page, notebookId, refreshNotebook],
@@ -13,15 +13,20 @@ export const notebook = derived(
       set({ type: "loading" });
     }
 
-    if (!$notebookId || !$page.path.startsWith("/notebooks/") || $page.params.id !== $notebookId) return
+    if (
+      !$notebookId ||
+      !$page.path.startsWith("/notebooks/") ||
+      $page.params.id !== $notebookId
+    )
+      return;
     if (!process.browser || !$notebookId) return;
 
     const url = `/api/notebooks/${$notebookId}`;
     return fetch(url)
-      .then(lib => {
+      .then((lib) => {
         set(lib);
       })
-      .catch(err => {
+      .catch((err) => {
         set({ type: "failed" });
         console.error(err);
       });

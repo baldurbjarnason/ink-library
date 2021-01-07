@@ -4,7 +4,7 @@ import { fetch } from "./fetch.js";
 
 export const refreshPageItem = writable({ id: null, time: Date.now() });
 
-const pageItemId = derived(page, ($page) => $page.params.id);
+const pageItemId = derived(page, ($page) => $page.params.pageId);
 
 export const pageItem = derived(
   [page, pageItemId, refreshPageItem],
@@ -15,13 +15,13 @@ export const pageItem = derived(
 
     if (
       !$pageItemId ||
-      !$page.path.startsWith("/canvas/") ||
-      $page.params.id !== $pageItemId
+      !$page.path.startsWith("/pages/") ||
+      $page.params.pageId !== $pageItemId
     )
       return;
     if (!process.browser || !$pageItemId) return;
 
-    const url = `/api/canvas/${$pageItemId}`;
+    const url = `/api/pages/${$pageItemId}`;
     return fetch(url)
       .then((lib) => {
         set(lib);

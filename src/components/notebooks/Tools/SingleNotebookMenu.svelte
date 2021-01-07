@@ -4,9 +4,9 @@
   export let menuTabs;
   export let shortId;
 
-  let types = ["all", "sources", "notes"];
+  let types = ["all", "sources", "notes", "pages"];
 
-  let navigation = type => {
+  let navigation = (type) => {
     menuTabs = type;
     goto(menuTabs === "all" ? $page.path : `${$page.path}?notebook=${shortId}`);
   };
@@ -17,7 +17,7 @@
 <style>
   ul.Menu {
     display: grid;
-    grid-template-columns: repeat(3, 100px);
+    grid-template-columns: repeat(4, 100px);
     grid-gap: 10px;
     list-style: none;
     margin: 0;
