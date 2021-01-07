@@ -6,6 +6,7 @@
   import { notebook } from "../../stores";
   import DeletionModal from "../notes/Items/DeletionModal.svelte";
   import EditSingleNotebook from "./Tools/EditSingleNotebook.svelte";
+  import NewPage from "../pages/NewPage.svelte";
   import { goto } from "@sapper/app";
   import { getToken } from "../../getToken";
 
@@ -66,7 +67,7 @@
   }
   .Header {
     display: grid;
-    grid-template-columns: max-content max-content 1fr;
+    grid-template-columns: max-content max-content max-content 1fr;
     grid-gap: 20px;
   }
   .breadcrumbs {
@@ -197,6 +198,7 @@
         }}>
         Delete notebook
       </h5>
+      <NewPage notebook={$notebook} />
     </div>
     <div class="library">
       {#if $notebook.shortId}

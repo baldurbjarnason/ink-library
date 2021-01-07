@@ -43,7 +43,7 @@
   $: loader =
     itemType === "source" ? $searchedSources.type : $searchedNotes.type;
 
-  let searchTool = itemType => {
+  let searchTool = (itemType) => {
     switch (itemType) {
       case "source":
         return Search;
@@ -70,14 +70,14 @@
     event.preventDefault();
     try {
       await window.fetch(
-        `/api/notebooks/${notebook.id}/${itemType}s/${addItem.shortId}`,
+        `/api/notebooks/${notebook.shortId}/${itemType}s/${addItem.shortId}`,
         {
           method: "PUT",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            "csrf-token": getToken()
-          }
+            "csrf-token": getToken(),
+          },
         }
       );
 
@@ -363,7 +363,7 @@
               <Loader />
             {:else}
               {#each foundItems as item}
-                {#if !notebook[`${itemType}s`].find(element => {
+                {#if !notebook[`${itemType}s`].find((element) => {
                   if (element.shortId === item.shortId) return true;
                 })}
                   <NotesFound {item} {addThis} {itemType} />

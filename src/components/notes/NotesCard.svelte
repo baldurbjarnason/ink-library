@@ -415,7 +415,7 @@
           {#if highlighed}
             <a
               class="Highlight {noted && noted.content ? '' : 'noNote'}"
-              href={`/library/all/all${note.target.source}`}>
+              href={`/library/all/all/${note.target.source}`}>
               <!--{@html highlighed.content}-->
               <p>{note.target.selector.exact}</p>
             </a>

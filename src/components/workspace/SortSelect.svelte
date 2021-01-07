@@ -18,7 +18,7 @@
     }
     const config = Object.assign({}, query, {
       orderBy: type.split("-")[0],
-      dir
+      dir,
     });
     const url = `${path}?${new URLSearchParams(config).toString()}`;
     if (query.orderBy !== config.orderBy || query.dir !== config.dir) {

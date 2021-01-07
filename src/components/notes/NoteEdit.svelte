@@ -6,13 +6,7 @@
   import ListSources from "./Items/ListSources.svelte";
   import IcoGoBack from "../img/IcoGoBack.svelte";
   import IcoDelete from "../img/IcoDelete.svelte";
-  import {
-    refreshNotes,
-    refreshNote,
-    page,
-    tags,
-    note,
-  } from "../../stores";
+  import { refreshNotes, refreshNote, page, tags, note } from "../../stores";
   import { goto } from "@sapper/app";
   import Highlight from "./Highlight.svelte";
   import NoteEditor from "../widgets/NoteEditor.svelte";
@@ -34,20 +28,18 @@
 
   $: noteTest = $note;
   /////////////////// Set colours
-  let testColour = () => {
-    colour = "";
-    noteTest.tags.map((tag) => {
-      if (tag.name.startsWith("colour")) {
-        colour = tag.name.replace(" ", "");
-      }
-    });
-  };
+  $: if (!colour && noteTest.tags)
+    colour =
+      noteTest.tags
+        .filter((tag) => tag.type === "colour")
+        .map((tag) => tag.name)
+        .toString() || "noColour";
 
   /////////////////// Set flags
   let test = () => {
     selectedFlags = [];
     selectedFlags = noteTest.tags
-      .filter((tag) => tag.type === "flag" && !tag.name.startsWith("colour"))
+      .filter((tag) => tag.type === "flag")
       .map((tag) => tag.name);
   };
 
@@ -88,9 +80,8 @@
     try {
       const payload = Object.assign({}, noteTest);
       payload.tags = [];
-      payload._tags = $tags.getIds(
-        [colour.replace("colour", "colour ")].concat(selectedFlags)
-      );
+      payload._tags = $tags.getIds([colour].concat(selectedFlags));
+
       if (payload.body.find((body) => body.motivation === "commenting")) {
         const body = payload.body.find(
           (body) => body.motivation === "commenting"
@@ -152,7 +143,6 @@
         noteTest.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
-      console.log(selectedFlags);
     } catch (err) {
       console.error(err);
     }
@@ -429,7 +419,7 @@
       <ListSources {highlight} {noteTest} bind:replaceSource />
     {/if}
     <section>
-      <Colours bind:colour {testColour} {noteTest} />
+      <Colours bind:colour />
       {#if comment.content}
         <div class="Editor {colour}">
           <NoteEditor html={comment.content} bind:richtext={text} />

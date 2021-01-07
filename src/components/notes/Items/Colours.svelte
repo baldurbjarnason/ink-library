@@ -1,13 +1,8 @@
 <script>
   import { page } from "../../../stores";
   export let colour;
-  export let testColour;
-  export let noteTest;
 
   let colours = ["colour1", "colour2", "colour3", "colour4"];
-
-  $: if (!colour && noteTest && noteTest.tags) testColour();
-  $: if ($page.params.id) if (noteTest.tags) testColour();
 </script>
 
 <style>

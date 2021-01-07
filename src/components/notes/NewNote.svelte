@@ -17,19 +17,12 @@
   import { tick } from "svelte";
   import NoteEditor from "../widgets/NoteEditor.svelte";
   import { getToken } from "../../getToken";
-  import {
-    refreshNotes,
-    refreshInNote,
-    page,
-    tags
-  } from "../../stores";
+  import { refreshNotes, refreshInNote, page, tags } from "../../stores";
   export let note = { body: [], source: { name: "" } };
 
   let selectedFlags = [];
 
-  $: colours = $tags.items.filter(
-    tag => tag.type == "flag" && tag.name.startsWith("colour")
-  );
+  $: colours = $tags.items.filter((tag) => tag.type === "colour");
 
   function assignIco(icon) {
     switch (icon) {
@@ -76,7 +69,7 @@
   }
   let text;
   $: flagsArr = $tags.items.filter(
-    item => item.type === "flag" && !item.name.startsWith("colour")
+    (item) => item.type === "flag" && !item.name.startsWith("colour")
   );
 
   async function submit(event) {
@@ -87,18 +80,18 @@
     try {
       const payload = Object.assign({}, note);
       payload._tags = [noteColour.id].concat(
-        selectedFlags.map(item => item.id)
+        selectedFlags.map((item) => item.id)
       );
-      if (payload.body.find(body => body.motivation === "commenting")) {
+      if (payload.body.find((body) => body.motivation === "commenting")) {
         const body = payload.body.find(
-          body => body.motivation === "commenting"
+          (body) => body.motivation === "commenting"
         );
         body.content = text;
         clean(body);
       } else {
         payload.body = payload.body.concat({
           motivation: "commenting",
-          content: text
+          content: text,
         });
       }
 
@@ -112,8 +105,8 @@
         body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
-          "csrf-token": getToken()
-        }
+          "csrf-token": getToken(),
+        },
       });
 
       if ($page.path === "/") $refreshInNote = Date.now();

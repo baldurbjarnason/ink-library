@@ -1,9 +1,5 @@
 <script>
-  import {
-    page as pageStore,
-    error,
-    params as paramsStore,
-  } from "../stores";
+  import { page as pageStore, error, params as paramsStore } from "../stores";
   import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
   import SignIn from "../components/Auth/SignIn.svelte";
@@ -13,6 +9,7 @@
   export let segment;
   let params;
   let publication = false;
+  let pageWorkspace = false;
   let betaNotice = true;
   $: if ($page) {
     pageStore.set($page);
@@ -24,11 +21,9 @@
     }
   }
   const { chapter } = publicationStores(page);
-  $: if ($page.params && $page.params.publicationId) {
-    publication = true;
-  } else {
-    publication = false;
-  }
+  $: publication = $page.params && $page.params.publicationId ? true : false;
+  $: pageWorkspace = $page.params && $page.params.pageId ? true : false;
+
   let menu = true;
   $: if (segment === "library" && $page.query && $page.query.returnTo) {
     menu = true;
@@ -54,7 +49,8 @@
     grid-template-columns: calc(var(--base) * 4) 1fr;
     min-height: 100vh;
   }
-  .grid.publication {
+  .grid.publication,
+  .grid.pageWorkspace {
     grid-template-columns: 1fr;
   }
   @media (max-width: 720px) {
@@ -169,8 +165,12 @@
       </span>
     </div>
   {/if}
-  <main class="grid" class:publication class:inChapter={$chapter.id}>
-    {#if !publication}
+  <main
+    class="grid"
+    class:publication
+    class:pageWorkspace
+    class:inChapter={$chapter.id}>
+    {#if !publication && !pageWorkspace}
       <Nav {params} />
     {/if}
     <div class="content {params.workspace || 'unfinished'}" class:publication>

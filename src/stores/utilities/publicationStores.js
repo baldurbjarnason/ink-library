@@ -7,17 +7,17 @@ const placedNotes = function(placed, notes) {
     [placed, notes],
     ([$placed, $notes]) => {
       function getNote(id) {
-        console.log(id)
+        console.log(id);
         if ($notes) {
-          const note = $notes.find(note => note.id === id);
+          const note = $notes.find((note) => note.id === id);
           if (note) return note;
         }
         return { tags: [] };
       }
 
-      console.log("placing notes: ",$placed, $notes)
+      console.log("placing notes: ", $placed, $notes);
       if ($placed.length !== 0 && $notes.length !== 0) {
-        const result = $placed.map(place => {
+        const result = $placed.map((place) => {
           place.note = getNote(place.id);
           return place;
         });
@@ -45,7 +45,7 @@ export function publicationStores(page) {
         items: [],
         tags: [],
         keywords: [],
-        replies: []
+        replies: [],
       }),
       chapter: writable({ type: "Loading", contents: "", stylesheets: [] }),
       contents: writable({ type: "loading", children: [] }),
@@ -53,11 +53,11 @@ export function publicationStores(page) {
       visible: writable(),
       positionedNotes: writable([]),
       chapterId: writable(),
-      errors: writable()
+      errors: writable(),
     };
   }
-  const url = derived(page, $page => {
-    console.log($page.params);
+  const url = derived(page, ($page) => {
+    // console.log($page.params);
     if ($page.params.publicationId) {
       return `/api/publication/${$page.params.publicationId}/`;
     } else {
@@ -71,11 +71,11 @@ export function publicationStores(page) {
       items: [],
       tags: [],
       keywords: [],
-      replies: []
-    }
+      replies: [],
+    },
   });
 
-  const publication = derived(publicationData, $publicationData => {
+  const publication = derived(publicationData, ($publicationData) => {
     return $publicationData.data;
   });
   const chapterId = derived(
@@ -109,7 +109,7 @@ export function publicationStores(page) {
   );
 
   const chapterData = web(chapterURL, {
-    initialData: { type: "Loading", contents: "", stylesheets: [] }
+    initialData: { type: "Loading", contents: "", stylesheets: [] },
   });
   const chapter = derived(
     chapterData,
@@ -124,7 +124,7 @@ export function publicationStores(page) {
   const contents = derived(
     chapter,
     ($chapter, set) => {
-      console.log("contents: ", $chapter.toc)
+      console.log("contents: ", $chapter.toc);
       if ($chapter) {
         return $chapter.toc;
       } else {
@@ -137,7 +137,7 @@ export function publicationStores(page) {
   const notes = derived(
     chapter,
     ($chapter, set) => {
-      console.log("annotations: ", $chapter.annotations)
+      console.log("annotations: ", $chapter.annotations);
       if ($chapter && $chapter.annotations) {
         return $chapter.annotations;
       } else {
@@ -165,15 +165,15 @@ export function publicationStores(page) {
   const watched = nodes("[data-annotation-id]");
   const visible = intersecting(watched, {
     rootMargin: "40px 0px 0px 0px",
-    threshold: 0.1
+    threshold: 0.1,
   });
   const positioned = positions(watched, {
     rootMargin: "0px 0px 1500px 0px",
-    threshold: 0.1
+    threshold: 0.1,
   });
   const placed = annotations(positioned);
   const positionedNotes = placedNotes(placed, notes);
-  console.log(notes, contents)
+  console.log(notes, contents);
   stores = {
     publication,
     chapter,
@@ -182,7 +182,7 @@ export function publicationStores(page) {
     visible,
     positionedNotes,
     chapterId,
-    errors
+    errors,
   };
   return stores;
 }

@@ -10,14 +10,14 @@ export async function get(req, res, next) {
   try {
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
-    response._inLanguage = [].concat(response.inLanguage).map(code => {
+    response._inLanguage = [].concat(response.inLanguage).map((code) => {
       return {
         code,
         english: ISO6391.getName(code),
-        native: ISO6391.getNativeName(code)
+        native: ISO6391.getNativeName(code),
       };
     });
     response.keywords = response.keywords || [];
@@ -35,9 +35,9 @@ export async function put(req, res, next) {
     const response = await got.put(url, {
       headers: {
         "content-type": "application/json",
-        Authorization: `Bearer ${req.user.token}`
+        Authorization: `Bearer ${req.user.token}`,
       },
-      json: req.body
+      json: req.body,
     });
     return res.sendStatus(response.statusCode);
   } catch (err) {

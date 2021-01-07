@@ -7,33 +7,40 @@
   import FilterSource from "../FilterSource.svelte";
   import NotesCard from "../notes/NotesCard.svelte";
   import Card from "../workspace/Card.svelte";
+  import PageCard from "./Tools/PageCard.svelte";
   import Loader from "../Loader.svelte";
+  import { goto } from "@sapper/app";
   import SingleNotebookMenu from "./Tools/SingleNotebookMenu.svelte";
   import { searchedNotes } from "../../stores/notebook/notes.js";
   import { searchedSources } from "../../stores/notebook/sources.js";
+  import { pages, searchPages, refreshNotebook } from "../../stores";
   import { stores } from "@sapper/app";
   export let notebook = {};
 
   const { page } = stores();
   let filterOn = false;
   let clicked = false;
-  let Items;
-
+  let Items = [];
   let menuTabs = "all";
 
-  $: if (menuTabs === "all" && notebook) {
-    Items = [].concat(notebook.sources).concat(notebook.notes);
-  } else if (menuTabs === "sources") {
-    Items =
-      $searchedSources.type === "loading"
-        ? $searchedSources
-        : $searchedSources.items;
-  } else if (menuTabs === "notes") {
-    Items =
-      $searchedNotes.type === "loading" ? $searchedNotes : $searchedNotes.items;
+  $: if (notebook && notebook.type !== "loading") {
+    if (menuTabs === "all" && notebook) {
+      Items = []
+        .concat(notebook.sources)
+        .concat(notebook.notes)
+        .concat($pages.items);
+    } else if (menuTabs === "sources") {
+      Items = $searchedSources.items || [];
+    } else if (menuTabs === "notes") {
+      Items = $searchedNotes.items || [];
+    } else if (menuTabs === "pages") {
+      Items = $pages.items || [];
+    }
+  } else {
+    Items = "loading";
   }
 
-  $: if (Items.type !== "loading" || (menuTabs === "all" && !Items[0])) {
+  $: if (Items !== "loading" || (menuTabs === "all" && !Items[0])) {
     if (menuTabs === "all" && query.dir && query.dir === "asc")
       Items.sort((a, b) => (a.updated > b.updated ? 1 : -1));
     else Items.sort((a, b) => (a.updated > b.updated ? -1 : 1));
@@ -217,7 +224,7 @@
       </SortSelectNotebooks>
     {/if}
   </div>
-  {#if menuTabs !== 'all'}
+  {#if menuTabs !== 'all' || menuTabs !== 'pages'}
     <section class="filter {filterOn ? 'active' : ''}" on:click={filter}>
       <p>Filter</p>
       <IcoFilter />
@@ -226,7 +233,7 @@
     <section class="EmptyFilter" />
   {/if}
 </div>
-{#if menuTabs !== 'all'}
+{#if menuTabs !== 'all' || menuTabs !== 'pages'}
   <section class="formFilter {filterOn ? 'active' : ''}">
     {#if menuTabs === 'notes'}
       <FilterNote />
@@ -236,20 +243,28 @@
   </section>
 {/if}
 
-<div class="Cards">
-  {#if Items.type === 'loading'}
-    <Loader />
-  {:else if Items[0]}
-    {#each Items as item}
-      {#if item.type === 'Note'}
-        <NotesCard note={item} selecting={false} selection={false} />
-      {:else}
-        <Card {item} selecting={true} selection={false} />
-      {/if}
-    {/each}
-  {:else}
-    <div class="Empty">
-      <NoNotebooks />
-    </div>
-  {/if}
-</div>
+{#if notebook.type === 'loading'}
+  <Loader />
+{:else}
+  <div class="Cards">
+    {#if Items[0]}
+      {#each Items as item}
+        {#if item.type === 'Note'}
+          <NotesCard
+            note={item}
+            selecting={false}
+            selection={false}
+            selectAll={false} />
+        {:else if item.type && item.type !== 'Note'}
+          <Card {item} selecting={true} selection={false} selectAll={false} />
+        {:else if !item.type}
+          <PageCard {item} />
+        {/if}
+      {/each}
+    {:else}
+      <div class="Empty">
+        <NoNotebooks />
+      </div>
+    {/if}
+  </div>
+{/if}
