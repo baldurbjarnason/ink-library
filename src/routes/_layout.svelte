@@ -22,6 +22,25 @@
       params.segment = "front";
     }
   }
+  // Currently we get around issues surrounding creating derived stores from the $page store by manually assigning the value from that store to a new one in a component. We are going to migrate away from that method as it seems quite flaky. Instead we are going to trigger a page load event and use that to create our stores.
+  //
+  // One benefit here is that we could then reuse some of these stores in projects that aren't client-side routed.
+  if (process.browser) {
+    page.subscribe(({ path, params, query }) => {
+      const loadEvent = new CustomEvent(
+          "synthetic-page-load", 
+          {
+            detail: {
+              path, params, query
+          },
+          bubbles: true,
+          cancelable: true
+        }
+      );
+      document.dispatchEvent(loadEvent);
+      // After the event has been dispatched you call refresh with the current path?
+    })
+  }
   const { chapter } = publicationStores(page);
   $: if ($page.params && $page.params.publicationId) {
     publication = true;
