@@ -64,3 +64,7 @@ keyfile.json
 app-dev.yaml
 app.yaml
 app-backup.yaml
+state/*.js
+test/*.test.js
+state/*.js.map
+test/*.test.js.map

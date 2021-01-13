@@ -3,8 +3,16 @@
   "allowJS": true,
   "checkJS": true,
   "compilerOptions": {
-    "lib": ["DOM", "ES2017", "WebWorker"]
+    "target": "es2017",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "lib": ["DOM", "ES2017", "WebWorker", "es6"],
+    "baseUrl": "./",
+    "paths": {
+        "*" : ["./src/@types/*"]
+    },
+    "types": ["node", "mocha"]
   },
-  "include": ["src/**/*", "src/node_modules/**/*"],
-  "exclude": ["node_modules/*", "__sapper__/*", "static/*"]
+  "include": ["src/**/*", "src/node_modules/**/*", "test/**/*", "state/**/*"],
+  "exclude": ["node_modules/*", "__sapper__/*", "static/*"],
 }
