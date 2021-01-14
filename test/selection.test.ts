@@ -6,7 +6,6 @@ it('Selection', (done) => {
   expect(selection$.subscribe).to.be.a('function')
   let called = 0
   selection$.subscribe({next (result) {
-    console.log(result)
     expect(result.isCollapsed).to.be.true
     done()
   }})
