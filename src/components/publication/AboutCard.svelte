@@ -32,6 +32,9 @@
                   name
                 };
               });
+          } else if (prop === "citation") {
+            console.log(body[prop])
+            body[prop] = { default: body[prop] }
           }
         }
 
@@ -74,7 +77,10 @@
                 name
               };
             });
-        }
+        } else if (prop === "citation") {
+            console.log(body[prop])
+            body[prop] = { default: body[prop] }
+          }
       }
 
       if (body.author) body.author = author;

@@ -88,6 +88,9 @@
     value={$publication.copyrightYear || ''} />
   <label for="genre">Genre</label>
   <input name="genre" type="text" value={$publication.genre || ''} />
+  
+  <label for="citation">Citation</label>
+  <input name="citation" type="text" value={$publication.citation || ''} />
 
   {#if $publication.type !== 'loading'}
     {#if $publication._inLanguage && $publication._inLanguage.length === 1}
