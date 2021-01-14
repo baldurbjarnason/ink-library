@@ -33,7 +33,6 @@
                 };
               });
           } else if (prop === "citation") {
-            console.log(body[prop])
             body[prop] = { default: body[prop] }
           }
         }
@@ -78,7 +77,6 @@
               };
             });
         } else if (prop === "citation") {
-            console.log(body[prop])
             body[prop] = { default: body[prop] }
           }
       }
