@@ -1,5 +1,5 @@
 <script>
-  import ToC from '../../components/contents-sidebar/ToC.svelte'
+  import ToC from '../../components/source/source-sidebar/ToC.svelte'
   export let contents
 </script>
 
