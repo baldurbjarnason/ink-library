@@ -1,21 +1,7 @@
 <script>
-  import { publication, page } from "../../../stores";
-  let returnLink;
-  $: if ($page.path.endsWith("info") && $page.query.path) {
-    returnLink = `/library/${$page.params.workspace}/${$page.params.collection}/${$page.params.publicationId}/${$page.query.path}`;
-  } else if ($page.path.endsWith("info")) {
-    returnLink = `/library/${$page.params.workspace}/${$page.params.collection}/${$page.params.publicationId}`;
-  } else {
-    returnLink = `/library/${$page.params.workspace}/${$page.params.collection}`;
-  }
-  let infoLink;
-  $: if (!$page.path.endsWith("info") && $page.params.path) {
-    infoLink = `/library/${$page.params.workspace}/${$page.params.collection}/${
-      $page.params.publicationId
-    }/info?path=${$page.params.path.join("/")}`;
-  } else if (!$page.path.endsWith("info")) {
-    infoLink = `/library/${$page.params.workspace}/${$page.params.collection}/${$page.params.publicationId}/info`;
-  }
+  export let name = ""
+  export let returnLink = "/library";
+  export let infoLink = ""
 </script>
 
 <style>
@@ -85,12 +71,11 @@
       </a>
     </li>
     <li>
-      <span class="Title">{$publication.name || ''}</span>
+      <span class="Title">{name}</span>
     </li>
     <li>
       <a
-        href={infoLink}
-        aria-current={$page.path.endsWith('info') ? 'page' : null}>
+        href={infoLink}>
         <svg
           width="16"
           height="16"
