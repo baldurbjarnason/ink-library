@@ -32,9 +32,12 @@ export default {
         "process.env.NODE_ENV": JSON.stringify(mode)
       }),
       svelte({
-        dev,
-        hydratable: true,
         emitCss: true,
+        compilerOptions: {
+          dev,
+          hydratable: true,
+          customElement: false
+        },
         preprocess: autoPreprocess({
           postcss: true
         })
@@ -89,12 +92,15 @@ export default {
       }),
       json(),
       svelte({
-        generate: "ssr",
-        hydratable: true,
+        compilerOptions: {
+          generate: "ssr",
+          dev,
+          hydratable: true,
+          customElement: false
+        },
         preprocess: autoPreprocess({
           postcss: true
-        }),
-        dev
+        })
       }),
       resolve({
         dedupe

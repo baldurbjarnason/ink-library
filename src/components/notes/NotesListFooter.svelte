@@ -23,7 +23,6 @@
   export let fullList;
 
   let editing = false;
-  let colours = ["colour 1", "colour 2", "colour 3", "colour 4"];
   let colour;
   let selectedFlags = [];
   let activeModal = false;
