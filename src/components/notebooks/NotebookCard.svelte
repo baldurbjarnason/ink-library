@@ -174,7 +174,7 @@
     color: #4c9b92;
   }
   @media (min-width: 721px) {
-    a:only-child {
+    div:only-child {
       width: calc(50% - var(--base) / 2);
     }
   }

@@ -186,6 +186,9 @@
   .Cards :global(.Item:only-child) {
     width: 50%;
   }
+  :global(.noteColumn) .Cards :global(.Item:only-child) {
+    width: 100%;
+  }
   @media (min-width: 641px) and (max-width: 720px) {
     .CardHeader {
       top: 0;

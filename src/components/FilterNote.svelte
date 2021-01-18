@@ -19,7 +19,7 @@
   import Loader from "./Loader.svelte";
 
   $: getNotebook = notebookArr.find(
-    item => $page.query.notebook === item.shortId
+    (item) => $page.query.notebook === item.shortId
   );
   $: notebookArr = $noteAddNotebooks.items;
   let notebookInput;
@@ -71,7 +71,7 @@
   }
 
   $: flagsArr = $tags.items.filter(
-    item => item.type === "flag" && !item.name.startsWith("colour")
+    (item) => item.type === "flag" && !item.name.startsWith("colour")
   );
 
   $: currentFlag =
@@ -80,7 +80,7 @@
       : undefined;
   /////////////////////////////////////////// Flags
 
-  let unFilterIt = a => {
+  let unFilterIt = (a) => {
     let queries = Object.assign({}, $page.query);
     delete queries[a];
 
@@ -99,6 +99,21 @@
 <style>
   .filter {
     position: relative;
+  }
+  .filter:nth-child(1) {
+    z-index: 5;
+  }
+  .filter:nth-child(2) {
+    z-index: 4;
+  }
+  .filter:nth-child(3) {
+    z-index: 3;
+  }
+  .filter:nth-child(4) {
+    z-index: 2;
+  }
+  .filter:nth-child(5) {
+    z-index: 1;
   }
   p {
     font-size: 0.75rem;
@@ -419,7 +434,7 @@
   .notebook li.colour3:hover,
   .notebook li.colour3 .Icon,
   .notebook .query.colour3 {
-    background: #cceadf;
+    background: #fae59b;
   }
   .notebook .query.colour3 .Icon :global(svg),
   .notebook li.colour3 .Icon :global(svg) {

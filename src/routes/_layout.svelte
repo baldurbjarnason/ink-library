@@ -12,6 +12,7 @@
   export let segment;
   let params;
   let publication = false;
+  let pageWorkspace = false;
   let betaNotice = true;
   $: if ($page) {
     pageStore.set($page);
@@ -43,6 +44,14 @@
     })
   }
   const { chapter } = publicationStores(page);
+  $: pageWorkspace = $page.params && $page.params.pageId ? true : false;
+
+  let menu = true;
+  $: if (segment === "library" && $page.query && $page.query.returnTo) {
+    menu = true;
+  } else {
+    menu = false;
+  }
   $: if (($page.params && $page.params.publicationId) || $page.path.startsWith("/sources")) {
     publication = true;
   } else {
@@ -67,7 +76,8 @@
     grid-template-columns: calc(var(--base) * 4) 1fr;
     min-height: 100vh;
   }
-  .grid.publication {
+  .grid.publication,
+  .grid.pageWorkspace {
     grid-template-columns: 1fr;
   }
   @media (max-width: 720px) {
@@ -182,8 +192,12 @@
       </span>
     </div>
   {/if}
-  <main class="grid" class:publication class:inChapter={$chapter.id}>
-    {#if !publication}
+  <main
+    class="grid"
+    class:publication
+    class:pageWorkspace
+    class:inChapter={$chapter.id}>
+    {#if !publication && !pageWorkspace}
       <Nav {params} />
     {/if}
     <div class="content {params.workspace || 'unfinished'}" class:publication>
