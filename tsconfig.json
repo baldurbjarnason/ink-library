@@ -13,6 +13,6 @@
     },
     "types": ["node", "mocha"]
   },
-  "include": ["src/**/*", "src/node_modules/**/*", "test/**/*", "state/**/*"],
+  "include": ["src/**/*", "src/node_modules/**/*", "test/**/*", "state/**/*", "components/**/*"],
   "exclude": ["node_modules/*", "__sapper__/*", "static/*"],
 }

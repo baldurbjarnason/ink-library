@@ -10,7 +10,7 @@ module.exports = {
   coverage: true,
   coverageConfig: {
     report: true,
-    exclude: ["node_modules/**/*"]
+    exclude: ["node_modules/**/*", "test/utils.js"]
   },
   browsers: [
     chromeLauncher({
