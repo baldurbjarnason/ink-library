@@ -55,7 +55,7 @@ export const sourceURL$ = stateURL("/sources")
 export const chapterURL$ = page().pipe(
   map(({path, params}) => {
     if (path.startsWith('/sources') && params.id && params.storage) {
-      return `/api/read/${params.id}/${params.storage}/${params.chapter || ''}`
+      return `/api/read/${params.id}/${params.storage}/${params.chapter ? params.chapter.join('/') : ''}`
     } else {
       return null
     }

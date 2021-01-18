@@ -76,7 +76,7 @@ it('chapter path works when in chapter', (done) => {
     expect(result).to.equal("/api/read/id-12345/storage-12345/path/to/file.html")
     done()
   }})
-  document.dispatchEvent(new CustomEvent('synthetic-page-load', {detail: {path: "/sources/id-12345", params: {id: "id-12345", storage: "storage-12345", chapter: "path/to/file.html"}}}))
+  document.dispatchEvent(new CustomEvent('synthetic-page-load', {detail: {path: "/sources/id-12345", params: {id: "id-12345", storage: "storage-12345", chapter: ["path", "to", "file.html"]}}}))
   subscription.unsubscribe()
 })
 
