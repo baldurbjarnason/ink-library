@@ -37,12 +37,13 @@
           cancelable: true
         }
       );
+      document.documentElement.dataset.page = JSON.stringify({ path, params, query })
       document.dispatchEvent(loadEvent);
       // After the event has been dispatched you call refresh with the current path?
     })
   }
   const { chapter } = publicationStores(page);
-  $: if ($page.params && $page.params.publicationId) {
+  $: if (($page.params && $page.params.publicationId) || $page.path.startsWith("/sources")) {
     publication = true;
   } else {
     publication = false;
