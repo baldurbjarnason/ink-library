@@ -1,5 +1,8 @@
 <script>
-  import { page as pageStore, error, params as paramsStore } from "../stores";
+  import {
+    page as pageStore,
+    error,
+  } from "../stores";
   import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
   import SignIn from "../components/Auth/SignIn.svelte";
@@ -20,8 +23,27 @@
       params.segment = "front";
     }
   }
+  // Currently we get around issues surrounding creating derived stores from the $page store by manually assigning the value from that store to a new one in a component. We are going to migrate away from that method as it seems quite flaky. Instead we are going to trigger a page load event and use that to create our stores.
+  //
+  // One benefit here is that we could then reuse some of these stores in projects that aren't client-side routed.
+  if (process.browser) {
+    page.subscribe(({ path, params, query }) => {
+      const loadEvent = new CustomEvent(
+          "synthetic-page-load", 
+          {
+            detail: {
+              path, params, query
+          },
+          bubbles: true,
+          cancelable: true
+        }
+      );
+      document.documentElement.dataset.page = JSON.stringify({ path, params, query })
+      document.dispatchEvent(loadEvent);
+      // After the event has been dispatched you call refresh with the current path?
+    })
+  }
   const { chapter } = publicationStores(page);
-  $: publication = $page.params && $page.params.publicationId ? true : false;
   $: pageWorkspace = $page.params && $page.params.pageId ? true : false;
 
   let menu = true;
@@ -29,6 +51,11 @@
     menu = true;
   } else {
     menu = false;
+  }
+  $: if (($page.params && $page.params.publicationId) || $page.path.startsWith("/sources")) {
+    publication = true;
+  } else {
+    publication = false;
   }
 </script>
 

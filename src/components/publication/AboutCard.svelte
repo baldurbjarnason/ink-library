@@ -32,6 +32,8 @@
                   name
                 };
               });
+          } else if (prop === "citation") {
+            body[prop] = { default: body[prop] }
           }
         }
 
@@ -74,7 +76,9 @@
                 name
               };
             });
-        }
+        } else if (prop === "citation") {
+            body[prop] = { default: body[prop] }
+          }
       }
 
       if (body.author) body.author = author;

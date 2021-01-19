@@ -95,6 +95,13 @@
       value: $publication.genre
     },
     {
+      type: "string",
+      req: false,
+      prop: "Citation",
+      key: "citation",
+      value: $publication.citation ? $publication.citation.default : ''
+    },
+    {
       type: "list",
       req: false,
       prop: "Language(s)",
@@ -467,6 +474,10 @@
     <dt>Genre</dt>
     <dd>{$publication.genre}</dd>
   {/if}
+  {#if $publication.citation}
+    <dt>Citation</dt>
+    <dd>{$publication.citation}</dd>
+  {/if}
 
   {#if $publication.type !== 'loading'}
     {#if $publication._inLanguage && $publication._inLanguage.length === 1}
@@ -539,5 +550,8 @@
         .split(/(?=[A-Z])/)
         .join(' ')}
     </dd>
+
+        <dt>Citation</dt>
+    <dd>{$publication.citation}</dd>
   {/if}
 </dl>-->

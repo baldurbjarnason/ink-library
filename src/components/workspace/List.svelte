@@ -2,7 +2,6 @@
   import { library, selectedItems, clearSelected } from "../../stores";
   import NotesListFooter from "../notes/NotesListFooter.svelte";
   import FilterSource from "../FilterSource.svelte";
-  import Footer from "./Footer.svelte";
   import Card from "./Card.svelte";
   import SortSelect from "./SortSelect.svelte";
   import Search from "../Search.svelte";
