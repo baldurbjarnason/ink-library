@@ -1,13 +1,16 @@
 <script lang="ts">
+  import { getContext } from "svelte";
+
+
   export let path;
   export let item;
-  export let base;
   let selected;
   $: if (path === item.url) {
     selected = true;
   } else {
     selected = false;
   }
+  const url: Function = getContext("url")
 </script>
 
 <style>
@@ -79,13 +82,13 @@
       </summary>
       <ol>
         {#each item.children as item}
-          <svelte:self {item} {path} {base} />
+          <svelte:self {item} {path}/>
         {/each}
       </ol>
     </details>
   {:else if item.url}
     <a
-      href="{base}/{item.url}"
+      href="{url(item.url)}"
       class="Level">
       {item.label}
     </a>

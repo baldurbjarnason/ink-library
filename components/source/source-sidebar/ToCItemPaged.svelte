@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { getContext } from "svelte";
   export let path;
   export let item;
-  export let base;
   export let media;
   let selected;
   $: if (path === item.url) {
@@ -9,6 +9,7 @@
   } else {
     selected = false;
   }
+  const url: Function = getContext("url")
 </script>
 
 <style>
@@ -87,13 +88,13 @@
       </summary>
       <ol>
         {#each item.children as item}
-          <svelte:self {item} {media} {base} {path} />
+          <svelte:self {item} {media} {path} />
         {/each}
       </ol>
     </details>
   {:else if item.url}
     <a
-      href="{base}/{item.url}"
+      href="url(item.url)"
       class="PageLevel">
       <img src="{media}/{item.image}" alt={item.label} />
     </a>

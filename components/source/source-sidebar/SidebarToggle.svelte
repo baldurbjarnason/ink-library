@@ -1,0 +1,1 @@
+<!-- Needs to use aria-expanded and send an event upon click. Parent component should update both this and main sidebar with variable. -->

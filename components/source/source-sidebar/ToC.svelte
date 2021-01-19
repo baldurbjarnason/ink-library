@@ -5,7 +5,6 @@
   export let contents;
   export let media;
   export let path;
-  export let base;
 </script>
 
 <style>
@@ -76,14 +75,14 @@
       <h2 class="visually-hidden" id="toc-heading">{contents.heading || 'Table of Contents'}</h2>
       <ol>
         {#each contents.children as item}
-          <ToCItemPaged {item} {base} {media} {path} />
+          <ToCItemPaged {item} {media} {path} />
         {/each}
       </ol>
     {:else}
       <h2 id="toc-heading">{contents.heading || 'Table of Contents'}</h2>
       <ol>
         {#each contents.children as item}
-          <ToCItem {item} {base} {path}  />
+          <ToCItem {item} {path}  />
         {/each}
       </ol>
     {/if}

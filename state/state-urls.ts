@@ -61,6 +61,15 @@ export const chapterURL$ = page().pipe(
     }
   })
 )
+export const sourceNotesURL$ = page().pipe(
+  map(({path, params}) => {
+    if (path.startsWith('/sources') && params.id && params.storage) {
+      return `/api/notes?source=${params.id}&limit=100`
+    } else {
+      return null
+    }
+  })
+)
 
 // ChapterURL can only be calculated after we fetch the source.
 

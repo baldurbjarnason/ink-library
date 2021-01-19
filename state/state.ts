@@ -5,7 +5,7 @@
 // tags, flags, colours endpoints
 
 import {web} from './web'
-import {libraryURL$, notebookURL$, notesURL$, tagsURL$, readerURL$, chapterURL$, sourceURL$} from './state-urls'
+import {libraryURL$, notebookURL$, notesURL$, tagsURL$, readerURL$, chapterURL$, sourceURL$, sourceNotesURL$} from './state-urls'
 import { distinctUntilChanged } from 'rxjs/operators'
 
 // Figure how to do search with these.
@@ -22,6 +22,8 @@ export const reader$ = web(readerURL$.pipe(distinctUntilChanged()))
 export const source$ = web(sourceURL$.pipe(distinctUntilChanged()))
 
 export const chapter$ = web(chapterURL$.pipe(distinctUntilChanged()))
+
+export const sourceNotes$ = web(sourceNotesURL$.pipe(distinctUntilChanged()))
 
 let tags = []
 tags$.subscribe({next (tagResult) {
