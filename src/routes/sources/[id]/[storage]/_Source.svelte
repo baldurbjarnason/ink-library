@@ -15,8 +15,8 @@
   let media
   $: if ($page.params.storage && $page.params.id) {
     base = `sources/${$page.params.id}/${$page.params.storage}`
-    download = `/api/download/${$page.params.storageId}`;
-    media = `/api/stored/${$page.params.storageId}`
+    download = `/api/download/${$page.params.storage}`;
+    media = `/api/stored/${$page.params.storage}`
   } else {
     base = ""
     download = "";
