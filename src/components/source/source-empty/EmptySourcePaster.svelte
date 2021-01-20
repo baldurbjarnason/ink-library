@@ -1,6 +1,7 @@
-<script>
+<script lang="ts">
   import Editor from "../../widgets/Editor.svelte";
   import DOMPurify from "dompurify";
+  import { onMount } from "svelte";
   const commentConfig = {
     ALLOWED_TAGS: [
       "p",
@@ -24,13 +25,15 @@
   $: if (html) {
     richtext = clean(html);
   }
-  function clean(html) {
-    if (process.browser) {
+  let clean = (html: string) => ""
+  onMount(() => {
+    clean = function clean(html) {
       return DOMPurify.sanitize(html, commentConfig);
     }
-  }
-</script>
+  })
+  
 
+</script>
 <style>
   /* your styles go here */
 </style>

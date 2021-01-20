@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { getToken } from "../../../getToken";
   export let name;
   export let placeholder = "";

@@ -1,8 +1,8 @@
 <script>
-  import { onMount, afterUpdate, onDestroy, setContext } from "svelte";
+  import { afterUpdate, setContext } from "svelte";
   import { writable } from 'svelte/store';
   import {title} from '../../../../stores/title.js'
-  import {source$, chapter$, sourceNotes$} from '../../../../../state/state.ts'
+  import {source$, chapter$, sourceNotes$} from '../../../../../state/state'
   import Chapter from '../../../../components/source/source-reader/Chapter.svelte';
   import TitleBar from './_TitleBar.svelte';
   import ToolBar from '../../../../components/source/source-toolbar/ToolBar.svelte';
@@ -39,10 +39,6 @@
   })
   setContext("sidebar", sidebar)
   let hash
-  function hashchange() {
-    hash = window.location.hash;
-    scroll = true;
-  }
   afterUpdate(() => {
     const element = document.querySelector(hash);
     if (element && scroll) {
@@ -75,7 +71,7 @@
   }
 </style>
 
-<svelte:window on:hashchange={hashchange} />
+<svelte:window />
 <div
   class="Publication TabSelected {$page.path.endsWith('info') ? 'Info' : ''}">
   {#if $source$ && $chapter$}
@@ -86,17 +82,17 @@
     {:else if $source$._processing}
       <ToolBar root={readerBody} hidden={true} />
       <div class="Processing">Processing...</div>
-      <Chapter chapter={$chapter$} {base} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
+      <Chapter chapter={$chapter$} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
     {:else if $source$._unsupported}
       <ToolBar root={readerBody} hidden={true} />
-      <Chapter chapter={$chapter$} {base} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
+      <Chapter chapter={$chapter$} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
       <div class="Processing">
         Ink doesn't support displaying this file but you can
         <a href={download}>download it.</a>
       </div>
     {:else if !$source$._empty}
-      <ToolBar root={readerBody} base={[].concat(base, $page.params.chapter).join("/")} {sidebar} />
-      <Chapter chapter={$chapter$} sourceNotes={$sourceNotes$} {base} path={$page.params.chapter.join("/")} bind:readerBody {sidebar} {media} />
+      <ToolBar root={readerBody} {sidebar} />
+      <Chapter chapter={$chapter$} sourceNotes={$sourceNotes$} path={$page.params.chapter.join("/")} bind:readerBody {sidebar} {media} />
     {:else}
       <EmptySource />
     {/if}

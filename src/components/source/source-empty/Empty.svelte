@@ -1,8 +1,7 @@
-<script>
+<script lang="ts">
   import EmptySourcePasteForm from "./EmptySourcePasteForm.svelte";
   import EmptySourceUploadForm from "./EmptySourceUploadForm.svelte";
-  import TitleBar from '../source-titlebar/TitleBar.svelte'
-  export let page;
+  import TitleBar from '../source-titlebar/TitleBar.svelte';
   export let source;
   let uploading = false;
   let pasting = false;
@@ -31,6 +30,6 @@
   <TitleBar returnLink="/library/all/all" name={source.name} />
 </div>
 <div class="NoSource">
-  <EmptySourceUploadForm bind:uploading {page} {source} />
-  <EmptySourcePasteForm bind:pasting {page} {source} />
+  <EmptySourceUploadForm bind:uploading {source} />
+  <EmptySourcePasteForm bind:pasting {source} />
 </div>

@@ -1,6 +1,13 @@
-<script>
+<script lang="ts">
+  interface Chapter {
+    resource: any;
+    stylesheets?: Array<string>;
+    toc?: any;
+    book?: any;
+    contents?: string;
+  }
   import Sidebar from "../source-sidebar/Sidebar.svelte";
-  export let chapter = { resource: {}}
+  export let chapter: Chapter = { resource: {}}
   export let path = ""
   export let media = ""
   export let sidebar

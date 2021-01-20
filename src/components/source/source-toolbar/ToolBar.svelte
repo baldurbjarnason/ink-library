@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   // import { selection } from "../../../stores/utilities/selection.js";
   // import { highlightRange, updateHighlight } from "./toolbar/highlightRange.js";
   // import { positionToAnnotation } from "./toolbar/positionToAnnotation.js";
@@ -22,7 +22,6 @@
   //     dialog.show(refabEvent);
   //   }
   // }
-  $:console.log(root, hidden, $sidebar)
 </script>
 
 <style>
