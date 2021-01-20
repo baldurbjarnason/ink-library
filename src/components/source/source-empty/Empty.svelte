@@ -17,18 +17,14 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
     min-height: 100vh;
-    position: fixed;
-    top: 2.5rem;
-    left: 0;
-    width: 100%;
   }
-  .TitleBar {
+  /* .TitleBar {
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-  }
+  } */
 </style>
 
 <div class="TitleBar">

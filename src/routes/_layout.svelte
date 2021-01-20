@@ -203,7 +203,7 @@
     {#if !publication && !pageWorkspace}
       <Nav {params} />
     {/if}
-    <div class="content {params.workspace || 'unfinished'}" class:publication>
+    <div class="content" class:publication>
       <slot />
     </div>
   </main>

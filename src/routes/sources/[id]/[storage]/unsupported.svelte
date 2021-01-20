@@ -1,9 +1,55 @@
 <script>
-  // your script goes here
+  import TitleBar from "./_TitleBar.svelte"
+  import {stores} from "@sapper/app";
+  const {page} = stores()
+  let base
+  let download
+  let media
+  $: if ($page.params.storage && $page.params.id) {
+    base = `sources/${$page.params.id}/${$page.params.storage}`
+    download = `/api/download/${$page.params.storage}`;
+    media = `/api/stored/${$page.params.storage}`
+  } else {
+    base = ""
+    download = "";
+    media = ""
+  }
+  export let source
 </script>
-
+<script context="module">
+	export async function preload({params, query, path}) {
+    const res = await this.fetch(`/api/sources/${params.id}`);
+    const source = await res.json()
+    if (source.readingOrder[0] && source.readingOrder[0].url) {
+      return this.redirect(302, `${path}/${source.readingOrder[0].url}`)
+    } else if (source._processing) {
+      return this.redirect(302, `${path}/processing`)
+    } else if (source._unsupported) {
+      return {source}
+    } else if (source._error) {
+      return this.redirect(302, `${path}/error`)
+    } else {
+      this.error(501, "Not Implemented")  
+    }
+  }
+</script>
 <style>
-  /* your styles go here */
+  .Processing {
+    grid-row: 2 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 25%;
+    min-height: 100vh;
+  }
 </style>
 
-Unsupported
+
+<div class="MainUnsupported">
+  
+  <TitleBar name={source.name} returnLink="/library/all/all" />
+  <div class="Processing">
+    Ink doesn't support displaying this file but you can
+    <a href={download}>download it.</a>
+  </div>
+</div>
