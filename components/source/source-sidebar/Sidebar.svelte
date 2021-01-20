@@ -16,7 +16,7 @@
 {#if $sidebar.tab === "toc"}
   <ToC {contents} {path} {media} />
 {:else if $sidebar.tab === "bookmarks"}
-  <Notes {sourceNotes} {contents} />
+  <Notes {sourceNotes} />
 {:else}
   <div></div>
 {/if}

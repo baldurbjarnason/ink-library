@@ -1,7 +1,6 @@
 <script>
   import Sidebar from "../source-sidebar/Sidebar.svelte";
   export let chapter = { resource: {}}
-  export let base = ""
   export let path = ""
   export let media = ""
   export let sidebar
