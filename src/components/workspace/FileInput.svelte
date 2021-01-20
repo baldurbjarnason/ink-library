@@ -38,7 +38,8 @@
         method: "PUT",
         mode: "cors",
         headers: {
-          "Content-Type": type
+          "Content-Type": type,
+          "Content-Disposition": `attachment; filename="${fileName}"`
         },
         body: file
       });
