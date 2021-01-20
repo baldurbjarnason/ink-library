@@ -1,6 +1,7 @@
 <script>
   import { onMount, afterUpdate, onDestroy, setContext } from "svelte";
   import { writable } from 'svelte/store';
+  import {title} from '../../../../stores/title.js'
   import {source$, chapter$, sourceNotes$} from '../../../../../state/state.ts'
   import Chapter from '../../../../components/source/source-reader/Chapter.svelte';
   import TitleBar from './_TitleBar.svelte';
@@ -51,6 +52,9 @@
   export let info = false
 
   let readerBody;
+  $: if ($source$ && $source$.name) {
+    $title = $source$.name + " - Rebus Ink"
+  }
 </script>
 
 <style>

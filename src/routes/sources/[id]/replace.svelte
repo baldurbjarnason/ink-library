@@ -8,9 +8,13 @@
 
 <script>
   import EmptySource from '../../../components/source/source-empty/Empty.svelte'
+  import {title} from '../../../stores/title.js'
   import {stores} from "@sapper/app";
   export let source
   const {page} = stores()
+  if (source.name) {
+    $title = source.name + " - Rebus Ink"
+  }
 </script>
 
 <style>

@@ -2,6 +2,7 @@
   import {get} from '../../../../../state/web.ts'
   import {onMount} from 'svelte';
   import { goto } from "@sapper/app";
+  import {title} from '../../../../stores/title.js'
   export let source
   let updated
   onMount(() => {
@@ -9,6 +10,9 @@
   });
   $: if ($updated && !$updated._processing && $updated.readingOrder[0].url) {
     goto(`/sources/${source.shortId}/${source.json.storageId}/${$updated.readingOrder[0].url}`)
+  }
+  if (source.name) {
+    $title = source.name + " - Rebus Ink"
   }
 </script>
 

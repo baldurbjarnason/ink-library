@@ -1,6 +1,7 @@
 <script>
   import TitleBar from "./_TitleBar.svelte"
   import {stores} from "@sapper/app";
+  import {title} from '../../../../stores/title.js'
   const {page} = stores()
   let base
   let download
@@ -15,6 +16,9 @@
     media = ""
   }
   export let source
+  if (source.name) {
+    $title = source.name + " - Rebus Ink"
+  }
 </script>
 <script context="module">
 	export async function preload({params, query, path}) {

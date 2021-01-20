@@ -3,6 +3,7 @@
     page as pageStore,
     error,
   } from "../stores";
+  import {title} from "../stores/title.js"
   import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
   import SignIn from "../components/Auth/SignIn.svelte";
@@ -143,7 +144,7 @@
 
 <svelte:head>
   <meta name="csrftoken" content={$session.csrfToken} />
-  <title>Library – {params.workspace || 'all'} – Rebus Ink</title>
+  <title>{$title}</title>
 </svelte:head>
 
 {#if $error}
