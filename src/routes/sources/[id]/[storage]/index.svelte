@@ -1,6 +1,9 @@
 <script context="module">
 	export async function preload({params, query, path}) {
     const res = await this.fetch(`/api/read/${params.id}/${params.storage}`);
+    if (!res.ok) {
+      return this.error(res.status, res.statusText)
+    }
     const source = await res.json()
     if (source.readingOrder[0] && source.readingOrder[0].url) {
       return this.redirect(302, `${path}/${source.readingOrder[0].url}`)
@@ -8,8 +11,6 @@
       return this.redirect(302, `${path}/processing`)
     } else if (source._unsupported) {
       return this.redirect(302, `${path}/unsupported`)
-    } else if (source._error) {
-      return this.redirect(302, `${path}/error`)
     } else {
       this.error(501, "Not Implemented")  
     }

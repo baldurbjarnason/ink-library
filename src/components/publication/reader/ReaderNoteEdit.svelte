@@ -602,18 +602,18 @@
       <div class="column" />
       <div class="info">
         {#if $annotation.document}
-          <a href="library/all/all{$annotation.document}">
+          <a href="sources{$annotation.document}">
             <p class="Page">Page</p>
           </a>
         {/if}
         {#if $highlighted}
-          <a class="Highlight" href="library/all/all{$annotation.document}">
+          <a class="Highlight" href="sources{$annotation.document}">
             <Highlight body={$highlighted} edit={true} {colour} />
           </a>
         {/if}
         {#if stores.$publication}
           <a
-            href="library/all/all/{stores.$publication.shortId}"
+            href="sources/{stores.$publication.shortId}"
             class="Source">
             <NavSource />
             <p>{stores.$publication.name}</p>

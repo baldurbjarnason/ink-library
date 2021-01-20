@@ -228,7 +228,7 @@
   {#if !replaceSource && sourceInfo}
     <div
       class="SourceCont {highlight ? 'Highlighted' : replaceSource ? 'Replace' : removeSource ? 'Remove' : ''}">
-      <a href="library/all/all/{sourceInfo.shortId}" class="Source">
+      <a href="sources/{sourceInfo.shortId}" class="Source">
         <NavSource />
         <p>{sourceInfo.name}</p>
       </a>
@@ -248,7 +248,7 @@
     <div
       class="SourceCont Replace {highlight ? 'Highlighted' : replaceSource === 'remove' ? 'Remove' : ''}
       EmptySource">
-      <a href="library/all/all/{replaceSource.shortId}" class="Source">
+      <a href="sources/{replaceSource.shortId}" class="Source">
         <NavSource />
         <p>
           {replaceSource === 'remove' ? sourceInfo.name : replaceSource.name}

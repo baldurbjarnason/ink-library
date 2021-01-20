@@ -26,8 +26,6 @@
       return this.redirect(302, `${path}/processing`)
     } else if (source._unsupported) {
       return {source}
-    } else if (source._error) {
-      return this.redirect(302, `${path}/error`)
     } else {
       this.error(501, "Not Implemented")  
     }
@@ -49,7 +47,12 @@
   
   <TitleBar name={source.name} returnLink="/library/all/all" />
   <div class="Processing">
-    Ink doesn't support displaying this file but you can
-    <a href={download}>download it.</a>
+    <p>
+      Ink doesn't support displaying this file but you can
+      <a href={download}>download it.</a>.
+    </p>
+    <p>
+      Or, you could <a href="/sources/{source.shortId}/replace">replace it with a different file.</a>
+    </p>
   </div>
 </div>

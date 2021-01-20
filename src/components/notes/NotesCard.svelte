@@ -73,6 +73,7 @@
     $page.path === "/notes/all/all" || $page.path === "/notes/all/all/"
       ? true
       : false;
+  $: console.log(note)
 </script>
 
 <style>
@@ -415,13 +416,13 @@
           {#if highlighed}
             <a
               class="Highlight {noted && noted.content ? '' : 'noNote'}"
-              href={`/library/all/all/${note.target.source}`}>
+              href={`/target${note.target.source}`}>
               <!--{@html highlighed.content}-->
               <p>{note.target.selector.exact}</p>
             </a>
           {/if}
           {#if note.source && note.source.name}
-            <a href={`/library/all/all/${note.source.shortId}`} class="Source">
+            <a href={`/sources/${note.source.shortId}`} class="Source">
               <NavSource />
               <p>{note.source.name}</p>
             </a>

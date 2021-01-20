@@ -50,6 +50,13 @@ export async function post(req, res, next) {
   const targetPath = path.join(userPrefix, filePrefix);
   let book;
   console.log(mediaType);
+  const config = {
+    version: "v4",
+    action: "write",
+    expires: Date.now() + 1000 * 60 * 60 * 24,
+    contentType: mediaType
+  };
+  let uploadURL
   try {
     for await (const vfile of formats({
       mediaType,
@@ -70,6 +77,9 @@ export async function post(req, res, next) {
           gzip,
           resumable: false
         });
+        const [url] = await storageFile
+          .getSignedUrl(config);
+        uploadURL = url
       }
     }
   } catch (err) {
@@ -78,7 +88,8 @@ export async function post(req, res, next) {
     return res.json(err.body);
   }
   // Return upload url for the front end to upload the original to.
-  res.json({ storageId: filePrefix, book, url, type: mediaType });
+  console.log(url)
+  res.json({ storageId: filePrefix, book, original: url, type: mediaType, url: uploadURL });
 }
 
 function wrap(body, title) {
