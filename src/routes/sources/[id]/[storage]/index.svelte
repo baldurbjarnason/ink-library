@@ -2,10 +2,19 @@
 	export async function preload({params, query, path}) {
     const res = await this.fetch(`/api/read/${params.id}/${params.storage}`);
     const source = await res.json()
+    console.log(source)
     if (source.readingOrder[0] && source.readingOrder[0].url) {
       return this.redirect(302, `${path}/${source.readingOrder[0].url}`)
+    } else if (source._processing) {
+      return this.redirect(302, `${path}/processing`)
+    } else if (source._unsupported) {
+      return this.redirect(302, `${path}/unsupported`)
+    } else if (source._error) {
+      return this.redirect(302, `${path}/error`)
+    } else {
+      this.error(501, "Not Implemented")  
+
     }
-    this.error(500, "Not Implemented")
 		// ...
   }
   // sources/35h7hYmpcEEWy3Bki6SJGc-2668bcf447/5f8AUbc6ijW18A26oBijLM

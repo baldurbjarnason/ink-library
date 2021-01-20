@@ -4,7 +4,7 @@
   // import { positionToAnnotation } from "./toolbar/positionToAnnotation.js";
   // import { saveNote } from "./toolbar/saveNote.js";
   // import { dialog } from "../../notes/NoteEditDialog.svelte";
-  import CloseSidebar from '../../../src/components/img/IcoCloseColumn.svelte';
+  import CloseSidebar from '../../img/IcoCloseColumn.svelte';
   export let root = null;
   export let hidden = false;
   export let sidebar
@@ -22,6 +22,7 @@
   //     dialog.show(refabEvent);
   //   }
   // }
+  $:console.log(root, hidden, $sidebar)
 </script>
 
 <style>

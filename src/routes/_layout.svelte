@@ -89,6 +89,9 @@
   :root {
     --workspace-color: var(--all-workspace);
   }
+  /* .content.publication {
+    min-width: 100vw;
+  } */
   .content.Personal {
     --workspace-color: var(--personal-workspace);
   }

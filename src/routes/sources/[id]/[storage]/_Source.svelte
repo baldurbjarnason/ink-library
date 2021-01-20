@@ -2,9 +2,9 @@
   import { onMount, afterUpdate, onDestroy, setContext } from "svelte";
   import { writable } from 'svelte/store';
   import {source$, chapter$, sourceNotes$} from '../../../../../state/state.ts'
-  import Chapter from '../../../../../components/source/source-reader/Chapter.svelte';
-  import TitleBar from '../../../../../components/source/source-titlebar/TitleBar.svelte';
-  import ToolBar from '../../../../../components/source/source-toolbar/ToolBar.svelte';
+  import Chapter from '../../../../components/source/source-reader/Chapter.svelte';
+  import TitleBar from './_TitleBar.svelte';
+  import ToolBar from '../../../../components/source/source-toolbar/ToolBar.svelte';
   import InfoToolBar from "../../../../components/publication/reader/InfoToolBar.svelte";
   import MainInfo from "../../../../components/publication/SourceInfo/MainInfo.svelte";
   import EmptySource from "../../../../components/publication/EmptySource.svelte";
@@ -75,7 +75,7 @@
 <div
   class="Publication TabSelected {$page.path.endsWith('info') ? 'Info' : ''}">
   {#if $source$ && $chapter$}
-    <TitleBar name={$source$.name} />
+    <TitleBar name={$source$.name} returnLink="/library/all/all" />
     {#if info}
       <InfoToolBar />
       <MainInfo />

@@ -18,7 +18,7 @@ export async function post(req, res, next) {
   if (req.is("html")) {
     mediaType = "text/html";
     suffix = "html";
-    body = req.body;
+    body = req.body.toString();
   } else if (req.is("application/epub+zip")) {
     mediaType = "application/epub+zip";
     suffix = "epub";
