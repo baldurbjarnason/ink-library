@@ -182,7 +182,7 @@
 </style>
 
 <div class="Item" class:selected>
-  <a href="library/all/all/{item.shortId}">_</a>
+  <a href="sources/{item.shortId}">_</a>
   <input
     class="BulkSelector"
     type="checkbox"

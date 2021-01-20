@@ -27,7 +27,7 @@ export async function get(req, res, next) {
       "/"
     )}`;
     const linkBase = path.join(
-      "/library/all/all/",
+      "/sources/",
       req.params.publicationId,
       req.params.storageId,
       req.params.path.join("/")

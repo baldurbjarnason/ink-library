@@ -1,13 +1,15 @@
 <script lang="ts">
+  import { getContext } from "svelte";
   export let path;
   export let item;
-  export let base;
+  export let media;
   let selected;
   $: if (path === item.url) {
     selected = true;
   } else {
     selected = false;
   }
+  const url: Function = getContext("url")
 </script>
 
 <style>
@@ -39,10 +41,11 @@
     position: relative;
   }
   li {
-    padding: calc(var(--base) * 0.25) 0;
+    padding: 0;
     margin: 0;
+    list-style: none;
   }
-  .Level {
+  .PageLevel {
     display: block;
     padding: 0.25rem;
   }
@@ -69,27 +72,35 @@
   .selected a {
     color: #005173;
   }
+  img {
+    background-color: white;
+    border: 1px solid #ccc;
+  }
 </style>
 
 <li class:selected class="ContentsItem">
   {#if item.children && item.children.length}
     <details open>
       <summary>
-        <span class="Level">{item.label}</span>
+        <span class="PageLevel">
+          <img src="{media}/{item.image}" alt={item.label} />
+        </span>
       </summary>
       <ol>
         {#each item.children as item}
-          <svelte:self {item} {path} {base} />
+          <svelte:self {item} {media} {path} />
         {/each}
       </ol>
     </details>
   {:else if item.url}
     <a
-      href="{base}/{item.url}"
-      class="Level">
-      {item.label}
+      href="url(item.url)"
+      class="PageLevel">
+      <img src="{media}/{item.image}" alt={item.label} />
     </a>
   {:else}
-    <span class="Level">{item.label}</span>
+    <span class="PageLevel">
+      <img src="{media}/{item.image}" alt={item.label} />
+    </span>
   {/if}
 </li>

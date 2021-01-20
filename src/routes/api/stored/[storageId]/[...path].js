@@ -56,6 +56,37 @@ const validTypes = [
   "video/mp4"
 ];
 
+
+const dispositionTypes = [
+  "application/pdf",
+  "application/vnd.oasis.opendocument.presentation",
+  "application/vnd.oasis.opendocument.spreadsheet",
+  "application/vnd.oasis.opendocument.text",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/msword",
+  "application/epub+zip",
+  "application/x-abiword",
+  "application/vnd.amazon.ebook",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/vnd.rar",
+  "application/rtf",
+  "application/x-tar",
+  "application/vnd.visio",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/zip",
+  "text/csv",
+  "image/gif",
+  "image/jpeg",
+  "image/png",
+  "audio/mpeg",
+  "audio/mp4",
+  "video/H264",
+  "video/H265",
+  "video/mp4"
+];
+
 // Need a separate 'download only' list of media types that are automatically given an attachment content-disposition.
 
 export async function get(req, res, next) {
@@ -100,7 +131,17 @@ export async function get(req, res, next) {
           })
           .pipe(resizer)
           .pipe(res);
+      } else if (testDispositionTypes(metadata.contentType)) {
+        res.type(metadata.contentType);
+        res.set("Content-Disposition", metadata.contentDisposition)
+        file
+          .createReadStream()
+          .on("error", function(err) {
+            console.error(err);
+          })
+          .pipe(res);
       } else if (testMediaTypes(metadata.contentType)) {
+        res.type(metadata.contentType);
         file
           .createReadStream()
           .on("error", function(err) {
@@ -124,6 +165,11 @@ function testMediaTypes(contentType) {
   if (contentType.startsWith("video")) return true;
 
   if (validTypes.includes(contentType)) {
+    return true;
+  }
+}
+function testDispositionTypes(contentType) {
+  if (dispositionTypes.includes(contentType)) {
     return true;
   }
 }
