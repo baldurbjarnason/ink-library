@@ -7,12 +7,12 @@
     contents?: string;
   }
   import Sidebar from "../source-sidebar/Sidebar.svelte";
+  import MarginNotes from "../source-margin/MarginNotes.svelte";
   export let chapter: Chapter = { resource: {}}
   export let path = ""
   export let media = ""
   export let sidebar
   export let sourceNotes = {items: []}
-  // import SidebarNotes from "./SidebarNotes.svelte";
   export let readerBody = null;
   export let hidden = false;
 </script>
@@ -116,5 +116,5 @@
       {@html chapter.contents}
     {/if}
   </div>
-  <!-- <SidebarNotes /> -->
+  <MarginNotes />
 </div>

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   export let name = ""
   export let returnLink = "/library";
   export let infoLink = ""

@@ -1,11 +1,17 @@
 <script>
-  import NotesCard from "./SidebarNotesCard.svelte";
-  import SidebarNoteModal from "./SidebarNoteModal.svelte";
-  import NoteEdit from "./ReaderNoteEdit.svelte";
-  import { publicationStores } from "../../../stores/utilities/publicationStores.js";
-  import { stores } from "@sapper/app";
-  const { page } = stores();
-  const pubStores = publicationStores(page);
+  import NotesCard from "./MarginNotesCard.svelte";
+  import {intersections, topmost} from "../../../../state/nodes.ts"
+  import {chapter$, source$} from "../../../../state/state.ts"
+  // import SidebarNoteModal from "./MarginNotesModal.svelte";
+  // import NoteEdit from "./MarginNoteEdit.svelte";
+  // import { publicationStores } from "../../../stores/utilities/publicationStores.js";
+  const highlights$ = intersections("[data-annotation-id]")
+  const topmost$ = topmost(highlights$, (entry) => {
+    return entry.element.dataset.annotationId
+  })
+  function getAnnotation (id) {
+    return $chapter$.annotations.find((annotation) => annotation.id === id)
+  }
 </script>
 
 <style>
@@ -19,18 +25,18 @@
   }
 </style>
 
-{#if stores}
+{#if $topmost$}
   <div class="Root">
-    {#if pubStores.$positionedNotes}
-      {#each pubStores.$positionedNotes as position}
+    {#if $topmost$}
+      {#each Array.from($topmost$) as entry}
         <div
-          style="top: {position.top - 113}px; left: 0;right: 0;"
-          data-sidenote-id={position.id}>
-          <NotesCard note={position.note} stores={pubStores} />
+          style="top: {entry.top - 113}px; left: 0;right: 0;"
+          data-sidenote-id={entry.element.dataset.annotationId}>
+          <NotesCard note={$chapter$ ? getAnnotation(entry.element.dataset.annotationId) : {}} source={$source$} />
         </div>
       {/each}
     {/if}
-    <div class="Modals">
+    <!-- <div class="Modals">
       {#if pubStores.$notes}
         {#each pubStores.$notes as note}
           <SidebarNoteModal id={note.shortId}>
@@ -38,6 +44,6 @@
           </SidebarNoteModal>
         {/each}
       {/if}
-    </div>
+    </div> -->
   </div>
 {/if}

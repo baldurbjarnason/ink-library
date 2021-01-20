@@ -56,7 +56,7 @@ export function intersections (query: string, config = {root: document.documentE
     let observed: Set<Element> = new Set();
     function handle(entries) {
       for (const entry of entries) {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && observed.has(entry.target)) {
           intersecting.add({
             element: entry.target,
             left: window.scrollX + entry.boundingClientRect.left,
@@ -70,6 +70,7 @@ export function intersections (query: string, config = {root: document.documentE
     }
     function handleResize () {
       observer.disconnect()
+      intersecting.clear()
       for (const element of observed) {
         observer.observe(element)
       }
@@ -83,7 +84,10 @@ export function intersections (query: string, config = {root: document.documentE
         observed.add(notification.element)
       } else {
         observer.unobserve(notification.element)
+        const entry = Array.from(intersecting).find(entry => entry.element === notification.element)
+        intersecting.delete(entry)
         observed.delete(notification.element)
+        handle([])
       }
     })
     return function unsubscribe () {
@@ -92,6 +96,22 @@ export function intersections (query: string, config = {root: document.documentE
     }
   })
   return intersections$
+}
+
+export function topmost (intersections$: Observable<Set<ElementEntry>>, test: (value: any) => string) {
+  return intersections$.pipe(
+    map((elements: Set<ElementEntry>) => {
+      const filtered = new Map()
+      for (const entry of elements) {
+        if (!filtered.get(test(entry))) {
+          filtered.set(test(entry), entry)
+        } else if (filtered.get(test(entry)) && filtered.get(test(entry)).top < entry.top){
+          filtered.set(test(entry), entry)
+        }
+      }
+      return new Set(filtered.values())
+    })
+  )
 }
 
 // For positions we need to use a switchmap that switches to a new intersections observable when the root resizes

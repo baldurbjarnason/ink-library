@@ -1,21 +1,22 @@
 <script>
   // This needs a store for the hover over highlight event.
-  import FlagFurtherRead from "../../../src/components/img/FlagFurtherRead.svelte";
-  import FlagIdea from "../../../src/components/img/FlagIdea.svelte";
-  import FlagImportant from "../../../src/components/img/FlagImportant.svelte";
-  import FlagImpTerm from "../../../src/components/img/FlagImpTerm.svelte";
-  import FlagQuestion from "../../../src/components/img/FlagQuestion.svelte";
-  import FlagReference from "../../../src/components/img/FlagReference.svelte";
-  import FlagRevisit from "../../../src/components/img/FlagRevisit.svelte";
-  import FlagToDo from "../../../src/components/img/FlagToDo.svelte";
-  import FlagUrgent from "../../../src/components/img/FlagUrgent.svelte";
+  import FlagFurtherRead from "../../img/FlagFurtherRead.svelte";
+  import FlagIdea from "../../img/FlagIdea.svelte";
+  import FlagImportant from "../../img/FlagImportant.svelte";
+  import FlagImpTerm from "../../img/FlagImpTerm.svelte";
+  import FlagQuestion from "../../img/FlagQuestion.svelte";
+  import FlagReference from "../../img/FlagReference.svelte";
+  import FlagRevisit from "../../img/FlagRevisit.svelte";
+  import FlagToDo from "../../img/FlagToDo.svelte";
+  import FlagUrgent from "../../img/FlagUrgent.svelte";
 
-  import NavSource from "../../../src/components/img/NavSource.svelte";
+  import NavSource from "../../img/NavSource.svelte";
   import { noteStore } from "../../../stores/utilities/noteStore.js";
   export let note = {};
-  export let stores = {};
-  $: if (stores.$publication) {
-    title = stores.$publication.name;
+  export let source
+  let title;
+  $: if (source) {
+    title = source.name;
   }
   let store;
   $: if (note && note.shortId && !store) {
@@ -338,13 +339,13 @@
                 {@html $highlighted.content || $highlighted.value}
               </a>
             {/if}
-            {#if stores.$publication && stores.$publication.name}
+            {#if title}
               <a
                 href="#id-{$annotation.shortId}"
                 class="Source modal_link"
                 rel="external">
                 <NavSource />
-                <p>{stores.$publication.name}</p>
+                <p>{title}</p>
               </a>
             {/if}
           </div>
