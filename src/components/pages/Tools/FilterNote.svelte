@@ -30,22 +30,19 @@
   /////////////////////////////////////////// Colour
   function assignCol(icon) {
     switch (icon) {
-      case "colour 1":
+      case "colour1":
         return "Orange";
-      case "colour 2":
+      case "colour2":
         return "Pink";
-      case "colour 3":
+      case "colour3":
         return "Blue";
-      case "colour 4":
+      case "colour4":
         return "Green";
     }
   }
 
-  let colorArr = ["colour 1", "colour 2", "colour 3", "colour 4"];
-  $: currentColor =
-    $page.query.flag && $page.query.flag.startsWith("colour")
-      ? $page.query.flag
-      : undefined;
+  let colorArr = ["colour1", "colour2", "colour3", "colour4"];
+  $: currentColor = $page.query.colour ? $page.query.colour : undefined;
   /////////////////////////////////////////// Flags
   function assignIco(icon) {
     switch (icon) {
@@ -70,14 +67,8 @@
     }
   }
 
-  $: flagsArr = $tags.items.filter(
-    (item) => item.type === "flag" && !item.name.startsWith("colour")
-  );
-
-  $: currentFlag =
-    $page.query.flag && !$page.query.flag.startsWith("colour")
-      ? $page.query.flag
-      : undefined;
+  $: flagsArr = $tags.items.filter((item) => item.type === "flag");
+  $: currentFlag = $page.query.flag ? $page.query.flag : undefined;
   /////////////////////////////////////////// Flags
 
   let unFilterIt = (a) => {
@@ -85,14 +76,14 @@
     delete queries[a];
 
     let mark = Object.keys(queries).length ? "?" : "";
-    //goto(`${$page.path}${mark}${new URLSearchParams(queries).toString()}`);
+    goto(`${$page.path}${mark}${new URLSearchParams(queries).toString()}`);
   };
 
   let filterIt = (a, b) => {
     let queries = Object.assign({}, $page.query);
     queries[a] = b;
 
-    // goto(`${$page.path}?${new URLSearchParams(queries).toString()}`);
+    goto(`${$page.path}?${new URLSearchParams(queries).toString()}`);
   };
 </script>
 
@@ -414,15 +405,15 @@
   <input class="btn" readonly />
   <div class="inputs">
     {#if currentColor}
-      <div class="query {currentColor.replace(' ', '')}">
+      <div class="query {currentColor}">
         <span class="Icon" />
         <p>{assignCol(currentColor)}</p>
-        <span class="Remove" on:click={() => unFilterIt('flag')} />
+        <span class="Remove" on:click={() => unFilterIt('colour')} />
       </div>
     {:else}
       <p class="placeholder">
         <IcoColor />
-        Choose color
+        Choose colour
       </p>
     {/if}
     <ArrowDropDown />
@@ -430,9 +421,7 @@
   <ul>
     {#each colorArr as color}
       {#if !currentColor || currentColor !== color}
-        <li
-          class={color.replace(' ', '')}
-          on:click={() => filterIt('flag', color)}>
+        <li class={color} on:click={() => filterIt('colour', color)}>
           <span class="Icon" />
           <p>{assignCol(color)}</p>
         </li>

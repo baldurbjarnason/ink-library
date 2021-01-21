@@ -1,12 +1,14 @@
 <script>
-  import { page } from "../../../stores";
+  import { page, selectedItems } from "../../../stores";
   import { goto } from "@sapper/app";
   export let menuTabs;
   export let shortId;
+  export let endSelection = function() {};
 
   let types = ["all", "sources", "notes", "pages"];
 
   let navigation = (type) => {
+    endSelection();
     menuTabs = type;
     goto(menuTabs === "all" ? $page.path : `${$page.path}?notebook=${shortId}`);
   };

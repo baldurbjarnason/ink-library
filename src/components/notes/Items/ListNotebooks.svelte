@@ -296,7 +296,7 @@
         <li
           class="Notebook {notebook.settings.colour}
           {removeNotebook.find((item) => item.shortId === notebook.shortId) ? 'Removing' : ''}">
-          <a href={`notebooks/${notebook.id}`}>
+          <a href={`notebooks/${notebook.shortId}`}>
             <span>
               <IcoNotebook />
             </span>
@@ -307,16 +307,14 @@
               <IcoRevert />
             </div>
           {:else}
-            <div class="deleteNotebook" on:click={removeCurrent(notebook)}>
-              <IcoDelete />
-            </div>
+            <div class="Remove" on:click={removeCurrent(notebook)} />
           {/if}
         </li>
       {/each}
     {/if}
     {#each addNotebook as notebook}
       <li class="Notebook {notebook.settings.colour} Adding">
-        <a href={`notebooks/${notebook.id}`}>
+        <a href={`notebooks/${notebook.shortId}`}>
           <span>
             <IcoNotebook />
           </span>

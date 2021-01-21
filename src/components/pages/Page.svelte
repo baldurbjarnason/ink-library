@@ -17,6 +17,7 @@
 
   async function remove() {
     let notebook = pageInfo.notebook.id;
+    goto(`notebooks/${pageInfo.notebook.shortId}`);
 
     try {
       await fetch(`/api/pages/${$page.params.pageId}`, {
@@ -27,9 +28,6 @@
           Accept: "application/json",
           "csrf-token": getToken(),
         },
-      }).then(() => {
-        $refreshNotebook = { id: notebook, time: Date.now() };
-        goto(`notebooks/${pageInfo.notebook.shortId}`);
       });
     } catch (err) {
       console.error(err);
