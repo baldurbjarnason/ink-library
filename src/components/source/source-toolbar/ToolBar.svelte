@@ -1,29 +1,30 @@
 <script>
-  // import { selection } from "../../../stores/utilities/selection.js";
+    import {selection} from "../../../../state/selection.ts"
   // import { highlightRange, updateHighlight } from "./toolbar/highlightRange.js";
-  // import { positionToAnnotation } from "./toolbar/positionToAnnotation.js";
-  // import { saveNote } from "./toolbar/saveNote.js";
+  // import { positionToAnnotation } from "../../publication/reader/toolbar/positionToAnnotation.js";
+  // import { saveNote } from "../../publication/reader/toolbar/saveNote.js";
   // import { dialog } from "../../notes/NoteEditDialog.svelte";
   import CloseSidebar from '../../img/IcoCloseColumn.svelte';
   import { onDestroy } from "svelte";
   export let root = null;
   export let hidden = false;
   export let sidebar
-  // $: if (root) {
-  //   root.addEventListener("click", handleClick, false);
-  // }
-  // function handleClick(event) {
-  //   if (event.target.matches("mark[data-annotation-id]")) {
-  //     const refabEvent = Object.assign({}, event, {
-  //       currentTarget: event.target,
-  //       annotationId: event.target.dataset.annotationId
-  //     });
-  //     // dialog.show(refabEvent);
-  //   }
-  // }
-  // onDestroy(() => {
-  //   root.removeEventListener("click", handleClick)
-  // })
+  const selection$ = selection();
+  $: if (root) {
+    root.addEventListener("click", handleClick, false);
+  }
+  function getId (id) {
+    const parts = id.split("/")
+    return parts[parts.length - 1]
+  }
+  function handleClick(event) {
+    if (event.target.matches("mark[data-annotation-id]")) {
+      document.getElementById(`id-${getId(event.target.dataset.annotationId)}`).open()
+    }
+  }
+  onDestroy(() => {
+    root.removeEventListener("click", handleClick)
+  })
 </script>
 
 <style>
