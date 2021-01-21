@@ -23,8 +23,6 @@ export async function put(req, res, next) {
   const url = `${process.env.API_SERVER}notes/${req.params.id}`;
   const tags = req.body._tags;
   delete req.body._tags;
-
-  console.log("request: ", req.body);
   try {
     const response = await got.put(url, {
       headers: {

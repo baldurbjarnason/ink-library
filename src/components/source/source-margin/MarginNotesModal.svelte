@@ -32,20 +32,18 @@
 
   :global(.modal-open) {
     z-index: 1001;
-    background: #fff;
     box-sizing: border-box;
     padding: 0;
     top: 10vh;
     left: 10vw;
-    height: 80vh;
+    height: 84vh;
     width: 80vw;
-    overflow: auto;
   }
 
   :global(.modal_close) {
     position: absolute;
-    top: 1vh;
-    right: 1vh;
+    top: 2rem;
+  right: 1rem;
     border: none;
     cursor: pointer;
     background: transparent;
