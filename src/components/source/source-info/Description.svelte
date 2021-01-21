@@ -1,5 +1,5 @@
 <script>
-  import Card from "../../publication/Card.svelte";
+  import Card from "../../widgets/Card.svelte";
   import Loader from "../../Loader.svelte";
   import { source$ } from "../../../../state/state";
   import { refresh } from "../../../../state/refresh";

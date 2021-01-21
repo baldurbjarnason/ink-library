@@ -1,7 +1,7 @@
 <script>
   import { source$ } from "../../../../state/state";
   import { refresh } from "../../../../state/refresh";
-  import Card from "../../publication/Card.svelte";
+  import Card from "../../widgets/Card.svelte";
   import Metadata from "./Metadata.svelte";
   import MetadataForm from "./MetadataForm.svelte";
   import { getToken } from "../../../getToken";
