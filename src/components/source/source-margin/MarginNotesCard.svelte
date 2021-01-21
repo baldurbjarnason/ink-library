@@ -9,7 +9,6 @@
   $: if (source) {
     title = source.name;
   }
-  $: console.log(note)
   let noted, highlighted, flags, colours, annotation;
   $: if (note && note.shortId) {
     noted = getNoted(note)
@@ -82,12 +81,12 @@
     height: auto;
     color: var(--workspace-color);
   }
-  .Source[href],
+  
   .Highlight[href],
   .Note[href] {
     text-decoration: none;
   }
-  .Source[href]:hover,
+  
   .Highlight[href]:hover,
   .Note[href]:hover,
   .Page:hover {
@@ -303,15 +302,6 @@
                 href="#id-{annotation.shortId}"
                 rel="external">
                 {@html highlighted.content || highlighted.value}
-              </a>
-            {/if}
-            {#if title}
-              <a
-                href="#id-{annotation.shortId}"
-                class="Source modal_link"
-                rel="external">
-                <NavSource />
-                <p>{title}</p>
               </a>
             {/if}
           </div>

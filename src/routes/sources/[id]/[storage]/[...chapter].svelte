@@ -14,7 +14,7 @@
   let Source;
 
   onMount(async () => {
-    const module = await import('./_Source.svelte');
+    const module = await import('../../../../components/source/Source.svelte');
     Source = module.default;
   });
   // export let annotations = []
