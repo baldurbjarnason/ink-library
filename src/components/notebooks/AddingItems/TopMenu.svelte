@@ -123,10 +123,10 @@
   <span />
   <ul class="itemState">
     <li
-      class="existent {itemState === 'existent' ? 'active' : ''}"
-      on:click={() => menu(false, 'existent')}>
+      class="existing {itemState === 'existing' ? 'active' : ''}"
+      on:click={() => menu(false, 'existing')}>
       <span />
-      <p>Existent</p>
+      <p>Existing</p>
     </li>
     <li
       class="new {itemState === 'new' ? 'active' : ''}"

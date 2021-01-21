@@ -1,7 +1,32 @@
 <script>
   import PageIcoOutline from "../../img/PageIcoOutline.svelte";
+  import {
+    addSelected,
+    removeSelected,
+    selectedItems,
+    pages,
+  } from "../../../stores";
   export let item = {};
-  let cover = { href: "/img/placeholder-cover.jpg" };
+  export let selecting;
+  export let selection = function() {};
+
+  let selected = false;
+
+  $: if (!selecting && selected) selected = false;
+  $: if (selected && item.id) addSelected(item);
+  else removeSelected(item);
+
+  let selectable = true;
+  $: if ($selectedItems.size) {
+    $selectedItems.forEach((obj) => {
+      selectable = obj.noteContexts ? true : false;
+    });
+  } else {
+    selectable = true;
+  }
+
+  $: pageItems = $pages.items.find((element) => element.name === item.name);
+  $: noteContexts = pageItems ? pageItems.noteContexts : [];
 </script>
 
 <style>
@@ -9,7 +34,7 @@
   .Item * {
     transition: all 0.25s ease-out;
   }
-  a.Item {
+  .Item {
     text-decoration: none;
     background-color: #fff;
     position: relative;
@@ -24,6 +49,52 @@
     -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
   }
+  .Item > a {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    opacity: 0;
+    z-index: 1;
+  }
+  /* -------------- Input -------------- */
+  .BulkSelector {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .BulkSelector::before,
+  .BulkSelector::after {
+    content: "";
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    position: absolute;
+    transition: all 0.25s ease-out;
+  }
+  .BulkSelector::before {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--workspace-color);
+    background: #ffffff;
+  }
+  .BulkSelector::after {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+  }
+  .BulkSelector:checked::after {
+    background: var(--workspace-color);
+  }
+  /* -------------------------------- */
   .circle {
     width: 102px;
     height: 102px;
@@ -58,6 +129,7 @@
     display: grid;
     align-items: center;
     position: relative;
+    z-index: 2;
     border: 1px solid #eee;
   }
   .Project:hover {
@@ -110,13 +182,22 @@
   }
 </style>
 
-<a href="pages/{item.shortId}" class="Item">
+<div class="Item">
+  <a href="pages/{item.shortId}">_</a>
+  <!--
+  {#if selectable}
+    <input
+      class="BulkSelector"
+      type="checkbox"
+      bind:checked={selected}
+      on:click={() => selection()} />
+  {/if}-->
   <span class="circle" />
   <footer>
     <h5 class="Title">{item.name}</h5>
     <div class="Projects">
-      {#if item.noteContexts.length}
-        {#each item.noteContexts as project}
+      {#if noteContexts && noteContexts.length}
+        {#each noteContexts as project}
           <a
             href={`pages/${item.shortId}/${project.type}s/${project.shortId}?notebook=${item.notebookId}`}
             class="Project">
@@ -129,4 +210,4 @@
       {/if}
     </div>
   </footer>
-</a>
+</div>

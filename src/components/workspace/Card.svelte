@@ -1,6 +1,11 @@
 <script>
   import ItemStacks from "./ItemStacks.svelte";
-  import { addSelected, removeSelected } from "../../stores";
+  import {
+    addSelected,
+    removeSelected,
+    page,
+    selectedItems,
+  } from "../../stores";
   export let item = {};
   export let selecting;
   export let selection = function() {};
@@ -43,6 +48,21 @@
   $: if (selectAll) {
     selected = true;
     selection();
+  }
+
+  let selectable = true;
+  $: if ($selectedItems.size || $page.path === "/") {
+    $selectedItems.forEach((obj) => {
+      selectable =
+        !obj.noteContexts &&
+        ($page.path === "/library/all/all" ||
+          $page.path === "/library/all/all/" ||
+          $page.path.startsWith("/notebooks/"))
+          ? true
+          : false;
+    });
+  } else {
+    selectable = true;
   }
 </script>
 
@@ -183,11 +203,13 @@
 
 <div class="Item" class:selected>
   <a href="sources/{item.shortId}">_</a>
-  <input
-    class="BulkSelector"
-    type="checkbox"
-    bind:checked={selected}
-    on:click={() => selection()} />
+  {#if selectable}
+    <input
+      class="BulkSelector"
+      type="checkbox"
+      bind:checked={selected}
+      on:click={() => selection()} />
+  {/if}
   <span class="circle" />
   <img
     src={cover.href ? cover.href : `/img/placeholder-cover.jpg`}

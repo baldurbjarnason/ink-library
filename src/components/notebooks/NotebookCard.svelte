@@ -54,6 +54,7 @@
     -webkit-appearance: none;
     outline: none;
     cursor: pointer;
+    z-index: 2;
   }
   .BulkSelector::before,
   .BulkSelector::after {

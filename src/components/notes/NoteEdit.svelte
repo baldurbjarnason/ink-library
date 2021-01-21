@@ -28,15 +28,19 @@
 
   $: noteTest = $note;
   /////////////////// Set colours
-  $: if (!colour && noteTest.tags)
+  let assignColour = () => {
     colour =
       noteTest.tags
         .filter((tag) => tag.type === "colour")
         .map((tag) => tag.name)
         .toString() || "noColour";
+  };
+
+  $: if (!colour && noteTest.tags) assignColour();
+  $: if ($page.params.id) if (noteTest.tags) assignColour();
 
   /////////////////// Set flags
-  let test = () => {
+  let assignFlags = () => {
     selectedFlags = [];
     selectedFlags = noteTest.tags
       .filter((tag) => tag.type === "flag")
@@ -410,7 +414,7 @@
       <div class="SourceHilight {colour}">
         <ListSources {highlight} {noteTest} bind:replaceSource />
         <div class="info">
-          <a class="Highlight" href="library/all/all{note.document}">
+          <a class="Highlight" href="library/all/all{noteTest.document}">
             <Highlight body={highlight} edit={true} {colour} />
           </a>
         </div>
@@ -429,7 +433,7 @@
           <NoteEditor html="" bind:richtext={text} />
         </div>
       {/if}
-      <Flags {colour} {test} {noteTest} bind:selectedFlags />
+      <Flags {colour} {assignFlags} {noteTest} bind:selectedFlags />
     </section>
     <span class:dialog>
       <Button click={save}>Save</Button>

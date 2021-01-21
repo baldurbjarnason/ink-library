@@ -6,6 +6,7 @@
   import NavNotebook from "../img/NavNotebook.svelte";
   import IcoCloseColumn from "../img/IcoCloseColumn.svelte";
   import NoteCardPage from "./Tools/NoteCardPage.svelte";
+  import Loader from "../Loader.svelte";
   import PageNotesSearcher from "./Tools/PageNotesSearcher.svelte";
   import { flip } from "svelte/animate";
   import { dndzone, TRIGGERS } from "svelte-dnd-action";
@@ -15,10 +16,11 @@
     refreshPageNotes,
     searchPageNotes,
   } from "../../stores/page/notes.js";
-  export let items;
+  //export let items;
   export let requesting;
 
-  $: notebookNotes = $pageNotes.items;
+  $: notebookNotes = $pageNotes;
+  $: items = notebookNotes.items;
 
   const flipDurationMs = 300;
   let shouldIgnoreDndEvents = false;
@@ -282,7 +284,9 @@
     <div class="Filters {filterOn ? 'active' : ''}">
       <FilterNote />
     </div>
-    {#if items.length}
+    {#if notebookNotes.type === 'loading'}
+      <Loader />
+    {:else if items.length}
       <div
         class="Notes"
         style={`grid-template-rows: repeat(${items.length}, max-content);`}

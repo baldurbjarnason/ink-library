@@ -10,31 +10,37 @@
   import PageCard from "./Tools/PageCard.svelte";
   import Loader from "../Loader.svelte";
   import { goto } from "@sapper/app";
+  import NotebookItemsBulk from "./Tools/NotebookItemsBulk.svelte";
   import SingleNotebookMenu from "./Tools/SingleNotebookMenu.svelte";
   import { searchedNotes } from "../../stores/notebook/notes.js";
   import { searchedSources } from "../../stores/notebook/sources.js";
-  import { pages, searchPages, refreshNotebook } from "../../stores";
+  import {
+    pages,
+    searchPages,
+    refreshNotebook,
+    selectedItems,
+    clearSelected,
+  } from "../../stores";
   import { stores } from "@sapper/app";
   export let notebook = {};
-
   const { page } = stores();
   let filterOn = false;
   let clicked = false;
-  let Items = [];
+  let Items;
   let menuTabs = "all";
 
   $: if (notebook && notebook.type !== "loading") {
-    if (menuTabs === "all" && notebook) {
+    if (menuTabs === "all") {
       Items = []
         .concat(notebook.sources)
         .concat(notebook.notes)
-        .concat($pages.items);
+        .concat(notebook.canvas);
     } else if (menuTabs === "sources") {
-      Items = $searchedSources.items || [];
+      Items = [].concat(notebook.sources);
     } else if (menuTabs === "notes") {
-      Items = $searchedNotes.items || [];
+      Items = [].concat(notebook.notes);
     } else if (menuTabs === "pages") {
-      Items = $pages.items || [];
+      Items = [].concat(notebook.canvas);
     }
   } else {
     Items = "loading";
@@ -54,6 +60,24 @@
     filterOn = !filterOn;
     clicked = true;
   };
+
+  let selecting = true;
+  let selection = function() {
+    if (!selecting) selecting = true;
+  };
+
+  let typeOfItem;
+  $: if ($selectedItems.size) {
+    $selectedItems.forEach((obj) => {
+      typeOfItem = obj.noteContexts ? "page" : "items";
+    });
+  } else {
+    typeOfItem = false;
+  }
+
+  let refresh = () => {
+    $refreshNotebook = { id: notebook, time: Date.now() };
+  };
 </script>
 
 <style>
@@ -72,6 +96,7 @@
     padding: calc(var(--base) * 2);
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-gap: var(--base);
+    z-index: 0;
     grid-auto-rows: max-content;
   }
   .CardHeader {
@@ -143,6 +168,7 @@
     position: relative;
     position: relative;
     padding: 0 40px;
+    z-index: 1;
     transition: all 0.25s ease-out;
   }
   .formFilter.active {
@@ -186,9 +212,6 @@
     width: 50%;
     max-width: 250px;
   }
-  .Cards :global(.Item > input[type="checkbox"]) {
-    display: none;
-  }
   @media (min-width: 641px) and (max-width: 720px) {
     .CardHeader {
       top: 0;
@@ -214,7 +237,13 @@
 </style>
 
 <div class="CardHeader">
-  <SingleNotebookMenu bind:menuTabs shortId={notebook.shortId} />
+  <SingleNotebookMenu
+    bind:menuTabs
+    shortId={notebook.shortId}
+    endSelection={() => {
+      selecting = false;
+      clearSelected();
+    }} />
   <div>
     {#if menuTabs !== 'all'}
       <SortSelect {query} path={$page.path}>Sort By:</SortSelect>
@@ -224,7 +253,7 @@
       </SortSelectNotebooks>
     {/if}
   </div>
-  {#if menuTabs !== 'all' || menuTabs !== 'pages'}
+  {#if menuTabs === 'hide'}
     <section class="filter {filterOn ? 'active' : ''}" on:click={filter}>
       <p>Filter</p>
       <IcoFilter />
@@ -233,7 +262,7 @@
     <section class="EmptyFilter" />
   {/if}
 </div>
-{#if menuTabs !== 'all' || menuTabs !== 'pages'}
+{#if menuTabs !== 'all'}
   <section class="formFilter {filterOn ? 'active' : ''}">
     {#if menuTabs === 'notes'}
       <FilterNote />
@@ -249,16 +278,12 @@
   <div class="Cards">
     {#if Items[0]}
       {#each Items as item}
-        {#if item.type === 'Note'}
-          <NotesCard
-            note={item}
-            selecting={false}
-            selection={false}
-            selectAll={false} />
-        {:else if item.type && item.type !== 'Note'}
-          <Card {item} selecting={true} selection={false} selectAll={false} />
-        {:else if !item.type}
-          <PageCard {item} />
+        {#if item.body}
+          <NotesCard note={item} {selecting} {selection} selectAll={false} />
+        {:else if item.author}
+          <Card {item} {selecting} {selection} selectAll={false} />
+        {:else if item.notebookId}
+          <PageCard {item} {selecting} {selection} />
         {/if}
       {/each}
     {:else}
@@ -267,4 +292,14 @@
       </div>
     {/if}
   </div>
+{/if}
+{#if selecting && typeOfItem}
+  <NotebookItemsBulk
+    notebook={notebook.shortId}
+    {refresh}
+    {typeOfItem}
+    endSelection={() => {
+      selecting = false;
+      clearSelected();
+    }} />
 {/if}
