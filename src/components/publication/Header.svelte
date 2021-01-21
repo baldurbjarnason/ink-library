@@ -358,7 +358,7 @@
     <ul class="tabs">
       <li>
         <a
-          href="/library/all/all/{$page.params.publicationId}"
+          href="/sources/{$page.params.publicationId}"
           class="all-tab"
           class:selected={workspace === 'all'}>
           {#if workspace === 'all'}
@@ -370,7 +370,7 @@
       {#each usedWorkspaces as space}
         <li>
           <a
-            href="/library/{space}/all/{$page.params.publicationId}"
+            href="/sources/{$page.params.publicationId}"
             class="{space.split('_')[0].toLowerCase()}-tab"
             class:selected={workspace === space}>
             {#if workspace === space}

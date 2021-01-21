@@ -213,14 +213,14 @@
 </style>
 
 <div class="Item" class:selecting class:selected>
-  <a href={`/library/all/all/${item.shortId}`} class="Overlay">_</a>
+  <a href={`/sources/${item.shortId}`} class="Overlay">_</a>
   <div class="Image">
     <img
       src={cover.href ? cover.href : `/img/placeholder-cover.jpg`}
       alt="Cover for {item.name}" />
   </div>
   <div class="Name">
-    <a href={`/library/all/all/${item.shortId}`} class="Overlay">_</a>
+    <a href={`/sources/${item.shortId}`} class="Overlay">_</a>
     <h5 class="title">{item.name}</h5>
     <div class="Authors">
       {#each item.author as author, i}

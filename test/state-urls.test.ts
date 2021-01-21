@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import {sourceURL$, chapterURL$, libraryURL$, noteURL$, notebookURL$, notebooksURL$, notesURL$, readerURL$, tagsURL$} from '../state/state-urls'
+import {sourceURL$, chapterURL$, libraryURL$, noteURL$, sourceNotesURL$, notebookURL$, notebooksURL$, notesURL$, readerURL$, tagsURL$} from '../state/state-urls'
 
 it('Sources URL loads when in source', (done) => {
   expect(sourceURL$.subscribe).to.be.a('function')
@@ -8,6 +8,22 @@ it('Sources URL loads when in source', (done) => {
     done()
   }})
   document.dispatchEvent(new CustomEvent('synthetic-page-load', {detail: {path: "/sources/id-12345", params: {id: "id-12345"}}}))
+  subscription.unsubscribe()
+})
+it('Sources Notes URL loads when in source', (done) => {
+  expect(sourceNotesURL$.subscribe).to.be.a('function')
+  let called = 0
+  const subscription = sourceNotesURL$.subscribe({next (result) {
+    called = called + 1
+    if (called === 1) {
+      expect(result).to.equal("/api/notes?source=id-12345&limit=100")
+    } else if (called === 2) {
+      expect(result).to.be.null
+      done()
+    }
+  }})
+  document.dispatchEvent(new CustomEvent('synthetic-page-load', {detail: {path: "/sources/id-12345", params: {id: "id-12345"}}}))
+  document.dispatchEvent(new CustomEvent('synthetic-page-load', {detail: {path: "/notes/id-12345", params: {id: "id-12345"}}}))
   subscription.unsubscribe()
 })
 

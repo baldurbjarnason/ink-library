@@ -11,13 +11,13 @@
   import FlagUrgent from "../../img/FlagUrgent.svelte";
   import NavSource from "../../img/NavSource.svelte";
 
-  import { tags } from "../../../stores";
+  // import { tags } from "../../../stores";
   import Highlight from "../../notes/Highlight.svelte";
   import NoteEditor from "../../widgets/NoteEditor.svelte";
   import { getToken } from "../../../getToken";
   import Button from "../../widgets/Button.svelte";
-  import { refresh } from "../../../stores/utilities/refresh.js";
-  import { noteStore } from "../../../stores/utilities/noteStore.js";
+  // import { refresh } from "../../../stores/utilities/refresh.js";
+  // import { noteStore } from "../../../stores/utilities/noteStore.js";
   export let note = { body: [], source: { name: "" } };
   export let stores = {};
   let store;

@@ -1,34 +1,35 @@
 <script>
-  import FlagFurtherRead from "../img/FlagFurtherRead.svelte";
-  import FlagIdea from "../img/FlagIdea.svelte";
-  import FlagImportant from "../img/FlagImportant.svelte";
-  import FlagImpTerm from "../img/FlagImpTerm.svelte";
-  import FlagQuestion from "../img/FlagQuestion.svelte";
-  import FlagReference from "../img/FlagReference.svelte";
-  import FlagRevisit from "../img/FlagRevisit.svelte";
-  import FlagToDo from "../img/FlagToDo.svelte";
-  import FlagUrgent from "../img/FlagUrgent.svelte";
-  import NavSource from "../img/NavSource.svelte";
-  import { page, addSelected, removeSelected } from "../../stores";
-  export let selecting;
-  export let selection = function() {};
+  // This needs a store for the hover over highlight event.
+  import FlagFurtherRead from "../../img/FlagFurtherRead.svelte";
+  import FlagIdea from "../../img/FlagIdea.svelte";
+  import FlagImportant from "../../img/FlagImportant.svelte";
+  import FlagImpTerm from "../../img/FlagImpTerm.svelte";
+  import FlagQuestion from "../../img/FlagQuestion.svelte";
+  import FlagReference from "../../img/FlagReference.svelte";
+  import FlagRevisit from "../../img/FlagRevisit.svelte";
+  import FlagToDo from "../../img/FlagToDo.svelte";
+  import FlagUrgent from "../../img/FlagUrgent.svelte";
+
+  import NavSource from "../../img/NavSource.svelte";
+  import { noteStore } from "../../../stores/utilities/noteStore.js";
   export let note = {};
-  export let selectAll;
-
-  let selected = false;
-
-  let noted, highlighed;
-  $: if (note && note.body && note.body[0]) {
-    noted = note.body.find((item) => item.motivation === "commenting");
-    highlighed = note.body.find((item) => item.motivation === "highlighting");
+  export let source
+  let title;
+  $: if (source) {
+    title = source.name;
   }
-
-  $: flags = note.tags
-    ? note.tags.filter((flag) => !flag.name.startsWith("colour"))
-    : "";
-  $: colour = note.tags
-    ? note.tags.find((flag) => flag.name.startsWith("colour"))
-    : "";
+  let store;
+  $: if (note && note.shortId && !store) {
+    store = noteStore(note);
+  }
+  let noted, highlighted, flags, colours, annotation;
+  $: if (store) {
+    noted = store.noted;
+    highlighted = store.highlighted;
+    flags = store.flags;
+    colours = store.colours;
+    annotation = store.annotation;
+  }
 
   function assignIco(icon) {
     switch (icon) {
@@ -52,32 +53,10 @@
         return FlagUrgent;
     }
   }
-
-  $: pagination =
-    $page.query && $page.query.page
-      ? `/notes/all/all/${note.shortId}?${new URLSearchParams({
-          page: $page.query.page,
-        }).toString()}`
-      : false;
-
-  $: if (!selecting && selected) selected = false;
-  $: if (selected && note.id) addSelected(note);
-  else removeSelected(note);
-
-  $: if (selectAll) {
-    selected = true;
-    selection();
-  }
-
-  $: selectable =
-    $page.path === "/notes/all/all" || $page.path === "/notes/all/all/"
-      ? true
-      : false;
-  $: console.log(note)
 </script>
 
 <style>
-  .Item * {
+  .NoteItem * {
     margin: 0;
     font-weight: 500;
   }
@@ -86,73 +65,12 @@
     border-radius: 20px 20px 0 0;
     padding: 16px;
     display: grid;
-    grid-gap: 19px;
+    grid-gap: 0.5rem;
     /*grid-template-rows: auto 1fr auto;*/
     grid-template-rows: 1fr;
-    height: 200px;
-    position: relative;
   }
   .Top.two {
     grid-template-rows: auto 1fr;
-  }
-  /* -------------- Input -------------- */
-  .BulkSelector {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 40px;
-    height: 40px;
-    -webkit-appearance: none;
-    outline: none;
-    cursor: pointer;
-  }
-  .BulkSelector::before,
-  .BulkSelector::after {
-    content: "";
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    border-radius: 50%;
-    position: absolute;
-    transition: all 0.25s ease-out;
-  }
-  .BulkSelector::before {
-    width: 14px;
-    height: 14px;
-    border: 1px solid #888888;
-    background: #ffffff;
-  }
-  .BulkSelector::after {
-    width: 8px;
-    height: 8px;
-    background: transparent;
-  }
-  .BulkSelector:checked::after {
-    background: #888888;
-  }
-  .colour1 .BulkSelector::before {
-    border: 1px solid #fea95b;
-  }
-  .colour2 .BulkSelector::before {
-    border: 1px solid #ff8ebe;
-  }
-  .colour3 .BulkSelector::before {
-    border: 1px solid #57cfea;
-  }
-  .colour4 .BulkSelector::before {
-    border: 1px solid #81d173;
-  }
-  .colour1 .BulkSelector:checked::after {
-    background: #fea95b;
-  }
-  .colour2 .BulkSelector:checked::after {
-    background: #ff8ebe;
-  }
-  .colour3 .BulkSelector:checked::after {
-    background: #57cfea;
-  }
-  .colour4 .BulkSelector:checked::after {
-    background: #81d173;
   }
   /* -------------- Highlight -------------- */
   header {
@@ -182,13 +100,10 @@
     line-height: 0.9rem;
     color: #333333;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 2;
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-  }
-  .noNote {
-    -webkit-line-clamp: 8;
   }
   .Source {
     display: grid;
@@ -296,24 +211,25 @@
     margin-right: 3px;
     height: 16px;
   }
+
   /* ------------ No colour ------------ */
-  .Item .Top {
+  .NoteItem .Top {
     border: 1px solid #cccccc;
     border-bottom: none;
   }
-  .Item header .column {
+  .NoteItem header .column {
     background: #999999;
   }
-  .Item .Tags li {
+  .NoteItem .Tags li {
     background: #f6f6f6;
   }
-  .Item .Bottom {
+  .NoteItem .Bottom {
     border: 1px solid #cccccc;
     border-top: 1px solid #dddddd;
     background: #f6f6f6;
   }
-  .Item .Tags p,
-  .Item .Bottom * {
+  .NoteItem .Tags p,
+  .NoteItem .Bottom * {
     color: #999999;
   }
   /* ------------ Colour 1 ------------ */
@@ -398,78 +314,77 @@
   }
 </style>
 
-<div
-  class="Item {colour ? colour.name.replace(' ', '') : ''}"
-  class:Selected={note.selected}>
-  <div class="Top {note.document || highlighed || note.source ? 'two' : ''}">
-    {#if selectable}
-      <input
-        class="BulkSelector"
-        type="checkbox"
-        bind:checked={selected}
-        on:click={() => selection()} />
-    {/if}
-    {#if note.document || highlighed || note.source}
-      <header>
-        <div class="column" />
-        <div class="info">
-          {#if highlighed}
+{#if $annotation}
+
+  <div
+    class="NoteItem {$colours ? $colours[0].name.replace(' ', '') : ''}"
+    class:Selected={$annotation.selected}>
+    <div
+      class="Top {$annotation.document || $highlighted || $annotation.sourceId ? 'two' : ''}">
+      {#if $annotation.document || $highlighted || $annotation.source}
+        <header>
+          <div class="column" />
+          <div class="info">
+            <!-- {#if note.target.source}
             <a
-              class="Highlight {noted && noted.content ? '' : 'noNote'}"
-              href={`/target${note.target.source}`}>
-              <!--{@html highlighed.content}-->
-              <p>{note.target.selector.exact}</p>
+              href="{window.location.pathname.replace('notes', 'library')}{note.target.source}">
+              <p class="Page">Page</p>
             </a>
-          {/if}
-          {#if note.source && note.source.name}
-            <a href={`/sources/${note.source.shortId}`} class="Source">
-              <NavSource />
-              <p>{note.source.name}</p>
-            </a>
-          {/if}
-        </div>
-      </header>
-    {/if}
-    <a
-      class="Note"
-      href={pagination ? pagination : `/notes/all/all/${note.shortId}`}>
-      {#if noted}
-        {#if !noted.content.startsWith('<p>') || !noted.content.startsWith('<span>')}
-          <p>
-            {@html noted.content}
-          </p>
-        {:else}
-          {@html noted.content}
-        {/if}
-      {:else}
-        <p class="empty">Add note...</p>
+          {/if} -->
+            {#if $highlighted}
+              <a
+                class="Highlight modal_link"
+                href="#id-{$annotation.shortId}"
+                rel="external">
+                {@html $highlighted.content || $highlighted.value}
+              </a>
+            {/if}
+            {#if title}
+              <a
+                href="#id-{$annotation.shortId}"
+                class="Source modal_link"
+                rel="external">
+                <NavSource />
+                <p>{title}</p>
+              </a>
+            {/if}
+          </div>
+        </header>
       {/if}
-    </a>
-    <!-- Adjust "Top" div when tags will be implemented
+      <a
+        class="Note modal_link"
+        href="#id-{$annotation.shortId}"
+        rel="external">
+        {#if $noted}
+          {@html $noted.content || $noted.value}
+        {/if}
+      </a>
+      <!-- Adjust "Top" div when tags will be implemented
     <ul class="Tags">
       <li>
         <p>#tag</p>
       </li>
     </ul>-->
+    </div>
+    <div class="Bottom">
+      <ul class="Flags">
+        {#each $flags as flag}
+          <li>
+            <svelte:component this={assignIco(flag.name)} />
+            <p>{flag.name}</p>
+          </li>
+        {/each}
+      </ul>
+      <section>
+        <p>
+          <strong>Modified:</strong>
+          {new Date($annotation.updated).toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric'
+          })}
+        </p>
+      </section>
+    </div>
   </div>
-  <div class="Bottom">
-    <ul class="Flags">
-      {#each flags as flag}
-        <li>
-          <svelte:component this={assignIco(flag.name)} />
-          <p>{flag.name}</p>
-        </li>
-      {/each}
-    </ul>
-    <section>
-      <p>
-        <strong>Modified:</strong>
-        {new Date(note.updated).toLocaleString(undefined, {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-        })}
-      </p>
-    </section>
-  </div>
-</div>
+{/if}

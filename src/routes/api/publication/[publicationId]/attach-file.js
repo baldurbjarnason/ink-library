@@ -17,7 +17,7 @@ export async function post(req, res, next) {
   ];
   const body = {
     links,
-    json: { storageId: req.body.storageId }
+    json: { storageId: req.body.storageId, fileName: req.body.fileName }
   };
   try {
     const response = await got

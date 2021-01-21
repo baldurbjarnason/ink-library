@@ -11,11 +11,11 @@
 
 <script>
 	import { onMount } from 'svelte';
-  let State;
+  let Source;
 
   onMount(async () => {
-    const module = await import('./_State.svelte');
-    State = module.default;
+    const module = await import('./_Source.svelte');
+    Source = module.default;
   });
   // export let annotations = []
   // export let contents = {}
@@ -25,4 +25,4 @@
   // export let path = ""
 </script>
 
-<svelte:component this={State} />
+<svelte:component this={Source} />

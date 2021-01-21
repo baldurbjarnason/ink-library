@@ -1,9 +1,18 @@
-<script>
-  import ToC from "../source-sidebar/ToC.svelte";
-  export let chapter = { resource: {}}
-  export let base = ""
+<script lang="ts">
+  interface Chapter {
+    resource: any;
+    stylesheets?: Array<string>;
+    toc?: any;
+    book?: any;
+    contents?: string;
+  }
+  import Sidebar from "../source-sidebar/Sidebar.svelte";
+  import MarginNotes from "../source-margin/MarginNotes.svelte";
+  export let chapter: Chapter = { resource: {}}
   export let path = ""
-  // import SidebarNotes from "./SidebarNotes.svelte";
+  export let media = ""
+  export let sidebar
+  export let sourceNotes = {items: []}
   export let readerBody = null;
   export let hidden = false;
 </script>
@@ -15,6 +24,9 @@
     grid-template-columns: 0.4fr 1fr 0.4fr;
     padding-top: 2rem;
     padding-bottom: 2rem;
+  }
+  .Reader.noSidebar {
+    grid-template-columns: 1fr 0.4fr;
   }
   .Chapter {
     all: initial;
@@ -95,14 +107,14 @@
   {/if}
 </svelte:head>
 
-<div class="Reader" {hidden}>
-  <div class="LeftSidebar">
-    <ToC contents={chapter.toc} {base} {path} />
+<div class="Reader" {hidden} class:noSidebar={$sidebar.hidden}>
+  <div class="LeftSidebar" hidden={$sidebar.hidden}>
+    <Sidebar contents={chapter.toc} {path} {sidebar} {media} {sourceNotes} />
   </div>
   <div class="Body Chapter" id="reader-body" bind:this={readerBody}>
     {#if chapter}
       {@html chapter.contents}
     {/if}
   </div>
-  <!-- <SidebarNotes /> -->
+  <MarginNotes />
 </div>
