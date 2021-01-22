@@ -16,7 +16,7 @@ it('Sources Notes URL loads when in source', (done) => {
   const subscription = sourceNotesURL$.subscribe({next (result) {
     called = called + 1
     if (called === 1) {
-      expect(result).to.equal("/api/notes?source=id-12345&limit=100")
+      expect(result).to.equal("/api/notes?source=id-12345&limit=100&motivation=bookmarking")
     } else if (called === 2) {
       expect(result).to.be.null
       done()

@@ -1,10 +1,9 @@
 <script>
-  import AboutCard from "../AboutCard.svelte";
-  import DescriptionCard from "../DescriptionCard.svelte";
+  import AboutCard from "./About.svelte";
+  import DescriptionCard from "./Description.svelte";
   import InfoMenu from "./InfoMenu.svelte";
-  import RelatedSources from "../RelatedSources.svelte";
-  import Cover from "../Cover.svelte";
-  $: console.log(state)
+  import RelatedSources from "../../publication/RelatedSources.svelte";
+  import Cover from "../../publication/Cover.svelte";
   let state = "About";
   let navState = section => {
     state = section;

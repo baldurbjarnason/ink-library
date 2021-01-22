@@ -1,5 +1,4 @@
 <script>
-  export let id = "";
   let modal;
 </script>
 
@@ -10,14 +9,14 @@
     z-index: 1000;
   }
 
-  :global(.modal_screen) {
+  .Modal + :global(.modal_screen) {
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     bottom: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.125);
     display: none;
   }
   :global(.modal) {
@@ -30,20 +29,25 @@
     display: block;
   }
 
-  :global(.modal-open) {
+  :global(.Modal.modal-open) {
     z-index: 1001;
+    background: #fff;
     box-sizing: border-box;
     padding: 0;
-    top: 10vh;
-    left: 10vw;
-    height: 84vh;
-    width: 80vw;
+    top: calc(2.5rem + 1px);
+    left: 2.5vw;
+    height: 90vh;
+    width: 93vw;
+    overflow: auto;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    box-shadow: 0 9px 13px 0 #ccc;
   }
 
-  :global(.modal_close) {
+  .Modal :global(.modal_close) {
     position: absolute;
-    top: 2rem;
-  right: 1rem;
+    top: 1rem;
+    right: 1rem;
     border: none;
     cursor: pointer;
     background: transparent;
@@ -71,6 +75,6 @@
   }
 </style>
 
-<fg-modal id="id-{id}" bind:this={modal}>
+<fg-modal id="id-source-info" bind:this={modal} class="Modal">
   <slot {modal} />
 </fg-modal>
