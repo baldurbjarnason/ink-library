@@ -3,7 +3,7 @@
   import { writable } from 'svelte/store';
   import {title} from '../../../../stores/title.js'
   import {source$, chapter$, sourceNotes$} from '../../../../../state/state'
-  import Chapter from '../../../../components/source/source-reader/Chapter.svelte';
+  import Chapter from '../../../../components/source/source-chapter/Chapter.svelte';
   // import TitleBar from '../../../../components/source/source-titlebar/TitleBar.svelte';
   import InfoModal from '../../../../components/source/source-info/InfoModal.svelte';
   import ToolBar from '../../../../components/source/source-toolbar/ToolBar.svelte';

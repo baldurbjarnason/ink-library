@@ -116,5 +116,5 @@
       {@html chapter.contents}
     {/if}
   </div>
-  <MarginNotes />
+  <MarginNotes root={readerBody} />
 </div>

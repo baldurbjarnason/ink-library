@@ -3,7 +3,7 @@
   import { writable } from 'svelte/store';
   import {title} from '../../stores/title.js'
   import {source$, chapter$, sourceNotes$} from '../../../state/state'
-  import Chapter from './source-reader/Chapter.svelte';
+  import Chapter from './source-chapter/Chapter.svelte';
   // import TitleBar from '../../../../components/source/source-titlebar/TitleBar.svelte';
   import InfoModal from './source-info/InfoModal.svelte';
   import ToolBar from './source-toolbar/ToolBar.svelte';
@@ -177,7 +177,7 @@
     <InfoToolBar />
     <MainInfo />
   </InfoModal>
-  <ToolBar root={readerBody} {sidebar} />
+  <ToolBar {sidebar} />
   <Chapter chapter={$chapter$} sourceNotes={$sourceNotes$} path={$page.params.chapter.join("/")} bind:readerBody {sidebar} {media} />
     <!-- {#if $source$._processing}
       <ToolBar root={readerBody} hidden={true} />

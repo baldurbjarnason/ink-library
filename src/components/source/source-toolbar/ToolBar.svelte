@@ -1,30 +1,7 @@
 <script>
-    import {selection} from "../../../../state/selection.ts"
-  // import { highlightRange, updateHighlight } from "./toolbar/highlightRange.js";
-  // import { positionToAnnotation } from "../../publication/reader/toolbar/positionToAnnotation.js";
-  // import { saveNote } from "../../publication/reader/toolbar/saveNote.js";
-  // import { dialog } from "../../notes/NoteEditDialog.svelte";
   import CloseSidebar from '../../img/IcoCloseColumn.svelte';
-  import { onDestroy } from "svelte";
-  export let root = null;
   export let hidden = false;
   export let sidebar
-  const selection$ = selection();
-  $: if (root) {
-    root.addEventListener("click", handleClick, false);
-  }
-  function getId (id) {
-    const parts = id.split("/")
-    return parts[parts.length - 1]
-  }
-  function handleClick(event) {
-    if (event.target.matches("mark[data-annotation-id]")) {
-      document.getElementById(`id-${getId(event.target.dataset.annotationId)}`).open()
-    }
-  }
-  onDestroy(() => {
-    root.removeEventListener("click", handleClick)
-  })
 </script>
 
 <style>

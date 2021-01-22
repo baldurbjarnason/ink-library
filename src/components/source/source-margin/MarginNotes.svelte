@@ -4,6 +4,8 @@
   import {chapter$, source$} from "../../../../state/state.ts"
   import SidebarNoteModal from "./MarginNotesModal.svelte";
   import NoteEdit from "./MarginNoteEdit.svelte";
+  import HighlightButton from './HighlightButton.svelte'
+  export let root
   // import { publicationStores } from "../../../stores/utilities/publicationStores.js";
   const highlights$ = intersections("[data-annotation-id]")
   const topmost$ = topmost(highlights$, (entry) => {
@@ -32,8 +34,9 @@
   }
 </style>
 
-{#if $topmost$}
-  <div class="Root">
+<div class="Root">
+{#if root}
+    <HighlightButton {root} />
     {#if $topmost$}
       {#each Array.from($topmost$) as entry}
         <div
@@ -52,5 +55,5 @@
         {/each}
       {/if}
     </div>
-  </div>
 {/if}
+</div>
