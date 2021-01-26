@@ -38,8 +38,8 @@
     const x = parent.getStartPositionOfChar(parent.textContent.indexOf(span.textContent)).x
     rect.setAttributeNS(null, "x", x - 5)
     rect.setAttributeNS(null, "y", box.y - 5)
-    rect.setAttributeNS(null, "width", width + 10)
-    rect.setAttributeNS(null, "height", box.height + 10)
+    rect.setAttributeNS(null, "width", width)
+    rect.setAttributeNS(null, "height", box.height)
     rect.classList.add("Highlight");
     rect.classList.add("Colour1");
     parent.insertAdjacentElement("beforebegin", rect);
@@ -148,5 +148,5 @@
       {@html chapter.contents}
     {/if}
   </div>
-  <MarginNotes root={readerBody} />
+  <MarginNotes root={readerBody} bookmarks={sourceNotes} />
 </div>

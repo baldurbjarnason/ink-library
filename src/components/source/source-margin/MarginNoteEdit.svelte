@@ -77,7 +77,7 @@
     }
   }
   function updateHighlight(id, colour) {
-    console.log(colour);
+    // console.log(colour);
     document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
       node.classList.forEach(token => {
         if (token.startsWith("Colour")) {

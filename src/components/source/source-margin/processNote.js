@@ -8,7 +8,7 @@ export function getNoted (note) {
 }
 
 export function getHighlighted (note) {
-  console.log(note)
+  // console.log(note)
   return [].concat(note.body).find(item => {
     return (
       item.motivation === "highlighting" || item.purpose === "highlighting"
