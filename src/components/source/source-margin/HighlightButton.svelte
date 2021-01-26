@@ -28,7 +28,7 @@ function getId (id) {
   return parts[parts.length - 1]
 }
 function handleClick(event) {
-  if (event.target.matches("mark[data-annotation-id]")) {
+  if (event.target.matches("mark[data-annotation-id]") || event.target.matches("tspan[data-annotation-id]")) {
     document.getElementById(`id-${getId(event.target.dataset.annotationId)}`).open()
   }
 }
@@ -115,15 +115,20 @@ onDestroy(() => {
       style={getStyle(positions)}
       on:click={async () => {
         if (range && root.contains(range.commonAncestorContainer)) {
-          const positions = highlightRange(range, root);
-          let path;
-          path = $chapter$.resource.url.replace('.json', '');
-          const annotation = positionToAnnotation(positions, root, $source$, `/${$source$.shortId}/${path}`);
-          const saved = await saveNote(annotation);
-          
-          refresh($chapterURL$);
-          updateHighlight(positions.tempId, saved.id);
-          window.getSelection().removeAllRanges();
+          try {
+            const positions = highlightRange(range, root);
+            let path;
+            path = $chapter$.resource.url.replace('.json', '');
+            const annotation = positionToAnnotation(positions, root, $source$, `/${$source$.shortId}/${path}`);
+            const saved = await saveNote(annotation);
+            refresh($chapterURL$);
+            // Add a refresh annotation that temporarily adds the new annotation to the annotations collection.
+            // Also render PDF highlights locally. Keep the tspan matching. Drop the rect creation.
+            updateHighlight(positions.tempId, saved.id);
+            window.getSelection().collapseToStart()
+          } catch (err) {
+            console.error(err)
+          }
         }
       }}>
       <svg

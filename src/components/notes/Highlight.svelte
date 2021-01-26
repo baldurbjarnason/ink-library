@@ -29,5 +29,5 @@
 </style>
 
 <blockquote class:edit class={colour}>
-  {@html body.content}
+  {@html body.content || body.value}
 </blockquote>
