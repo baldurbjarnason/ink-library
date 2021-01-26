@@ -15,7 +15,7 @@
 
       if (entries.length !== 0) {
         const body = Object.fromEntries(entries);
-        console.log(entries, body);
+        // console.log(entries, body);
         let inLanguage = [];
         const newEntries = {};
         for (const prop in body) {
@@ -41,7 +41,7 @@
         //body.author = author;
         //body.inLanguage = inLanguage;
         const pub = Object.assign({}, $source$, body, newEntries);
-        console.log(pub);
+        // console.log(pub);
 
         await window.fetch(`/api/publication/${$source$.shortId}`, {
           method: "PUT",

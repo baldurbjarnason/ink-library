@@ -2,7 +2,8 @@
   import { afterUpdate, setContext } from "svelte";
   import { writable } from 'svelte/store';
   import {title} from '../../stores/title.js'
-  import {source$, chapter$, sourceNotes$} from '../../../state/state'
+  import {source$, chapter$} from '../../../state/state'
+  import {bookmarks$} from '../../../state/models/Bookmark'
   import Chapter from './source-chapter/Chapter.svelte';
   // import TitleBar from '../../../../components/source/source-titlebar/TitleBar.svelte';
   import InfoModal from './source-info/InfoModal.svelte';
@@ -34,6 +35,10 @@
     return `sources/${$page.params.id}/${$page.params.storage}/${path}`
   }
   setContext("url", url)
+  function current (path) {
+    return `sources/${$page.params.id}/${$page.params.storage}/${$page.params.chapter.join("/")}`
+  }
+  setContext("current", current)
   const sidebar = writable({
     tab: "toc",
     hidden: false
@@ -178,7 +183,7 @@
     <MainInfo />
   </InfoModal>
   <ToolBar {sidebar} />
-  <Chapter chapter={$chapter$} sourceNotes={$sourceNotes$} path={$page.params.chapter.join("/")} bind:readerBody {sidebar} {media} />
+  <Chapter chapter={$chapter$} sourceNotes={$bookmarks$} path={$page.params.chapter.join("/")} bind:readerBody {sidebar} {media} />
     <!-- {#if $source$._processing}
       <ToolBar root={readerBody} hidden={true} />
       <div class="Processing">Processing...</div>

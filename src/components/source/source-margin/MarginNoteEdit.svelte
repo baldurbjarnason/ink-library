@@ -3,7 +3,7 @@
 
   import {assignIco} from "./assignIco.js"
   import NavSource from "../../img/NavSource.svelte";
-  import {tags$, getIdsFromNames} from "../../../../state/state.ts"
+  import {tags$, getIdsFromNames, source$} from "../../../../state/state.ts"
   import {refresh} from "../../../../state/refresh.ts"
   import {chapterURL$} from "../../../../state/state-urls.ts"
   // import { tags } from "../../../stores";
@@ -11,10 +11,10 @@
   import { getToken } from "../../../getToken";
   import Button from "../../widgets/Button.svelte";
   // import { refresh } from "../../../stores/utilities/refresh.js";
+  import {getNoted, getHighlighted, getFlags, getColours} from './processNote.js'
   import { noteStore } from "../../../stores/utilities/noteStore.js";
   import { writable } from "svelte/store";
   export let note = { body: [], source: { name: "" } };
-  export let stores = {};
   export let modal
   let store;
   $: if (note && note.shortId && !store) {
@@ -22,22 +22,20 @@
   }
   let selectedFlags;
   let comment, highlighted, flags, colours, annotation;
-  $: if (store) {
-    comment = store.noted;
-    highlighted = store.highlighted;
-    flags = store.flags;
-    colours = store.colours;
-    annotation = store.annotation;
-  }
+  comment = getNoted(note);
+  highlighted = getHighlighted(note);
+  flags = getFlags(note);
+  colours = getColours(note);
+  annotation = note;
   const plaintext = writable("");
-  $: if ($comment && ($comment.content || $comment.value)) {
+  $: if (comment && (comment.content || comment.value)) {
       window.fetch("/api/markdown", {
         method: "POST",
         headers: {
           "Content-Type": "text/html",
           "csrf-token": getToken()
         },
-        body: $comment.content || $comment.value
+        body: comment.content || comment.value
       }).then(response => {
         if (response.ok) {
           return response.json()
@@ -50,13 +48,13 @@
   } else {
     $plaintext = "";
   }
-  $: if ($flags && !selectedFlags) {
-    selectedFlags = $flags.map(flag => flag.name);
+  $: if (flags && !selectedFlags) {
+    selectedFlags = flags.map(flag => flag.name);
   }
   let highlight;
   let colour;
-  $: if ($colours && !colour) {
-    colour = $colours
+  $: if (colours && !colour) {
+    colour = colours
       .find(tag => tag.name.startsWith("colour"))
       .name.replace(" ", "");
   }
@@ -79,7 +77,7 @@
     }
   }
   function updateHighlight(id, colour) {
-    console.log(colour);
+    // console.log(colour);
     document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
       node.classList.forEach(token => {
         if (token.startsWith("Colour")) {
@@ -101,9 +99,9 @@
   }
   async function save() {
     // Get all tags, filter through them to match name of adding tags, add ids as prop
-    if (!$annotation.document) return;
+    if (!annotation.document) return;
     try {
-      const payload = Object.assign({}, $annotation);
+      const payload = Object.assign({}, annotation);
       payload.tags = getIdsFromNames([colour].concat(selectedFlags), $tags$)
         .map(id => {
           return { id: id };
@@ -136,7 +134,7 @@
           content: text
         });
       }
-      await fetch(`/api/note/${$annotation.shortId}`, {
+      await fetch(`/api/note/${annotation.shortId}`, {
         method: "PUT",
         credentials: "include",
         body: JSON.stringify(payload),
@@ -148,7 +146,7 @@
       });
       refresh($chapterURL$);
       updateHighlight(
-        $annotation.id,
+        annotation.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
       modal.close()
@@ -591,16 +589,16 @@
   }
 </style>
 
-{#if $annotation}
+{#if annotation}
   <div class="Item">
     <div class="Top">
 
       <div class="CardBottom">
         <span />
         <span class="Modified">
-          {#if $annotation && $annotation.updated}
+          {#if annotation && annotation.updated}
             <strong>Modified:</strong>
-            {new Date($annotation.updated).toLocaleString(undefined, {
+            {new Date(annotation.updated).toLocaleString(undefined, {
               year: 'numeric',
               month: 'numeric',
               day: 'numeric'
@@ -613,22 +611,22 @@
     <header class={colour}>
       <div class="column" />
       <div class="info">
-        {#if $annotation.document}
-          <a href="sources{$annotation.document}">
+        {#if annotation.document}
+          <a href="sources{annotation.document}">
             <p class="Page">Page</p>
           </a>
         {/if}
-        {#if $highlighted}
-          <a class="Highlight" href="sources{$annotation.document}">
-            <Highlight body={$highlighted} edit={true} {colour} />
+        {#if highlighted}
+          <a class="Highlight" href="sources{annotation.document}">
+            <Highlight body={highlighted} edit={true} {colour} />
           </a>
         {/if}
-        {#if stores.$publication}
+        {#if $source$}
           <a
-            href="sources/{stores.$publication.shortId}"
+            href="sources/{$source$.shortId}"
             class="Source">
             <NavSource />
-            <p>{stores.$publication.name}</p>
+            <p>{$source$.name}</p>
           </a>
         {/if}
       </div>
@@ -657,7 +655,7 @@
       </div>
       
       <div class="flags {colour}">
-        {#if $annotation.tags && selectedFlags}
+        {#if annotation.tags && selectedFlags}
           {#each availableFlags as flag}
             <li>
               <input

@@ -4,7 +4,7 @@
   import InfoMenu from "./InfoMenu.svelte";
   import RelatedSources from "../RelatedSources.svelte";
   import Cover from "../Cover.svelte";
-  $: console.log(state)
+  // $: console.log(state)
   let state = "About";
   let navState = section => {
     state = section;

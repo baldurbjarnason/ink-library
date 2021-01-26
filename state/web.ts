@@ -50,7 +50,7 @@ export function get (path: string, config: WebStoreConfig = {}): Observable<any>
       if (response.ok) {
         return response.json();
       } else {
-        return of({ error: true, message: `Error ${response.status}` });
+        return of({ error: true, message: `Error ${response.status}`, status: response.status });
       }
     }),
     catchError(err => {

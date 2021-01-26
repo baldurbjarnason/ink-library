@@ -5,7 +5,9 @@
   import SidebarNoteModal from "./MarginNotesModal.svelte";
   import NoteEdit from "./MarginNoteEdit.svelte";
   import HighlightButton from './HighlightButton.svelte'
+  import Bookmarks from "./Bookmarks.svelte"
   export let root
+  export let bookmarks
   // import { publicationStores } from "../../../stores/utilities/publicationStores.js";
   const highlights$ = intersections("[data-annotation-id]")
   const topmost$ = topmost(highlights$, (entry) => {
@@ -35,6 +37,7 @@
 </style>
 
 <div class="Root">
+  <Bookmarks {bookmarks} {root} />
 {#if root}
     <HighlightButton {root} />
     {#if $topmost$}

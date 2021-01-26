@@ -1,7 +1,7 @@
 <script>
   // This needs a store for the hover over highlight event.
   import {assignIco} from "./assignIco.js"
-  import NavSource from "../../img/NavSource.svelte";
+  // import NavSource from "../../img/NavSource.svelte";
   import {getNoted, getHighlighted, getFlags, getColours} from './processNote.js'
   export let note = {};
   export let source
