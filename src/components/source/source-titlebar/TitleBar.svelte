@@ -1,7 +1,6 @@
 <script>
   export let name = ""
   export let returnLink = "/library";
-  export let infoLink = ""
 </script>
 
 <style>
@@ -75,7 +74,7 @@
     </li>
     <li>
       <a
-        href={infoLink}>
+        href="#id-source-info">
         <svg
           width="16"
           height="16"
