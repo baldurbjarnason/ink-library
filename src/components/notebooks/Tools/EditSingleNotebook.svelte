@@ -220,7 +220,7 @@
   }
   input::placeholder,
   textarea::placeholder {
-    opacity: 0.6;
+    color: rgba(0, 34, 48, 0.3);
   }
   input {
     height: 60px;
@@ -232,22 +232,6 @@
     resize: none;
     padding: 20px;
     font-size: var(--reader-font-size, 0.85rem);
-  }
-  .colour1 input::placeholder,
-  .colour1 textarea::placeholder {
-    color: #a43939;
-  }
-  .colour2 input::placeholder,
-  .colour2 textarea::placeholder {
-    color: #6f4c9b;
-  }
-  .colour3 input::placeholder,
-  .colour3 textarea::placeholder {
-    color: #8f7000;
-  }
-  .colour4 input::placeholder,
-  .colour4 textarea::placeholder {
-    color: #4c9b92;
   }
   /* ------ Footer btns ------ */
   :global(.Button) {
