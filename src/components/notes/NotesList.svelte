@@ -15,7 +15,8 @@
 
   $: if ($notes) items = $notes.items;
   $: query = Object.assign({}, $page.query) || "";
-  $: if ((query.notebook || query.flag) && !clicked) filterOn = true;
+  $: if ((query.notebook || query.flag || query.colour) && !clicked)
+    filterOn = true;
 
   let filter = () => {
     filterOn = !filterOn;
@@ -59,6 +60,7 @@
     padding: calc(var(--base) * 2);
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-gap: var(--base);
+    z-index: 0;
     grid-auto-rows: max-content;
   }
   .CardHeader {
@@ -136,6 +138,7 @@
     position: relative;
     position: relative;
     padding: 0 40px;
+    z-index: 1;
     transition: all 0.25s ease-out;
   }
   .formFilter.active {

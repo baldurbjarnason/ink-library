@@ -15,9 +15,10 @@
       "blockquote",
       "img",
       "pre",
-      "code"
+      "code",
+      "br",
     ],
-    FORBID_ATTR: ["style"]
+    FORBID_ATTR: ["style"],
   };
   export let html = "";
   export let richtext = "";

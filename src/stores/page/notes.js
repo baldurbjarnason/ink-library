@@ -11,7 +11,7 @@ export const pageNotes = derived(
   ([$page, $refreshPageNotes, $searchPageNotes], set) => {
     if (!process.browser) return;
     if (!$page.path || !$page.path.startsWith("/pages/")) return;
-    if ($page.query.returnTo) return;
+    if ($page.query.returnTo || !$page.query.notebook) return;
     set({ type: "loading", items: [] });
     const query = Object.assign({}, $page.query);
 
@@ -21,12 +21,9 @@ export const pageNotes = derived(
       query.search = $page.query.search;
     }
 
-    let url;
-    if (query) {
-      url = `/api/notes?${new URLSearchParams(query).toString()}`;
-    } else {
-      url = `/api/notes`;
-    }
+    const url = query
+      ? `/api/notes?${new URLSearchParams(query).toString()}`
+      : "/api/notes";
 
     return fetch(url)
       .then((lib) => {

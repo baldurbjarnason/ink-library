@@ -35,7 +35,7 @@
   }
 
   let itemType = "source";
-  let itemState = "existent";
+  let itemState = "existing";
 
   let foundItems = [];
   $: foundItems =
@@ -352,7 +352,7 @@
     out:send|local={{ key: 'new-box' }}
     in:receive|local={{ key: 'new-box' }}>
     <TopMenu {menu} {itemType} {itemState} />
-    {#if itemState === 'existent'}
+    {#if itemState === 'existing'}
       <div class="searchItems">
         <svelte:component this={searchTool(itemType)} />
         {#if addItem}
@@ -363,9 +363,11 @@
               <Loader />
             {:else}
               {#each foundItems as item}
-                {#if !notebook[`${itemType}s`].find((element) => {
-                  if (element.shortId === item.shortId) return true;
-                })}
+                {#if notebook[`${itemType}s`] && !notebook[`${itemType}s`].find(
+                    (element) => {
+                      if (element.shortId === item.shortId) return true;
+                    }
+                  )}
                   <NotesFound {item} {addThis} {itemType} />
                 {/if}
               {/each}

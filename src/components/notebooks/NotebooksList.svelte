@@ -62,6 +62,7 @@
     padding: calc(var(--base) * 2);
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-gap: var(--base);
+    z-index: 0;
     grid-auto-rows: max-content;
   }
   .CardHeader {
@@ -74,7 +75,6 @@
     z-index: 2;
     padding: 20px 40px 10px;
     border-bottom-right-radius: 50px;
-
     -webkit-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
@@ -139,6 +139,7 @@
     position: relative;
     position: relative;
     padding: 0 40px;
+    z-index: 1;
     transition: all 0.25s ease-out;
   }
   .formFilter.active {
