@@ -2,7 +2,7 @@
   import { getContext } from "svelte";
   export let item
   let chapter
-  $: if ($item) {
+  $: if ($item && !$item.deleted) {
     chapter = $item.target.source.replace(`${$item.source.shortId}/`, "")
   } else {
     chapter = ""

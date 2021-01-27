@@ -1,6 +1,6 @@
 import {Base} from "./Base"
-import type { Observable } from "rxjs";
-import { map, distinctUntilChanged } from "rxjs/operators"
+import { map, distinctUntilChanged, startWith } from "rxjs/operators"
+import { of, combineLatest, BehaviorSubject, interval, Observable } from 'rxjs';
 import {page} from "../page"
 import {web} from '../web'
 import {refresh} from '../refresh'
@@ -16,11 +16,13 @@ const bookmarksURL$ = page().pipe(
   })
 )
 
+const latest$ = new BehaviorSubject(null)
 
-export const bookmarks$ = web(bookmarksURL$.pipe(distinctUntilChanged())).pipe(
-  map((result = {items: []}) => {
+
+export const bookmarks$ = combineLatest([web(bookmarksURL$.pipe(distinctUntilChanged())), latest$]).pipe(
+  map(([result = {items: []}, latest]) => {
     const {items} = result
-    return [].concat(items).map(item => new Bookmark(item))
+    return [].concat(items).concat(latest).filter(item => item).map(item => new Bookmark(item))
   })
 )
 
@@ -72,8 +74,10 @@ export class Bookmark extends Base {
       sourceId: source.id,
       target,
       body,
+      source,
       document: `${source.shortId}/${chapter.url}`
     }
+    latest$.next(json)
     const response = await window.fetch(`/api/notes`, {
       method: "POST",
       credentials: "include",
@@ -88,13 +92,13 @@ export class Bookmark extends Base {
       throw new Error(response.status + body)
     }
     const result = await response.json();
-    console.log(result)
     refresh(Bookmark._url)
     return new this(await this.afterCreate(result));
   }
 
 
   public async delete () {
+    this.next({deleted: true, target: {}})
     try {
       await fetch(
         this.subjectURL(),
@@ -109,7 +113,7 @@ export class Bookmark extends Base {
         }
       );
       refresh(Bookmark._url)
-      this.refresh()
+      // this.refresh()
     } catch (err) {
       console.error(err);
     }
