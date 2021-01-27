@@ -4,7 +4,6 @@
     error,
   } from "../stores";
   import {title} from "../stores/title.js"
-  import { publicationStores } from "../stores/utilities/publicationStores.js";
   import Nav from "../components/Nav.svelte";
   import SignIn from "../components/Auth/SignIn.svelte";
   import NoteEditDialog from "../components/notes/NoteEditDialog.svelte";
@@ -44,7 +43,6 @@
       // After the event has been dispatched you call refresh with the current path?
     })
   }
-  const { chapter } = publicationStores(page);
   $: pageWorkspace = $page.params && $page.params.pageId ? true : false;
 
   let menu = true;
@@ -199,8 +197,7 @@
   <main
     class="grid"
     class:publication
-    class:pageWorkspace
-    class:inChapter={$chapter.id}>
+    class:pageWorkspace>
     {#if !publication && !pageWorkspace}
       <Nav {params} />
     {/if}
