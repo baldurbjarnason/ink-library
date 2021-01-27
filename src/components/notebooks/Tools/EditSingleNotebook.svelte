@@ -451,7 +451,7 @@
   {#if modal}
     <div class="NotebookModal">
       <section>
-        <p>Assign a coverture for you notebook :</p>
+        <p>Select a cover for your notebook :</p>
         <ul>
           {#each coverImgs as img}
             <li
@@ -472,7 +472,7 @@
             modal = false;
             document.querySelector('nav').classList.remove('ntbkModal');
           }}>
-          Accept
+          Select
         </h5>
         <h5
           class="Closer"
@@ -510,10 +510,10 @@
         <input
           required
           type="text"
-          placeholder="Enter a new notebook tilte"
+          placeholder="Enter notebook title"
           bind:value={title} />
         <textarea
-          placeholder="Add a descruption to your notebook (optional)"
+          placeholder="Add a description (optional)"
           bind:value={description}
           maxlength="150" />
         <p class="Characters">{characters} characters left</p>
