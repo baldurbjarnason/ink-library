@@ -1,18 +1,10 @@
 <script>
   import IcoSearch from "../../img/IcoSearch.svelte";
-  import { notebookSearched, page, searchNotebooks } from "../../../stores";
+  import { searchPageNotes, page } from "../../../stores";
 
   let input;
-
   function loadSearch() {
-    if (
-      $page.path.startsWith("/notes/all/all") ||
-      $page.path.startsWith("/library/all/all")
-    ) {
-      $notebookSearched = input.value;
-    } else if ($page.path.startsWith("/notebooks")) {
-      $searchNotebooks = input.value;
-    }
+    if ($page.path.startsWith("/pages/")) $searchPageNotes = input.value;
   }
 </script>
 

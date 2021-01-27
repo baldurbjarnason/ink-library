@@ -11,7 +11,7 @@
     "EBook",
     "GraphicNovel",
     "Hardcover",
-    "Paperback"
+    "Paperback",
   ];
 
   let listArray =
@@ -37,7 +37,7 @@
     }
   };
 
-  let created = input => {
+  let created = (input) => {
     input.focus();
   };
 </script>
@@ -70,6 +70,7 @@
     opacity: 0;
     cursor: pointer;
     z-index: 2;
+    top: 0;
   }
   .inputList {
     display: none;
@@ -189,7 +190,7 @@
 {:else}
   <ul class="inputList">
     {#each listArray as lang}
-      {#if !itemValue.find(item => {
+      {#if !itemValue.find((item) => {
         return item === lang.code;
       })}
         <li on:click={updateList(lang.code, prop, prop.prop)}>

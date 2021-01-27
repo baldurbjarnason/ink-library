@@ -28,20 +28,23 @@
   // One benefit here is that we could then reuse some of these stores in projects that aren't client-side routed.
   if (process.browser) {
     page.subscribe(({ path, params, query }) => {
-      const loadEvent = new CustomEvent(
-          "synthetic-page-load", 
-          {
-            detail: {
-              path, params, query
-          },
-          bubbles: true,
-          cancelable: true
-        }
-      );
-      document.documentElement.dataset.page = JSON.stringify({ path, params, query })
+      const loadEvent = new CustomEvent("synthetic-page-load", {
+        detail: {
+          path,
+          params,
+          query,
+        },
+        bubbles: true,
+        cancelable: true,
+      });
+      document.documentElement.dataset.page = JSON.stringify({
+        path,
+        params,
+        query,
+      });
       document.dispatchEvent(loadEvent);
       // After the event has been dispatched you call refresh with the current path?
-    })
+    });
   }
   $: pageWorkspace = $page.params && $page.params.pageId ? true : false;
 
@@ -51,7 +54,10 @@
   } else {
     menu = false;
   }
-  $: if (($page.params && $page.params.publicationId) || $page.path.startsWith("/sources")) {
+  $: if (
+    ($page.params && $page.params.publicationId) ||
+    $page.path.startsWith("/sources")
+  ) {
     publication = true;
   } else {
     publication = false;

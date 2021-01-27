@@ -1,8 +1,5 @@
 <script>
-  import {
-    publication,
-    refreshPublication
-  } from "../../stores";
+  import { publication, refreshPublication } from "../../stores";
   import IcoEdit from "../img/IcoEdit.svelte";
   import ArrowDropDown from "../img/ArrowDropDown.svelte";
   import MetadataLists from "./SourceInfo/MetadataLists.svelte";
@@ -25,74 +22,81 @@
 
   $: metaProps = [
     {
+      type: "string",
+      req: true,
+      prop: "Name",
+      key: "name",
+      value: $publication.name,
+    },
+    {
       type: "list",
       req: true,
       prop: "Type",
       key: "type",
-      value: $publication.type
+      value: $publication.type,
     },
     {
       type: "array",
       req: true,
       prop: "Author(s)",
       key: "_author",
-      value: $publication.author
+      value: $publication.author,
     },
     {
       type: "array",
       req: true,
       prop: "Editor(s)",
       key: "_editor",
-      value: $publication.editor
+      value: $publication.editor,
     },
     {
       type: "number",
       req: true,
       prop: "Year of publication",
       key: "copyrightYear",
-      value: $publication.copyrightYear
+      value: $publication.copyrightYear,
     },
     {
       type: "number",
       req: true,
       prop: "Pages",
       key: "numberOfPages",
-      value: $publication.numberOfPages
+      value: $publication.numberOfPages,
     },
     {
       type: "array",
       req: true,
       prop: "Publisher(s)",
       key: "_publisher",
-      value: $publication.publisher
+      value: $publication.publisher,
     },
     {
       type: "string",
       req: false,
       prop: "Edition",
       key: "bookEdition",
-      value: $publication.bookEdition
+      value: $publication.bookEdition,
     },
     {
       type: "string",
       req: false,
       prop: "ISBN",
       key: "isbn",
-      value: $publication.isbn
+      value: $publication.isbn,
     },
     {
       type: "list",
       req: false,
       prop: "Format",
       key: "bookFormat",
-      value: $publication.bookFormat
+      value: $publication.bookFormat,
     },
     {
       type: "string",
       req: false,
       prop: "Genre",
       key: "genre",
-      value: $publication.genre
+      value: $publication.genre,
     },
     {
       type: "string",
@@ -106,36 +110,36 @@
       req: false,
       prop: "Language(s)",
       key: "inLanguage",
-      value: $publication.inLanguage ? $publication.inLanguage : []
+      value: $publication.inLanguage ? $publication.inLanguage : [],
     },
     {
       type: "array",
       req: false,
       prop: "Illustrator(s)",
       key: "_illustrator",
-      value: $publication.illustrator
+      value: $publication.illustrator,
     },
     {
       type: "array",
       req: false,
       prop: "Translator(s)",
       key: "_translator",
-      value: $publication.translator
+      value: $publication.translator,
     },
     {
       type: "array",
       req: false,
       prop: "Creator(s)",
       key: "_creator",
-      value: $publication.creator
+      value: $publication.creator,
     },
     {
       type: "number",
       req: false,
       prop: "Words count",
       key: "wordCount",
-      value: $publication.wordCount
-    }
+      value: $publication.wordCount,
+    },
   ];
 
   $: editing = undefined;
@@ -145,14 +149,14 @@
       newArr = [prop];
     } else {
       if (
-        !newArr.find(item => {
+        !newArr.find((item) => {
           if (item.key === prop.key) return item;
         })
       )
         newArr = [...newArr, prop];
     }
 
-    newArr.find(item => {
+    newArr.find((item) => {
       if (item.key === prop.key) item.value = sendVal;
     });
   };
@@ -161,7 +165,7 @@
     input.focus();
     if (Array.isArray(prop.value)) {
       sendValue = [];
-      prop.value.map(item => {
+      prop.value.map((item) => {
         sendValue.push(item.name);
       });
     } else {
@@ -313,6 +317,7 @@
     opacity: 0;
     cursor: pointer;
     z-index: 2;
+        top: 0;
   }
   .newProp:focus-within :global(ul),
   .newProp:active :global(ul),
@@ -406,10 +411,10 @@
             <strong>{prop.prop}</strong>
           </p>
           <p
-            class="input {newArr.find(item => item.key === prop.key) ? 'changed' : ''}"
+            class="input {newArr.find((item) => item.key === prop.key) ? 'changed' : ''}"
             aria-label="{prop.prop}...">
             {#if Array.isArray(prop.value)}
-              {prop.value.map(item => {
+              {prop.value.map((item) => {
                 return prop.key === 'inLanguage' ? ' ' + item : ' ' + item.name;
               })}
             {:else}{prop.value ? prop.value : ''}{/if}

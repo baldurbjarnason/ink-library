@@ -8,9 +8,7 @@
   import { send, receive } from "../../routes/_crossfade.js";
   import { tick } from "svelte";
   import { getToken } from "../../getToken";
-  import {
-    refreshNotebooks
-  } from "../../stores";
+  import { refreshNotebooks } from "../../stores";
 
   let colours = ["colour1", "colour2", "colour3", "colour4"];
   let modal = false;
@@ -238,7 +236,7 @@
   }
   input::placeholder,
   textarea::placeholder {
-    opacity: 0.6;
+    color: rgba(0, 34, 48, 0.3);
   }
   input {
     height: 60px;
@@ -250,22 +248,6 @@
     resize: none;
     padding: 20px;
     font-size: var(--reader-font-size, 0.85rem);
-  }
-  .colour1 input::placeholder,
-  .colour1 textarea::placeholder {
-    color: #a43939;
-  }
-  .colour2 input::placeholder,
-  .colour2 textarea::placeholder {
-    color: #6f4c9b;
-  }
-  .colour3 input::placeholder,
-  .colour3 textarea::placeholder {
-    color: #8f7000;
-  }
-  .colour4 input::placeholder,
-  .colour4 textarea::placeholder {
-    color: #4c9b92;
   }
   /* ------ Footer btns ------ */
   :global(.Button) {
@@ -460,7 +442,7 @@
   {#if modal}
     <div class="NotebookModal">
       <section>
-        <p>Assign a coverture for you notebook :</p>
+        <p>Select a cover for your notebook</p>
         <ul>
           {#each coverImgs as img}
             <li
@@ -481,7 +463,7 @@
             modal = false;
             document.querySelector('nav').classList.remove('ntbkModal');
           }}>
-          Accept
+          Select
         </h5>
         <h5
           class="Closer"
@@ -518,10 +500,10 @@
         </ul>
         <input
           type="text"
-          placeholder="Enter a new notebook tilte"
+          placeholder="Enter notebook title"
           bind:value={title} />
         <textarea
-          placeholder="Add a descruption to your notebook (optional)"
+          placeholder="Add a description (optional)"
           bind:value={description}
           maxlength="150" />
         <p class="Characters">{characters} characters left</p>

@@ -6,20 +6,15 @@
   export let itemType;
 
   let source, colour, highlight, comment, plainHighlight, plainComment;
-  if (itemType === "note") {
+  $: if (itemType === "note") {
     source = item.source;
 
     colour = item.tags.find((tag) => {
       if (tag.name.startsWith("colour")) return tag;
     });
 
-    highlight = item.body.find((note) => {
-      if (note.motivation === "highlighting") return note;
-    });
-
-    comment = item.body.find((note) => {
-      if (note.motivation === "commenting") return note;
-    });
+    highlight = item.body.find((note) => note.motivation === "highlighting");
+    comment = item.body.find((note) => note.motivation === "commenting");
 
     if (highlight)
       plainHighlight = new DOMParser()

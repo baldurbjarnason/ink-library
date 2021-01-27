@@ -11,12 +11,12 @@
   import FlagUrgent from "../../img/FlagUrgent.svelte";
 
   export let colour;
-  export let test;
+  export let assignFlags;
   export let selectedFlags;
   export let noteTest;
 
-  $: if (!selectedFlags && noteTest && noteTest.tags) test();
-  $: if ($page.params.id) if (noteTest.tags) test();
+  $: if (!selectedFlags && noteTest && noteTest.tags) assignFlags();
+  $: if ($page.params.id) if (noteTest.tags) assignFlags();
 
   let flags = [
     "important",
@@ -27,7 +27,7 @@
     "important term",
     "further reading",
     "urgent",
-    "reference"
+    "reference",
   ];
 
   function assignIco(icon) {

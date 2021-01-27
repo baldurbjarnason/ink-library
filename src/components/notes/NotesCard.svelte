@@ -9,7 +9,12 @@
   import FlagToDo from "../img/FlagToDo.svelte";
   import FlagUrgent from "../img/FlagUrgent.svelte";
   import NavSource from "../img/NavSource.svelte";
-  import { page, addSelected, removeSelected } from "../../stores";
+  import {
+    page,
+    addSelected,
+    removeSelected,
+    selectedItems,
+  } from "../../stores";
   export let selecting;
   export let selection = function() {};
   export let note = {};
@@ -69,11 +74,20 @@
     selection();
   }
 
-  $: selectable =
-    $page.path === "/notes/all/all" || $page.path === "/notes/all/all/"
-      ? true
-      : false;
-  $: console.log(note)
+  let selectable = true;
+  $: if ($selectedItems.size) {
+    $selectedItems.forEach((obj) => {
+      selectable =
+        !obj.noteContexts &&
+        ($page.path === "/notes/all/all" ||
+          $page.path === "/notes/all/all/" ||
+          $page.path.startsWith("/notebooks/"))
+          ? true
+          : false;
+    });
+  } else {
+    selectable = $page.path === "/" ? false : true;
+  }
 </script>
 
 <style>

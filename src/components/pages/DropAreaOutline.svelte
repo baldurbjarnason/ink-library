@@ -157,7 +157,7 @@
     list-style-type: decimal;
   }
   ul.ItemsList.bPoint {
-    list-style-type: outside;
+    list-style-type: disc;
   }
   li.Item {
     position: relative;
