@@ -125,7 +125,7 @@ class Modal extends window.HTMLElement {
 		this.classList.remove( "modal-open" );
 		this.closed = true;
 		self.removeInert();
-		var focusedElemModal = self.closest(this.focusedElem, ".modal");
+		var focusedElemModal = this.focusedElem && self.closest(this.focusedElem, ".modal");
 		if( focusedElemModal ){
 			focusedElemModal.open( true );
 		}
