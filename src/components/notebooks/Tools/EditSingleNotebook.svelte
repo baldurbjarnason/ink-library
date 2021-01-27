@@ -119,6 +119,9 @@
   .right {
     grid-template-rows: 15px 1fr;
   }
+  .right .cover {
+    cursor: pointer;
+  }
   .right .cover :global(svg) {
     float: left;
     transform: translateY(-4px);
@@ -503,7 +506,13 @@
         <p class="Characters">{characters} characters left</p>
       </div>
       <div class="right">
-        <div class="cover">
+        <div
+          class="cover"
+          on:click={() => {
+            modal = true;
+            selection = coverImg;
+            document.querySelector('nav').classList.add('ntbkModal');
+          }}>
           <IcoEdit />
           <h5>Cover image</h5>
         </div>
