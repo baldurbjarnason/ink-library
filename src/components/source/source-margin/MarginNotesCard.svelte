@@ -1,58 +1,23 @@
 <script>
   // This needs a store for the hover over highlight event.
-  import FlagFurtherRead from "../../img/FlagFurtherRead.svelte";
-  import FlagIdea from "../../img/FlagIdea.svelte";
-  import FlagImportant from "../../img/FlagImportant.svelte";
-  import FlagImpTerm from "../../img/FlagImpTerm.svelte";
-  import FlagQuestion from "../../img/FlagQuestion.svelte";
-  import FlagReference from "../../img/FlagReference.svelte";
-  import FlagRevisit from "../../img/FlagRevisit.svelte";
-  import FlagToDo from "../../img/FlagToDo.svelte";
-  import FlagUrgent from "../../img/FlagUrgent.svelte";
-
-  import NavSource from "../../img/NavSource.svelte";
-  import { noteStore } from "../../../stores/utilities/noteStore.js";
+  import {assignIco} from "./assignIco.js"
+  // import NavSource from "../../img/NavSource.svelte";
+  import {getNoted, getHighlighted, getFlags, getColours} from './processNote.js'
   export let note = {};
   export let source
   let title;
   $: if (source) {
     title = source.name;
   }
-  let store;
-  $: if (note && note.shortId && !store) {
-    store = noteStore(note);
-  }
   let noted, highlighted, flags, colours, annotation;
-  $: if (store) {
-    noted = store.noted;
-    highlighted = store.highlighted;
-    flags = store.flags;
-    colours = store.colours;
-    annotation = store.annotation;
+  $: if (note && note.shortId) {
+    noted = getNoted(note)
+    highlighted = getHighlighted(note)
+    flags = getFlags(note)
+    colours = getColours(note)
+    annotation = note
   }
 
-  function assignIco(icon) {
-    switch (icon) {
-      case "further reading":
-        return FlagFurtherRead;
-      case "idea":
-        return FlagIdea;
-      case "important":
-        return FlagImportant;
-      case "important term":
-        return FlagImpTerm;
-      case "question":
-        return FlagQuestion;
-      case "reference":
-        return FlagReference;
-      case "revisit":
-        return FlagRevisit;
-      case "to do":
-        return FlagToDo;
-      case "urgent":
-        return FlagUrgent;
-    }
-  }
 </script>
 
 <style>
@@ -116,12 +81,12 @@
     height: auto;
     color: var(--workspace-color);
   }
-  .Source[href],
+  
   .Highlight[href],
   .Note[href] {
     text-decoration: none;
   }
-  .Source[href]:hover,
+  
   .Highlight[href]:hover,
   .Note[href]:hover,
   .Page:hover {
@@ -314,14 +279,14 @@
   }
 </style>
 
-{#if $annotation}
+{#if annotation}
 
   <div
-    class="NoteItem {$colours ? $colours[0].name.replace(' ', '') : ''}"
-    class:Selected={$annotation.selected}>
+    class="NoteItem {colours ? colours[0].name.replace(' ', '') : ''}"
+    class:Selected={annotation.selected}>
     <div
-      class="Top {$annotation.document || $highlighted || $annotation.sourceId ? 'two' : ''}">
-      {#if $annotation.document || $highlighted || $annotation.source}
+      class="Top {annotation.document || highlighted || annotation.sourceId ? 'two' : ''}">
+      {#if annotation.document || highlighted || annotation.source}
         <header>
           <div class="column" />
           <div class="info">
@@ -331,21 +296,12 @@
               <p class="Page">Page</p>
             </a>
           {/if} -->
-            {#if $highlighted}
+            {#if highlighted}
               <a
                 class="Highlight modal_link"
-                href="#id-{$annotation.shortId}"
+                href="#id-{annotation.shortId}"
                 rel="external">
-                {@html $highlighted.content || $highlighted.value}
-              </a>
-            {/if}
-            {#if title}
-              <a
-                href="#id-{$annotation.shortId}"
-                class="Source modal_link"
-                rel="external">
-                <NavSource />
-                <p>{title}</p>
+                {@html highlighted.content || highlighted.value}
               </a>
             {/if}
           </div>
@@ -353,10 +309,10 @@
       {/if}
       <a
         class="Note modal_link"
-        href="#id-{$annotation.shortId}"
+        href="#id-{annotation.shortId}"
         rel="external">
-        {#if $noted}
-          {@html $noted.content || $noted.value}
+        {#if noted}
+          {@html noted.content || noted.value}
         {/if}
       </a>
       <!-- Adjust "Top" div when tags will be implemented
@@ -368,7 +324,7 @@
     </div>
     <div class="Bottom">
       <ul class="Flags">
-        {#each $flags as flag}
+        {#each flags as flag}
           <li>
             <svelte:component this={assignIco(flag.name)} />
             <p>{flag.name}</p>
@@ -378,7 +334,7 @@
       <section>
         <p>
           <strong>Modified:</strong>
-          {new Date($annotation.updated).toLocaleString(undefined, {
+          {new Date(annotation.updated).toLocaleString(undefined, {
             year: 'numeric',
             month: 'numeric',
             day: 'numeric'

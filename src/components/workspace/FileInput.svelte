@@ -179,7 +179,7 @@ Upload URL endpoint should take content type as a parameter and return a {public
   {#if original}
     <input type="hidden" name="uploadURL" value={original} />
   {/if}
-  <div class="input" class:done class:failed class:working>
+  <label class="input" class:done class:failed class:working>
     {#if file}{file.name}{:else}Upload a file{/if}
     <input
       type="file"
@@ -189,5 +189,5 @@ Upload URL endpoint should take content type as a parameter and return a {public
       autocomplete="off"
       class="visually-hidden"
       on:change={change} />
-  </div>
+  </label>
 </div>

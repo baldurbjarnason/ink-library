@@ -64,7 +64,7 @@ export const chapterURL$ = page().pipe(
 export const sourceNotesURL$ = page().pipe(
   map(({path, params}) => {
     if (path.startsWith('/sources') && params.id) {
-      return `/api/notes?source=${params.id}&limit=100`
+      return `/api/notes?source=${params.id}&limit=100&motivation=bookmarking`
     } else {
       return null
     }

@@ -1,29 +1,7 @@
 <script>
-  // import { selection } from "../../../stores/utilities/selection.js";
-  // import { highlightRange, updateHighlight } from "./toolbar/highlightRange.js";
-  // import { positionToAnnotation } from "./toolbar/positionToAnnotation.js";
-  // import { saveNote } from "./toolbar/saveNote.js";
-  // import { dialog } from "../../notes/NoteEditDialog.svelte";
   import CloseSidebar from '../../img/IcoCloseColumn.svelte';
-  import { onDestroy } from "svelte";
-  export let root = null;
   export let hidden = false;
   export let sidebar
-  // $: if (root) {
-  //   root.addEventListener("click", handleClick, false);
-  // }
-  // function handleClick(event) {
-  //   if (event.target.matches("mark[data-annotation-id]")) {
-  //     const refabEvent = Object.assign({}, event, {
-  //       currentTarget: event.target,
-  //       annotationId: event.target.dataset.annotationId
-  //     });
-  //     // dialog.show(refabEvent);
-  //   }
-  // }
-  // onDestroy(() => {
-  //   root.removeEventListener("click", handleClick)
-  // })
 </script>
 
 <style>
@@ -133,7 +111,7 @@
 </style>
 
 <nav class="ToolBar" {hidden} aria-labelledby="navigation-header">
-  <h2 class="visually-hidden" id="navigation-header">Footer</h2>
+  <h2 class="visually-hidden" id="navigation-header" data-ink-private>Toolbar</h2>
   <ol style="transform: translateX(-10px);">
     <li class="CloseSidebar" class:selected={$sidebar.hidden}><button class="Button" type="Button" aria-label="Hide left sidebar" on:click={() => {
       const {hidden, tab} = $sidebar

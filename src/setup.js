@@ -71,7 +71,7 @@ export function setup(sapper, options = {}) {
       secure: !dev,
       name: process.env.COOKIE_NAME || "__session",
       httpOnly: true,
-      sameSite: "lax"
+      sameSite: "none"
     }
   });
   app.use(express.urlencoded({ extended: true }));

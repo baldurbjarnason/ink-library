@@ -64,9 +64,9 @@ keyfile.json
 app-dev.yaml
 app.yaml
 app-backup.yaml
-state/*.js
+state/**/*.js
 test/*.test.js
-state/*.js.map
+state/**/*.js.map
 test/*.test.js.map
 test/components/**/*.js
 test/components/**/*.js.map

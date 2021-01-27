@@ -1,5 +1,13 @@
 <script>
+  import { getContext } from "svelte";
   export let item
+  let chapter
+  $: if ($item && !$item.deleted) {
+    chapter = $item.target.source.replace(`${$item.source.shortId}/`, "")
+  } else {
+    chapter = ""
+  }
+  const url = getContext("url")
 </script>
 
 <style>
@@ -20,11 +28,11 @@
 </style>
 
 <li>
-  <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="1.25" y="0.75" width="11.5" height="14.5" rx="1.25" stroke="currentColor" stroke-width="1.5"/>
-    <path d="M9.49994 1H10.9999V7.25C10.9999 7.66421 10.6642 8 10.2499 8C9.83573 8 9.49994 7.66421 9.49994 7.25V1Z" fill="currentColor"/>
-    <path d="M4.49994 1H5.99994V7.25C5.99994 7.66421 5.66415 8 5.24994 8C4.83573 8 4.49994 7.66421 4.49994 7.25V1Z" fill="currentColor"/>
-    <rect x="7.75677" y="3.74329" width="1.5" height="4.93031" rx="0.75" transform="rotate(45 7.75677 3.74329)" fill="currentColor"/>
-    <rect width="1.5" height="4.9404" rx="0.75" transform="matrix(-0.707107 0.707107 0.707107 0.707107 7.76141 3.73615)" fill="currentColor"/>
-    </svg> <span>{item.body[0].content}</span>
+  <svg width="17" height="17" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20.8067" y="9" width="1.5" height="16" rx="0.75" fill="currentColor"/>
+    <rect x="11.3067" y="9" width="1.5" height="16" rx="0.75" fill="currentColor"/>
+    <rect x="16.8033" y="18.4534" width="1.5" height="8.20707" rx="0.75" transform="rotate(45 16.8033 18.4534)" fill="currentColor"/>
+    <rect width="1.5" height="8.20556" rx="0.75" transform="matrix(-0.707107 0.707107 0.707107 0.707107 16.8067 18.45)" fill="currentColor"/>
+    <rect x="22.3067" y="9" width="1.5" height="11" rx="0.75" transform="rotate(90 22.3067 9)" fill="currentColor"/>
+    </svg> <a href="{url(chapter)}#{$item.target.selector.value}">{$item.body[0].value || $item.body[0].content}</a>
 </li>

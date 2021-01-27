@@ -72,7 +72,7 @@
 <nav class="ToC {contents.type}" aria-labelledby="toc-heading">
   {#if contents.type !== 'loading'}
     {#if contents.type === 'PDF'}
-      <h2 class="visually-hidden" id="toc-heading">{contents.heading || 'Table of Contents'}</h2>
+      <h2 class="visually-hidden" id="toc-heading" data-ink-private>{contents.heading || 'Table of Contents'}</h2>
       <ol>
         {#each contents.children as item}
           <ToCItemPaged {item} {media} {path} />

@@ -1,61 +1,74 @@
 <script>
   // This needs a reference to the fg-modal element
-  import FlagFurtherRead from "../../img/FlagFurtherRead.svelte";
-  import FlagIdea from "../../img/FlagIdea.svelte";
-  import FlagImportant from "../../img/FlagImportant.svelte";
-  import FlagImpTerm from "../../img/FlagImpTerm.svelte";
-  import FlagQuestion from "../../img/FlagQuestion.svelte";
-  import FlagReference from "../../img/FlagReference.svelte";
-  import FlagRevisit from "../../img/FlagRevisit.svelte";
-  import FlagToDo from "../../img/FlagToDo.svelte";
-  import FlagUrgent from "../../img/FlagUrgent.svelte";
-  import NavSource from "../../img/NavSource.svelte";
 
+  import {assignIco} from "./assignIco.js"
+  import NavSource from "../../img/NavSource.svelte";
+  import {tags$, getIdsFromNames, source$} from "../../../../state/state.ts"
+  import {refresh} from "../../../../state/refresh.ts"
+  import {chapterURL$} from "../../../../state/state-urls.ts"
   // import { tags } from "../../../stores";
   import Highlight from "../../notes/Highlight.svelte";
-  import NoteEditor from "../../widgets/NoteEditor.svelte";
   import { getToken } from "../../../getToken";
   import Button from "../../widgets/Button.svelte";
   // import { refresh } from "../../../stores/utilities/refresh.js";
-  // import { noteStore } from "../../../stores/utilities/noteStore.js";
+  import {getNoted, getHighlighted, getFlags, getColours} from './processNote.js'
+  import { noteStore } from "../../../stores/utilities/noteStore.js";
+  import { writable } from "svelte/store";
   export let note = { body: [], source: { name: "" } };
-  export let stores = {};
+  export let modal
   let store;
   $: if (note && note.shortId && !store) {
     store = noteStore(note);
   }
   let selectedFlags;
   let comment, highlighted, flags, colours, annotation;
-  $: if (store) {
-    comment = store.noted;
-    highlighted = store.highlighted;
-    flags = store.flags;
-    colours = store.colours;
-    annotation = store.annotation;
+  comment = getNoted(note);
+  highlighted = getHighlighted(note);
+  flags = getFlags(note);
+  colours = getColours(note);
+  annotation = note;
+  const plaintext = writable("");
+  $: if (comment && (comment.content || comment.value)) {
+      window.fetch("/api/markdown", {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/html",
+          "csrf-token": getToken()
+        },
+        body: comment.content || comment.value
+      }).then(response => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          return {content: ""}
+        }
+      }).then(json => {
+        $plaintext = json.content
+      })
+  } else {
+    $plaintext = "";
   }
-  $: if ($flags && !selectedFlags) {
-    selectedFlags = $flags.map(flag => flag.name);
+  $: if (flags && !selectedFlags) {
+    selectedFlags = flags.map(flag => flag.name);
   }
   let highlight;
   let colour;
-  $: if ($colours && !colour) {
-    colour = $colours
+  $: if (colours && !colour) {
+    colour = colours
       .find(tag => tag.name.startsWith("colour"))
       .name.replace(" ", "");
   }
-
   let availableColours;
-  $: availableColours = $tags.items
+  $: availableColours = [].concat($tags$)
     .filter(tag => tag.type == "flag" && tag.name.startsWith("colour"))
     .map(tag => tag.name.replace(" ", ""));
 
   let availableFlags = [];
-  $: if ($tags && $tags.items.length !== 0) {
-    availableFlags = $tags.items.filter(
+  $: if ($tags$ && $tags$.length !== 0) {
+    availableFlags = $tags$.filter(
       tag => tag.type === "flag" && !tag.name.startsWith("colour")
     );
   }
-  let text = "";
   function clean(obj) {
     for (var propName in obj) {
       if (obj[propName] === null || obj[propName] === undefined) {
@@ -64,7 +77,7 @@
     }
   }
   function updateHighlight(id, colour) {
-    console.log(colour);
+    // console.log(colour);
     document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
       node.classList.forEach(token => {
         if (token.startsWith("Colour")) {
@@ -86,14 +99,29 @@
   }
   async function save() {
     // Get all tags, filter through them to match name of adding tags, add ids as prop
-    if (!$annotation.document) return;
+    if (!annotation.document) return;
     try {
-      const payload = Object.assign({}, $annotation);
-      payload.tags = $tags
-        .getIds([colour.replace("colour", "colour ")].concat(selectedFlags))
+      const payload = Object.assign({}, annotation);
+      payload.tags = getIdsFromNames([colour].concat(selectedFlags), $tags$)
         .map(id => {
           return { id: id };
         });
+      const text = await window.fetch("/api/markdown", {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/markdown",
+          "csrf-token": getToken()
+        },
+        body: $plaintext
+      }).then(response => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          return {content: $plaintext}
+        }
+      }).then(json => {
+        return json.content
+      })
       if (payload.body.find(body => body.motivation === "commenting")) {
         const body = payload.body.find(
           body => body.motivation === "commenting"
@@ -106,7 +134,7 @@
           content: text
         });
       }
-      await fetch(`/api/note/${$annotation.shortId}`, {
+      await fetch(`/api/note/${annotation.shortId}`, {
         method: "PUT",
         credentials: "include",
         body: JSON.stringify(payload),
@@ -116,38 +144,17 @@
           "csrf-token": getToken()
         }
       });
-      refresh(`/api/note/${$annotation.shortId}`);
+      refresh($chapterURL$);
       updateHighlight(
-        $annotation.id,
+        annotation.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
+      modal.close()
     } catch (err) {
       console.error(err);
     }
   }
 
-  function assignIco(icon) {
-    switch (icon) {
-      case "further reading":
-        return FlagFurtherRead;
-      case "idea":
-        return FlagIdea;
-      case "important":
-        return FlagImportant;
-      case "important term":
-        return FlagImpTerm;
-      case "question":
-        return FlagQuestion;
-      case "reference":
-        return FlagReference;
-      case "revisit":
-        return FlagRevisit;
-      case "to do":
-        return FlagToDo;
-      case "urgent":
-        return FlagUrgent;
-    }
-  }
   /*
 
   function clickColour(c) {
@@ -178,6 +185,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 80vh;
+    overflow: auto;
   }
   section {
     display: table;
@@ -421,33 +430,34 @@
   .Editor :global(#sapper .ql-snow.ql-toolbar button) {
     margin-right: 10px !important;
   }
-  .Editor :global(.Editor) {
+  .Editor textarea {
     background: var(--main-background-color);
     display: grid;
     min-height: 30vh;
     border-radius: 10px 10px 0 0;
     margin-top: 20px;
+    width: 100%;
   }
-  .Editor.bigEditor :global(.Editor) {
+  .Editor.bigEditor textarea {
     min-height: 50vh;
   }
-  .Editor :global(.Editor) {
+  .Editor textarea {
     border: 2px solid #999999 !important;
     border-bottom: 0;
   }
-  .Editor.colour1 :global(.Editor) {
+  .Editor.colour1 textarea {
     border: 2px solid #fea95b !important;
     border-bottom: 0;
   }
-  .Editor.colour2 :global(.Editor) {
+  .Editor.colour2 textarea {
     border: 2px solid #ff8ebe !important;
     border-bottom: 0;
   }
-  .Editor.colour3 :global(.Editor) {
+  .Editor.colour3 textarea {
     border: 2px solid #6fe1fa !important;
     border-bottom: 0;
   }
-  .Editor.colour4 :global(.Editor) {
+  .Editor.colour4 textarea {
     border: 2px solid #9fe793 !important;
     border-bottom: 0;
   }
@@ -579,16 +589,16 @@
   }
 </style>
 
-{#if $annotation}
+{#if annotation}
   <div class="Item">
     <div class="Top">
 
       <div class="CardBottom">
         <span />
         <span class="Modified">
-          {#if $annotation && $annotation.updated}
+          {#if annotation && annotation.updated}
             <strong>Modified:</strong>
-            {new Date($annotation.updated).toLocaleString(undefined, {
+            {new Date(annotation.updated).toLocaleString(undefined, {
               year: 'numeric',
               month: 'numeric',
               day: 'numeric'
@@ -601,22 +611,22 @@
     <header class={colour}>
       <div class="column" />
       <div class="info">
-        {#if $annotation.document}
-          <a href="sources{$annotation.document}">
+        {#if annotation.document}
+          <a href="sources{annotation.document}">
             <p class="Page">Page</p>
           </a>
         {/if}
-        {#if $highlighted}
-          <a class="Highlight" href="sources{$annotation.document}">
-            <Highlight body={$highlighted} edit={true} {colour} />
+        {#if highlighted}
+          <a class="Highlight" href="sources{annotation.document}">
+            <Highlight body={highlighted} edit={true} {colour} />
           </a>
         {/if}
-        {#if stores.$publication}
+        {#if $source$}
           <a
-            href="sources/{stores.$publication.shortId}"
+            href="sources/{$source$.shortId}"
             class="Source">
             <NavSource />
-            <p>{stores.$publication.name}</p>
+            <p>{$source$.name}</p>
           </a>
         {/if}
       </div>
@@ -634,19 +644,18 @@
           </li>
         {/each}
       </ul>
-      {#if $comment.content || $comment.value}
-        <div class="Editor {colour} {!highlight ? 'bigEditor' : ''}">
-          <NoteEditor
-            html={$comment.content || $comment.value}
-            bind:richtext={text} />
-        </div>
-      {:else}
-        <div class="Editor {colour} {!highlight ? 'bigEditor' : ''}">
-          <NoteEditor html="" bind:richtext={text} />
-        </div>
-      {/if}
+      
+      <div class="Editor {colour} {!highlight ? 'bigEditor' : ''}">
+        <textarea
+          name="html"
+          id="html"
+          cols="40"
+          rows="10"
+          bind:value={$plaintext} />
+      </div>
+      
       <div class="flags {colour}">
-        {#if $annotation.tags && selectedFlags}
+        {#if annotation.tags && selectedFlags}
           {#each availableFlags as flag}
             <li>
               <input
