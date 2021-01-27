@@ -13,7 +13,7 @@
   } else {
     bookmarked = false
   }
-  $: console.log($bookmark, bookmarked)
+  // $: console.log($bookmark, bookmarked)
 </script>
 
 <style>
@@ -111,7 +111,7 @@ data-bookmark-id={$bookmark ? $bookmark.id : null} on:click={async () => {
     bookmarked = false
     await bookmark.delete()
   }
-  console.log(bookmark, $bookmark)
+  // console.log(bookmark, $bookmark)
 }}>
 
 <button

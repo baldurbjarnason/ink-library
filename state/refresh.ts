@@ -15,7 +15,6 @@ export function createRefresher () {
   )
 }
 export function refresh(path) {
-  console.log("refresh function called", path)
   const refreshPathEvent = new window.CustomEvent(
     "refresh-path", 
     {

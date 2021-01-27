@@ -74,7 +74,6 @@ export class Bookmark extends Base {
       body,
       document: `${source.shortId}/${chapter.url}`
     }
-    console.log(json)
     const response = await window.fetch(`/api/notes`, {
       method: "POST",
       credentials: "include",
@@ -89,8 +88,9 @@ export class Bookmark extends Base {
       throw new Error(response.status + body)
     }
     const result = await response.json();
+    console.log(result)
     refresh(Bookmark._url)
-    return new this(this.afterCreate(result));
+    return new this(await this.afterCreate(result));
   }
 
 
@@ -102,8 +102,8 @@ export class Bookmark extends Base {
           method: "DELETE",
           credentials: "include",
           headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
+            "Content-Type": "application/ld+json",
+            Accept: "application/ld+json",
             "csrf-token": getToken(),
           },
         }
