@@ -6,26 +6,6 @@ import {web} from '../web'
 import {refresh} from '../refresh'
 import { getToken } from "../../src/getToken";
 
-const bookmarksURL$ = page().pipe(
-  map(({path, params}) => {
-    if (path.startsWith('/sources') && params.id) {
-      return `/api/notes?source=${params.id}&limit=100&motivation=bookmarking`
-    } else {
-      return null
-    }
-  })
-)
-
-const latest$ = new BehaviorSubject(null)
-
-
-export const bookmarks$ = combineLatest([web(bookmarksURL$.pipe(distinctUntilChanged())), latest$]).pipe(
-  map(([result = {items: []}, latest]) => {
-    const {items} = result
-    return [].concat(items).concat(latest).filter(item => item).map(item => new Bookmark(item))
-  })
-)
-
 export class Bookmark extends Base {
   static collectionName = "notes"
   static _url : string
@@ -34,11 +14,16 @@ export class Bookmark extends Base {
   }
   static url (id?: string) {
     if (id) {
-      return `api/notes?source=${id}&limit=100&motivation=bookmarking`
+      return `/api/notes?source=${id}&limit=100&motivation=bookmarking`
     } else {
-      return `api/notes?limit=100&motivation=bookmarking`
+      return `/api/notes?limit=100&motivation=bookmarking`
     }
   }
+
+  static collection () {
+    return bookmarks$
+  }
+
   public target: any
   constructor (json) {
     super(json)
@@ -93,7 +78,7 @@ export class Bookmark extends Base {
     }
     const result = await response.json();
     refresh(Bookmark._url)
-    return new this(await this.afterCreate(result));
+    return new this(result);
   }
 
 
@@ -120,7 +105,31 @@ export class Bookmark extends Base {
   }
 }
 
+const bookmarksURL$ = page().pipe(
+  map(({path, params = {id: ""}}) => {
+    // if (path.startsWith('/sources') && params.id) {
+    //   return Bookmark.url(params.id)
+    // } else {
+    //   return Bookmark.url()
+    // }
+    return Bookmark.url(params.id)
+    
+  }),
+  startWith(Bookmark.url())
+)
+
+const latest$ = new BehaviorSubject(null)
+
+
+export const bookmarks$ = combineLatest([web(bookmarksURL$.pipe(distinctUntilChanged())), latest$]).pipe(
+  map(([result = {items: []}, latest]) => {
+    // console.log("bookmark$ ", result, latest)
+    const {items} = result
+    return [].concat(items).concat(latest).filter(item => item).map(item => new Bookmark(item))
+  })
+)
 
 bookmarksURL$.subscribe({next (url) {
+  // console.log("url ", url)
   Bookmark._url = url
 }})
