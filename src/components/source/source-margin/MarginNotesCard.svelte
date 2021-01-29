@@ -1,4 +1,5 @@
 <script>
+  import DOMPurify from 'dompurify';
   // This needs a store for the hover over highlight event.
   import {assignIco} from "./assignIco.js"
   // import NavSource from "../../img/NavSource.svelte";
@@ -17,7 +18,11 @@
     colours = getColours(note)
     annotation = note
   }
-
+  let clean = ""
+  $: if (highlighted && (highlighted.content || highlighted.value))  {
+    const fragment = DOMPurify.sanitize(highlighted.content || highlighted.value, {RETURN_DOM: true, RETURN_DOM_FRAGMENT: true});
+    clean = fragment.textContent.split(/\b/).slice(0, 30).join("")
+  }
 </script>
 
 <style>
@@ -301,7 +306,7 @@
                 class="Highlight modal_link"
                 href="#id-{annotation.shortId}"
                 rel="external">
-                {@html highlighted.content || highlighted.value}
+                {@html clean}
               </a>
             {/if}
           </div>
