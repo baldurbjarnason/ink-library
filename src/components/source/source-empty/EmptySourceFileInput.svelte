@@ -164,6 +164,9 @@
       font-size: 0.85rem;
     }
   }
+  label {
+    width: 100%;
+  }
 </style>
 
 <!-- This needs to react when changed and set the upload text to the file name. And when a file is selected it needs to fetch an upload url and upload the file. Once this is done we save the upload file url and the content type to hidden inputs.
