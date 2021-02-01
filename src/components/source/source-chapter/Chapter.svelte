@@ -93,6 +93,7 @@
     border: 1px solid #dddddd;
     display: block;
     max-height: inherit;
+    width: 100%;
   }
   .Chapter :global(ink-body#pdf-body h1),
   .Chapter :global(ink-body#pdf-body ink-page h2) {
