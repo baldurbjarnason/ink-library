@@ -305,7 +305,11 @@
               <a
                 class="Highlight modal_link"
                 href="#id-{annotation.shortId}"
-                rel="external">
+                rel="external" on:click={(event) => {
+                  if (!document.getElementById(`id-${annotation.shortId}`)) {
+                    event.preventDefault()
+                  }
+                }}>
                 {@html clean}
               </a>
             {/if}
@@ -315,7 +319,11 @@
       <a
         class="Note modal_link"
         href="#id-{annotation.shortId}"
-        rel="external">
+        rel="external" on:click={(event) => {
+          if (!document.getElementById(`id-${annotation.shortId}`)) {
+            event.preventDefault()
+          }
+        }}>
         {#if noted}
           {@html noted.content || noted.value}
         {/if}
