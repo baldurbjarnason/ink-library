@@ -1,8 +1,10 @@
 # example netlify.toml
 [build]
-  command = "npm run build"
+  command = "npm run build:netlify"
   functions = "functions"
   publish = "static"
+  environment = { NODE_ENV = "development", AWS_LAMBDA_JS_RUNTIME = "nodejs12.x" }
+
 
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
   ## Not needed for static site generators.
@@ -21,10 +23,14 @@
     from = "/*"
     to = "/.netlify/functions/sapper/:splat"
     status = 200
+[context.production]
+  NODE_ENV = "production"
 
   ## (optional) Settings for Netlify Dev
   ## https://github.com/netlify/cli/blob/master/docs/netlify-dev.md#project-detection
   [dev]
+    command = "npm run dev -- --build-dir __sapper__"
    publish = "static" # Folder with the static content for _redirect file
+   autoLaunch = false
 
   ## more info on configuring this file: https://www.netlify.com/docs/netlify-toml-reference/

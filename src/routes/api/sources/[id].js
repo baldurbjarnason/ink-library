@@ -5,12 +5,21 @@ const storage = new Storage();
 const path = require("path");
 
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  const auth = req.get("Authorization")
+  let token 
+  if (!req.user && auth) {
+    token = auth.replace("Bearer ", "")
+  } else if (!req.user || (req.user && !req.user.token)) {
+    return res.sendStatus(401);
+  } else {
+    token = req.user.token
+  }
   const url = `${process.env.API_SERVER}sources/${req.params.id}`;
+  console.log(token, url)
   try {
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`,
+        Authorization: `Bearer ${token}`,
       },
     }).json();
     response._inLanguage = [].concat(response.inLanguage).map((code) => {
@@ -26,7 +35,7 @@ export async function get(req, res, next) {
     } else if (response.json && response.json.storageId) {
       const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
       try {
-        const userPrefix = new URL(req.user.profile.id).pathname.replace(
+        const userPrefix = new URL(response.readerId).pathname.replace(
           "/",
           ""
         );

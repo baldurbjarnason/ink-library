@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build sapper --legacy",
+    "build:netlify": "sapper build --legacy",
     "build:typescript": "tsc",
     "build:test": "rollup --config rollup.test.config.js && tsc",
     "export": "sapper export --legacy",
@@ -82,6 +83,7 @@
     "markdown-it": "^11.0.0",
     "mime": "^2.4.6",
     "mime-types": "^2.1.27",
+    "node-fetch": "^2.6.1",
     "passport": "^0.4.1",
     "passport-auth0": "^1.3.3",
     "passport-http": "^0.3.0",

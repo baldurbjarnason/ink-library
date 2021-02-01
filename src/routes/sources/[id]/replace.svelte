@@ -1,7 +1,18 @@
 <script context="module">
-	export async function preload({params, query, path}) {
-    const res = await this.fetch(`/api/sources/${params.id}`);
+	export async function preload({params, query, path}, session) {
+    console.log(session, process.browser)
+    let res
+    if (session.user.token) {
+      console.log("server fetching")
+      const fetch = require('node-fetch')
+      res = await fetch(`${process.env.API_SERVER}sources/${params.id}`, {
+      headers: {
+        Authorization: `Bearer ${session.user.token}`,
+      }});
+    }
+    console.log(res)
     const source = await res.json()
+    console.log(source)
     return {source}
   }
 </script>
