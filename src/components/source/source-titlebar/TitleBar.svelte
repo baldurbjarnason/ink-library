@@ -1,6 +1,12 @@
 <script>
   export let name = ""
   export let returnLink = "/library";
+  import { onMount } from 'svelte';
+  let Info
+  onMount(async () => {
+    const module = await import('./Info.svelte');
+    Info = module.default;
+  });
 </script>
 
 <style>
@@ -113,3 +119,5 @@
     </li>
   </ol>
 </nav>
+
+<svelte:component this={Info} />
