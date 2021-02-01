@@ -5,6 +5,7 @@
   "description": "The ink library frontend",
   "license": "GPL-3.0-or-later",
   "scripts": {
+
     "dev": "sapper dev",
     "build": "sapper build sapper --legacy",
     "build:netlify": "sapper build --legacy",
@@ -23,7 +24,8 @@
     "deploy-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs10 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize",
     "deploy-dev": "npm run build && gcloud app deploy app-dev.yaml --project ink-frontend-server-dev",
     "deploy-production": "npm run build && gcloud app deploy app.yaml --project fb-ink-dev",
-    "save-config": "node save-config.js"
+    "save-config": "node save-config.js",
+    "preinstall": "node save-config.js"
   },
   "postcss": {
     "plugins": {
