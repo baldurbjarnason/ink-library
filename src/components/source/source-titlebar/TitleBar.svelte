@@ -74,7 +74,13 @@
     </li>
     <li>
       <a
-        href="#id-source-info">
+        class="modal_link"
+        href="#id-source-info"
+        rel="external" on:click={(event) => {
+          if (!document.getElementById("id-source-info")) {
+            event.preventDefault()
+          }
+        }}>
         <svg
           width="16"
           height="16"
