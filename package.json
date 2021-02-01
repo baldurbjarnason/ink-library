@@ -95,6 +95,7 @@
     "redis": "^2.8.0",
     "resize-observer-polyfill": "^1.5.1",
     "rxjs": "^6.6.3",
+    "serverless-http": "^2.7.0",
     "sharp": "^0.24.1",
     "short-uuid": "^3.1.1",
     "tslib": "^2.0.3",

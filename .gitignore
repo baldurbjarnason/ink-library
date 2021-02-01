@@ -70,3 +70,6 @@ state/**/*.js.map
 test/*.test.js.map
 test/components/**/*.js
 test/components/**/*.js.map
+
+# Local Netlify folder
+.netlify
