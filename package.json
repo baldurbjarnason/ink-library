@@ -5,10 +5,9 @@
   "description": "The ink library frontend",
   "license": "GPL-3.0-or-later",
   "scripts": {
-
     "dev": "sapper dev",
     "build": "sapper build sapper --legacy",
-    "build:netlify": "sapper build --legacy",
+    "build:netlify": "sapper build __sapper__ --legacy",
     "build:typescript": "tsc",
     "build:test": "rollup --config rollup.test.config.js && tsc",
     "export": "sapper export --legacy",
