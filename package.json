@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build sapper --legacy",
-    "build:netlify": "sapper build __sapper__ --legacy",
+    "build:netlify": "NETLIFY_SAPPER=true NODE_ENV=production sapper build __sapper__ --legacy",
     "build:typescript": "tsc",
     "build:test": "rollup --config rollup.test.config.js && tsc",
     "export": "sapper export --legacy",

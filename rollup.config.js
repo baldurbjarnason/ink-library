@@ -74,7 +74,9 @@ export default {
 
       !dev &&
         terser({
-          module: true
+          module: true,
+          compress: true,
+          mangle: true
         })
     ],
 
