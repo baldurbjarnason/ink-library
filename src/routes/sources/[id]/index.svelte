@@ -10,6 +10,7 @@
     } else if (!session.user) {
       return this.redirect(302, "/login")
     }
+    // need to fall back to the old method here
     const source = await res.json()
     console.log(source)
     if (source.json.storageId) {

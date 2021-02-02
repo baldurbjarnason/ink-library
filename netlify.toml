@@ -1,7 +1,7 @@
 # example netlify.toml
 [build]
   command = "npm run build:netlify"
-  functions = "functions"
+  functions = "netlify-functions"
   publish = "static"
   environment = { NODE_ENV = "development", AWS_LAMBDA_JS_RUNTIME = "nodejs12.x" }
 
