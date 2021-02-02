@@ -72,6 +72,7 @@
     "dom-anchor-text-quote": "^4.0.2",
     "dom-seek": "^5.1.1",
     "dompurify": "^2.2.6",
+    "encoding": "^0.1.13",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "fg-modal": "^0.1.0",
