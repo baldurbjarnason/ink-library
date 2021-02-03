@@ -3,6 +3,7 @@
   // This needs a store for the hover over highlight event.
   import {assignIco} from "./assignIco.js"
   // import NavSource from "../../img/NavSource.svelte";
+  import { encode } from "universal-base64url";
   import {getNoted, getHighlighted, getFlags, getColours} from './processNote.js'
   export let note = {};
   export let source
@@ -10,13 +11,20 @@
   $: if (source) {
     title = source.name;
   }
-  let noted, highlighted, flags, colours, annotation;
+  let noted, highlighted, flags, colours, annotation, id;
   $: if (note && note.shortId) {
     noted = getNoted(note)
     highlighted = getHighlighted(note)
     flags = getFlags(note)
     colours = getColours(note)
     annotation = note
+    id = `note-${encode(note.id)}`
+  }
+  let bookmark
+  $: if (note && note.body && note.body[0] && note.body[0].purpose === "bookmarking") {
+    bookmark = true
+  } else {
+    bookmark = false
   }
   let clean = ""
   $: if (highlighted && (highlighted.content || highlighted.value))  {
@@ -284,10 +292,11 @@
   }
 </style>
 
-{#if annotation}
+{#if annotation && !bookmark}
 
   <div
     class="NoteItem {colours ? colours[0].name.replace(' ', '') : ''}"
+    {id}
     class:Selected={annotation.selected}>
     <div
       class="Top {annotation.document || highlighted || annotation.sourceId ? 'two' : ''}">

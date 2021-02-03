@@ -1,19 +1,19 @@
 <script>
-  import {Bookmark} from "../../../../state/models/Bookmark"
+  // import {Bookmark} from "../../../../state/models/Bookmark"
   import {chapter$, source$} from "../../../../state/state"
+  import { encode } from "universal-base64url";
   export let entry
-  export let bookmarks
-  let bookmark
+  let logging
+  export let bookmark
   let bookmarked = false
-  if (entry && bookmarks && !bookmark) { 
-    bookmark = bookmarks.find(mark => {
-      if (mark.target && mark.target.selector.value === entry.element.id) return mark
-    })
+  let id = ""
+  $: if ($bookmark.shortId) {
     bookmarked = true
+    id = `bookmark-${encode($bookmark.shortId)}`
   } else {
     bookmarked = false
+    id = ""
   }
-  // $: console.log($bookmark, bookmarked)
 </script>
 
 <style>
@@ -85,7 +85,7 @@
   left: -44px;
   position: absolute;
 }
-.Wrapper[data-bookmark-id] .Button {
+.Wrapper.bookmark .Button {
   background-color: #333;
   color: white;
 }
@@ -99,19 +99,23 @@
 
 
 <div
+{id}
 class="Wrapper"
 class:notPDF={entry.element.dataset.inkPageHeader !== ""}
 class:bookmark={bookmarked}
 style="top: {entry.element.dataset.inkPageHeader === "" ? entry.top - 111 : entry.top - 120}px;"
-data-bookmark-id={$bookmark ? $bookmark.id : null} on:click={async () => {
-  if (!$bookmark) {
-    bookmarked = true
-    bookmark = await Bookmark.create(entry.element, {chapter: $chapter$.resource, source: $source$})
-  } else {
-    bookmarked = false
-    await bookmark.delete()
+data-bookmark-id={$bookmark ? $bookmark.id : null} on:click={(event) => {
+  async function bookmarking () {
+    if (!$bookmark.shortId) {
+      logging = true
+      bookmarked = true
+      await $bookmark.create(entry.element, {chapter: $chapter$.resource, source: $source$})
+    } else {
+      bookmarked = false
+      await $bookmark.delete()
+    }
   }
-  // console.log(bookmark, $bookmark)
+  return bookmarking()
 }}>
 
 <button

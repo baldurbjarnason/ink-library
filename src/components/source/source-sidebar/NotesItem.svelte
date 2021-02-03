@@ -1,5 +1,6 @@
 <script>
   import { getContext } from "svelte";
+  import { encode } from "universal-base64url";
   export let item
   let chapter
   $: if ($item && !$item.deleted) {
@@ -34,5 +35,5 @@
     <rect x="16.8033" y="18.4534" width="1.5" height="8.20707" rx="0.75" transform="rotate(45 16.8033 18.4534)" fill="currentColor"/>
     <rect width="1.5" height="8.20556" rx="0.75" transform="matrix(-0.707107 0.707107 0.707107 0.707107 16.8067 18.45)" fill="currentColor"/>
     <rect x="22.3067" y="9" width="1.5" height="11" rx="0.75" transform="rotate(90 22.3067 9)" fill="currentColor"/>
-    </svg> <a href="{url(chapter)}#{$item.target.selector.value}">{$item.body[0].value || $item.body[0].content}</a>
+    </svg> <a href="{url(chapter)}#bookmark-{encode($item.shortId)}">{$item.body[0].value || $item.body[0].content}</a>
 </li>

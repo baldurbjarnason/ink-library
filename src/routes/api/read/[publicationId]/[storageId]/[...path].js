@@ -102,6 +102,10 @@ function fixItem(item) {
   }
   item.type = "Annotation";
   if (!item.target.selector) return null;
+  if (item.target.selector.type === "CSSSelector") {
+    item.target.selector.type = "CssSelector"
+    item.target.selector.value = item.target.selector.value.toLowerCase()
+  }
   const colour = []
     .concat(item.tags)
     .find(tag => tag.name.startsWith("colour"));
