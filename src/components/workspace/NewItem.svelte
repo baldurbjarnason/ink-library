@@ -79,6 +79,7 @@
         const body = Object.fromEntries(
           new URLSearchParams(new FormData(target)).entries()
         );
+        if (body.citation) body.citation = {default: body.citation}
         body.addedCollections = $addedCollections;
         body.addedWorkspaces = $addedWorkspaces;
         $addedWorkspaces = [];
@@ -329,6 +330,16 @@
     margin: calc(var(--base) * 0.25) 0;
     border-radius: 10px;
   }
+
+  .citation div {
+    font-size: 0.8rem;
+  }
+  .citation input {
+    width: 100%;
+    padding: calc(var(--base) * 0.5);
+    margin: calc(var(--base) * 0.25) 0;
+    border-radius: 10px;
+  }
   .typeDiv {
     position: relative;
   }
@@ -404,7 +415,17 @@
                 placeholder="First Author, Second Author" />
             </label>
           </div>
-          <div />
+          <div class="citation">
+            <label for="input-citation">
+              <div>Default Citation</div>
+              <input
+                id="input-citation"
+                name="citation"
+                type="text"
+                placeholder="Default Citation" />
+            </label>
+          </div>
+
           <div class="footer">
             <WhiteButton>Create</WhiteButton>
             <Closer click={close} dark={true} />
