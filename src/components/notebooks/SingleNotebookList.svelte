@@ -230,10 +230,10 @@
     }
   }
   @media (min-width: 721px) {
-    :global(.Body:not(.NotesEditor)
-        .CardsContent:not(.NotesEditor)
-        .Cards
-        .Item:only-child) {
+    :global(.Body:not(.NotesEditor) .Cards .Item:only-child) {
+      width: 100%;
+    }
+    :global(.Body .CardsContent:not(.NotesEditor) .Cards .Item:only-child) {
       width: calc(50% - var(--base) / 2);
     }
   }
