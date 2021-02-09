@@ -2,7 +2,7 @@
   import { pageItem, page, refreshPageItem } from "../../../stores";
   import { goto } from "@sapper/app";
   import { getToken } from "../../../getToken";
-  import IcoGoBack from "../../img/IcoGoBack.svelte";
+  import History from "../../History.svelte";
   import PageIcoOutline from "../../img/PageIcoOutline.svelte";
   import PageIcoMindmap from "../../img/PageIcoMindmap.svelte";
   import IcoStartArrow from "../../img/IcoStartArrow.svelte";

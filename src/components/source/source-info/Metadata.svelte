@@ -20,120 +20,126 @@
       return [lang.native, lang.english].filter(item => item).join(" / ");
     }
   }*/
-
   $: metaProps = [
+    {
+      type: "string",
+      req: true,
+      prop: "Name",
+      key: "name",
+      value: $source$.name,
+    },
     {
       type: "list",
       req: true,
       prop: "Type",
       key: "type",
-      value: $source$.type
+      value: $source$.type,
     },
     {
       type: "array",
       req: true,
       prop: "Author(s)",
       key: "_author",
-      value: $source$.author
+      value: $source$.author,
     },
     {
       type: "array",
       req: true,
       prop: "Editor(s)",
       key: "_editor",
-      value: $source$.editor
+      value: $source$.editor,
     },
     {
       type: "number",
       req: true,
       prop: "Year of publication",
       key: "copyrightYear",
-      value: $source$.copyrightYear
+      value: $source$.copyrightYear,
     },
     {
       type: "number",
       req: true,
       prop: "Pages",
       key: "numberOfPages",
-      value: $source$.numberOfPages
+      value: $source$.numberOfPages,
     },
     {
       type: "array",
       req: true,
       prop: "Publisher(s)",
       key: "_publisher",
-      value: $source$.publisher
+      value: $source$.publisher,
     },
     {
       type: "string",
       req: false,
       prop: "Edition",
       key: "bookEdition",
-      value: $source$.bookEdition
+      value: $source$.bookEdition,
     },
     {
       type: "string",
       req: false,
       prop: "ISBN",
       key: "isbn",
-      value: $source$.isbn
+      value: $source$.isbn,
     },
     {
       type: "list",
       req: false,
       prop: "Format",
       key: "bookFormat",
-      value: $source$.bookFormat
+      value: $source$.bookFormat,
     },
     {
       type: "string",
       req: false,
       prop: "Genre",
       key: "genre",
-      value: $source$.genre
+      value: $source$.genre,
     },
     {
       type: "string",
       req: false,
       prop: "Citation",
       key: "citation",
-      value: $source$.citation ? $source$.citation.default : ''
+      value: $source$.citation ? $source$.citation.default : "",
     },
     {
       type: "list",
       req: false,
       prop: "Language(s)",
       key: "inLanguage",
-      value: $source$.inLanguage ? $source$.inLanguage : []
+      value: $source$.inLanguage ? $source$.inLanguage : [],
     },
     {
       type: "array",
       req: false,
       prop: "Illustrator(s)",
       key: "_illustrator",
-      value: $source$.illustrator
+      value: $source$.illustrator,
     },
     {
       type: "array",
       req: false,
       prop: "Translator(s)",
       key: "_translator",
-      value: $source$.translator
+      value: $source$.translator,
     },
     {
       type: "array",
       req: false,
       prop: "Creator(s)",
       key: "_creator",
-      value: $source$.creator
+      value: $source$.creator,
     },
     {
       type: "number",
       req: false,
       prop: "Words count",
       key: "wordCount",
-      value: $source$.wordCount
-    }
+      value: $source$.wordCount,
+    },
   ];
 
   $: editing = undefined;
@@ -143,14 +149,14 @@
       newArr = [prop];
     } else {
       if (
-        !newArr.find(item => {
+        !newArr.find((item) => {
           if (item.key === prop.key) return item;
         })
       )
         newArr = [...newArr, prop];
     }
 
-    newArr.find(item => {
+    newArr.find((item) => {
       if (item.key === prop.key) item.value = sendVal;
     });
   };
@@ -159,7 +165,7 @@
     input.focus();
     if (Array.isArray(prop.value)) {
       sendValue = [];
-      prop.value.map(item => {
+      prop.value.map((item) => {
         sendValue.push(item.name);
       });
     } else {
@@ -169,7 +175,7 @@
   let newArr = [];
 
   let clearAll = () => {
-    refresh(`/api/sources/${$source$.shortId}`)
+    refresh(`/api/sources/${$source$.shortId}`);
     editing = undefined;
     sendValue = undefined;
     newArr = [];
@@ -404,10 +410,10 @@
             <strong>{prop.prop}</strong>
           </p>
           <p
-            class="input {newArr.find(item => item.key === prop.key) ? 'changed' : ''}"
+            class="input {newArr.find((item) => item.key === prop.key) ? 'changed' : ''}"
             aria-label="{prop.prop}...">
             {#if Array.isArray(prop.value)}
-              {prop.value.map(item => {
+              {prop.value.map((item) => {
                 return prop.key === 'inLanguage' ? ' ' + item : ' ' + item.name;
               })}
             {:else}{prop.value ? prop.value : ''}{/if}

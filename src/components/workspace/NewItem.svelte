@@ -16,7 +16,7 @@
     refreshCollections,
     addedCollections,
     addedWorkspaces,
-    refreshNotebook
+    refreshNotebook,
   } from "../../stores";
   import { getToken } from "../../getToken";
   export let workspace;
@@ -63,12 +63,12 @@
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            "csrf-token": getToken()
+            "csrf-token": getToken(),
           },
           body: JSON.stringify({
             type: "stack",
-            name: value
-          })
+            name: value,
+          }),
         });
         $refreshCollections = Date.now();
       } catch (err) {
@@ -94,9 +94,9 @@
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            "csrf-token": getToken()
+            "csrf-token": getToken(),
           },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
         });
 
         if ($page.path === "/") $refreshInSource = Date.now();
@@ -335,10 +335,7 @@
 </style>
 
 {#if open || atNotebook}
-  <div
-    class="NewBox"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}>
+  <div class="NewBox">
     <form
       id="newform"
       class="newForm"
@@ -420,11 +417,7 @@
   </div>
   <span />
 {:else}
-  <span
-    class="new-button"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}
-    bind:this={newToggle}>
+  <span class="new-button" bind:this={newToggle}>
     <Button {click}>
       <IcoNewSource />
       <span class="NewButtonLabel">Source</span>

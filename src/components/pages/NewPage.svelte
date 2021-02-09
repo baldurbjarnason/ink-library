@@ -151,9 +151,7 @@
 
 {#if open}
   <div
-    class="NewBox newNote"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}>
+    class="NewBox newNote">
     <form id="newform" class="newForm" on:submit={submit}>
       <input
         type="text"

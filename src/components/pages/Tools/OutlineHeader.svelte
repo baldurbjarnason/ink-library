@@ -1,5 +1,5 @@
 <script>
-  import IcoGoBack from "../../img/IcoGoBack.svelte";
+  import History from "../../History.svelte";
   import IcoDelete from "../../img/IcoDelete.svelte";
   import ArrowDropDown from "../../img/ArrowDropDown.svelte";
   import DeletionModal from "./DeletionModal.svelte";
@@ -9,10 +9,6 @@
 
   export let outlineInfo;
   let activeModal = false;
-
-  let returnPages = () => {
-    goto(`pages/${$page.params.pageId}`);
-  };
 
   async function remove() {
     goto(`pages/${$page.params.pageId}`);
@@ -145,10 +141,7 @@
 </style>
 
 <header>
-  <h5 on:click={returnPages}>
-    <IcoGoBack />
-    Pages menu
-  </h5>
+  <History/>
   <div class="Title">
     <h1>{outlineInfo.name ? outlineInfo.name : '...'}</h1>
     <div class="DropDown">

@@ -1,21 +1,26 @@
 <script>
   // This needs a reference to the fg-modal element
 
-  import {assignIco} from "./assignIco.js"
+  import { assignIco } from "./assignIco.js";
   import NavSource from "../../img/NavSource.svelte";
-  import {tags$, getIdsFromNames, source$} from "../../../../state/state.ts"
-  import {refresh} from "../../../../state/refresh.ts"
-  import {chapterURL$} from "../../../../state/state-urls.ts"
+  import { tags$, getIdsFromNames, source$ } from "../../../../state/state.ts";
+  import { refresh } from "../../../../state/refresh.ts";
+  import { chapterURL$ } from "../../../../state/state-urls.ts";
   // import { tags } from "../../../stores";
   import Highlight from "../../notes/Highlight.svelte";
   import { getToken } from "../../../getToken";
   import Button from "../../widgets/Button.svelte";
   // import { refresh } from "../../../stores/utilities/refresh.js";
-  import {getNoted, getHighlighted, getFlags, getColours} from './processNote.js'
+  import {
+    getNoted,
+    getHighlighted,
+    getFlags,
+    getColours,
+  } from "./processNote.js";
   import { noteStore } from "../../../stores/utilities/noteStore.js";
   import { writable } from "svelte/store";
   export let note = { body: [], source: { name: "" } };
-  export let modal
+  export let modal;
   let store;
   $: if (note && note.shortId && !store) {
     store = noteStore(note);
@@ -29,44 +34,48 @@
   annotation = note;
   const plaintext = writable("");
   $: if (comment && (comment.content || comment.value)) {
-      window.fetch("/api/markdown", {
+    window
+      .fetch("/api/markdown", {
         method: "POST",
         headers: {
           "Content-Type": "text/html",
-          "csrf-token": getToken()
+          "csrf-token": getToken(),
         },
-        body: comment.content || comment.value
-      }).then(response => {
-        if (response.ok) {
-          return response.json()
-        } else {
-          return {content: ""}
-        }
-      }).then(json => {
-        $plaintext = json.content
+        body: comment.content || comment.value,
       })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return { content: "" };
+        }
+      })
+      .then((json) => {
+        $plaintext = json.content;
+      });
   } else {
     $plaintext = "";
   }
   $: if (flags && !selectedFlags) {
-    selectedFlags = flags.map(flag => flag.name);
+    selectedFlags = flags.map((flag) => flag.name);
   }
   let highlight;
   let colour;
   $: if (colours && !colour) {
     colour = colours
-      .find(tag => tag.name.startsWith("colour"))
+      .find((tag) => tag.name.startsWith("colour"))
       .name.replace(" ", "");
   }
   let availableColours;
-  $: availableColours = [].concat($tags$)
-    .filter(tag => tag.type == "flag" && tag.name.startsWith("colour"))
-    .map(tag => tag.name.replace(" ", ""));
+  $: availableColours = []
+    .concat($tags$)
+    .filter((tag) => tag.type == "flag" && tag.name.startsWith("colour"))
+    .map((tag) => tag.name.replace(" ", ""));
 
   let availableFlags = [];
   $: if ($tags$ && $tags$.length !== 0) {
     availableFlags = $tags$.filter(
-      tag => tag.type === "flag" && !tag.name.startsWith("colour")
+      (tag) => tag.type === "flag" && !tag.name.startsWith("colour")
     );
   }
   function clean(obj) {
@@ -78,18 +87,20 @@
   }
   function updateHighlight(id, colour) {
     // console.log(colour);
-    document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
-      node.classList.forEach(token => {
-        if (token.startsWith("Colour")) {
-          node.classList.remove(token);
-        }
+    document
+      .querySelectorAll(`[data-annotation-id="${id}"]`)
+      .forEach((node) => {
+        node.classList.forEach((token) => {
+          if (token.startsWith("Colour")) {
+            node.classList.remove(token);
+          }
+        });
+        node.classList.add(colour);
       });
-      node.classList.add(colour);
-    });
     document
       .querySelectorAll(`[data-annotation-highlight-box="${id}"]`)
-      .forEach(node => {
-        node.classList.forEach(token => {
+      .forEach((node) => {
+        node.classList.forEach((token) => {
           if (token.startsWith("Colour")) {
             node.classList.remove(token);
           }
@@ -102,36 +113,41 @@
     if (!annotation.document) return;
     try {
       const payload = Object.assign({}, annotation);
-      payload.tags = getIdsFromNames([colour].concat(selectedFlags), $tags$)
-        .map(id => {
-          return { id: id };
+      payload.tags = getIdsFromNames(
+        [colour].concat(selectedFlags),
+        $tags$
+      ).map((id) => {
+        return { id: id };
+      });
+      const text = await window
+        .fetch("/api/markdown", {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/markdown",
+            "csrf-token": getToken(),
+          },
+          body: $plaintext,
+        })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            return { content: $plaintext };
+          }
+        })
+        .then((json) => {
+          return json.content;
         });
-      const text = await window.fetch("/api/markdown", {
-        method: "POST",
-        headers: {
-          "Content-Type": "text/markdown",
-          "csrf-token": getToken()
-        },
-        body: $plaintext
-      }).then(response => {
-        if (response.ok) {
-          return response.json()
-        } else {
-          return {content: $plaintext}
-        }
-      }).then(json => {
-        return json.content
-      })
-      if (payload.body.find(body => body.motivation === "commenting")) {
+      if (payload.body.find((body) => body.motivation === "commenting")) {
         const body = payload.body.find(
-          body => body.motivation === "commenting"
+          (body) => body.motivation === "commenting"
         );
         body.content = text;
         clean(body);
       } else {
         payload.body = payload.body.concat({
           motivation: "commenting",
-          content: text
+          content: text,
         });
       }
       await fetch(`/api/note/${annotation.shortId}`, {
@@ -141,15 +157,15 @@
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "csrf-token": getToken()
-        }
+          "csrf-token": getToken(),
+        },
       });
       refresh($chapterURL$);
       updateHighlight(
         annotation.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
-      modal.close()
+      modal.close();
     } catch (err) {
       console.error(err);
     }
@@ -236,14 +252,6 @@
   :global(#sapper .Item .ql-container.ql-snow) {
     border: none;
   }
-  /* .breadcrumbs h5 {
-    float: left;
-    margin: 0;
-    color: #888888;
-    font-size: 0.75rem;
-    line-height: 14px;
-    font-weight: 500;
-  } */
   @media (max-width: 720px) {
     .Item {
       padding: 20px;
@@ -601,7 +609,7 @@
             {new Date(annotation.updated).toLocaleString(undefined, {
               year: 'numeric',
               month: 'numeric',
-              day: 'numeric'
+              day: 'numeric',
             })}
           {/if}
         </span>
@@ -622,9 +630,7 @@
           </a>
         {/if}
         {#if $source$}
-          <a
-            href="sources/{$source$.shortId}"
-            class="Source">
+          <a href="sources/{$source$.shortId}" class="Source">
             <NavSource />
             <p>{$source$.name}</p>
           </a>
@@ -644,7 +650,7 @@
           </li>
         {/each}
       </ul>
-      
+
       <div class="Editor {colour} {!highlight ? 'bigEditor' : ''}">
         <textarea
           name="html"
@@ -653,7 +659,7 @@
           rows="10"
           bind:value={$plaintext} />
       </div>
-      
+
       <div class="flags {colour}">
         {#if annotation.tags && selectedFlags}
           {#each availableFlags as flag}

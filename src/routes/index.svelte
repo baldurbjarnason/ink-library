@@ -290,7 +290,7 @@
   </div>
   <div
     class="Sources {!items.length && $insource.type !== 'loading' ? 'align' : null}"
-    style={`grid-template-rows: repeat(${items.length + 1}, max-content);`}>
+    style={`grid-template-rows: repeat(${items.length > 5 ? 5 : items.length + 1}, max-content);`}>
     <h5>Recent sources</h5>
     {#if $insource.type === 'loading'}
       <Loader />

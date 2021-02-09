@@ -2,7 +2,7 @@
   import NewNote from "./notes/NewNote.svelte";
   import NotesList from "./notes/NotesList.svelte";
   import NoteEdit from "./notes/NoteEdit.svelte";
-  import IcoGoBack from "./img/IcoGoBack.svelte";
+  import History from "./History.svelte";
   import NavNotes from "./img/NavNotes.svelte";
   export let id = false;
 </script>
@@ -34,14 +34,6 @@
   .Toolbar section * {
     float: left;
   }
-  .breadcrumbs {
-    margin-bottom: 10px;
-  }
-  .breadcrumbs h5 {
-    color: #888888;
-    font-weight: 500;
-    margin: 0;
-  }
   .library :global(svg) {
     width: 16px;
     margin-right: 5px;
@@ -67,21 +59,14 @@
       width: 100%;
       text-align: center;
     }
-    .breadcrumbs {
-      margin-bottom: 0;
-      margin-top: 3px;
-    }
-    .breadcrumbs h5 {
-      display: none;
-    }
     .library {
       float: inherit !important;
       display: inline-table;
     }
-    .NotesEditor.noteColumn {
+    .NotesEditor {
       grid-template-columns: 1fr;
     }
-    .noteColumn .notesList {
+    .NotesEditor .notesList {
       display: none;
     }
   }
@@ -92,7 +77,7 @@
   }
   .NotesEditor {
     grid-template-columns: 300px 1fr;
-    grid-gap: 0;
+    gap: 0;
   }
   .NotesEditor :global(.CardHeader) {
     display: none;
@@ -103,6 +88,9 @@
     overflow-y: scroll;
     position: sticky;
     top: 0;
+  }
+  .NotesEditor :global(.CardHeader::-webkit-scrollbar-track) {
+    opacity: 0;
   }
   .NotesEditor :global(.Cards:last-child::after) {
     content: "";
@@ -117,10 +105,7 @@
 {#if !id}
   <nav class="Toolbar">
     <section>
-      <a href="/" class="breadcrumbs">
-        <IcoGoBack />
-        <h5>Home</h5>
-      </a>
+      <History/>
       <div class="library">
         <NavNotes />
         <h3>Notes library</h3>
@@ -129,7 +114,7 @@
     <NewNote ntbkClose={false} />
   </nav>
 {/if}
-<div class="Body {id ? 'noteColumn' : ''}" class:NotesEditor={id}>
+<div class="Body" class:NotesEditor={id}>
   <div class="notesList">
     <NotesList />
   </div>

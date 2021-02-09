@@ -1,5 +1,5 @@
 <script>
-  import IcoGoBack from "../../img/IcoGoBack.svelte";
+  import History from "../../History.svelte";
   import IcoDelete from "../../img/IcoDelete.svelte";
   import ArrowDropDown from "../../img/ArrowDropDown.svelte";
   import { page } from "../../../stores";

@@ -15,24 +15,24 @@
   let cover = {};
   $: if (item.resources) {
     cover = item.resources.find(
-      resource => resource.rel.indexOf("cover") !== -1
+      (resource) => resource.rel.indexOf("cover") !== -1
     );
     if (!cover) {
       cover = {
         href: "/img/placeholder-cover.jpg",
-        rel: ["cover"]
+        rel: ["cover"],
       };
     }
   } else {
     cover = {
       href: "/img/placeholder-cover.jpg",
-      rel: ["cover"]
+      rel: ["cover"],
     };
   }
 
   let stacks;
   if (item.tags) {
-    stacks = item.tags.filter(tag => {
+    stacks = item.tags.filter((tag) => {
       if (tag.type === "stack") return tag;
     });
   }
@@ -41,8 +41,7 @@
 <style>
   /* your styles go here */
   .title,
-  .Authors,
-  .Stacks :global(ul) {
+  .Authors {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: inherit;
@@ -59,14 +58,7 @@
   .Stacks {
     position: relative;
     z-index: 2;
-    width: max-content;
   }
-  .Stacks :global(ul) {
-    padding: 0;
-    -webkit-line-clamp: 1;
-    margin: 0;
-  }
-
   .Item {
     grid-template-columns: 55px 1fr;
     margin: 0;
@@ -123,6 +115,7 @@
     display: grid;
     grid-gap: 2px;
     grid-template-rows: repeat(3, max-content);
+    grid-template-columns: 1fr;
     align-items: center;
     justify-content: left;
     z-index: 2;
@@ -188,6 +181,9 @@
   .Item a:hover {
     color: var(--hover);
     text-decoration: underline;
+  }
+  .Stacks :global(ul:not(.ExtraStacks)) {
+    line-height: 1;
   }
   @media (max-width: 1050px) {
     .Item {

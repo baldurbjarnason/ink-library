@@ -480,9 +480,7 @@
     </div>
   {/if}
   <div
-    class="NewBox newNote {noteColour}"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}>
+    class="NewBox newNote {noteColour}">
     <form
       id="newform"
       class="newForm"
@@ -541,8 +539,6 @@
 {:else}
   <span
     class="new-button"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}
     bind:this={newToggle}>
     <Button {click}>
       <IcoNewNotebook />
