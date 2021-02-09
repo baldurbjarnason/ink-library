@@ -77,7 +77,7 @@
   }
   .NotesEditor {
     grid-template-columns: 300px 1fr;
-    gap: 0;
+    gap: 20px;
   }
   .NotesEditor :global(.CardHeader) {
     display: none;
@@ -105,7 +105,7 @@
 {#if !id}
   <nav class="Toolbar">
     <section>
-      <History/>
+      <History />
       <div class="library">
         <NavNotes />
         <h3>Notes library</h3>

@@ -1,7 +1,8 @@
 <script>
-  export let name = ""
+  import History from "../../History.svelte";
+  export let name = "";
   export let returnLink = "/library";
-  export let infoLink = ""
+  export let infoLink = "";
 </script>
 
 <style>
@@ -24,7 +25,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: .55rem 1rem .4rem;
+    padding: 0.55rem 1rem 0.4rem;
   }
   .TitleBar ol li a {
     color: var(--reader-toolbar-color);
@@ -34,6 +35,8 @@
 <nav class="TitleBar" aria-label="Publication">
   <ol>
     <li>
+      <History />
+      <!--
       <a href={returnLink}>
         <svg
           width="14"
@@ -68,14 +71,13 @@
             fill="currentColor"
             fill-opacity="0.8" />
         </svg>
-      </a>
+      </a>-->
     </li>
     <li>
       <span class="Title">{name}</span>
     </li>
     <li>
-      <a
-        href={infoLink}>
+      <a href={infoLink}>
         <svg
           width="16"
           height="16"
