@@ -49,8 +49,10 @@
     ]
   },
   "dependencies": {
+    "@github/details-menu-element": "^1.0.9",
     "@google-cloud/firestore": "^4.4.0",
     "@google-cloud/storage": "^5.3.0",
+    "@popperjs/core": "^2.6.0",
     "@types/awesomplete": "^1.1.10",
     "@types/compression": "^1.7.0",
     "@types/dompurify": "^2.0.4",

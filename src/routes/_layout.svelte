@@ -1,9 +1,6 @@
 <script>
-  import {
-    page as pageStore,
-    error,
-  } from "../stores";
-  import {title} from "../stores/title.js"
+  import { page as pageStore, error } from "../stores";
+  import { title } from "../stores/title.js";
   import Nav from "../components/Nav.svelte";
   import SignIn from "../components/Auth/SignIn.svelte";
   import NoteEditDialog from "../components/notes/NoteEditDialog.svelte";
@@ -200,10 +197,7 @@
       </span>
     </div>
   {/if}
-  <main
-    class="grid"
-    class:publication
-    class:pageWorkspace>
+  <main class="grid" class:publication class:pageWorkspace>
     {#if !publication && !pageWorkspace}
       <Nav {params} />
     {/if}

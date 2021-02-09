@@ -19,7 +19,8 @@ export const notes = derived(
     } else if ($page.params.workspace && $page.params.workspace !== "all") {
       query.workspace = $page.params.workspace.replace("_", " ");
     }
-    
+    query.notMotivation = "bookmarking";
+
     if ($searchNotes) {
       query.search = $searchNotes;
     } else if ($page.query.search) {
@@ -33,16 +34,16 @@ export const notes = derived(
       url = `/api/notes`;
     }
     return fetch(url)
-      .then(lib => {
+      .then((lib) => {
         if ($page.params.id) {
           const listNote = lib.items.find(
-            item => item.shortId === $page.params.id
+            (item) => item.shortId === $page.params.id
           );
           listNote.selected = true;
         }
         set(lib);
       })
-      .catch(err => {
+      .catch((err) => {
         set({ type: "failed", items: [] });
         error.set(err);
         console.error(err);

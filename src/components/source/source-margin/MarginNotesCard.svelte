@@ -1,36 +1,60 @@
 <script>
-  import DOMPurify from 'dompurify';
+  import DOMPurify from "dompurify";
   // This needs a store for the hover over highlight event.
-  import {assignIco} from "./assignIco.js"
+  import { assignIco } from "./assignIco.js";
   // import NavSource from "../../img/NavSource.svelte";
   import { encode } from "universal-base64url";
-  import {getNoted, getHighlighted, getFlags, getColours} from './processNote.js'
-  export let note = {};
-  export let source
+  import {
+    getNoted,
+    getHighlighted,
+    getFlags,
+    getColours,
+  } from "./processNote.js";
+  export let note;
+  export let source;
   let title;
   $: if (source) {
     title = source.name;
   }
-  let noted, highlighted, flags, colours, annotation, id;
-  $: if (note && note.shortId) {
-    noted = getNoted(note)
-    highlighted = getHighlighted(note)
-    flags = getFlags(note)
-    colours = getColours(note)
-    annotation = note
-    id = `note-${encode(note.id)}`
+  let annotation;
+  $: if ($note && $note.annotation) {
+    annotation = $note.annotation;
   }
-  let bookmark
-  $: if (note && note.body && note.body[0] && note.body[0].purpose === "bookmarking") {
-    bookmark = true
-  } else {
-    bookmark = false
+  let clean = "";
+  let id, highlighted, noted, flags, colours;
+  $: if ($note && $note.annotation) {
+    id = `note-${encode($note.id)}`;
+    highlighted = getHighlighted($note.annotation);
+    noted = getNoted($note.annotation);
+    flags = getFlags($note.annotation);
+    colours = getColours($note.annotation);
+    if (highlighted && (highlighted.content || highlighted.value)) {
+      const fragment = DOMPurify.sanitize(
+        highlighted.content || highlighted.value,
+        { RETURN_DOM: true, RETURN_DOM_FRAGMENT: true }
+      );
+      clean = fragment.textContent
+        .split(/\b/)
+        .slice(0, 30)
+        .join("");
+    }
   }
-  let clean = ""
-  $: if (highlighted && (highlighted.content || highlighted.value))  {
-    const fragment = DOMPurify.sanitize(highlighted.content || highlighted.value, {RETURN_DOM: true, RETURN_DOM_FRAGMENT: true});
-    clean = fragment.textContent.split(/\b/).slice(0, 30).join("")
-  }
+  // let noted, highlighted, flags, colours, annotation, id;
+  // $: if (note && note.shortId) {
+  //   noted = getNoted(note)
+  //   highlighted = getHighlighted(note)
+  //   flags = getFlags(note)
+  //   colours = getColours(note)
+  //   annotation = note
+  //   id = `note-${encode(note.id)}`
+  // }
+  // let bookmark
+  // $: if (note && note.body && note.body[0] && note.body[0].purpose === "bookmarking") {
+  //   bookmark = true
+  // } else {
+  //   bookmark = false
+  // }
+  $: console.log(clean);
 </script>
 
 <style>
@@ -94,12 +118,12 @@
     height: auto;
     color: var(--workspace-color);
   }
-  
+
   .Highlight[href],
   .Note[href] {
     text-decoration: none;
   }
-  
+
   .Highlight[href]:hover,
   .Note[href]:hover,
   .Page:hover {
@@ -292,7 +316,7 @@
   }
 </style>
 
-{#if annotation && !bookmark}
+{#if annotation}
 
   <div
     class="NoteItem {colours ? colours[0].name.replace(' ', '') : ''}"
@@ -310,13 +334,14 @@
               <p class="Page">Page</p>
             </a>
           {/if} -->
-            {#if highlighted}
+            {#if clean}
               <a
                 class="Highlight modal_link"
                 href="#id-{annotation.shortId}"
-                rel="external" on:click={(event) => {
+                rel="external"
+                on:click={(event) => {
                   if (!document.getElementById(`id-${annotation.shortId}`)) {
-                    event.preventDefault()
+                    event.preventDefault();
                   }
                 }}>
                 {@html clean}
@@ -328,9 +353,10 @@
       <a
         class="Note modal_link"
         href="#id-{annotation.shortId}"
-        rel="external" on:click={(event) => {
+        rel="external"
+        on:click={(event) => {
           if (!document.getElementById(`id-${annotation.shortId}`)) {
-            event.preventDefault()
+            event.preventDefault();
           }
         }}>
         {#if noted}
@@ -359,7 +385,7 @@
           {new Date(annotation.updated).toLocaleString(undefined, {
             year: 'numeric',
             month: 'numeric',
-            day: 'numeric'
+            day: 'numeric',
           })}
         </p>
       </section>
