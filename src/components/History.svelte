@@ -31,7 +31,7 @@
   }
   .breadcrumbs.atSource h5,
   .breadcrumbs.atSource :global(*) {
-    color: #ffffff;
+    color: var(--reader-titlebar-color);
   }
   @media (max-width: 720px) {
     .breadcrumbs {
