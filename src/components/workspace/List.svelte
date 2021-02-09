@@ -5,6 +5,7 @@
   import Card from "./Card.svelte";
   import SortSelect from "./SortSelect.svelte";
   import Search from "../Search.svelte";
+  import PaginationButtons from "../PaginationButtons.svelte";
   import NoSources from "../img/NoSources.svelte";
   import IcoFilter from "../img/IcoFilter.svelte";
   import { stores } from "@sapper/app";
@@ -241,3 +242,4 @@
       clearSelected();
     }} />
 {/if}
+<PaginationButtons itemsLenght={items.length} />

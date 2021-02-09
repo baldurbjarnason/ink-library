@@ -1,8 +1,8 @@
 <script>
   import NewItem from "./workspace/NewItem.svelte";
   import List from "./workspace/List.svelte";
+  import History from "./History.svelte";
   import NavSource from "./img/NavSource.svelte";
-  import IcoGoBack from "./img/IcoGoBack.svelte";
   export let workspace;
 </script>
 
@@ -33,14 +33,6 @@
   .Toolbar section * {
     float: left;
   }
-  .breadcrumbs {
-    margin-bottom: 10px;
-  }
-  .breadcrumbs h5 {
-    color: #888888;
-    font-weight: 500;
-    margin: 0;
-  }
   .library :global(svg) {
     width: 16px;
     margin-right: 5px;
@@ -66,13 +58,6 @@
       width: 100%;
       text-align: center;
     }
-    .breadcrumbs {
-      margin-bottom: 0;
-      margin-top: 3px;
-    }
-    .breadcrumbs h5 {
-      display: none;
-    }
     .library {
       float: inherit !important;
       display: inline-table;
@@ -85,10 +70,7 @@
 
 <nav class="Toolbar">
   <section>
-    <a href="/" class="breadcrumbs">
-      <IcoGoBack />
-      <h5>Home</h5>
-    </a>
+    <History />
     <div class="library">
       <NavSource />
       <h3>Source library</h3>

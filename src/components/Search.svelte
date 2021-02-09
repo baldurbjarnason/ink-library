@@ -159,7 +159,8 @@
     value=""
     placeholder="Search..."
     bind:this={input}
-    on:input={loadSearch} />
+    on:input={loadSearch}
+    autocomplete="off" />
   <!--
   <button class="svgButton">-->
   <svg

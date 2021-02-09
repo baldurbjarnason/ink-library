@@ -5,6 +5,7 @@
   import NoNotebooks from "../img/NoNotebooks.svelte";
   import IcoFilter from "../img/IcoFilter.svelte";
   import SearchNotebooks from "./Tools/SearchNotebooks.svelte";
+  import PaginationButtons from "../PaginationButtons.svelte";
   import FilterNotebook from "../FilterNotebook.svelte";
   import NotebookCard from "./NotebookCard.svelte";
 
@@ -242,3 +243,4 @@
       clearSelected();
     }} />
 {/if}
+<PaginationButtons itemsLenght={items.length} />

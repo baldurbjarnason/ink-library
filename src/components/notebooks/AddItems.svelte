@@ -348,9 +348,7 @@
 
 {#if open}
   <div
-    class="NewBox"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}>
+    class="NewBox">
     <TopMenu {menu} {itemType} {itemState} />
     {#if itemState === 'existing'}
       <div class="searchItems">
@@ -398,8 +396,6 @@
 {:else}
   <span
     class="new-button"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}
     bind:this={newToggle}>
     <Button {click}>
       <span class="AddItem" />

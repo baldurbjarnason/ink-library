@@ -67,6 +67,31 @@
       console.error(err);
     }
   }*/
+
+  $: editSource = Array.from($selectedItems);
+  let removeTag = [];
+  $: console.log(removeTag);
+  let test = async (id) => {
+    if (removeTag.some((getId) => getId === id)) return;
+    removeTag = [...removeTag].concat(id);
+    const body = { publicationId: editSource[0].shortId, collectionId: id };
+
+    try {
+      await fetch(`/api/publication/${editSource[0].shortId}/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "csrf-token": getToken(),
+        },
+        body: JSON.stringify(body),
+      });
+      $refreshDate = Date.now();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 </script>
 
 <style>
@@ -103,6 +128,52 @@
     bottom: 0;
     border: none;
     background: #ffffff;
+  }
+  .Stacks {
+    position: relative;
+  }
+  .RemoveStacks {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    position: absolute;
+    bottom: 0;
+    transform: translateY(100%);
+    left: 0;
+    width: 100%;
+    display: grid;
+    gap: 12px;
+  }
+  .RemoveStacks li {
+    display: grid;
+    grid-template-columns: max-content 12px;
+    gap: 8px;
+    align-items: center;
+  }
+  .RemoveStacks span {
+    width: 12px;
+    height: 12px;
+    background: var(--workspace-color);
+    border-radius: 50%;
+    cursor: pointer;
+    display: block;
+    position: relative;
+    transform: rotate(45deg);
+  }
+  .RemoveStacks span::before,
+  .RemoveStacks span::after {
+    content: "";
+    background: #ffffff;
+    width: 1px;
+    height: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .RemoveStacks span::after {
+    width: 50%;
+    height: 1px;
   }
   @media (max-width: 720px) {
     .Footer {
@@ -150,7 +221,23 @@
     <div>
       <ChooseWorkspaces>Change workspace:</ChooseWorkspaces>
     </div>-->
-  <AddCollections />
+  <div class="Stacks">
+    <AddCollections />
+    {#if editSource.length === 1 && editSource[0].tags.some((tag) => tag.type === 'stack')}
+      <ul
+        class="RemoveStacks"
+        style={`grid-template-columns: repeat(${editSource[0].tags.length}, max-content)`}>
+        {#each editSource[0].tags as stack}
+          {#if stack.type === 'stack' && !removeTag.some((getId) => getId === stack.shortId)}
+            <li>
+              {stack.name}
+              <span on:click={() => test(stack.shortId)} />
+            </li>
+          {/if}
+        {/each}
+      </ul>
+    {/if}
+  </div>
   <span class="FooterButtons">
     <SecondaryButton
       click={() => {

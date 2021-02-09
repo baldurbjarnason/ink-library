@@ -1,7 +1,7 @@
 <script>
   import { pageItem, page, refreshNotebook } from "../../stores";
   import { getToken } from "../../getToken";
-  import IcoGoBack from "../img/IcoGoBack.svelte";
+  import History from "../History.svelte";
   import PageIcoOutline from "../img/PageIcoOutline.svelte";
   import PageIcoMindmap from "../img/PageIcoMindmap.svelte";
   import PageIcoGrouping from "../img/PageIcoGrouping.svelte";
@@ -40,21 +40,6 @@
     grid-column: inherit;
     background: #f9fbfc;
   }
-  .breadcrumbs {
-    text-decoration: none;
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    grid-gap: 5px;
-    position: fixed;
-    top: 20px;
-    left: calc(var(--base) * 2);
-  }
-  .breadcrumbs h5 {
-    color: #888;
-    font-weight: 500;
-    margin: 0;
-    margin-bottom: 0;
-  }
   .Page {
     width: 100%;
     display: grid;
@@ -85,9 +70,6 @@
     }
   }
   @media (max-width: 640px) {
-    .breadcrumbs {
-      position: inherit;
-    }
     .Page {
       gap: 30px;
       left: inherit;
@@ -107,10 +89,7 @@
 {#if pageInfo.type === 'loading'}
   <Loader />
 {:else}
-  <a href={`notebooks/${pageInfo.notebook.shortId}`} class="breadcrumbs">
-    <IcoGoBack />
-    <h5>{pageInfo.notebook.name}</h5>
-  </a>
+  <History />
   <div class="Page">
     <PageTitle {pageInfo} bind:activeModal />
     <div class="PageType">

@@ -7,6 +7,7 @@
   import NotesSearch from "../NotesSearch.svelte";
   import FilterNote from "../FilterNote.svelte";
   import NotesListFooter from "./NotesListFooter.svelte";
+  import PaginationButtons from "../PaginationButtons.svelte";
   import { stores } from "@sapper/app";
   const { page } = stores();
   let filterOn = false;
@@ -250,3 +251,4 @@
       clearSelected();
     }} />
 {/if}
+<PaginationButtons itemsLenght={items.length} />

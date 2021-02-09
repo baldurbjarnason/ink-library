@@ -42,6 +42,7 @@
     type="text"
     name="notes-search"
     id="notes-search"
+    autocomplete="off"
     bind:this={search}
     on:input={input}
     placeholder="Search notes..." />
