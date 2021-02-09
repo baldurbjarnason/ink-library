@@ -187,11 +187,8 @@
     width: 50%;
     max-width: 250px;
   }
-  .Cards :global(.Item:only-child) {
+  :global(.Body:not(.NotesEditor) .Cards .Item:only-child) {
     width: 50%;
-  }
-  :global(.noteColumn) .Cards :global(.Item:only-child) {
-    width: 100%;
   }
   @media (min-width: 641px) and (max-width: 720px) {
     .CardHeader {
@@ -251,4 +248,6 @@
       clearSelected();
     }} />
 {/if}
-<PaginationButtons itemsLenght={items.length} />
+{#if !$page.params.id}
+  <PaginationButtons itemsLenght={items.length} />
+{/if}

@@ -270,7 +270,7 @@
   /*-------- Notes editor --------------*/
   .NotesEditor {
     grid-template-columns: 300px 1fr;
-    grid-gap: 0;
+    grid-gap: 20px;
     display: grid;
   }
   .NotesEditor :global(.CardHeader) {
@@ -322,7 +322,7 @@
   <nav class="Toolbar">
     <section>
       <div class="Header">
-        <History/>
+        <History />
         <h5
           class="Delete"
           on:click={() => {

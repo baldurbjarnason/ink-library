@@ -230,7 +230,7 @@
     }
   }
   @media (min-width: 721px) {
-    .Cards :global(.Item:only-child) {
+    :global(.CardsContent:not(.NotesEditor) .Cards .Item:only-child) {
       width: calc(50% - var(--base) / 2);
     }
   }
