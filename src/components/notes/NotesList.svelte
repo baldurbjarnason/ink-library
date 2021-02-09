@@ -187,7 +187,10 @@
     width: 50%;
     max-width: 250px;
   }
-  :global(.Body:not(.NotesEditor) .Cards .Item:only-child) {
+  :global(.Body:not(.NotesEditor)
+      .CardsContent:not(.NotesEditor)
+      .Cards
+      .Item:only-child) {
     width: 50%;
   }
   @media (min-width: 641px) and (max-width: 720px) {
