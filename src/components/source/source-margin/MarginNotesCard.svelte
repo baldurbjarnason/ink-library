@@ -54,7 +54,6 @@
   // } else {
   //   bookmark = false
   // }
-  $: console.log(clean);
 </script>
 
 <style>

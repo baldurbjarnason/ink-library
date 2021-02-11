@@ -94,7 +94,6 @@ export class Annotation {
         payload.body = payload.body.concat(body);
       }
     }
-    json.tags = getIdsFromNames(json.tags);
     this.next(json);
     const result = await fetch(this.url, {
       method: this.method,

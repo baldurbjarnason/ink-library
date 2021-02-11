@@ -4,7 +4,7 @@
   import { chapter$, source$, chapterNotes$ } from "../../../../state/state";
   import SidebarNoteModal from "./MarginNotesModal.svelte";
   import NoteEdit from "./MarginNoteEdit.svelte";
-  import HighlightButton from "./HighlightButton.svelte";
+  import HighlightToolbar from "../source-highlight/HighlightToolbar.svelte";
   import Bookmarks from "./Bookmarks.svelte";
   export let root;
   export let bookmarks;
@@ -39,7 +39,7 @@
 <div class="Root">
   <Bookmarks {bookmarks} {root} />
   {#if root}
-    <HighlightButton {root} />
+    <HighlightToolbar {root} />
     {#if $topmost$}
       {#each Array.from($topmost$) as entry}
         <div

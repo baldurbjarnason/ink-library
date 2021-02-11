@@ -1,6 +1,6 @@
 import { map } from "rxjs/operators";
 import { selection } from "../selection";
-import { highlightRange } from "./highlightRange";
+import { clearTemporaryHighlight, highlightRange } from "./highlightRange";
 import { highlightToAnnotation } from "./highlightToAnnotation";
 import { Annotation } from "./Annotation";
 
@@ -31,6 +31,16 @@ class SelectionHighlight {
   public getBoundingClientRect() {
     this.positions = this.range.getBoundingClientRect();
     return this.positions;
+  }
+  public tempHighlight(range, source, chapter) {
+    const highlightedRange = highlightRange(range, this.root);
+    const highlight = new Annotation(
+      highlightToAnnotation(highlightedRange, this.root, source, chapter)
+    );
+    return highlight;
+  }
+  public clearTemporaryHighlight() {
+    return clearTemporaryHighlight();
   }
   async highlight(source, chapter, json) {
     const highlightedRange = highlightRange(this.range, this.root);
