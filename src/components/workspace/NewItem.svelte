@@ -414,12 +414,12 @@
           </div>
           <div class="citation">
             <label for="input-citation">
-              <div>Default Citation</div>
+              <div>Citation</div>
               <input
                 id="input-citation"
                 name="citation"
                 type="text"
-                placeholder="Default Citation" />
+                placeholder="Citation" />
             </label>
           </div>
 
