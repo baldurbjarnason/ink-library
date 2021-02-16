@@ -2,7 +2,7 @@
   import { scale } from "svelte/transition";
   import { elasticInOut } from "svelte/easing";
 
-  export let tags;
+  export let tags = [];
   export let colour;
   let availableColours;
   $: availableColours = [].concat(tags).filter((tag) => tag.type === "colour");

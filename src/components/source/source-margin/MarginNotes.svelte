@@ -1,9 +1,7 @@
 <script>
-  import NotesCard from "./MarginNotesCard.svelte";
+  import NotesCard from "../source-highlight/HighlightMarginBox.svelte";
   import { intersections, topmost } from "../../../../state/nodes";
   import { chapter$, source$, chapterNotes$ } from "../../../../state/state";
-  import SidebarNoteModal from "./MarginNotesModal.svelte";
-  import NoteEdit from "./MarginNoteEdit.svelte";
   import HighlightToolbar from "../source-highlight/HighlightToolbar.svelte";
   import Bookmarks from "./Bookmarks.svelte";
   export let root;
@@ -15,6 +13,7 @@
   });
   let annotations;
   $: if ($chapterNotes$) {
+    console.log($chapterNotes$);
     const notes = {};
     for (const annotation of $chapterNotes$) {
       notes[annotation.id] = annotation;
@@ -51,14 +50,5 @@
         </div>
       {/each}
     {/if}
-    <div class="Modals">
-      {#if $chapter$ && $chapter$.annotations}
-        {#each $chapter$.annotations as note}
-          <SidebarNoteModal id={note.shortId} let:modal>
-            <NoteEdit {note} {modal} />
-          </SidebarNoteModal>
-        {/each}
-      {/if}
-    </div>
   {/if}
 </div>

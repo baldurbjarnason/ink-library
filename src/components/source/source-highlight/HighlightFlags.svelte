@@ -1,24 +1,26 @@
 <script>
   import { assignIco } from "../source-margin/assignIco.js";
   import HighlightSearch from "./HighlightSearch.svelte";
+  import HighlightTextButton from "./HighlightTextButton.svelte";
   export let tags;
   export let selectedFlags = [];
   export let colour = { name: "colour1" };
   export let flagMenu;
+  export let create = () => {};
   let availableFlags = [];
+  let term;
   $: if (tags && tags.length !== 0) {
     availableFlags = tags.filter(
       (tag) => tag.type === "flag" && !tag.name.startsWith("colour")
     );
-  }
-  let term;
-  $: if (term) {
-    availableFlags = tags.filter(
-      (tag) =>
-        tag.type === "flag" &&
-        !tag.name.startsWith("colour") &&
-        tag.name.include(term)
-    );
+    if (term) {
+      availableFlags = tags.filter(
+        (tag) =>
+          tag.type === "flag" &&
+          !tag.name.startsWith("colour") &&
+          tag.name.includes(term.toLowerCase())
+      );
+    }
   }
 </script>
 
@@ -100,11 +102,17 @@
     padding: 0;
     margin: 0;
   }
+  .Search {
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.45rem 1rem 0.25rem;
+  }
 </style>
 
 <svelte:window
   on:click={(event) => {
-    if (!event.target.closest('details.flags')) {
+    if (!event.target.closest('details.flags') || event.target.closest('label[role="menuitemcheckbox"]')) {
       flagMenu.open = false;
     }
   }} />
@@ -113,6 +121,23 @@
   <summary>Flags</summary>
   <details-menu role="menu">
     <HighlightSearch bind:term />
+    {#if term}
+      <div class="Search">
+        <span>&ldquo;{term}&rdquo;</span>
+        {#if !availableFlags.find((item) => item.name === term.toLowerCase())}
+          <HighlightTextButton
+            click={() => {
+              create(term);
+              term = '';
+              flagMenu.open = false;
+            }}>
+            Create
+          </HighlightTextButton>
+        {:else}
+          <span>&nbsp;</span>
+        {/if}
+      </div>
+    {/if}
     {#if availableFlags && selectedFlags}
       {#each availableFlags as flag}
         <label tabindex="0" role="menuitemcheckbox">

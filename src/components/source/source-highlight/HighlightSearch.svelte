@@ -20,7 +20,7 @@
   }
   input {
     display: block;
-    padding: 0.25rem 0.25rem 0.25rem 1.25rem;
+    padding: 0.25rem 0.25rem 0.25rem 2.25rem;
     border: none;
     background: #f1f5f8;
     border-radius: 5.58596px;

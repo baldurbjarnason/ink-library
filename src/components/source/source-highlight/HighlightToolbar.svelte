@@ -1,15 +1,21 @@
 <script>
   import HighlightColours from "./HighlightColours.svelte";
   import HighlightFlags from "./HighlightFlags.svelte";
+  import HighlightButton from "./HighlightButton.svelte";
   import HighlightNoteField from "./HighlightNoteField.svelte";
   import HighlightNotebooks from "./HighlightNotebooks.svelte";
   import HighlightSelectedFlags from "./HighlightSelectedFlags.svelte";
   import HighlightNoteButton from "./HighlightNoteButton.svelte";
+  import { assignIco } from "../source-margin/assignIco.js";
+  import IcoNotebook from "../../img/IcoNotebook.svelte";
+  import IcoFlag from "../../img/IcoFlag.svelte";
+  import CloseIcon from "./CloseIcon.svelte";
   import { onDestroy } from "svelte";
   import { notebooks$, source$, chapter$ } from "../../../../state/state.ts";
   import { createPopper } from "@popperjs/core";
   import { selectionHighlight$ } from "../../../../state/models/Selection";
   import { tags$ } from "../../../../state/tags.ts";
+  import { setColour } from "./setColour.js";
   export let root = null;
   // $: if (root) {
   //   root.addEventListener("click", handleClick, false);
@@ -100,7 +106,7 @@
     );
   }
   $: if (colour) {
-    setColour(colour);
+    setColour(colour, toolbar);
   } else if (toolbar) {
     toolbar.style.setProperty("--toolbar-colour", "#dddddd");
     toolbar.style.setProperty("--toolbar-text", "#999");
@@ -120,24 +126,20 @@
   // function hasSelection() {
   //   return $selectionHighlight$ && $selectionHighlight$.selection.isCollapsed;
   // }
-  const colours = {
-    colour1: "#fea95b",
-    colour2: "#ff8ebe",
-    colour3: "#6fe1fa",
-    colour4: "#9fe793",
-  };
-  const darkColours = {
-    colour1: "#d86801",
-    colour2: "#c0004e",
-    colour3: "#0693b2",
-    colour4: "#589b4c",
-  };
-  function setColour(colour) {
-    toolbar.style.setProperty("--toolbar-colour", colours[colour.name]);
-    toolbar.style.setProperty("--toolbar-text", darkColours[colour.name]);
-  }
   let openNote = false;
   // $: console.log(plaintext);
+  let createdNotebooks = [];
+  function createNotebook(name) {
+    if (!createdNotebooks.find((item) => item.name === name.toLowerCase())) {
+      createdNotebooks = createdNotebooks.concat({ name: name.toLowerCase() });
+    }
+  }
+  let createdFlags = [];
+  function createFlag(name) {
+    if (!createdFlags.find((item) => item.name === name.toLowerCase())) {
+      createdFlags = createdFlags.concat({ name: name.toLowerCase() });
+    }
+  }
 </script>
 
 <style>
@@ -168,6 +170,41 @@
       .Chapter
       .Highlight[data-annotation-id="temporary-selection-highlight"]) {
     background-color: rgba(120, 120, 120, 0.2);
+  }
+  .ButtonBar {
+    display: flex;
+    justify-content: right;
+  }
+  /* your styles go here */
+  .Flags {
+    display: flex;
+    flex-direction: row;
+    padding-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .Flag {
+    margin-right: 0.25rem;
+    margin-top: 0.5rem;
+    background: var(--toolbar-background, #ddd);
+    box-sizing: border-box;
+    border-radius: 5px;
+    padding: 0.25rem 0.25rem;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    display: grid;
+    grid-template-columns: 24px 1fr 24px;
+  }
+  .Flag :global(svg) {
+    color: var(--toolbar-text, #000);
+    margin-right: 0.5rem;
+    width: 16px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 100%;
+    height: 16px;
+    padding: 3px;
   }
 </style>
 
@@ -204,14 +241,20 @@
   <ol>
     <HighlightColours bind:colour tags={$tags$} />
     <li>
-      <HighlightFlags {colour} tags={$tags$} bind:selectedFlags bind:flagMenu />
+      <HighlightFlags
+        {colour}
+        tags={$tags$}
+        bind:selectedFlags
+        bind:flagMenu
+        create={createFlag} />
     </li>
     <li>
       <HighlightNotebooks
         {colour}
         notebooks={$notebooks$}
         bind:selectedNotebooks
-        bind:noteBookMenu />
+        bind:noteBookMenu
+        create={createNotebook} />
     </li>
     <li>
       <HighlightNoteButton
@@ -265,12 +308,86 @@
     <li>&nbsp;</li>
     <li>&nbsp;</li> -->
   </ol>
-  {#if (selectedFlags && selectedFlags.length !== 0) || (selectedNotebooks && selectedNotebooks.length !== 0)}
-    <HighlightSelectedFlags
-      flags={selectedFlags}
-      notebooks={selectedNotebooks} />
+  {#if (selectedFlags && selectedFlags.length !== 0) || (selectedNotebooks && selectedNotebooks.length !== 0) || createdNotebooks.length !== 0 || createdFlags.length !== 0}
+    <div class="Flags">
+      {#if selectedFlags}
+        {#each selectedFlags as flag}
+          <div class="Flag Item">
+            <svelte:component this={assignIco(flag.name)} />
+            <span class={flag.name}>
+              {flag.name[0].toUpperCase()}{flag.name.slice(1)}
+            </span>
+            <CloseIcon
+              click={() => {
+                const index = selectedFlags.indexOf(flag);
+                if (index !== -1) {
+                  selectedFlags = selectedFlags.filter((old) => {
+                    return old !== flag;
+                  });
+                }
+              }} />
+          </div>
+        {/each}
+      {/if}
+      {#if createdFlags.length !== 0}
+        {#each createdFlags as flag}
+          <div class="Flag Item">
+            <IcoFlag />
+            <span class={flag.name}>
+              {flag.name[0].toUpperCase()}{flag.name.slice(1)}
+            </span>
+            <CloseIcon
+              click={() => {
+                const index = createdFlags.indexOf(flag);
+                if (index !== -1) {
+                  createdFlags = createdFlags.filter((old) => {
+                    return old !== flag;
+                  });
+                }
+              }} />
+          </div>
+        {/each}
+      {/if}
+      {#if createdNotebooks.length !== 0}
+        {#each createdNotebooks as notebook}
+          <div class="Flag Item">
+            <IcoNotebook />
+            <span class={notebook.name}>{notebook.name}</span>
+            <CloseIcon
+              click={() => {
+                const index = createdNotebooks.indexOf(notebook);
+                if (index !== -1) {
+                  createdNotebooks = createdNotebooks.filter((old) => {
+                    return old !== notebook;
+                  });
+                }
+              }} />
+          </div>
+        {/each}
+      {/if}
+      {#if selectedNotebooks}
+        {#each selectedNotebooks as notebook}
+          <div class="Flag Item">
+            <IcoNotebook />
+            <span class={notebook.name}>{notebook.name}</span>
+            <CloseIcon
+              click={() => {
+                const index = selectedNotebooks.indexOf(notebook);
+                if (index !== -1) {
+                  selectedNotebooks = selectedNotebooks.filter((old) => {
+                    return old !== notebook;
+                  });
+                }
+              }} />
+          </div>
+        {/each}
+      {/if}
+    </div>
   {/if}
   {#if openNote}
     <HighlightNoteField bind:plaintext />
+    <div class="ButtonBar">
+      <HighlightButton>Create</HighlightButton>
+    </div>
   {/if}
 </nav>

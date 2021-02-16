@@ -1,9 +1,23 @@
 <script>
   import IcoNotebook from "../../img/IcoNotebook.svelte";
-  export let notebooks;
+  import HighlightSearch from "./HighlightSearch.svelte";
+  import HighlightTextButton from "./HighlightTextButton.svelte";
+  export let notebooks = [];
   export let selectedNotebooks = [];
   export let colour = { name: "colour1" };
   export let noteBookMenu;
+  export let create = () => {};
+  let term = "";
+  let availableNotebooks = notebooks;
+  $: if (term) {
+    console.log(availableNotebooks, term);
+    availableNotebooks = notebooks.filter((notebook) =>
+      notebook.name.includes(term.toLowerCase())
+    );
+  } else {
+    console.log(availableNotebooks, term);
+    availableNotebooks = notebooks;
+  }
 </script>
 
 <style>
@@ -84,11 +98,17 @@
     padding: 0;
     margin: 0;
   }
+  .Search {
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.45rem 1rem 0.25rem;
+  }
 </style>
 
 <svelte:window
   on:click={(event) => {
-    if (!event.target.closest('details.flags')) {
+    if (!event.target.closest('details.notebooks') || event.target.closest('label[role="menuitemcheckbox"]')) {
       noteBookMenu.open = false;
     }
   }} />
@@ -96,8 +116,26 @@
 <details class="notebooks {colour.name}" bind:this={noteBookMenu}>
   <summary>Notebooks</summary>
   <details-menu role="menu">
-    {#if notebooks && selectedNotebooks}
-      {#each notebooks as notebook}
+    <HighlightSearch bind:term />
+    {#if term}
+      <div class="Search">
+        <span>&ldquo;{term}&rdquo;</span>
+        {#if !availableNotebooks.find((item) => item.name === term.toLowerCase())}
+          <HighlightTextButton
+            click={() => {
+              create(term);
+              term = '';
+              noteBookMenu.open = false;
+            }}>
+            Create
+          </HighlightTextButton>
+        {:else}
+          <span>&nbsp;</span>
+        {/if}
+      </div>
+    {/if}
+    {#if availableNotebooks && selectedNotebooks}
+      {#each availableNotebooks as notebook}
         <label tabindex="0" role="menuitemcheckbox">
           <input
             bind:group={selectedNotebooks}
