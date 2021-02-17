@@ -7,7 +7,7 @@
 import { web } from "./web";
 import {
   libraryURL$,
-  notebookURL$,
+  notebooksURL$,
   notesURL$,
   tagsURL$,
   readerURL$,
@@ -24,7 +24,7 @@ export const library$ = web(libraryURL$.pipe(distinctUntilChanged()));
 
 export const notes$ = web(notesURL$.pipe(distinctUntilChanged()));
 
-export const notebooks$ = web(notebookURL$.pipe(distinctUntilChanged()));
+export const notebooks$ = web(notebooksURL$.pipe(distinctUntilChanged()));
 
 export const reader$ = web(readerURL$.pipe(distinctUntilChanged()));
 
@@ -50,7 +50,7 @@ export const chapterNotes$ = combineLatest([chapter$, createdNotes$]).pipe(
       .map((annotation) => {
         return new Annotation$(annotation);
       });
-    return annotations.concat(createdNotes);
+    return annotations.concat(Array.from(createdNotes));
   })
 );
 

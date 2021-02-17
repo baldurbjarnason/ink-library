@@ -12,10 +12,13 @@
   import CloseIcon from "./CloseIcon.svelte";
   import { onDestroy } from "svelte";
   import { notebooks$, source$, chapter$ } from "../../../../state/state.ts";
+  import { chapterURL$ } from "../../../../state/state-urls.ts";
+  import { refresh } from "../../../../state/refresh.ts";
   import { createPopper } from "@popperjs/core";
   import { selectionHighlight$ } from "../../../../state/models/Selection";
   import { tags$ } from "../../../../state/tags.ts";
   import { setColour } from "./setColour.js";
+  import { getToken } from "../../../getToken";
   export let root = null;
   // $: if (root) {
   //   root.addEventListener("click", handleClick, false);
@@ -105,6 +108,13 @@
       `/${$source$.shortId}/${$chapter$.resource.url.replace(".json", "")}`
     );
   }
+  $: if (selectedFlags && selectedFlags.length !== 0) {
+    highlight = $selectionHighlight$.tempHighlight(
+      range,
+      $source$.id,
+      `/${$source$.shortId}/${$chapter$.resource.url.replace(".json", "")}`
+    );
+  }
   $: if (colour) {
     setColour(colour, toolbar);
   } else if (toolbar) {
@@ -139,6 +149,52 @@
     if (!createdFlags.find((item) => item.name === name.toLowerCase())) {
       createdFlags = createdFlags.concat({ name: name.toLowerCase() });
     }
+  }
+  async function createHighlight() {
+    const json = {
+      tags: createdFlags.concat(selectedFlags),
+      notebooks: createdNotebooks.concat(selectedNotebooks),
+    };
+    let body;
+    if (plaintext) {
+      const content = await window
+        .fetch("/api/markdown", {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/html",
+            "csrf-token": getToken(),
+          },
+          body: plaintext,
+        })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            return { content: "" };
+          }
+        })
+        .then((json) => {
+          return json.content;
+        });
+      json.body = [
+        {
+          format: "text/html",
+          motivation: "commenting",
+          type: "TextualBody",
+          content: content,
+        },
+      ];
+    }
+    if (colour) {
+      json.tags = json.tags.concat(colour);
+    } else {
+      const colour = $tags$.find((tag) => tag.type === "colour");
+      json.tags = json.tags.concat(colour);
+    }
+    hidden = true;
+    await $selectionHighlight$.highlight($source$, $chapter$, json);
+    refresh($chapterURL$);
+    // reset state
   }
 </script>
 
@@ -251,7 +307,7 @@
     <li>
       <HighlightNotebooks
         {colour}
-        notebooks={$notebooks$}
+        notebooks={$notebooks$ ? $notebooks$.items : []}
         bind:selectedNotebooks
         bind:noteBookMenu
         create={createNotebook} />
@@ -387,7 +443,7 @@
   {#if openNote}
     <HighlightNoteField bind:plaintext />
     <div class="ButtonBar">
-      <HighlightButton>Create</HighlightButton>
+      <HighlightButton click={() => createHighlight()}>Create</HighlightButton>
     </div>
   {/if}
 </nav>

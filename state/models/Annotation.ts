@@ -69,33 +69,39 @@ export class Annotation {
   }
 
   public async create(json, tempId?: string) {
-    const updated = await this.update(json);
-    if (tempId) updateHighlight(tempId, this.id);
-    const annotationSubject = new Annotation$(updated);
+    const processed = this.processCreate(json);
+    const annotationSubject = new Annotation$(processed);
+    console.log(processed);
     createdNotes$.add(annotationSubject);
+    const updated = await this._create(processed);
+    let colour;
+    if (json.tags.find((tag) => tag.type === "colour")) {
+      const colourObject = json.tags.find((tag) => tag.type === "colour");
+      colour = colourObject.name.replace("c", "C");
+    } else {
+      colour = "Colour1";
+    }
+    json.tags = json.tags.concat(colour);
+    if (tempId) {
+      updateHighlight(tempId, updated.id, colour);
+    }
+    console.log(updated);
+    annotationSubject.next(updated);
     return annotationSubject;
   }
 
-  public async update(json) {
-    // Should take flags, colours and note as a second config object. Then merge the two into one json object
-    const payload = Object.assign({}, this.annotation, json);
-    // We need to make sure we don't overwrite existing bodies.
-    payload.body = payload.body.map((body) => {
-      if (body.motivation === "commenting") {
-        return clean(body);
-      } else {
-        return body;
-      }
-    });
-    for (const body of this.annotation.body) {
-      if (
-        !payload.body.find((current) => current.motivation === body.motivation)
-      ) {
-        payload.body = payload.body.concat(body);
-      }
+  public processCreate(json) {
+    const { tags, notebooks, body } = json;
+    const payload = Object.assign({}, this.annotation, { tags, notebooks });
+    if (body) {
+      payload.body = payload.body.concat(body);
     }
-    this.next(json);
-    const result = await fetch(this.url, {
+    payload.id = "temporary-selection-highlight";
+    return payload;
+  }
+
+  public async _create(json) {
+    const result = await fetch(`/api/notes`, {
       method: this.method,
       credentials: "include",
       body: JSON.stringify(json),
@@ -106,8 +112,54 @@ export class Annotation {
       },
     });
     if (result.ok) {
+      const created = await result.json();
+      const annotation = Object.assign({}, this.annotation, created);
+      return annotation;
+    } else {
+      // Should we update the annotation object with an error object
+      const body = await result.text();
+      console.error(result.status, body);
+      const annotation = Object.assign({}, this.annotation, {
+        _error: { status: result.status, message: body },
+      });
+      this.next(annotation);
+    }
+  }
+
+  public async update(json, content?) {
+    // Should take flags, colours and note as a second config object. Then merge the two into one json object
+    let body = this.annotation.body;
+    const payload = Object.assign({}, this.annotation, json);
+    // We need to make sure we don't overwrite existing bodies.
+    if (content && body.find((item) => item.purpose === "commenting")) {
+      const comment = body.find((item) => item.purpose === "commenting");
+      comment.value = comment.content = content;
+    } else if (content) {
+      body = body.concat({
+        format: "text/html",
+        motivation: "commenting",
+        type: "TextualBody",
+        value: content,
+      });
+    }
+    payload.body = body.map((item) => {
+      item.motivation = item.purpose;
+      return item;
+    });
+    console.log(payload);
+    this.next(payload);
+    const result = await fetch(this.url, {
+      method: this.method,
+      credentials: "include",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "csrf-token": getToken(),
+      },
+    });
+    if (result.ok) {
       const json = await result.json();
-      this.next(json);
       return json;
     } else {
       // Should we update the annotation object with an error object

@@ -99,12 +99,23 @@ export function highlightRange(range, root) {
 
 // Update highlight - takes an (temp)Id and an annotation object -> updates mark and links to match.
 
-export function updateHighlight(oldId, newId) {
+export function updateHighlight(oldId, newId, colour) {
   // console.log(oldId, newId);
   document
     .querySelectorAll(`[data-annotation-id="${oldId}"]`)
     .forEach((node) => {
       (node as HTMLElement).dataset.annotationId = newId;
+      if (colour) {
+        (node as HTMLElement).classList.add(colour);
+      }
+      const changeEvent = new CustomEvent("annotation-id-change", {
+        detail: {
+          id: newId,
+        },
+        bubbles: true,
+        cancelable: true,
+      });
+      (node as HTMLElement).dispatchEvent(changeEvent);
     });
 }
 export function clearTemporaryHighlight() {

@@ -108,7 +108,7 @@
 
 <svelte:window
   on:click={(event) => {
-    if (!event.target.closest('details.notebooks') || event.target.closest('label[role="menuitemcheckbox"]')) {
+    if (!event.target.closest('details.notebooks') || event.target.closest('label[role="menuitemcheckbox"], details.notebooks input')) {
       noteBookMenu.open = false;
     }
   }} />

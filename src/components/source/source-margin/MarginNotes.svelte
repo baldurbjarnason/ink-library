@@ -45,8 +45,10 @@
           style="top: {entry.top - 113}px; left: 0;right: 0;"
           data-sidenote-id={entry.element.dataset.annotationId}>
           <NotesCard
+            element={entry.element}
             note={annotations[entry.element.dataset.annotationId]}
-            source={$source$} />
+            source={$source$}
+            {annotations} />
         </div>
       {/each}
     {/if}

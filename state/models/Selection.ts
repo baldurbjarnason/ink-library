@@ -32,22 +32,28 @@ class SelectionHighlight {
     this.positions = this.range.getBoundingClientRect();
     return this.positions;
   }
+  public tempHighlightObject: any;
   public tempHighlight(range, source, chapter) {
     const highlightedRange = highlightRange(range, this.root);
-    const highlight = new Annotation(
+    this.tempHighlightObject = new Annotation(
       highlightToAnnotation(highlightedRange, this.root, source, chapter)
     );
-    return highlight;
+    return this.highlight;
   }
   public clearTemporaryHighlight() {
     return clearTemporaryHighlight();
   }
   async highlight(source, chapter, json) {
-    const highlightedRange = highlightRange(this.range, this.root);
-    const highlight = new Annotation(
-      highlightToAnnotation(highlightedRange, this.root, source, chapter)
-    );
-    return highlight.create(json, highlightedRange.tempId);
+    console.log(this);
+    if (this.tempHighlightObject) {
+      this.tempHighlightObject.create(json, "temporary-selection-highlight");
+    } else {
+      const highlightedRange = highlightRange(this.range, this.root);
+      this.tempHighlightObject = new Annotation(
+        highlightToAnnotation(highlightedRange, this.root, source, chapter)
+      );
+      this.tempHighlightObject.create(json, "temporary-selection-highlight");
+    }
   }
 }
 
