@@ -3,12 +3,14 @@
   import NavSource from "./img/NavSource.svelte";
   import NavNotes from "./img/NavNotes.svelte";
   import NavNotebook from "./img/NavNotebook.svelte";
+  import IcoAvatar from "./img/IcoAvatar.svelte";
   export let params;
 
   import { stores } from "@sapper/app";
   const { session } = stores();
 
   $: url = `/readers/${$session.user.profile.shortId}` || "";
+  $: user = $session.user.picture;
 </script>
 
 <style>
@@ -94,6 +96,27 @@
   }
   .menu {
     margin-top: calc(var(--base) * 2);
+  }
+  .Settings {
+    position: relative;
+  }
+  .Settings img,
+  .Settings :global(svg:not(.Gear)) {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+  }
+  .Settings .Gear {
+    position: absolute;
+    bottom: 20px;
+    right: 15px;
+    margin: 0;
+    width: 17px;
+    background: var(--workspace-color);
+    border-radius: 50%;
+    height: 17px;
+    padding: 2px;
   }
   @media (max-width: 720px) {
     nav {
@@ -293,12 +316,19 @@
     </a></li> -->
     <li>
       <a
+        class="Settings"
         href={url}
         aria-label="Settings"
         aria-current={params.segment === 'profile' ? 'page' : null}>
+        {#if user}
+          <img src={user} alt="Avatar" />
+        {:else}
+          <IcoAvatar />
+        {/if}
         <svg
-          width="30"
-          height="30"
+          class="Gear"
+          width="10"
+          height="10"
           viewBox="0 0 27 27"
           fill="none"
           xmlns="http://www.w3.org/2000/svg">
