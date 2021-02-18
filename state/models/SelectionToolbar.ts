@@ -3,8 +3,9 @@ import { selection } from "../selection";
 import { clearTemporaryHighlight, highlightRange } from "./highlightRange";
 import { highlightToAnnotation } from "./highlightToAnnotation";
 import { Annotation } from "./Annotation";
+import { BehaviorSubject } from "rxjs";
 
-export const toolbar$ = selection().pipe(
+const selection$ = selection().pipe(
   map((selection) => {
     return new Toolbar(selection);
   })
@@ -43,7 +44,6 @@ class Toolbar {
     if (this.range) {
       return this.range.getBoundingClientRect();
     } else if (temporary) {
-      console.log(oldRange, oldRange.getBoundingClientRect());
       return oldRange.getBoundingClientRect();
     }
   }
@@ -66,6 +66,7 @@ class Toolbar {
     if (temporary) {
       clearTemporaryHighlight();
       temporary = null;
+      toolbar$.next(this);
     }
   }
 
@@ -77,13 +78,13 @@ class Toolbar {
       highlightToAnnotation(highlightedRange, this.root, source, chapter)
     );
     this.selection.collapseToStart();
+    toolbar$.next(this);
     return temporary;
   }
   public clearTemporaryHighlight() {
     return clearTemporaryHighlight();
   }
   async highlight(source, chapter, json) {
-    console.log(this);
     if (temporary) {
       temporary.create(json, "temporary-selection-highlight");
     } else {
@@ -93,8 +94,14 @@ class Toolbar {
       );
       temporary.create(json, "temporary-selection-highlight");
     }
+    oldRange = null;
+    this.selection.collapseToStart();
+    temporary = null;
+    toolbar$.next(this);
   }
 }
+export const toolbar$ = new BehaviorSubject(new Toolbar(window.getSelection()));
+selection$.subscribe(toolbar$);
 
 // Toolbar listens to selection change event. On change and if existing highlight json and if selection collapsed: save highlight.
 

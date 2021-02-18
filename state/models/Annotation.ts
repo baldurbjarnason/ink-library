@@ -46,9 +46,10 @@ export const createdNotes$ = new Notes(notes);
 interface AnnotationJSON {
   id: string;
   shortId: string;
-  target: object;
+  target: any;
   sourceId: string;
   body: Array<any>;
+  document?: string;
 }
 
 export class Annotation {
@@ -71,7 +72,6 @@ export class Annotation {
   public async create(json, tempId?: string) {
     const processed = this.processCreate(json);
     const annotationSubject = new Annotation$(processed);
-    console.log(processed);
     createdNotes$.add(annotationSubject);
     const updated = await this._create(processed);
     let colour;
@@ -85,7 +85,6 @@ export class Annotation {
     if (tempId) {
       updateHighlight(tempId, updated.id, colour);
     }
-    console.log(updated);
     annotationSubject.next(updated);
     return annotationSubject;
   }
@@ -127,26 +126,29 @@ export class Annotation {
   }
 
   public async update(json, content?) {
-    // Should take flags, colours and note as a second config object. Then merge the two into one json object
-    let body = this.annotation.body;
-    const payload = Object.assign({}, this.annotation, json);
-    // We need to make sure we don't overwrite existing bodies.
-    if (content && body.find((item) => item.purpose === "commenting")) {
-      const comment = body.find((item) => item.purpose === "commenting");
-      comment.value = comment.content = content;
+    const { tags, notebooks, body } = json;
+    const payload = Object.assign({}, this.annotation, { tags, notebooks });
+    if (body) {
+      payload.body = this.annotation.body
+        .filter((item) => item.purpose !== "commenting")
+        .concat(body);
     } else if (content) {
-      body = body.concat({
-        format: "text/html",
-        motivation: "commenting",
-        type: "TextualBody",
-        value: content,
-      });
+      payload.body = this.annotation.body
+        .filter((item) => item.purpose !== "commenting")
+        .concat({
+          format: "text/html",
+          purpose: "commenting",
+          type: "TextualBody",
+          value: content,
+        });
     }
-    payload.body = body.map((item) => {
+    payload.body = payload.body.map((item) => {
       item.motivation = item.purpose;
       return item;
     });
-    console.log(payload);
+    // console.log(payload.body, this.annotation.body);
+    payload.document = payload.target.source;
+    // console.log(payload);
     this.next(payload);
     const result = await fetch(this.url, {
       method: this.method,
@@ -159,8 +161,7 @@ export class Annotation {
       },
     });
     if (result.ok) {
-      const json = await result.json();
-      return json;
+      return result;
     } else {
       // Should we update the annotation object with an error object
       const body = await result.text();

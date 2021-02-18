@@ -99,8 +99,18 @@
     }
     hidden = true;
     await $toolbar$.highlight($source$, $chapter$, json);
-    refresh($chapterURL$);
+    // refresh($chapterURL$);
     // reset state
+    reset();
+  }
+  function reset() {
+    selectedFlags = [];
+    selectedNotebooks = [];
+    createdFlags = [];
+    createdNotebooks = [];
+    plaintext = "";
+    openNote = false;
+    colour = "";
   }
 </script>
 
@@ -173,13 +183,11 @@
 <svelte:body
   on:click={(event) => {
     if (toolbar.contains(event.target) || toolbar === event.target || event.target.closest('[data-highlight-toolbar]')) return;
-    selectedFlags = [];
-    selectedNotebooks = [];
-    createdFlags = [];
-    createdNotebooks = [];
-    plaintext = '';
-    openNote = false;
-    colour = '';
+    if ($toolbar$ && $toolbar$.temporary) {
+      createHighlight();
+    } else {
+      reset();
+    }
   }} />
 
 <Positioner {colour} bind:toolbar {hidden}>

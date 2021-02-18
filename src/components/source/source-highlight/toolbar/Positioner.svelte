@@ -10,11 +10,9 @@
   const virtual = {
     getBoundingClientRect() {
       if ($toolbar$) {
-        console.log("we have a toolbar: ", $toolbar$, $toolbar$.visible);
         if ($toolbar$.visible) {
           return $toolbar$.getBoundingClientRect();
         } else {
-          hidden = true;
           return document.body.getBoundingClientRect();
         }
       } else {
@@ -84,11 +82,6 @@
 <svelte:body
   on:click={(event) => {
     if (toolbar.contains(event.target) || toolbar === event.target || event.target.closest('[data-highlight-toolbar]')) return;
-    if ($toolbar$ && $toolbar$.temporary) {
-      $toolbar$.collapse();
-      hidden = true;
-      console.log($toolbar$, $toolbar$.temporary);
-    }
   }} />
 
 <nav

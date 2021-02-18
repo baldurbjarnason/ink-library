@@ -1,10 +1,10 @@
 <script>
-  export let name = ""
+  export let name = "";
   export let returnLink = "/library";
-  import { onMount } from 'svelte';
-  let Info
+  import { onMount } from "svelte";
+  let Info;
   onMount(async () => {
-    const module = await import('./Info.svelte');
+    const module = await import("./Info.svelte");
     Info = module.default;
   });
 </script>
@@ -17,7 +17,7 @@
     background-color: var(--all-workspace);
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 999;
   }
   .TitleBar * {
     color: #ffffff;
@@ -29,7 +29,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: .55rem 1rem .4rem;
+    padding: 0.55rem 1rem 0.4rem;
   }
   .TitleBar ol li a {
     color: var(--reader-toolbar-color);
@@ -82,9 +82,10 @@
       <a
         class="modal_link"
         href="#id-source-info"
-        rel="external" on:click={(event) => {
-          if (!document.getElementById("id-source-info")) {
-            event.preventDefault()
+        rel="external"
+        on:click={(event) => {
+          if (!document.getElementById('id-source-info')) {
+            event.preventDefault();
           }
         }}>
         <svg

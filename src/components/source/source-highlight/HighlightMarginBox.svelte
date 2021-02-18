@@ -57,6 +57,7 @@
     margin: 0 1rem;
     padding: 1rem 0 0;
     overflow: hidden;
+    background-color: white;
   }
   .Comment {
     padding: 0 1rem 0.5rem;
@@ -126,12 +127,17 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    align-items: center;
   }
-  .Flags {
+  .Tags {
     display: flex;
     flex-direction: row;
-    padding-top: 0.5rem;
     flex-wrap: wrap;
+  }
+  .Flags {
+    display: grid;
+    padding-top: 0.5rem;
+    grid-template-columns: 1fr 0.25fr;
   }
   .Flag {
     margin-right: 0.25rem;
@@ -146,7 +152,8 @@
     justify-content: center;
     font-weight: 600;
     display: grid;
-    grid-template-columns: 24px 1fr 24px;
+    grid-template-columns: 24px 1fr;
+    text-align: right;
   }
   .Flag :global(svg) {
     color: var(--toolbar-text, #000);
@@ -192,30 +199,35 @@
 
       </div>
       <div class="Footer">
-        {#each flags as flag}
-          <div class="Flag Item">
-            <svelte:component this={assignIco(flag.name)} />
-            <span class={flag.name}>
-              {flag.name[0].toUpperCase()}{flag.name.slice(1)}
-            </span>
-          </div>
-        {:else}
-          <span />
-        {/each}
-        {#each annotation.notebooks as notebook}
-          <div class="Flag Item">
-            <IcoNotebook />
-            <span class={notebook.name}>
-              {notebook.name[0].toUpperCase()}{notebook.name.slice(1)}
-            </span>
-          </div>
-        {:else}
-          <span />
-        {/each}
+        <div class="Tags">
+          {#each flags as flag}
+            <div class="Flag Item">
+              <svelte:component this={assignIco(flag.name)} />
+              <span class={flag.name}>
+                {flag.name[0].toUpperCase()}{flag.name.slice(1)}
+              </span>
+            </div>
+          {:else}
+            <span />
+          {/each}
+          {#each annotation.notebooks as notebook}
+            <div class="Flag Item">
+              <IcoNotebook />
+              <span class={notebook.name}>
+                {notebook.name[0].toUpperCase()}{notebook.name.slice(1)}
+              </span>
+            </div>
+          {:else}
+            <span />
+          {/each}
+        </div>
         {#if annotation.updated || annotation.published}
-          <DateFormat
-            updated={annotation.updated}
-            published={annotation.published} />
+          <div class="Flag">
+            <span />
+            <DateFormat
+              updated={annotation.updated}
+              published={annotation.published} />
+          </div>
         {/if}
       </div>
     </div>

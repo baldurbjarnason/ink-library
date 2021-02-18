@@ -133,7 +133,7 @@
           cx="12"
           cy="12"
           r="8" />
-        {#if colour === theColour}
+        {#if colour && colour.id === theColour.id}
           <circle
             class="Mark"
             stroke="none"

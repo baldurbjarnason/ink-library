@@ -40,9 +40,9 @@
   {#if root}
     <HighlightToolbar {root} />
     {#if $topmost$}
-      {#each Array.from($topmost$) as entry}
+      {#each Array.from($topmost$) as entry, index}
         <div
-          style="top: {entry.top - 113}px; left: 0;right: 0;"
+          style="top: {entry.top - 113}px; left: 0;right: 0; z-index: {100 - index};"
           data-sidenote-id={entry.element.dataset.annotationId}>
           <NotesCard
             element={entry.element}

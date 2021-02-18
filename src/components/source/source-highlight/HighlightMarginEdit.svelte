@@ -2,6 +2,7 @@
   import HighlightColours from "./HighlightColours.svelte";
   import HighlightFlags from "./HighlightFlags.svelte";
   import HighlightButton from "./HighlightButton.svelte";
+  import HighlightTextButton from "./HighlightTextButton.svelte";
   import HighlightNoteField from "./HighlightNoteField.svelte";
   import HighlightNotebooks from "./HighlightNotebooks.svelte";
   import { getToken } from "../../../getToken";
@@ -73,10 +74,10 @@
     }
     if (
       (!selectedNotebooks || selectedNotebooks.length === 0) &&
-      note.notebooks &&
-      note.notebooks.length !== 0
+      annotation.notebooks &&
+      annotation.notebooks.length !== 0
     ) {
-      selectedNotebooks = note.notebooks;
+      selectedNotebooks = annotation.notebooks;
     }
   }
   $: if (colour && toolbar) {
@@ -129,7 +130,7 @@
       body = content;
     }
     stopEditing();
-    return $note.update({ tags: flags, notebooks });
+    return $note.update({ tags: flags.concat(colour), notebooks }, body);
   }
 </script>
 
@@ -166,7 +167,7 @@
   }
   .ButtonBar {
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
   }
   /* your styles go here */
   .Flags {
@@ -304,6 +305,9 @@
   {/if}
   <HighlightNoteField bind:plaintext />
   <div class="ButtonBar">
+    <HighlightTextButton click={() => stopEditing()}>
+      Cancel
+    </HighlightTextButton>
     <HighlightButton click={() => update()}>Save</HighlightButton>
   </div>
 </nav>
