@@ -248,6 +248,6 @@
       clearSelected();
     }} />
 {/if}
-{#if !$page.params.id}
+{#if !$page.params.id && items && items.length}
   <PaginationButtons itemsLenght={items.length} />
 {/if}

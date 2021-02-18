@@ -6,7 +6,6 @@
   import NotesColumn from "./NotesColumn.svelte";
   import NotesCard from "../notes/NotesCard.svelte";
   import OutlineTools from "./Tools/OutlineTools.svelte";
-  import NewOutlineNote from "./Tools/NewOutlineNote.svelte";
   import { getToken } from "../../getToken";
   import {
     pageNotes,
@@ -14,16 +13,20 @@
     searchPageNotes,
   } from "../../stores/page/notes.js";
 
-  let addNewNote = false;
-  $: requesting = false;
+  let addNewNote = false,
+    requesting = false;
+  let filters = {
+    type: [],
+    colour: [],
+    flags: [],
+    list: false,
+  };
+
   $: notebookNotes = $pageNotes.items;
   $: outlineId =
     $outline && $outline.shortId ? $outline.shortId : $page.params.outlineId;
-
   $: outlineNotes = $outline.notes;
-  //$: droppedNotes = outlineNotes ? outlineNotes : [];
   $: outlineInfo = $outline;
-
   $: droppedNotes = $outline.type === "loading" ? "loading" : outlineNotes;
 </script>
 
@@ -39,13 +42,14 @@
 
 <main class="Outline">
   {#if droppedNotes}
-    <DropAreaOutline items={droppedNotes} bind:requesting {outlineInfo} />
+    <DropAreaOutline
+      items={droppedNotes}
+      bind:requesting
+      {outlineInfo}
+      {filters} />
   {:else}
     <div />
   {/if}
   <NotesColumn items={notebookNotes} {requesting} />
-  <OutlineTools bind:addNewNote />
-  {#if addNewNote}
-    <NewOutlineNote bind:addNewNote />
-  {/if}
+  <OutlineTools bind:addNewNote bind:filters />
 </main>

@@ -64,7 +64,7 @@
 
   let filterOn = false;
   let clicked = false;
-  $: if ((query.stack || query.type || query.flag) && !clicked) filterOn = true;
+  $: if ((query.colour || query.flag) && !clicked) filterOn = true;
 
   let filter = () => {
     filterOn = !filterOn;
@@ -130,28 +130,23 @@
     grid-template-columns: 1fr max-content;
     gap: 10px;
   }
-  .Header .Left h4,
-  .Header .Left h2 {
+  .ClosedNotesColumn .Header {
+    grid-template-columns: max-content;
+  }
+  .Header h2 {
     display: grid;
     font-weight: 500;
     grid-template-columns: max-content 1fr;
     align-items: center;
     gap: 5px;
   }
-  .Header .Left h2 {
+  .Header h2 {
     color: var(--workspace-color);
     font-size: 1rem;
   }
-  .Header .Left h2 :global(svg) {
+  .Header h2 :global(svg) {
     width: auto;
     height: 13px;
-  }
-  .Header .Left h4 {
-    color: #888888;
-  }
-  .Header .Left h4 :global(svg) {
-    width: auto;
-    height: 9px;
   }
   .Header .Right span {
     width: 34px;
@@ -251,21 +246,30 @@
     margin: 0;
     opacity: 0.5;
   }
+  .FiltersOn {
+    background: #f05657;
+    border-radius: 50%;
+    color: #fff;
+    width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    position: absolute;
+    top: -9px;
+    text-align: center;
+    right: -9px;
+    display: grid;
+    align-items: center;
+  }
 </style>
 
 <div>
   <section class="NotesColumn" class:closeColumn>
     <div class="Header">
-      <div class="Left">
-        <h2>
-          <NavNotes />
-          Notes
-        </h2>
-        <h4>
-          <NavNotebook />
-          Notebook
-        </h4>
-      </div>
+      <h2>
+        <NavNotes />
+        Notes
+      </h2>
       <div class="Right">
         <span on:click={handleClick}>
           <IcoCloseColumn />
@@ -279,6 +283,9 @@
       </div>
       <section class="Filter {filterOn ? 'active' : ''}" on:click={filter}>
         <p>Filter</p>
+        {#if query.colour || query.flag}
+          <span class="FiltersOn">{query.colour && query.flag ? 2 : 1}</span>
+        {/if}
       </section>
     </div>
     <div class="Filters {filterOn ? 'active' : ''}">
@@ -309,16 +316,10 @@
   {#if closeColumn}
     <section class="ClosedNotesColumn" on:click={handleClick}>
       <div class="Header">
-        <div class="Left">
-          <h2>
-            <NavNotes />
-            Notes
-          </h2>
-          <h4>
-            <NavNotebook />
-            Notebook
-          </h4>
-        </div>
+        <h2>
+          <NavNotes />
+          Notes
+        </h2>
       </div>
     </section>
   {/if}

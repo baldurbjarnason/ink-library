@@ -1,13 +1,11 @@
 <script>
-  //import { afterUpdate, tick } from "svelte";
   import { send, receive } from "../../routes/_crossfade.js";
-  //////////May leave
-  ///////////Change for add item icon or something
   import NotesSearch from "../NotesSearch.svelte";
+  import ArrowDropDown from "../img/ArrowDropDown.svelte";
   import Search from "../Search.svelte";
-  import Button from "../widgets/Button.svelte";
   import NewNote from "../notes/NewNote.svelte";
   import NewItem from "../workspace/NewItem.svelte";
+  import NewPage from "../pages/NewPage.svelte";
   import { getToken } from "../../getToken";
   import { refreshNotebook, page } from "../../stores";
   import { searchedNotes } from "../../stores/notebook/notes.js";
@@ -19,22 +17,32 @@
   import { goto } from "@sapper/app";
 
   export let notebook;
+  export let clickPage;
   let open = false;
   let newToggle;
+  $: if (clickPage) {
+    itemType = "page";
+    open = true;
+    itemState = "new";
+  }
 
-  function click() {
+  function click(e) {
+    e.preventDefault();
     open = !open;
     if ($page.query.notebook) goto($page.path);
+    itemType = e.target.innerHTML;
+    if (itemType === "page") itemState = "new";
   }
 
   function ntbkClose(nulled) {
+    clickPage = false;
     open = false;
     addItem = undefined;
     if (nulled !== "cancel")
       $refreshNotebook = { id: notebook.id, time: Date.now() };
   }
 
-  let itemType = "source";
+  let itemType;
   let itemState = "existing";
 
   let foundItems = [];
@@ -94,6 +102,7 @@
     justify-content: center;
     flex-direction: column;
     display: flex;
+    cursor: pointer;
   }
   .new-button :global(.Button) {
     padding: 0.65rem 1.95rem 0.6rem;
@@ -247,6 +256,16 @@
     align-items: center;
     float: right;
   }
+  .new-button > div {
+    position: relative;
+    background: var(--workspace-color);
+    border-radius: 15px;
+    padding: 10px 10px 10px 30px;
+    display: grid;
+    gap: 5px;
+    align-items: center;
+    grid-template-columns: repeat(2, max-content) 30px;
+  }
   .AddItem {
     background: #fff;
     width: 14px;
@@ -270,6 +289,57 @@
   }
   .AddItem::after {
     transform: translate(-50%, -50%) rotate(90deg);
+  }
+  .NewButtonLabel {
+    color: #ffffff;
+    margin: 0 !important;
+  }
+  .new-button > div :global(svg) {
+    position: inherit;
+    top: inherit;
+    right: inherit;
+    color: #ffffff;
+    margin: 0 auto;
+  }
+  .ItemsList {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    transform: translateY(calc(100% + 3px));
+    background: #fff;
+    list-style: none;
+    width: 100px;
+    padding: 0;
+    border-radius: 10px;
+    border-top-right-radius: 5px;
+    box-shadow: 2px 2px 10px 0 rgb(0 0 0 / 10%);
+    right: 0;
+    border: 1px solid #eee;
+    overflow-y: scroll;
+    margin: 0;
+  }
+  .new-button:hover .ItemsList {
+    display: block;
+  }
+  .ItemsList button {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 10px 20px;
+    display: grid;
+    width: 100%;
+    border: none;
+    text-transform: capitalize;
+    background: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    gap: 5px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .ItemsList button:last-child {
+    border-bottom: none;
+  }
+  .ItemsList button:hover {
+    background: var(--main-background-color);
   }
   .NewBox :global(section.header) {
     padding: 0 0 40px 0;
@@ -347,9 +417,10 @@
 </style>
 
 {#if open}
-  <div
-    class="NewBox">
-    <TopMenu {menu} {itemType} {itemState} />
+  <div class="NewBox">
+    {#if itemType !== 'page'}
+      <TopMenu {menu} {itemType} {itemState} />
+    {/if}
     {#if itemState === 'existing'}
       <div class="searchItems">
         <svelte:component this={searchTool(itemType)} />
@@ -387,19 +458,25 @@
     {:else if itemState === 'new'}
       {#if itemType === 'note'}
         <NewNote {ntbkClose} />
-      {:else}
+      {:else if itemType === 'source'}
         <NewItem {ntbkClose} />
+      {:else}
+        <NewPage {open} {ntbkClose} />
       {/if}
     {/if}
   </div>
   <span />
 {:else}
-  <span
-    class="new-button"
-    bind:this={newToggle}>
-    <Button {click}>
+  <span class="new-button" bind:this={newToggle}>
+    <div>
       <span class="AddItem" />
-      <span class="NewButtonLabel">Add Item</span>
-    </Button>
+      <span class="NewButtonLabel">Item</span>
+      <ArrowDropDown />
+      <div class="ItemsList">
+        <button on:click={click}>note</button>
+        <button on:click={click}>source</button>
+        <button on:click={click}>page</button>
+      </div>
+    </div>
   </span>
 {/if}

@@ -175,13 +175,13 @@
     color: #4c9b92;
   }
   @media (min-width: 721px) {
-    div:only-child {
-      width: calc(50% - var(--base) / 2);
+    div.NotebookCard:only-child {
+      width: calc(50% - var(--base) / 2) !important;
     }
   }
 </style>
 
-<div class="Item {notebook.settings.colour}">
+<div class="Item NotebookCard {notebook.settings.colour}">
   <a href={`notebooks/${notebook.shortId}`}>{notebook.name}</a>
   {#if selectable}
     <input

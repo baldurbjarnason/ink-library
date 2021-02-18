@@ -10,7 +10,8 @@
   import FlagUrgent from "../../img/FlagUrgent.svelte";
   import NavSource from "../../img/NavSource.svelte";
   import { page, addSelected, removeSelected } from "../../../stores";
-  export let note = {};
+  export let item = {};
+  $: note = item;
 
   function assignIco(icon) {
     switch (icon) {
@@ -226,16 +227,14 @@
       {@html noted.content}
     </p>
   {/if}
-  {#if params.styleFlags}
-    <ul class="OutlineFlags">
-      {#each note.tags as flag}
-        {#if flag.type === 'flag' && ((!Array.isArray(params['styleFlags']) && params['styleFlags'] === flag.name.replace(' ', '')) || (Array.isArray(params['styleFlags']) && params['styleFlags'].find((item) => item === flag.name.replace(' ', ''))))}
-          <li>
-            <svelte:component this={assignIco(flag.name)} />
-            <p>{flag.name}</p>
-          </li>
-        {/if}
-      {/each}
-    </ul>
-  {/if}
+  <ul class="OutlineFlags">
+    {#each note.tags as flag}
+      {#if flag.type === 'flag'}
+        <li>
+          <svelte:component this={assignIco(flag.name)} />
+          <p>{flag.name}</p>
+        </li>
+      {/if}
+    {/each}
+  </ul>
 </div>

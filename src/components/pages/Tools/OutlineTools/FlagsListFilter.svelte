@@ -14,8 +14,7 @@
   import { page } from "../../../../stores";
 
   export let addArrParams;
-
-  $: params = $page.query;
+  export let filters;
 
   let flags = [
     "furtherreading",
@@ -74,14 +73,14 @@
   <IcoFlag />
   <p>Flags</p>
   <p class="Preview">
-    ({!params.filterFlags ? 'All' : !Array.isArray(params['filterFlags']) ? 8 : 9 - params.filterFlags.length})
+    {!filters.flags.length ? 'All' : 9 - filters.flags.length}
   </p>
   <ArrowDropDown />
   <ul class="FilterFlags">
     <li
-      class:Current={!params.filterFlags}
+      class:Current={!filters.flags.length}
       on:click={() => {
-        params.filterFlags ? addArrParams('filterFlags', undefined) : '';
+        filters.flags = [];
       }}>
       <IcoChecked />
       <p>All flags</p>
@@ -90,11 +89,11 @@
     {#each flags as flag}
       <li
         on:click={() => {
-          addArrParams('filterFlags', flag);
+          addArrParams('flags', flag);
         }}>
         <span
           class="Checkbox"
-          class:Unchecked={(params['filterFlags'] && !Array.isArray(params['filterFlags']) && params['filterFlags'] === flag) || (params['filterFlags'] && Array.isArray(params['filterFlags']) && params['filterFlags'].find((item) => item === flag))} />
+          class:Unchecked={filters.flags.find((item) => item === flag)} />
         <p class="FlagName">
           {flag === 'todo' ? 'To do' : flag === 'importantterm' ? 'Important term' : flag === 'furtherreading' ? 'Further reading' : flag}
         </p>

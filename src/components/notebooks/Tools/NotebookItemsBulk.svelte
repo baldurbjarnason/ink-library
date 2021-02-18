@@ -11,10 +11,9 @@
   export let endSelection = function() {};
   export let notebook;
   export let typeOfItem;
-  export let refresh;
 
   let activeModal = false;
-
+  $: console.log(typeOfItem);
   async function remove() {
     const body = { items: Array.from($selectedItems) };
     if (typeOfItem !== "page") body["notebook"] = notebook;
@@ -32,7 +31,8 @@
         body: JSON.stringify(body),
       });
 
-      refresh();
+      //refresh();
+      goto($page.path);
     } catch (err) {
       console.error(err);
     }

@@ -7,12 +7,12 @@
   import { notebook, refreshNotebook, page } from "../../stores";
   import DeletionModal from "../notes/Items/DeletionModal.svelte";
   import EditCoverImage from "./Tools/EditCoverImage.svelte";
-  import NewPage from "../pages/NewPage.svelte";
   import NoteEdit from "./Tools/NoteEdit.svelte";
   import { goto } from "@sapper/app";
   import { getToken } from "../../getToken";
 
   let activeModal = false;
+  let clickPage = false;
   async function remove() {
     goto(`notebooks`);
 
@@ -99,7 +99,7 @@
   }
   .Header {
     display: grid;
-    grid-template-columns: max-content max-content 1fr;
+    grid-template-columns: max-content 1fr;
     grid-gap: 20px;
   }
   .Title {
@@ -330,7 +330,6 @@
           }}>
           Delete notebook
         </h5>
-        <NewPage notebook={$notebook} />
       </div>
       <div class="library">
         {#if $notebook.shortId}
@@ -435,12 +434,12 @@
         {/if}
       </div>
     </section>
-    <AddItems notebook={$notebook} />
+    <AddItems notebook={$notebook} bind:clickPage />
   </nav>
 {/if}
 <div class="CardsContent" class:NotesEditor={$page.params.noteId}>
   <div class="notesList">
-    <SingleNotebookList notebook={$notebook} />
+    <SingleNotebookList notebook={$notebook} bind:clickPage />
   </div>
   {#if $page.params.noteId}
     <NoteEdit />

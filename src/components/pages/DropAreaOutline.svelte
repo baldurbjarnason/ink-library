@@ -20,6 +20,7 @@
   export let items;
   export let requesting;
   export let outlineInfo;
+  export let filters;
 
   $: params = $page.query;
   $: isTransitioning =
@@ -122,6 +123,12 @@
     if (request === "PATCH" && !note.next && !note.previous) return;
     addNote(note, request);
   }
+
+  let assignComp = (item) => {
+    if (item.json && item.json.type === "header") return NewHeaderCard;
+    else if (item.json && item.json.type === "note") return NewNoteCard;
+    else return NoteCardOutline;
+  };
 </script>
 
 <style>
@@ -146,26 +153,40 @@
     border-radius: 30px;
     transform: translateX(40px);
     list-style-type: none;
-  }
-  ul.ItemsList.alpha {
-    list-style-type: upper-alpha;
-  }
-  ul.ItemsList.roman {
-    list-style-type: upper-roman;
-  }
-  ul.ItemsList.decimal {
-    list-style-type: decimal;
-  }
-  ul.ItemsList.bPoint {
-    list-style-type: disc;
+    counter-reset: items;
   }
   li.Item {
     position: relative;
   }
-  li.Item::marker {
+  li.Hide {
+    display: none;
+  }
+  li.header:not(.Hide) + li {
+    counter-reset: items;
+  }
+  li:not(.header)::before {
     color: var(--workspace-color);
     font-size: 0.9rem;
     font-weight: 500;
+    counter-increment: items;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateX(calc(-100% - 7px));
+  }
+  ul.ItemsList.alpha li:not(.header)::before {
+    content: counter(items, upper-alpha) ". ";
+  }
+  ul.ItemsList.roman li:not(.header)::before {
+    content: counter(items, upper-roman) ". ";
+  }
+  ul.ItemsList.decimal li:not(.header)::before {
+    content: counter(items, decimal) ". ";
+  }
+  ul.ItemsList.bPoint li:not(.header)::before {
+    content: counter(items, disc);
+    font-size: 2rem;
+    line-height: 1.5rem;
   }
   .custom-shadow-item {
     position: absolute;
@@ -176,6 +197,9 @@
     visibility: visible;
     opacity: 0.5;
     margin: 0;
+  }
+  :global(.custom-shadow-item:first-child) {
+    background: blue;
   }
   .hi {
     animation: fadeIn 900ms ease;
@@ -218,61 +242,36 @@
     margin: 0;
     opacity: 0.5;
   }
+  li.Item.header {
+    transform: translateX(-20px);
+  }
 </style>
 
 <div class="Workarea">
-  <OutlineHeader {outlineInfo} />
+  <OutlineHeader {outlineInfo} notebook={$pageItem.notebook} />
   {#if requesting || items === 'loading'}
     <ul class="ItemsList">
       <Loader />
     </ul>
   {:else}
     <ul
-      class={`ItemsList ${params.list ? params.list : ''}`}
+      class={`ItemsList ${filters.list ? filters.list : ''}`}
       use:dndzone={{ items, flipDurationMs, dragDisabled: isTransitioning, dropFromOthersDisabled: isTransitioning, dropTargetStyle }}
       on:consider={handleSort}
       on:finalize={handleDrop}>
       {#each items as item, i (item.id)}
-        <li class="Item" animate:flip={{ duration: flipDurationMs }}>
-          {#if item.json && item.json.type}
-            {#if item.json.type === 'header' && (!params['filters'] || (!Array.isArray(params['filters']) && params.filter !== 'headers') || (Array.isArray(params['filters']) && !params['filters'].some(
-                    (item) => params['filters'].includes('headers')
-                  )))}
-              <NewHeaderCard {item} />
-              {#if item[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
-                <div
-                  in:fade={{ duration: 200, easing: cubicIn }}
-                  class="custom-shadow-item {item.isByeBye ? 'bye' : item.isHi ? 'hi' : ''}">
-                  <NewHeaderCard {item} />
-                </div>
-              {/if}
-            {:else if item.json.type === 'note' && (!params['filters'] || (!Array.isArray(params['filters']) && params.filter !== 'notes') || (Array.isArray(params['filters']) && !params['filters'].some(
-                    (item) => params['filters'].includes('notes')
-                  )))}
-              <NewNoteCard {item} />
-              {#if item[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
-                <div
-                  in:fade={{ duration: 200, easing: cubicIn }}
-                  class="custom-shadow-item {item.isByeBye ? 'bye' : item.isHi ? 'hi' : ''}">
-                  <NewNoteCard {item} />
-                </div>
-              {/if}
-            {/if}
-          {:else if !params['filterColour'] || (params['filterColour'] && !Array.isArray(params['filterColour']) && !item.tags.find((tag) => tag.name === params['filterColour'])) || (params['filterColour'] && Array.isArray(params['filterColour']) && !item.tags.some(
-                (item) => params['filterColour'].includes(item.name)
-              ))}
-            {#if !params['filterFlags'] || (params['filterFlags'] && !Array.isArray(params['filterFlags']) && !item.tags.find((tag) => tag.name.replace(' ', '') === params['filterFlags'])) || (params['filterFlags'] && Array.isArray(params['filterFlags']) && !item.tags.some(
-                  (item) =>
-                    params['filterFlags'].includes(item.name.replace(' ', ''))
-                ))}
-              <NoteCardOutline note={item} />
-              {#if item[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
-                <div
-                  in:fade={{ duration: 200, easing: cubicIn }}
-                  class="custom-shadow-item {item.isByeBye ? 'bye' : item.isHi ? 'hi' : ''}">
-                  <NoteCardOutline note={item} />
-                </div>
-              {/if}
+        <li
+          class="Item {item.json ? item.json.type : ''}"
+          class:Hide={(item.json && filters.type.some((type) => type === item.json.type)) || (!item.json && item.tags.some((item) => filters.colour.includes(item.name) || filters.flags.includes(item.name)))}
+          animate:flip={{ duration: flipDurationMs }}>
+          {#if (item.json && !filters.type.some((type) => type === item.json.type)) || (!item.json && !item.tags.some((item) => filters.colour.includes(item.name) || filters.flags.includes(item.name)))}
+            <svelte:component this={assignComp(item)} {item} />
+            {#if item[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
+              <div
+                in:fade={{ duration: 200, easing: cubicIn }}
+                class="custom-shadow-item {item.isByeBye ? 'bye' : item.isHi ? 'hi' : ''}">
+                <svelte:component this={assignComp(item)} {item} />
+              </div>
             {/if}
           {/if}
         </li>
