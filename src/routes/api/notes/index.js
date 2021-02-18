@@ -9,16 +9,15 @@ export const post = async function post(req, res, next) {
   delete req.body.collection;
   delete req.body._tags;
 
-  console.log(tags)
   if (req.user && req.user.profile) {
     try {
       const response = await got
         .post(`${process.env.API_SERVER}notes`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
+            Authorization: `Bearer ${req.user.token}`,
           },
-          json: req.body
+          json: req.body,
         })
         .json();
       if (tags && tags.length !== 0) {
@@ -26,8 +25,8 @@ export const post = async function post(req, res, next) {
           await got.put(`${response.id}/tags/${tag}`, {
             headers: {
               "content-type": "application/ld+json",
-              Authorization: `Bearer ${req.user.token}`
-            }
+              Authorization: `Bearer ${req.user.token}`,
+            },
           });
         }
       }
@@ -36,8 +35,8 @@ export const post = async function post(req, res, next) {
         await got.put(`${response.id}/tags/${workspace}`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
-          }
+            Authorization: `Bearer ${req.user.token}`,
+          },
         });
       }
       // Check collection
@@ -45,8 +44,8 @@ export const post = async function post(req, res, next) {
         await got.put(`${response.id}/tags/${collection}`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
-          }
+            Authorization: `Bearer ${req.user.token}`,
+          },
         });
       }
       return res.json(response);
@@ -73,8 +72,8 @@ export async function get(req, res, next) {
     url = `${url}?${query.toString()}`;
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
     res.json(response);
   } catch (err) {

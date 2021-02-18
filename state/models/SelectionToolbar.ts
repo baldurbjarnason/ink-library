@@ -4,13 +4,15 @@ import { clearTemporaryHighlight, highlightRange } from "./highlightRange";
 import { highlightToAnnotation } from "./highlightToAnnotation";
 import { Annotation } from "./Annotation";
 
-export const selectionHighlight$ = selection().pipe(
+export const toolbar$ = selection().pipe(
   map((selection) => {
-    return new SelectionHighlight(selection);
+    return new Toolbar(selection);
   })
 );
 
-class SelectionHighlight {
+let oldRange: Range = null;
+let temporary: any;
+class Toolbar {
   public range: Range;
   public selection: Selection;
   public root: Element;
@@ -25,34 +27,71 @@ class SelectionHighlight {
       !selection.isCollapsed
     ) {
       this.range = selection.getRangeAt(0);
+      oldRange = this.range;
+      temporary = null;
+      clearTemporaryHighlight();
       this.positions = this.range.getBoundingClientRect();
     }
   }
-  public getBoundingClientRect() {
-    this.positions = this.range.getBoundingClientRect();
-    return this.positions;
+  get visible() {
+    return temporary || this.range;
   }
-  public tempHighlightObject: any;
-  public tempHighlight(range, source, chapter) {
-    const highlightedRange = highlightRange(range, this.root);
-    this.tempHighlightObject = new Annotation(
+  get temporary() {
+    return temporary;
+  }
+  public getBoundingClientRect() {
+    if (this.range) {
+      return this.range.getBoundingClientRect();
+    } else if (temporary) {
+      console.log(oldRange, oldRange.getBoundingClientRect());
+      return oldRange.getBoundingClientRect();
+    }
+  }
+
+  public setOldRange() {
+    const annotations = document.querySelectorAll(
+      '[data-annotation-id="temporary-selection-highlight"]'
+    );
+    const first = annotations[0];
+    const last = annotations[annotations.length - 1];
+    const range = document.createRange();
+    range.setStartBefore(first);
+    range.setEndAfter(last);
+    oldRange = range;
+  }
+
+  collapse() {
+    oldRange = null;
+    this.selection.collapseToStart();
+    if (temporary) {
+      clearTemporaryHighlight();
+      temporary = null;
+    }
+  }
+
+  public tempHighlight(source, chapter) {
+    if (temporary) return temporary;
+    const highlightedRange = highlightRange(oldRange, this.root);
+    this.setOldRange();
+    temporary = new Annotation(
       highlightToAnnotation(highlightedRange, this.root, source, chapter)
     );
-    return this.highlight;
+    this.selection.collapseToStart();
+    return temporary;
   }
   public clearTemporaryHighlight() {
     return clearTemporaryHighlight();
   }
   async highlight(source, chapter, json) {
     console.log(this);
-    if (this.tempHighlightObject) {
-      this.tempHighlightObject.create(json, "temporary-selection-highlight");
+    if (temporary) {
+      temporary.create(json, "temporary-selection-highlight");
     } else {
       const highlightedRange = highlightRange(this.range, this.root);
-      this.tempHighlightObject = new Annotation(
+      temporary = new Annotation(
         highlightToAnnotation(highlightedRange, this.root, source, chapter)
       );
-      this.tempHighlightObject.create(json, "temporary-selection-highlight");
+      temporary.create(json, "temporary-selection-highlight");
     }
   }
 }

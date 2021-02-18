@@ -129,7 +129,6 @@
             click={() => {
               create(term);
               term = '';
-              flagMenu.open = false;
             }}>
             Create
           </HighlightTextButton>

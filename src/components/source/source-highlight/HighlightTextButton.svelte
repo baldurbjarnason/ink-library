@@ -58,6 +58,12 @@
   } */
 </style>
 
-<button class="Button" type="button" {hidden} {disabled} on:click={click}>
+<button
+  class="Button"
+  type="button"
+  {hidden}
+  {disabled}
+  on:click={click}
+  data-highlight-toolbar="true">
   <slot />
 </button>

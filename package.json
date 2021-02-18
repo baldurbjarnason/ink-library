@@ -115,6 +115,7 @@
     "@open-wc/testing": "^2.5.32",
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-typescript": "^6.1.0",
+    "@rollup/plugin-url": "^6.0.0",
     "@tsconfig/svelte": "^1.0.10",
     "@types/mocha": "^8.2.0",
     "@web/test-runner": "^0.12.2",

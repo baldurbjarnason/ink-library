@@ -2,7 +2,7 @@
   import NotesCard from "../source-highlight/HighlightMarginBox.svelte";
   import { intersections, topmost } from "../../../../state/nodes";
   import { chapter$, source$, chapterNotes$ } from "../../../../state/state";
-  import HighlightToolbar from "../source-highlight/HighlightToolbar.svelte";
+  import HighlightToolbar from "../source-highlight/toolbar/Toolbar.svelte";
   import Bookmarks from "./Bookmarks.svelte";
   export let root;
   export let bookmarks;
