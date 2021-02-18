@@ -4,10 +4,8 @@
   import IcoChecked from "../../../img/OutlineIcoChecked.svelte";
   import { page } from "../../../../stores";
 
-  export let typeOf;
   export let addArrParams;
-
-  $: params = $page.query;
+  export let filters;
 
   let colours = ["colour1", "colour2", "colour3", "colour4"];
 </script>
@@ -53,14 +51,14 @@
   <IcoColor />
   <p>Colours</p>
   <p class="Preview">
-    ({!params[`${typeOf}Colour`] ? 'All' : !Array.isArray(params[`${typeOf}Colour`]) ? 3 : 4 - params[`${typeOf}Colour`].length})
+    {!filters.colour.length ? 'All' : 4 - filters.colour.length}
   </p>
   <ArrowDropDown />
   <ul class="Colours">
     <li
-      class:Current={!params[`${typeOf}Colour`]}
+      class:Current={!filters.colour.length}
       on:click={() => {
-        params[`${typeOf}Colour`] ? addArrParams([`${typeOf}Colour`], undefined) : '';
+        filters.colour = [];
       }}>
       <IcoChecked />
       <p>All colours</p>
@@ -69,11 +67,11 @@
     {#each colours as colour}
       <li
         on:click={() => {
-          addArrParams(`${typeOf}Colour`, colour);
+          addArrParams('colour', colour);
         }}>
         <span
           class="Checkbox {colour}"
-          class:Unchecked={(params[`${typeOf}Colour`] && !Array.isArray(params[`${typeOf}Colour`]) && params[`${typeOf}Colour`] === colour) || (params[`${typeOf}Colour`] && Array.isArray(params[`${typeOf}Colour`]) && params[`${typeOf}Colour`].find((item) => item === colour))} />
+          class:Unchecked={filters.colour.find((item) => item === colour)} />
         <p>{colour}</p>
       </li>
     {/each}

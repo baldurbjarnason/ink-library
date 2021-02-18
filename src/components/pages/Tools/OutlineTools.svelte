@@ -1,91 +1,38 @@
 <script>
   import IcoNewNote from "../../img/IcoNewNote.svelte";
+  import OutlineIcoHeader from "../../img/OutlineIcoHeader.svelte";
+  import OutlineIcoThought from "../../img/OutlineIcoThought.svelte";
   import Linear from "../../img/OutlineIcoLinear.svelte";
   import Columns from "../../img/OutlineIcoColumns.svelte";
   import Page from "../../img/OutlineIcoPage.svelte";
-  import Styling from "../../img/OutlineIcoStyling.svelte";
   import Filter from "../../img/OutlineIcoFilter.svelte";
   import Export from "../../img/OutlineIcoExport.svelte";
-  import FlagsListStyle from "./OutlineTools/FlagsListStyle.svelte";
   import FlagsListFilter from "./OutlineTools/FlagsListFilter.svelte";
   import ColourList from "./OutlineTools/ColourList.svelte";
   import ListStyleList from "./OutlineTools/ListStyleList.svelte";
   import FilterOptions from "./OutlineTools/FilterOptions.svelte";
-  import StyleOptions from "./OutlineTools/StyleOptions.svelte";
+  import NewOutlineNote from "./NewOutlineNote.svelte";
   import { page } from "../../../stores";
   import { goto } from "@sapper/app";
 
   export let addNewNote;
+  export let filters;
 
-  $: params = $page.query;
-
-  let checkAll = (type) => {
-    if (type === "styles") {
-      delete params["styles"];
-      delete params["styleColour"];
-      delete params["styleFlags"];
-    } else {
-      delete params["filters"];
-      delete params["filterColour"];
-      delete params["filterFlags"];
-    }
-    let searchParams = new URLSearchParams(params);
-
-    buildUrl(searchParams);
+  let checkAll = () => {
+    filters.type = [];
+    filters.colour = [];
+    filters.flags = [];
   };
 
-  let addParams = (query, value) => {
-    delete params[query];
-    let searchParams = new URLSearchParams();
-    if (value) searchParams.append(query, value);
-
-    buildUrl(searchParams);
+  let addParams = (value) => {
+    filters.list = value;
   };
 
-  let addArrParams = (query, value) => {
-    let queryVals = params[query];
-    delete params[query];
-    let searchParams = new URLSearchParams();
-
-    if (value) {
-      if (queryVals) {
-        if (Array.isArray(queryVals)) {
-          let i = queryVals.indexOf(value);
-          i >= 0 ? queryVals.splice(i, 1) : (queryVals = [...queryVals, value]);
-
-          queryVals.forEach((value) => {
-            searchParams.append(query, value);
-          });
-        } else {
-          if (queryVals === value) {
-            searchParams.delete(query);
-          } else {
-            searchParams.append(query, queryVals);
-            searchParams.append(query, value);
-          }
-        }
-      } else {
-        searchParams.append(query, value);
-      }
-    }
-    buildUrl(searchParams);
-  };
-
-  let buildUrl = (searchParams) => {
-    Object.keys(params).forEach((key) => {
-      let value = params[key];
-      if (value) {
-        if (Array.isArray(value)) {
-          value.map((item) => {
-            searchParams.append(key, item);
-          });
-        } else {
-          searchParams.append(key, value);
-        }
-      }
-    });
-
-    goto(`${$page.path}?${searchParams.toString()}`);
+  let addArrParams = (filter, value) => {
+    if (filters[filter].includes(value)) {
+      filters[filter].splice(filters[filter].indexOf(value), 1);
+      filters[filter] = filters[filter];
+    } else filters[filter] = [...filters[filter], value];
   };
 </script>
 
@@ -178,8 +125,8 @@
   ul.Tools > li > p {
     font-size: 0.6rem !important;
   }
-  ul.Tools > li.Current,
-  ul.Tools > li:hover {
+  ul.Tools > li:hover,
+  li.NewNote.Active {
     background: #eeeeee;
   }
   ul.Tools p,
@@ -277,104 +224,109 @@
     width: 40px;
   }
   span.Notification {
-    width: 5px;
-    height: 5px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: #f05657;
     position: absolute;
     top: 5px;
     right: 5px;
   }
-  span.NewText {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: block;
-    margin: 4px auto 8px;
-    background: #333;
-    position: relative;
-  }
-  span.NewText::before,
-  span.NewText::after {
-    content: "";
-    width: 50%;
-    height: 1px;
-    border-radius: 10px;
-    background: #ffffff;
+  .NewItem {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
   }
-  span.NewText::after {
-    transform: translate(-50%, -50%) rotate(90deg);
+  .Export p.Message {
+    display: none;
+    background: rgba(0, 34, 48, 0.9);
+    font-size: 0.7rem;
+    color: #fff;
+    padding: 3px 10px;
+    font-weight: 500;
+    bottom: 0;
+    margin: 0;
+    left: 50%;
+    text-transform: capitalize;
+    position: absolute;
+    border-radius: 5px;
+    transform: translate(-50%, calc(100% + 5px));
+  }
+  .Export:hover p.Message {
+    display: block;
+  }
+  .Export p.Message::after {
+    content: "";
+    top: -9px;
+    left: 50%;
+    width: 0px;
+    height: 0px;
+    border-radius: 3px;
+    position: absolute;
+    border-style: solid;
+    border-width: 6px;
+    transform: translate(-50%, 3px) rotate(45deg);
+    border-color: rgba(0, 34, 48, 0.9) transparent transparent
+      rgba(0, 34, 48, 0.9);
   }
 </style>
 
 <ul class="Tools">
-  <li
-    class="Tool Linear"
-    class:Current={!params.sheet}
-    on:click={() => {
-      addParams('sheet', undefined);
-    }}>
-    <Linear />
-    <p>Linear</p>
-  </li>
-  <li
-    class="Tool Page"
-    class:Current={params.sheet && params.sheet === 'page'}
-    on:click={() => {
-      addParams('sheet', 'page');
-    }}>
-    <Page />
-    <p>Page</p>
-  </li>
-  <span class="Division Short" />
-  <li
-    class="Tool NewNote"
-    on:click={() => {
-      addNewNote = !addNewNote;
-    }}>
-    <span class="NewText" />
-    <p>Text</p>
-  </li>
-  <span class="Division Short" />
-  <ListStyleList {addParams} />
-  <li class="Tool List Children">
-    {#if params['styles'] || params['styleFlags'] || params['styleColour']}
-      <span class="Notification" />
+  <li class="Tool NewNote {addNewNote === 'header' ? 'Active' : ''}">
+    <button
+      class="NewItem"
+      on:click={() => {
+        addNewNote = !addNewNote || addNewNote !== 'header' ? 'header' : false;
+      }} />
+    <OutlineIcoHeader />
+    <p>Header</p>
+    {#if addNewNote === 'header'}
+      <NewOutlineNote type={'header'} bind:addNewNote />
     {/if}
-    <Styling />
-    <p>Styling</p>
-    <ul class="Styles">
-      <StyleOptions {checkAll} {addArrParams} />
-      <span class="Division Long" />
-      <ColourList typeOf="style" {addArrParams} />
-      <span class="Division Long" />
-      <FlagsListStyle {buildUrl} {addArrParams} />
-    </ul>
   </li>
+  <li class="Tool NewNote {addNewNote === 'note' ? 'Active' : ''}">
+    <button
+      class="NewItem"
+      on:click={() => {
+        addNewNote = !addNewNote || addNewNote !== 'note' ? 'note' : false;
+      }} />
+    <OutlineIcoThought />
+    <p>Thought</p>
+    {#if addNewNote === 'note'}
+      <NewOutlineNote type={'note'} bind:addNewNote />
+    {/if}
+  </li>
+  <span class="Division Short" />
+  <ListStyleList {addParams} bind:filters />
   <li class="Tool List Filter Children">
-    {#if params['filters'] || params['filterFlags'] || params['filterColour']}
+    {#if filters.colour.length || filters.flags.length || filters.type.length}
       <span class="Notification" />
     {/if}
     <Filter />
     <p>Filter</p>
     <ul class="Filters">
-      <FilterOptions {checkAll} {addArrParams} />
+      <FilterOptions {checkAll} {addArrParams} {filters} />
       <span class="Division Long" />
       <p class="Header">Display notes</p>
-      <ColourList typeOf="filter" {addArrParams} />
+      <ColourList {addArrParams} bind:filters />
       <span class="Division Long">
         <p class="Header And">and</p>
       </span>
-      <FlagsListFilter {addArrParams} />
+      <FlagsListFilter {addArrParams} bind:filters />
     </ul>
   </li>
   <span class="Division Short Last" />
   <li class="Tool Export">
     <Export />
     <p>Export</p>
+    <p class="Message">Coming soon!</p>
   </li>
 </ul>

@@ -2,10 +2,14 @@
   import IcoSearch from "../../img/IcoSearch.svelte";
   import { searchPageNotes, page } from "../../../stores";
 
-  let input;
-  function loadSearch() {
-    if ($page.path.startsWith("/pages/")) $searchPageNotes = input.value;
-  }
+  let inputValue;
+  let loadSearch = () => {
+    if ($page.path.startsWith("/pages/")) $searchPageNotes = inputValue;
+  };
+
+  let Clear = () => {
+    inputValue = "";
+  };
 </script>
 
 <style>
@@ -59,6 +63,33 @@
   input[type="search"]::-webkit-search-results-decoration {
     display: none;
   }
+  .Clear {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    z-index: 1;
+    background: #e5ecf2;
+    cursor: pointer;
+    transform: translateY(-50%) rotate(45deg);
+  }
+  .Clear::before,
+  .Clear::after {
+    content: "";
+    position: absolute;
+    border-radius: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--workspace-color);
+    width: 2px;
+    height: 50%;
+  }
+  .Clear::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
   @media (max-width: 640px) {
     .SearchBox {
       left: 0.5rem;
@@ -78,9 +109,11 @@
     name="search"
     id="search-input"
     class="search-field"
-    value=""
+    bind:value={inputValue}
     placeholder="Search notes..."
-    bind:this={input}
     on:input={loadSearch} />
   <IcoSearch />
+  {#if inputValue}
+    <span on:click={Clear} class="Clear" />
+  {/if}
 </div>

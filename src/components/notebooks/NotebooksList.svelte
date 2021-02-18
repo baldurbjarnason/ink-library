@@ -243,4 +243,6 @@
       clearSelected();
     }} />
 {/if}
-<PaginationButtons itemsLenght={items.length} />
+{#if items && items.length}
+  <PaginationButtons itemsLenght={items.length} />
+{/if}

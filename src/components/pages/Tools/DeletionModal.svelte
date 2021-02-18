@@ -91,14 +91,10 @@
   <section>
     <NoDeletion />
     <p>
-      You are about to delete "
-      <strong>{outlineInfo.name}</strong>
-      ", that contains
-      <strong>{outlineInfo.notes.length}</strong>
-      note{outlineInfo.notes.length === 1 ? '' : 's'}. This operation cannot be
-      undone.
+      This action will delete your outline. This action cannot be undone. This
+      operation cannot be undone.
       <br />
-      <strong>Are you sure you want to continue?</strong>
+      <strong>Are you sure you want to delete {outlineInfo.name}?</strong>
     </p>
     <div class="Footer">
       <h5

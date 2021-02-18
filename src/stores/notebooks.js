@@ -11,6 +11,7 @@ export const notebooks = derived(
   ([$page, $refreshNotebooks, $searchNotebooks], set) => {
     if (!process.browser) return;
     if (!$page.path || !$page.path.startsWith("/notebooks")) return;
+    if ($page.params.id) return;
     if ($page.query.returnTo) return;
     set({ type: "loading", items: [] });
     const query = Object.assign({}, $page.query);
@@ -20,24 +21,18 @@ export const notebooks = derived(
     } else if ($page.query.search) {
       query.search = $page.query.search;
     }
-
     let url;
     if (query) {
       url = `/api/notebooks?${new URLSearchParams(query).toString()}`;
     } else {
       url = `/api/notebooks`;
     }
+    console.log($page);
     return fetch(url)
-      .then(lib => {
-        if ($page.params.id) {
-          const listNotebook = lib.items.find(
-            item => item.shortId === $page.params.id
-          );
-          listNotebook.selected = true;
-        }
+      .then((lib) => {
         set(lib);
       })
-      .catch(err => {
+      .catch((err) => {
         set({ type: "failed", items: [] });
         error.set(err);
         console.error(err);
