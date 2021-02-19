@@ -18,6 +18,7 @@
       note = annotations[element.dataset.annotationId];
     });
   }
+  $: console.log(note, $note, annotation);
   let annotation;
   $: if ($note && $note.annotation) {
     annotation = $note.annotation;
@@ -170,7 +171,7 @@
   {#if editing}
     <HighlightMarginEdit
       {annotation}
-      {note}
+      note={$note}
       stopEditing={() => {
         editing = false;
       }} />

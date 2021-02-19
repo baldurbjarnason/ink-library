@@ -35,6 +35,7 @@
 
   export let note;
   export let annotation;
+  $: console.log(note, annotation);
   export let stopEditing = () => {};
   let noted;
   $: if (annotation && !plaintext) {
@@ -130,7 +131,7 @@
       body = content;
     }
     stopEditing();
-    return $note.update({ tags: flags.concat(colour), notebooks }, body);
+    return note.update({ tags: flags.concat(colour), notebooks }, body);
   }
 </script>
 

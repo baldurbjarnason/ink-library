@@ -71,8 +71,6 @@ export class Annotation {
 
   public async create(json, tempId?: string) {
     const processed = this.processCreate(json);
-    const annotationSubject = new Annotation$(processed);
-    createdNotes$.add(annotationSubject);
     const updated = await this._create(processed);
     let colour;
     if (json.tags.find((tag) => tag.type === "colour")) {
@@ -81,11 +79,14 @@ export class Annotation {
     } else {
       colour = "Colour1";
     }
-    json.tags = json.tags.concat(colour);
+    updated.tags = json.tags;
+    updated.notebooks = json.notebooks;
+    updated.body = this.annotation.body;
     if (tempId) {
       updateHighlight(tempId, updated.id, colour);
     }
-    annotationSubject.next(updated);
+    const annotationSubject = new Annotation$(updated);
+    createdNotes$.add(annotationSubject);
     return annotationSubject;
   }
 
@@ -113,6 +114,7 @@ export class Annotation {
     if (result.ok) {
       const created = await result.json();
       const annotation = Object.assign({}, this.annotation, created);
+      console.log(created, annotation);
       return annotation;
     } else {
       // Should we update the annotation object with an error object
@@ -143,7 +145,9 @@ export class Annotation {
         });
     }
     payload.body = payload.body.map((item) => {
-      item.motivation = item.purpose;
+      if (item.purpose && !item.motivation) {
+        item.motivation = item.purpose;
+      }
       return item;
     });
     // console.log(payload.body, this.annotation.body);
