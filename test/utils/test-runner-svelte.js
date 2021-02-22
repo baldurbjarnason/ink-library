@@ -36,7 +36,7 @@ const sveltePlugin = {
           );
         }
       }
-      return result.js.code;
+      return result.js.code + `\n//# sourceMappingURL=` + result.js.map.toUrl();
     }
   },
 };
