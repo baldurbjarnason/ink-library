@@ -1,9 +1,14 @@
 <script>
-  import ToC from '../../src/components/source/source-sidebar/ToC.svelte'
-  export let contents
+  import ToC from "../../src/components/source/source-sidebar/ToC.svelte";
+  export let contents;
 </script>
 
 <style>
+  #ToCtest {
+    color: black;
+  }
 </style>
 
-<div id="ToCtest"><ToC media="/media" base="/base" path="chapters/chapter1.html" {contents}  /></div>
+<div id="ToCtest">
+  <ToC media="/media" base="/base" path="chapters/chapter1.html" {contents} />
+</div>

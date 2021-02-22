@@ -4,6 +4,7 @@ const { esbuildPlugin } = require("@web/dev-server-esbuild");
 require("dotenv").config();
 
 module.exports = {
+  nodeResolve: true,
   coverage: true,
   coverageConfig: {
     report: true,
