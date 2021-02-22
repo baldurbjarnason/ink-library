@@ -18,6 +18,11 @@ const sveltePlugin = {
       return source + "/index.mjs";
     }
   },
+  async serverStart({ config, logger }) {
+    this.config = config;
+    this.logger = logger;
+    console.log(config);
+  },
   async transform(context) {
     const fileExtension = path.posix.extname(context.path);
     if (fileExtension === ".svelte") {
@@ -31,7 +36,7 @@ const sveltePlugin = {
       });
       if (result.warnings) {
         for (const warning of result.warnings) {
-          console.warn(
+          this.logger.warn(
             `[@web/test-runner-svelte] Warning : ${warning.toString()}`
           );
         }
