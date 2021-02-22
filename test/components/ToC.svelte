@@ -1,5 +1,10 @@
 <script>
+  import { setContext } from "svelte";
   import ToC from "../../src/components/source/source-sidebar/ToC.svelte";
+  function url(path) {
+    return `/base/${path}`;
+  }
+  setContext("url", url);
   export let contents;
 </script>
 
