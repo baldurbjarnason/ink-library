@@ -30,7 +30,7 @@
   .Item {
     background: #ffffff;
     border-radius: 15px;
-    padding: 16px;
+    padding: 16px 30px 16px 16px;
     display: grid;
     gap: 10px;
     grid-template-rows: max-content;

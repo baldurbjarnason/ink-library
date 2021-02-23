@@ -18,6 +18,8 @@
   } from "../../stores/page/notes.js";
   //export let items;
   export let requesting;
+  export let keyboardNote;
+  export let disabled;
 
   $: notebookNotes = $pageNotes;
   $: items = notebookNotes.items;
@@ -25,7 +27,6 @@
   const flipDurationMs = 300;
   let shouldIgnoreDndEvents = false;
   let dropFromOthersDisabled = true;
-  $: dragDisabled = requesting;
 
   function handleDndConsider(e) {
     const { trigger, id } = e.detail.info;
@@ -53,13 +54,6 @@
     }
   }
 
-  function transformDraggedElement(draggedEl, data, index) {
-    /*
-    const msg = `My index is ${index}`;
-    draggedEl.innerHTML = msg;*/
-    console.log("here");
-  }
-
   $: query = Object.assign({}, $page.query) || "";
 
   let filterOn = false;
@@ -74,6 +68,26 @@
   let closeColumn = false;
   let handleClick = () => {
     closeColumn = !closeColumn;
+  };
+
+  let keyDown = (e) => {
+    if (e.key === "ArrowLeft") {
+      let note;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].shortId === e.target.id) {
+          note = i;
+          break;
+        }
+      }
+      keyboardNote = items[note];
+    }
+  };
+  let startDrag = () => {
+    if (requesting) return;
+    disabled = false;
+  };
+  let stopDrag = () => {
+    disabled = true;
   };
 </script>
 
@@ -122,7 +136,10 @@
     gap: 10px;
     overflow-y: scroll;
   }
-  .Notes .div:last-child {
+  .Notes .Note {
+    position: relative;
+  }
+  .Notes .Note:last-child {
     padding-bottom: 10px;
   }
   .Header {
@@ -261,6 +278,24 @@
     display: grid;
     align-items: center;
   }
+  div.DragZone {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: grid;
+    gap: 3px;
+    width: max-content;
+    cursor: grab;
+    opacity: 0.5;
+    grid-template-columns: repeat(2, 5px);
+  }
+  div.DragZone span {
+    background: var(--workspace-color);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    margin-bottom: 1px;
+  }
 </style>
 
 <div>
@@ -297,12 +332,27 @@
       <div
         class="Notes"
         style={`grid-template-rows: repeat(${items.length}, max-content);`}
-        use:dndzone={{ items, flipDurationMs, dropFromOthersDisabled, transformDraggedElement, dragDisabled }}
+        use:dndzone={{ items, flipDurationMs, dropFromOthersDisabled, dragDisabled: disabled }}
         on:consider={handleDndConsider}
+        tabindex="0"
         on:finalize={handleDndFinalize}>
         {#each items as item (item.id)}
-          <div class="div" animate:flip={{ duration: flipDurationMs }}>
+          <div
+            class="Note"
+            id={item.shortId}
+            animate:flip={{ duration: flipDurationMs }}
+            on:keydown={keyDown}>
             <NoteCardPage note={item} />
+            <div
+              class="DragZone"
+              aria-label="drag-handle"
+              on:mousedown={startDrag}
+              on:touchstart={startDrag}
+              on:mouseup={stopDrag}>
+              {#each { length: 6 } as i}
+                <span />
+              {/each}
+            </div>
           </div>
         {/each}
       </div>
