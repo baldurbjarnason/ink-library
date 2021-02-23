@@ -2,6 +2,7 @@
   export let click = null;
   export let hidden = false;
   export let disabled = false;
+  export let outline = false;
 </script>
 
 <style>
@@ -35,12 +36,18 @@
     border: none;
     background-color: var(--toolbar-text, #999);
   }
+  .Button.outline {
+    color: var(--toolbar-text, #999);
+    background-color: transparent;
+    border: 1px solid var(--toolbar-text, #999);
+  }
 
   .Button:hover,
   .Button:link:hover,
   .Button:link:visited:hover,
   .Button:visited:hover,
   .Button:link:visited:hover {
+    color: #f0f0f0 !important;
     background-color: var(--hover) !important;
   }
 
@@ -53,6 +60,12 @@
   } */
 </style>
 
-<button class="Button" type="button" {hidden} {disabled} on:click={click}>
+<button
+  class="Button"
+  type="button"
+  class:outline
+  {hidden}
+  {disabled}
+  on:click={click}>
   <slot />
 </button>

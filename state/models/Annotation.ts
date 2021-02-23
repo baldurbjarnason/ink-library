@@ -1,6 +1,10 @@
 import { BehaviorSubject } from "rxjs";
 import { getToken } from "../../src/getToken";
-import { updateHighlight } from "./highlightRange";
+import {
+  clearHighlight,
+  clearTemporaryHighlight,
+  updateHighlight,
+} from "./highlightRange";
 import { getIdsFromNames } from "../tags";
 import DOMPurify from "dompurify";
 const commentConfig = {
@@ -207,7 +211,10 @@ export class Annotation {
   }
 
   public async delete(item) {
-    this.next({ deleted: true, target: {} });
+    clearHighlight(this.annotation.id);
+    this.next(
+      Object.assign({}, this.annotation, { deleted: true, target: {} })
+    );
     try {
       await fetch(this.url, {
         method: "DELETE",
@@ -218,8 +225,9 @@ export class Annotation {
           "csrf-token": getToken(),
         },
       });
-      this.next({ deleted: true });
-      // this.refresh()
+      this.next(
+        Object.assign({}, this.annotation, { deleted: true, target: {} })
+      );
     } catch (err) {
       console.error(err);
     }

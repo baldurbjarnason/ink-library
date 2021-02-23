@@ -10,12 +10,10 @@
   let term = "";
   let availableNotebooks = notebooks;
   $: if (term) {
-    console.log(availableNotebooks, term);
     availableNotebooks = notebooks.filter((notebook) =>
       notebook.name.includes(term.toLowerCase())
     );
   } else {
-    console.log(availableNotebooks, term);
     availableNotebooks = notebooks;
   }
 </script>

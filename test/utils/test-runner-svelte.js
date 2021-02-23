@@ -1,6 +1,5 @@
 const path = require("path");
 const svelte = require("svelte/compiler");
-// const {nodeResolvePlugin} = require("'@web/dev-server")
 
 const sveltePlugin = {
   name: "svelte-plugin",
@@ -21,7 +20,6 @@ const sveltePlugin = {
   async serverStart({ config, logger }) {
     this.config = config;
     this.logger = logger;
-    console.log(config);
   },
   async transform(context) {
     const fileExtension = path.posix.extname(context.path);

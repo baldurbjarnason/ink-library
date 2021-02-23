@@ -13,7 +13,6 @@
   });
   let annotations;
   $: if ($chapterNotes$) {
-    console.log($chapterNotes$);
     const notes = {};
     for (const annotation of $chapterNotes$) {
       notes[annotation.id] = annotation;
@@ -42,7 +41,7 @@
     {#if $topmost$}
       {#each Array.from($topmost$) as entry, index}
         <div
-          style="top: {entry.top - 113}px; left: 0;right: 0; z-index: {100 - index};"
+          style="top: {entry.top - 113}px; left: 0;right: 0;"
           data-sidenote-id={entry.element.dataset.annotationId}>
           <NotesCard
             element={entry.element}

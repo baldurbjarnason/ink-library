@@ -28,6 +28,7 @@ class Modal extends window.HTMLElement {
 	}
 
 	_init(){
+		console.log("initialising modal")
 		this.closetext = "Close dialog";
 		this.closeclass = "modal_close";
 		this.closed = true;
@@ -44,15 +45,6 @@ class Modal extends window.HTMLElement {
 			this.bindEvents();
 		}
 		this.dispatchEvent( this.initEvent );
-	}
-
-	closest(el, s){		
-		var whichMatches = window.Element.prototype.matches || window.Element.prototype.msMatchesSelector;
-			do {
-			  if (whichMatches.call(el, s)) return el;
-			  el = el.parentElement || el.parentNode;
-			} while (el !== null && el.nodeType === 1);
-			return null;
 	}
 
 	appendCloseBtn(){
@@ -125,7 +117,7 @@ class Modal extends window.HTMLElement {
 		this.classList.remove( "modal-open" );
 		this.closed = true;
 		self.removeInert();
-		var focusedElemModal = this.focusedElem && self.closest(this.focusedElem, ".modal");
+		var focusedElemModal = this.focusedElem && this.focusedElem.closest(".modal");
 		if( focusedElemModal ){
 			focusedElemModal.open( true );
 		}
@@ -151,7 +143,7 @@ class Modal extends window.HTMLElement {
 
 		// open dialog if click is on link to dialog
 		window.addEventListener('click', function( e ){
-			var assocLink = self.closest(e.target, self.modalLinks);
+			var assocLink = e.target.closest(self.modalLinks);
 			if( assocLink ){
 				e.preventDefault();
 				self.open();
@@ -159,7 +151,7 @@ class Modal extends window.HTMLElement {
 		});
 
 		window.addEventListener('keydown', function( e ){
-			var assocLink = self.closest(e.target, self.modalLinks);
+			var assocLink = e.target.closest(self.modalLinks);
 			if( assocLink && e.keyCode === 32 ){
 				e.preventDefault();
 				self.open();
@@ -179,7 +171,7 @@ class Modal extends window.HTMLElement {
 
 		// click on anything outside dialog closes it too (if screen is not shown maybe?)
 		window.addEventListener('mouseup', function( e ){
-			if( !self.closed && !self.closest(e.target, "#" + self.id ) ){
+			if( !self.closed && !e.target.closest("#" + self.id ) ){
 				e.preventDefault();
 				self.close();
 			}

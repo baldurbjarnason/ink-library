@@ -118,11 +118,12 @@ export function updateHighlight(oldId, newId, colour) {
       (node as HTMLElement).dispatchEvent(changeEvent);
     });
 }
-export function clearTemporaryHighlight() {
+export function clearHighlight(id) {
   // console.log(oldId, newId);
-  document
-    .querySelectorAll(`[data-annotation-id="temporary-selection-highlight"]`)
-    .forEach((node) => {
-      (node as HTMLElement).replaceWith(...Array.from(node.childNodes));
-    });
+  document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach((node) => {
+    (node as HTMLElement).replaceWith(...Array.from(node.childNodes));
+  });
+}
+export function clearTemporaryHighlight() {
+  return clearHighlight("temporary-selection-highlight");
 }

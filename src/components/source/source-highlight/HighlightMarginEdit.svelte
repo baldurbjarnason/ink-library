@@ -32,10 +32,9 @@
   let noteBookMenu;
   let highlight;
   let plaintext;
-
+  export let modal;
   export let note;
   export let annotation;
-  $: console.log(note, annotation);
   export let stopEditing = () => {};
   let noted;
   $: if (annotation && !plaintext) {
@@ -201,6 +200,9 @@
     height: 16px;
     padding: 3px;
   }
+  .ButtonBar :global(svg) {
+    color: var(--toolbar-text, #000);
+  }
 </style>
 
 <nav
@@ -306,9 +308,46 @@
   {/if}
   <HighlightNoteField bind:plaintext />
   <div class="ButtonBar">
-    <HighlightTextButton click={() => stopEditing()}>
-      Cancel
+    <HighlightTextButton
+      click={() => {
+        modal.open();
+        stopEditing();
+      }}>
+      <div class="visually-hidden">Delete</div>
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <rect width="18" height="18" rx="3" fill="currentColor" />
+        <path
+          d="M6.14794 6.77944C6.13067 6.57737 6.29003 6.40381 6.49284
+          6.40381H11.5081C11.7109 6.40381 11.8702 6.57737 11.853 6.77944L11.3352
+          12.8371C11.3199 13.0162 11.1701 13.1538 10.9903
+          13.1538H7.01059C6.83084 13.1538 6.681 13.0162 6.66569 12.8371L6.14794
+          6.77944Z"
+          fill="white" />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M8.13461 4.15381C7.9753 4.15381 7.84615 4.27973 7.84615
+          4.43506V5.27881H5.82692C5.66761 5.27881 5.53846 5.40473 5.53846
+          5.56006C5.53846 5.71539 5.66761 5.84131 5.82692
+          5.84131H12.1731C12.3324 5.84131 12.4615 5.71539 12.4615
+          5.56006C12.4615 5.40473 12.3324 5.27881 12.1731
+          5.27881H10.1538V4.43506C10.1538 4.27973 10.0247 4.15381 9.86538
+          4.15381H8.13461ZM9.57692 4.71631H8.42308V5.27881H9.57692V4.71631Z"
+          fill="white" />
+      </svg>
+
     </HighlightTextButton>
-    <HighlightButton click={() => update()}>Save</HighlightButton>
+
+    <div class="textButtons">
+      <HighlightButton outline={true} click={() => stopEditing()}>
+        Cancel
+      </HighlightButton>
+      <HighlightButton click={() => update()}>Save</HighlightButton>
+    </div>
   </div>
 </nav>

@@ -18,7 +18,7 @@
     position: sticky;
     top: 0;
     overflow-x: hidden;
-    z-index: 1000;
+    z-index: 100;
   }
   ol {
     list-style: none;
