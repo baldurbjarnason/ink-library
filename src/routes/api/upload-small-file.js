@@ -49,25 +49,25 @@ export async function post(req, res, next) {
   const filePrefix = storageId;
   const targetPath = path.join(userPrefix, filePrefix);
   let book;
-  console.log(mediaType);
+  // console.log(mediaType);
   const config = {
     version: "v4",
     action: "write",
     expires: Date.now() + 1000 * 60 * 60 * 24,
-    contentType: mediaType
+    contentType: mediaType,
   };
-  let uploadURL
+  let uploadURL;
   try {
     for await (const vfile of formats({
       mediaType,
       data: body,
-      thumbnails: false
+      thumbnails: false,
     })) {
       if (!vfile.data) {
         book = vfile;
       } else {
         const metadata = {
-          contentType: vfile.contentType
+          contentType: vfile.contentType,
         };
         const gzip = vfile.contentType && compressible(vfile.contentType);
         const filename = path.join(targetPath, vfile.path);
@@ -75,11 +75,10 @@ export async function post(req, res, next) {
         await storageFile.save(vfile.contents, {
           metadata,
           gzip,
-          resumable: false
+          resumable: false,
         });
-        const [url] = await storageFile
-          .getSignedUrl(config);
-        uploadURL = url
+        const [url] = await storageFile.getSignedUrl(config);
+        uploadURL = url;
       }
     }
   } catch (err) {
@@ -88,8 +87,14 @@ export async function post(req, res, next) {
     return res.json(err.body);
   }
   // Return upload url for the front end to upload the original to.
-  console.log(url)
-  res.json({ storageId: filePrefix, book, original: url, type: mediaType, url: uploadURL });
+  // console.log(url);
+  res.json({
+    storageId: filePrefix,
+    book,
+    original: url,
+    type: mediaType,
+    url: uploadURL,
+  });
 }
 
 function wrap(body, title) {

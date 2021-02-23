@@ -43,7 +43,7 @@ export async function put(req, res, next) {
       }
     }
 
-    console.log("response: ", response.body, req.body);
+    // console.log("response: ", response.body, req.body);
     return res.sendStatus(response.statusCode);
   } catch (err) {
     console.log(err);

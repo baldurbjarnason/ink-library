@@ -10,11 +10,11 @@
     if (!info.length) {
       const entries = Array.from(
         new URLSearchParams(new FormData(formElement)).entries()
-      ).filter(entry => entry[1]);
+      ).filter((entry) => entry[1]);
 
       if (entries.length !== 0) {
         const body = Object.fromEntries(entries);
-        console.log(entries, body);
+        // console.log(entries, body);
         let inLanguage = [];
         const newEntries = {};
         for (const prop in body) {
@@ -25,36 +25,36 @@
           } else if (prop.startsWith("_") && body[prop]) {
             newEntries[prop.replace("_", "")] = body[prop]
               .split(",")
-              .map(item => item.trim())
-              .map(name => {
+              .map((item) => item.trim())
+              .map((name) => {
                 return {
                   type: "Person",
-                  name
+                  name,
                 };
               });
           } else if (prop === "citation") {
-            body[prop] = { default: body[prop] }
+            body[prop] = { default: body[prop] };
           }
         }
 
         //body.author = author;
         //body.inLanguage = inLanguage;
         const pub = Object.assign({}, $publication, body, newEntries);
-        console.log(pub);
+        // console.log(pub);
 
         await window.fetch(`/api/publication/${$publication.shortId}`, {
           method: "PUT",
           credentials: "include",
           headers: {
             "csrf-token": getToken(),
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(pub)
+          body: JSON.stringify(pub),
         });
       }
     } else {
       let body = {};
-      info.map(prop => {
+      info.map((prop) => {
         body[prop.key] = prop.value;
       });
 
@@ -69,16 +69,16 @@
         } else if (prop.startsWith("_") && body[prop]) {
           newEntries[prop.replace("_", "")] = body[prop]
             .split(",")
-            .map(item => item.trim())
-            .map(name => {
+            .map((item) => item.trim())
+            .map((name) => {
               return {
                 type: "Person",
-                name
+                name,
               };
             });
         } else if (prop === "citation") {
-            body[prop] = { default: body[prop] }
-          }
+          body[prop] = { default: body[prop] };
+        }
       }
 
       if (body.author) body.author = author;
@@ -91,9 +91,9 @@
         credentials: "include",
         headers: {
           "csrf-token": getToken(),
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(pub)
+        body: JSON.stringify(pub),
       });
     }
 

@@ -103,13 +103,13 @@
     range &&
     !highlight
   ) {
-    console.log($selectionHighlight$);
+    // console.log($selectionHighlight$);
     highlight = $selectionHighlight$.tempHighlight(
       range,
       $source$.id,
       `/${$source$.shortId}/${$chapter$.resource.url.replace(".json", "")}`
     );
-    console.log(range);
+    // console.log(range);
   }
   $: if (
     ((selectedFlags && selectedFlags.length !== 0) ||
@@ -117,13 +117,13 @@
       colour) &&
     !highlight
   ) {
-    console.log($selectionHighlight$);
+    // console.log($selectionHighlight$);
     highlight = $selectionHighlight$.tempHighlight(
       range,
       $source$.id,
       `/${$source$.shortId}/${$chapter$.resource.url.replace(".json", "")}`
     );
-    console.log(range);
+    // console.log(range);
   }
   $: if (colour) {
     setColour(colour, toolbar);
@@ -277,7 +277,6 @@
 <svelte:body
   on:click={(event) => {
     if (!event.target.closest('nav.HighlightToolbar') && (!$selectionHighlight$ || $selectionHighlight$.selection.isCollapsed) && range) {
-      console.log(hasState(), highlight);
       range = null;
       selectedFlags = [];
       selectedNotebooks = [];

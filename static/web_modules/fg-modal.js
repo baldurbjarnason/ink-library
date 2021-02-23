@@ -28,7 +28,7 @@ class Modal extends window.HTMLElement {
 	}
 
 	_init(){
-		console.log("initialising modal")
+		// console.log("initialising modal")
 		this.closetext = "Close dialog";
 		this.closeclass = "modal_close";
 		this.closed = true;

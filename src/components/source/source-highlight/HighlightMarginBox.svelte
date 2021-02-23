@@ -320,7 +320,6 @@
         </div>
         <HighlightButton
           click={() => {
-            console.log($note, annotation);
             $note.delete();
             modal.close();
           }}>

@@ -38,7 +38,7 @@ export async function get(req, res, next) {
         const file = bucket.file(basePath);
         const [exists] = await file.exists();
         if (!exists) {
-          console.log("publication does not exist");
+          // console.log("publication does not exist");
           response._processing = true;
         } else {
           // console.log("publication exists")

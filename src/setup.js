@@ -74,10 +74,10 @@ export function setup(sapper, options = {}) {
       sameSite: "none",
     },
   });
-  app.use((req, res, next) => {
-    console.log(req.user, req.session);
-    return next();
-  });
+  // app.use((req, res, next) => {
+  //   console.log(req.user, req.session);
+  //   return next();
+  // });
   app.use(express.urlencoded({ extended: true }));
   app.use(
     express.json({
@@ -129,7 +129,7 @@ export function setup(sapper, options = {}) {
     // },
     sapper.middleware({
       session: (req, res) => {
-        console.log(req.user);
+        // console.log(req.user);
         return { user: req.user, csrfToken: req.csrfToken() };
       },
     })

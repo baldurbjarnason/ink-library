@@ -118,7 +118,7 @@ export class Annotation {
     if (result.ok) {
       const created = await result.json();
       const annotation = Object.assign({}, this.annotation, created);
-      console.log(created, annotation);
+      // console.log(created, annotation);
       return annotation;
     } else {
       // Should we update the annotation object with an error object

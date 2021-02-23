@@ -6,7 +6,7 @@ const whitespace = /^\s+$/;
 
 export function highlightRange(range, root) {
   const positions = position.fromRange(root, range);
-  console.log(positions);
+  // console.log(positions);
   let svg = false;
   // const tempId = "temp-" + Math.floor(Math.random() * 10000000000000);
   const tempId = "temporary-selection-highlight";

@@ -21,7 +21,7 @@ export function getIdsFromNames(
   names: Array<string>,
   optionalTags: Array<Tag> = []
 ) {
-  console.log(tags, optionalTags);
+  // console.log(tags, optionalTags);
   optionalTags = optionalTags.concat(tags);
   return optionalTags
     .filter((item) => names.includes(item.name))
