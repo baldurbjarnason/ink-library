@@ -20,6 +20,7 @@
     text-align: left;
     gap: 5px;
     cursor: pointer;
+    width: max-content;
   }
   .breadcrumbs.atSource {
     margin-bottom: 0;

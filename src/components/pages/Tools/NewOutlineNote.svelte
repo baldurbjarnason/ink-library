@@ -5,6 +5,7 @@
 
   export let type;
   export let addNewNote;
+  export let disabled;
   const flipDurationMs = 300;
   const dropFromOthersDisabled = true;
   let isDragging = false;
@@ -12,6 +13,7 @@
   let handleSort = (e) => {
     items = e.detail.items;
     isDragging = true;
+    disabled = false;
   };
 
   let handleDrop = (e) => {
