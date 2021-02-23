@@ -9,6 +9,7 @@
 
   let Clear = () => {
     inputValue = "";
+    $searchPageNotes = "";
   };
 </script>
 

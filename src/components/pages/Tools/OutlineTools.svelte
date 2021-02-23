@@ -17,6 +17,7 @@
 
   export let addNewNote;
   export let filters;
+  export let disabled;
 
   let checkAll = () => {
     filters.type = [];
@@ -289,7 +290,7 @@
     <OutlineIcoHeader />
     <p>Header</p>
     {#if addNewNote === 'header'}
-      <NewOutlineNote type={'header'} bind:addNewNote />
+      <NewOutlineNote type={'header'} bind:addNewNote bind:disabled />
     {/if}
   </li>
   <li class="Tool NewNote {addNewNote === 'note' ? 'Active' : ''}">
@@ -301,7 +302,7 @@
     <OutlineIcoThought />
     <p>Thought</p>
     {#if addNewNote === 'note'}
-      <NewOutlineNote type={'note'} bind:addNewNote />
+      <NewOutlineNote type={'note'} bind:addNewNote bind:disabled />
     {/if}
   </li>
   <span class="Division Short" />

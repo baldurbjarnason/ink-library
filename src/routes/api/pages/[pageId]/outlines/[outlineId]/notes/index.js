@@ -8,6 +8,7 @@ export async function patch(req, res, next) {
     const response = await got.patch(url, {
       headers: {
         "content-type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${req.user.token}`,
       },
       json: req.body,
@@ -38,7 +39,6 @@ export async function post(req, res, next) {
       json: req.body,
     });
 
-    // console.log("response: ", response.body, req.body);
     return res.sendStatus(response.statusCode);
   } catch (err) {
     console.log(err);

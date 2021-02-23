@@ -14,7 +14,10 @@
   } from "../../stores/page/notes.js";
 
   let addNewNote = false,
-    requesting = false;
+    requesting = false,
+    keyboardNote = false,
+    disabled = true;
+
   let filters = {
     type: [],
     colour: [],
@@ -44,12 +47,18 @@
   {#if droppedNotes}
     <DropAreaOutline
       items={droppedNotes}
+      bind:keyboardNote
       bind:requesting
+      bind:disabled
       {outlineInfo}
       {filters} />
   {:else}
     <div />
   {/if}
-  <NotesColumn items={notebookNotes} {requesting} />
-  <OutlineTools bind:addNewNote bind:filters />
+  <NotesColumn
+    items={notebookNotes}
+    {requesting}
+    bind:keyboardNote
+    bind:disabled />
+  <OutlineTools bind:addNewNote bind:filters bind:disabled />
 </main>
