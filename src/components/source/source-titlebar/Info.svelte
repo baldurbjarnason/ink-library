@@ -1,8 +1,8 @@
 <script>
-  import InfoModal from '../source-info/InfoModal.svelte';
+  import InfoModal from "../source-info/InfoModal.svelte";
   import MainInfo from "../source-info/Info.svelte";
   import InfoToolBar from "../../publication/reader/InfoToolBar.svelte";
-  import {source$} from '../../../../state/state'
+  import { source$ } from "../../../../state/state.ts";
 </script>
 
 <style>
@@ -10,7 +10,7 @@
 </style>
 
 {#if $source$}
-  <InfoModal let:modal={modal}>
+  <InfoModal let:modal>
     <InfoToolBar />
     <MainInfo />
   </InfoModal>

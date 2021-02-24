@@ -11,19 +11,20 @@ export async function get(req, res, next) {
   const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
   let notes;
   try {
-    notes = await getNotes(req);
     const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "");
     const basePath = path.join(
       userPrefix,
       req.params.storageId,
       req.params.path.join("/") + ".json"
     );
-    const file = bucket.file(basePath);
-    const [exists] = await file.exists();
-    if (!exists) return res.sendStatus(404);
-    const [metadata] = await file.getMetadata();
-    const [data] = await file.download();
-    const chapter = JSON.parse(data);
+    const [notes, storageResults] = await Promise.all([
+      getNotes(req),
+      getStorage(basePath, bucket),
+    ]);
+    const [chapter, metadata, status404] = storageResults;
+    if (status404) {
+      return res.sendStatus(404);
+    }
     const documentURL = `/${req.params.publicationId}/${req.params.path.join(
       "/"
     )}`;
@@ -60,6 +61,16 @@ export async function get(req, res, next) {
       });
     }
   }
+}
+
+async function getStorage(basePath, bucket) {
+  const file = bucket.file(basePath);
+  const [exists] = await file.exists();
+  if (!exists) return [null, null, !exists];
+  const [metadata] = await file.getMetadata();
+  const [data] = await file.download();
+  const chapter = JSON.parse(data);
+  return [chapter, metadata, null];
 }
 
 async function getNotes(req) {

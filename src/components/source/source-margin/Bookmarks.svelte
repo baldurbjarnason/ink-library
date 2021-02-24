@@ -1,5 +1,5 @@
 <script>
-  import { Bookmark } from "../../../../state/models/Bookmark";
+  import { Bookmark } from "../../../../state/models/Bookmark.ts";
   import { intersections, topmost } from "../../../../state/nodes.ts";
   import BookmarkButton from "./BookmarkButton.svelte";
   export let root;

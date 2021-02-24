@@ -1,14 +1,21 @@
 <script context="module">
   export async function preload({ params, query, path }) {
-    const res = await this.fetch(
-      `/api/read/${params.id}/${params.storage}/${params.chapter.join("/")}`
-    );
-    if (!res.ok) {
-      return this.error(res.status, res.statusText);
+    const requests = await Promise.all([
+      this.fetch(
+        `/api/read/${params.id}/${params.storage}/${params.chapter.join("/")}`
+      ),
+      this.fetch(`/api/sources/${params.id}?skipStorage=true`),
+    ]);
+    if (!requests[0].ok) {
+      return this.error(requests[0].status, requests[0].statusText);
     }
-    const chapter = await res.json();
-    const sourceRes = await this.fetch(`/api/sources/${params.id}`);
-    const source = await sourceRes.json();
+    if (!requests[1].ok) {
+      return this.error(requests[1].status, requests[1].statusText);
+    }
+    const [chapter, source] = await Promise.all([
+      requests[0].json(),
+      requests[1].json(),
+    ]);
     return { chapter, source };
   }
 </script>

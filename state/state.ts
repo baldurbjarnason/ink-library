@@ -20,9 +20,9 @@ import { combineLatest, BehaviorSubject } from "rxjs";
 import { Annotation$, createdNotes$ } from "./models/Annotation";
 
 // Figure how to do search with these.
-export const library$ = web(libraryURL$.pipe(distinctUntilChanged()));
+// export const library$ = web(libraryURL$.pipe(distinctUntilChanged()));
 
-export const notes$ = web(notesURL$.pipe(distinctUntilChanged()));
+// export const notes$ = web(notesURL$.pipe(distinctUntilChanged()));
 
 export const notebooks$ = web(notebooksURL$.pipe(distinctUntilChanged()));
 
