@@ -85,7 +85,7 @@ export class Annotation {
     }
     updated.tags = json.tags;
     updated.notebooks = json.notebooks;
-    updated.body = this.annotation.body;
+    updated.body = processed.body;
     if (tempId) {
       updateHighlight(tempId, updated.id, colour);
     }

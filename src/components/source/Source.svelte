@@ -2,8 +2,8 @@
   import { afterUpdate, setContext } from "svelte";
   import { writable } from "svelte/store";
   import { title } from "../../stores/title.js";
-  import { source$, chapter$ } from "../../../state/state.ts";
-  import { bookmarks$ } from "../../../state/models/Bookmark.ts";
+  import { source$, chapter$ } from "../../../state/state";
+  import { bookmarks$ } from "../../../state/models/Bookmark";
   import Chapter from "./source-chapter/Chapter.svelte";
   // import TitleBar from '../../../../components/source/source-titlebar/TitleBar.svelte';
   import InfoModal from "./source-info/InfoModal.svelte";

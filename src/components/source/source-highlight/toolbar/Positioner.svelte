@@ -1,22 +1,24 @@
 <script>
   import { onMount, onDestroy } from "svelte";
-  import { source$, chapter$ } from "../../../../../state/state.ts";
+  import { source$, chapter$ } from "../../../../../state/state";
   import { createPopper } from "@popperjs/core";
-  import { toolbar$ } from "../../../../../state/models/SelectionToolbar.ts";
+  import { toolbar$ } from "../../../../../state/models/SelectionToolbar";
 
   export let toolbar;
   export let hidden;
   export let colour;
+  let positions;
   const virtual = {
     getBoundingClientRect() {
       if ($toolbar$) {
         if ($toolbar$.visible) {
-          return $toolbar$.getBoundingClientRect();
+          positions = $toolbar$.getBoundingClientRect();
+          return positions;
         } else {
-          return document.body.getBoundingClientRect();
+          return positions || document.body.getBoundingClientRect();
         }
       } else {
-        return document.body.getBoundingClientRect();
+        return positions || document.body.getBoundingClientRect();
       }
     },
   };

@@ -1,6 +1,6 @@
 <script>
-  import { source$ } from "../../../../state/state.ts";
-  import { refresh } from "../../../../state/refresh.ts";
+  import { source$ } from "../../../../state/state";
+  import { refresh } from "../../../../state/refresh";
   import IcoEdit from "../../img/IcoEdit.svelte";
   import ArrowDropDown from "../../img/ArrowDropDown.svelte";
   import MetadataLists from "../../publication/SourceInfo/MetadataLists.svelte";
