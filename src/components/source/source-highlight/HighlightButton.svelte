@@ -6,7 +6,7 @@
 </script>
 
 <style>
-  button.Button {
+  button.HighlightButton {
     font-family: var(--sans-fonts);
     font-size: 0.8rem;
     flex: 0 1 auto;
@@ -35,33 +35,34 @@
     color: white;
     border: none;
     background-color: var(--toolbar-text, #999);
+    float: none;
   }
-  .Button.outline {
+  .HighlightButton.outline {
     color: var(--toolbar-text, #999);
     background-color: transparent;
     border: 1px solid var(--toolbar-text, #999);
   }
 
-  .Button:hover,
-  .Button:link:hover,
-  .Button:link:visited:hover,
-  .Button:visited:hover,
-  .Button:link:visited:hover {
+  .HighlightButton:hover,
+  .HighlightButton:link:hover,
+  .HighlightButton:link:visited:hover,
+  .HighlightButton:visited:hover,
+  .HighlightButton:link:visited:hover {
     color: #f0f0f0 !important;
     background-color: var(--hover) !important;
   }
 
-  .Button:active,
-  .Button:link:active {
+  .HighlightButton:active,
+  .HighlightButton:link:active {
     color: var(--active);
   }
-  /* .Button:focus {
+  /* .HighlightButton:focus {
     box-shadow: 0 0 0 3px #68d6d499;
   } */
 </style>
 
 <button
-  class="Button"
+  class="HighlightButton"
   type="button"
   class:outline
   {hidden}

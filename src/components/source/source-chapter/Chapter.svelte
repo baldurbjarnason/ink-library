@@ -148,6 +148,9 @@
   .loading {
     opacity: 0.5;
   }
+  .Chapter :global(ink-body#pdf-body tspan) {
+    color: transparent;
+  }
 </style>
 
 <svelte:head>

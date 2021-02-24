@@ -11,12 +11,12 @@
   import IcoFlag from "../../img/IcoFlag.svelte";
   import CloseIcon from "./CloseIcon.svelte";
   import { onDestroy } from "svelte";
-  import { notebooks$, source$, chapter$ } from "../../../../state/state.ts";
-  import { chapterURL$ } from "../../../../state/state-urls.ts";
-  import { refresh } from "../../../../state/refresh.ts";
+  import { notebooks$, source$, chapter$ } from "../../../../state/state";
+  import { chapterURL$ } from "../../../../state/state-urls";
+  import { refresh } from "../../../../state/refresh";
   import { createPopper } from "@popperjs/core";
   import { selectionHighlight$ } from "../../../../state/models/Selection";
-  import { tags$ } from "../../../../state/tags.ts";
+  import { tags$ } from "../../../../state/tags";
   import { setColour } from "./setColour.js";
   import { getToken } from "../../../getToken";
   export let root = null;

@@ -1,5 +1,5 @@
 <script>
-  import { source$ } from "../../../../state/state.ts";
+  import { source$ } from "../../../../state/state";
   export let form;
   let languages;
   if ($source$.inLanguage) {

@@ -1,6 +1,6 @@
 <script>
   // import {Bookmark} from "../../../../state/models/Bookmark"
-  import { chapter$, source$ } from "../../../../state/state.ts";
+  import { chapter$, source$ } from "../../../../state/state";
   import { encode } from "universal-base64url";
   export let entry;
   let logging;

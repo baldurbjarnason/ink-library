@@ -73,6 +73,10 @@
     background-position: right 0.125em top 60%, 0 0;
     background-size: 8px auto, 100%;
     padding-right: 1rem;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
   }
   summary:hover,
   summary:link:hover,

@@ -13,8 +13,8 @@
   import IcoTag from "./IcoTag.svelte";
   import CloseIcon from "./CloseIcon.svelte";
   import { onDestroy } from "svelte";
-  import { notebooks$, source$, chapter$ } from "../../../../state/state.ts";
-  import { tags$ } from "../../../../state/tags.ts";
+  import { notebooks$, source$, chapter$ } from "../../../../state/state";
+  import { tags$ } from "../../../../state/tags";
   import { setColour } from "./setColour.js";
   import {
     getNoted,
