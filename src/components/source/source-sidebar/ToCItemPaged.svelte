@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { getContext } from "svelte";
   export let path;
   export let item;
@@ -9,7 +9,7 @@
   } else {
     selected = false;
   }
-  const url: Function = getContext("url")
+  const url = getContext("url");
 </script>
 
 <style>
@@ -93,9 +93,7 @@
       </ol>
     </details>
   {:else if item.url}
-    <a
-      href="url(item.url)"
-      class="PageLevel">
+    <a href={url(item.url)} class="PageLevel">
       <img src="{media}/{item.image}" alt={item.label} />
     </a>
   {:else}

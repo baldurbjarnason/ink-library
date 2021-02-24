@@ -9,9 +9,9 @@ export const post = async function post(req, res, next) {
         .post(`${process.env.API_SERVER}notebooks`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
+            Authorization: `Bearer ${req.user.token}`,
           },
-          json: req.body
+          json: req.body,
         })
         .json();
 
@@ -39,9 +39,15 @@ export async function get(req, res, next) {
     url = `${url}?${query.toString()}`;
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
+    response.items = response.items.map((item) => {
+      if (!item.settings) {
+        item.settings = {};
+      }
+      return item;
+    });
     res.json(response);
   } catch (err) {
     res.status(err.response.statusCode);

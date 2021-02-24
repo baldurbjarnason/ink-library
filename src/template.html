@@ -1,37 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-	<meta charset='utf-8'>
-	<meta name='viewport' content='width=device-width,initial-scale=1.0'>
-	<meta name='theme-color' content='#37b5b5'>
-	<link rel="apple-touch-icon" href="/logo-192.png">
-	<meta name="apple-mobile-web-app-title" content="Ink">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	%sapper.base%
-	<link rel='manifest' href='/manifest.json'>
-	<link rel='icon' type='image/png' href='favicon.png'>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="theme-color" content="#37b5b5" />
+    <link rel="apple-touch-icon" href="/logo-192.png" />
+    <meta name="apple-mobile-web-app-title" content="Ink" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    %sapper.base%
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" href="favicon.png" />
 
-	<!-- Sapper generates a <style> tag containing critical CSS
-	     for the current page. CSS for the rest of the app is
-	     lazily loaded when it precaches secondary pages -->
-	%sapper.styles%
-
-	<!-- This contains the contents of the <svelte:head> component, if
-	     the current page has one -->
-	%sapper.head%
-	<!-- Sapper creates a <script> tag containing `src/client.js`
+    <!-- Sapper creates a <script> tag containing `src/client.js`
 	     and anything else it needs to hydrate the app and
 	     initialise the router -->
-	%sapper.scripts%
-</head>
-<body id="body">
-	<!-- The application will be rendered inside this element,
-	     because `src/client.js` references it -->
-	<div id='sapper'>%sapper.html%</div>
+    %sapper.scripts%
+    <!-- Sapper generates a <style> tag containing critical CSS
+	     for the current page. CSS for the rest of the app is
+	     lazily loaded when it precaches secondary pages -->
+    %sapper.styles%
 
-	<script defer src="/web_modules/inert-polyfill.js"></script>
-	<script defer src="/vendor/document-register-element.js" nomodule></script>
-	<script type="module" src="/web_modules/fg-modal.js"></script>
-	<script src="/web_modules/fg-modal-es5.js" defer nomodule></script>
-</body>
+    <!-- This contains the contents of the <svelte:head> component, if
+	     the current page has one -->
+    %sapper.head%
+  </head>
+  <body id="body">
+    <!-- The application will be rendered inside this element,
+	     because `src/client.js` references it -->
+    <div id="sapper">%sapper.html%</div>
+
+    <script defer src="/web_modules/inert-polyfill.js"></script>
+    <script defer src="/vendor/document-register-element.js" nomodule></script>
+    <script type="module" src="/vendor/details-menu-element.js"></script>
+    <script type="module" src="/web_modules/fg-modal.js"></script>
+    <script src="/web_modules/fg-modal-es5.js" defer nomodule></script>
+  </body>
 </html>

@@ -156,7 +156,7 @@
       aria-label="Close this dialog window">
       close
     </button>
-    <h1 id="dialog-title" class="visually-hidden">Edit Note</h1>
+    <h1 id="dialog-title" class="visually-hidden" data-ink-private="true">Edit Note</h1>
     {#if note.id && process.browser}
       <NoteEdit {note} dialog={true} />
     {/if}

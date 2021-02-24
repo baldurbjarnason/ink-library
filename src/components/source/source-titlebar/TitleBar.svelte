@@ -2,7 +2,12 @@
   import History from "../../History.svelte";
   export let name = "";
   export let returnLink = "/library";
-  export let infoLink = "";
+  import { onMount } from "svelte";
+  let Info;
+  onMount(async () => {
+    const module = await import("./Info.svelte");
+    Info = module.default;
+  });
 </script>
 
 <style>
@@ -13,7 +18,7 @@
     background-color: var(--all-workspace);
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 99;
   }
   .TitleBar * {
     color: #ffffff;
@@ -77,7 +82,15 @@
       <span class="Title">{name}</span>
     </li>
     <li>
-      <a href={infoLink}>
+      <a
+        class="modal_link"
+        href="#id-source-info"
+        rel="external"
+        on:click={(event) => {
+          if (!document.getElementById('id-source-info')) {
+            event.preventDefault();
+          }
+        }}>
         <svg
           width="16"
           height="16"
@@ -110,3 +123,5 @@
     </li>
   </ol>
 </nav>
+
+<svelte:component this={Info} />

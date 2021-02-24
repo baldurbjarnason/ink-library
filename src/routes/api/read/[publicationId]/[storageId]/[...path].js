@@ -9,20 +9,22 @@ export async function get(req, res, next) {
   // This is caching too aggressively
   if (!req.user.profile) return res.sendStatus(401);
   const bucket = storage.bucket(process.env.PUBLICATION_BUCKET);
+  let notes;
   try {
-    const notes = await getNotes(req);
     const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "");
     const basePath = path.join(
       userPrefix,
       req.params.storageId,
       req.params.path.join("/") + ".json"
     );
-    const file = bucket.file(basePath);
-    const [exists] = await file.exists();
-    if (!exists) return res.sendStatus(404);
-    const [metadata] = await file.getMetadata();
-    const [data] = await file.download();
-    const chapter = JSON.parse(data);
+    const [notes, storageResults] = await Promise.all([
+      getNotes(req),
+      getStorage(basePath, bucket),
+    ]);
+    const [chapter, metadata, status404] = storageResults;
+    if (status404) {
+      return res.sendStatus(404);
+    }
     const documentURL = `/${req.params.publicationId}/${req.params.path.join(
       "/"
     )}`;
@@ -41,20 +43,34 @@ export async function get(req, res, next) {
       annotations: fixItems(notes.items),
       documentURL,
       mediaBase,
-      linkBase
+      linkBase,
     });
     res.append("Last-Modified", new Date(metadata.updated).toUTCString());
     res.json(response);
   } catch (err) {
-    console.error(err);
+    console.error("Error: ", err);
     if (err.response && err.response.statusCode) {
       res.status(err.response.statusCode);
-      return res.json(JSON.parse(err.response.body));
+      return res.json({ message: err.response.body, notes });
     } else {
       res.status(500);
-      return res.json(JSON.parse(err));
+      return res.json({
+        message: err.message,
+        err: JSON.stringify(err),
+        notes,
+      });
     }
   }
+}
+
+async function getStorage(basePath, bucket) {
+  const file = bucket.file(basePath);
+  const [exists] = await file.exists();
+  if (!exists) return [null, null, !exists];
+  const [metadata] = await file.getMetadata();
+  const [data] = await file.download();
+  const chapter = JSON.parse(data);
+  return [chapter, metadata, null];
 }
 
 async function getNotes(req) {
@@ -70,41 +86,55 @@ async function getNotes(req) {
   try {
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     });
     return JSON.parse(response.body);
   } catch (err) {
-    console.error(err)
-    console.error(err.response.body)
-    return {items:[]}
+    console.error(err);
+    console.error(err.response.body);
+    return { items: [] };
   }
 }
 
 function fixItems(items) {
-  return items.map(fixItem).filter(item => item);
+  const fixed = items.map(fixItem).filter((item) => item);
+  return fixed.filter((item) => {
+    if (
+      item.target.selector.type === "TextQuoteSelector" &&
+      !item.target.selector.exact
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  });
 }
 
 function fixItem(item) {
-  item.body = [].concat(item.body).map(body => {
+  item.body = [].concat(item.body).map((body) => {
     return {
       type: "TextualBody",
       value: body.content,
       format: "text/html",
-      purpose: body.motivation
+      purpose: body.motivation,
     };
   });
-  if (item.tags && item.tags.find(tag => tag.name.startsWith("colour"))) {
+  if (item.tags && item.tags.find((tag) => tag.name.startsWith("colour"))) {
     item.target.styleClass = item.tags
-      .find(tag => tag.name.startsWith("colour"))
+      .find((tag) => tag.name.startsWith("colour"))
       .name.replace(" ", "")
       .replace("c", "C");
   }
   item.type = "Annotation";
   if (!item.target.selector) return null;
+  if (item.target.selector.type === "CSSSelector") {
+    item.target.selector.type = "CssSelector";
+    item.target.selector.value = item.target.selector.value.toLowerCase();
+  }
   const colour = []
     .concat(item.tags)
-    .find(tag => tag.name.startsWith("colour"));
+    .find((tag) => tag.name.startsWith("colour"));
   if (colour) {
     item.styleClass = "Colour" + colour.name.split(" ")[1];
   }

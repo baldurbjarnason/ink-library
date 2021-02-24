@@ -8,39 +8,39 @@ export function positionToAnnotation(selector, root, source, chapter) {
   const content = serializeRange(range);
   const quote = {
     type: "TextQuoteSelector",
-    ...textQuote.fromTextPosition(root, selector)
+    ...textQuote.fromTextPosition(root, selector),
   };
   return {
     sourceId: source.id,
     target: {
       source: chapter,
-      selector: quote
+      selector: quote,
     },
     body: [
       {
         motivation: "highlighting",
-        content
-      }
+        content,
+      },
     ],
-    document: chapter // Make sure this is right
+    document: chapter, // Make sure this is right
   };
 }
 
 function serializeRange(range) {
   const placeholder = document.createElement("div");
   const fragment = range.cloneContents();
-  fragment.querySelectorAll("[data-reader]").forEach(element => {
+  fragment.querySelectorAll("[data-reader]").forEach((element) => {
     element.remove();
   });
-  fragment.querySelectorAll("mark[data-annotation-id]").forEach(element => {
+  fragment.querySelectorAll("mark[data-annotation-id]").forEach((element) => {
     element.replaceWith(element.textContent);
   });
-  fragment.querySelectorAll("a.Highlight-return-link").forEach(element => {
+  fragment.querySelectorAll("a.Highlight-return-link").forEach((element) => {
     element.remove();
   });
   fragment
     .querySelectorAll("[style]")
-    .forEach(element => element.removeAttribute("style"));
+    .forEach((element) => element.removeAttribute("style"));
   placeholder.appendChild(fragment);
   return placeholder.innerHTML;
 }

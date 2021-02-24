@@ -7,7 +7,7 @@ const placedNotes = function(placed, notes) {
     [placed, notes],
     ([$placed, $notes]) => {
       function getNote(id) {
-        console.log(id);
+        // console.log(id);
         if ($notes) {
           const note = $notes.find((note) => note.id === id);
           if (note) return note;
@@ -15,7 +15,7 @@ const placedNotes = function(placed, notes) {
         return { tags: [] };
       }
 
-      console.log("placing notes: ", $placed, $notes);
+      // console.log("placing notes: ", $placed, $notes);
       if ($placed.length !== 0 && $notes.length !== 0) {
         const result = $placed.map((place) => {
           place.note = getNote(place.id);
@@ -124,7 +124,7 @@ export function publicationStores(page) {
   const contents = derived(
     chapter,
     ($chapter, set) => {
-      console.log("contents: ", $chapter.toc);
+      // console.log("contents: ", $chapter.toc);
       if ($chapter) {
         return $chapter.toc;
       } else {
@@ -137,7 +137,7 @@ export function publicationStores(page) {
   const notes = derived(
     chapter,
     ($chapter, set) => {
-      console.log("annotations: ", $chapter.annotations);
+      // console.log("annotations: ", $chapter.annotations);
       if ($chapter && $chapter.annotations) {
         return $chapter.annotations;
       } else {
@@ -173,7 +173,7 @@ export function publicationStores(page) {
   });
   const placed = annotations(positioned);
   const positionedNotes = placedNotes(placed, notes);
-  console.log(notes, contents);
+  // console.log(notes, contents);
   stores = {
     publication,
     chapter,

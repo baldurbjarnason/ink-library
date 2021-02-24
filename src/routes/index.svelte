@@ -32,7 +32,7 @@
       "Saturday",
     ];
   let day = weekday[date.getDay()];
-  $: console.log($session.user);
+  // $: console.log($session.user);
   $: currentUser = $session.user.name.givenName || "!";
 </script>
 

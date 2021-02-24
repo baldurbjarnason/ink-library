@@ -39,7 +39,7 @@ const RedisStore = makeStore(session);
 const client = redis.createClient({
   host: process.env.REDIS_HOST,
   port: process.env.REDIS_PORT,
-  password: process.env.REDIS_PASSWORD
+  password: process.env.REDIS_PASSWORD,
 });
 
 if (dev) {
@@ -71,18 +71,22 @@ export function setup(sapper, options = {}) {
       secure: !dev,
       name: process.env.COOKIE_NAME || "__session",
       httpOnly: true,
-      sameSite: "none"
-    }
+      sameSite: "none",
+    },
   });
+  // app.use((req, res, next) => {
+  //   console.log(req.user, req.session);
+  //   return next();
+  // });
   app.use(express.urlencoded({ extended: true }));
   app.use(
     express.json({
       type: [
         "application/json",
         "application/activity+json",
-        "application/ld+json"
+        "application/ld+json",
       ],
-      limit: "100mb"
+      limit: "100mb",
     })
   );
   app.use(
@@ -92,9 +96,9 @@ export function setup(sapper, options = {}) {
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/zip",
         "application/pdf",
-        "text/*"
+        "text/*",
       ],
-      limit: "1mb"
+      limit: "1mb",
     })
   );
   app.use(sessionMiddleware);
@@ -125,8 +129,9 @@ export function setup(sapper, options = {}) {
     // },
     sapper.middleware({
       session: (req, res) => {
+        // console.log(req.user);
         return { user: req.user, csrfToken: req.csrfToken() };
-      }
+      },
     })
   );
   return app;

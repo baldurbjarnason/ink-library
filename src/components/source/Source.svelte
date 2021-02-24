@@ -2,9 +2,9 @@
   import { afterUpdate, setContext } from "svelte";
   import { writable } from "svelte/store";
   import { title } from "../../stores/title.js";
-  import { source$, chapter$ } from "../../../state/state";
+  import { source$, chapter$ } from "../../../state/state.ts";
   import History from "../History.svelte";
-  import { bookmarks$ } from "../../../state/models/Bookmark";
+  import { bookmarks$ } from "../../../state/models/Bookmark.ts";
   import Chapter from "./source-chapter/Chapter.svelte";
   // import TitleBar from '../../../../components/source/source-titlebar/TitleBar.svelte';
   import InfoModal from "./source-info/InfoModal.svelte";
@@ -13,6 +13,14 @@
   import MainInfo from "./source-info/Info.svelte";
   // import EmptySource from "../../../../components/publication/EmptySource.svelte";
   import { stores } from "@sapper/app";
+  export let chapter;
+  export let source;
+  $: if (source) {
+    source$.next(source);
+  }
+  $: if (chapter) {
+    chapter$.next(chapter);
+  }
   const { page } = stores();
   let base;
   let download;
@@ -57,8 +65,8 @@
   // export let info = false
 
   let readerBody;
-  $: if ($source$ && $source$.name) {
-    $title = $source$.name + " - Rebus Ink";
+  $: if (source && source.name) {
+    $title = source.name + " - Rebus Ink";
   }
 </script>
 
@@ -78,7 +86,7 @@
     background-color: var(--all-workspace);
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 99;
   }
   .TitleBar * {
     color: #ffffff;
@@ -105,48 +113,20 @@
       <ol>
         <li>
           <History />
-          <!--
-          <a href="/library/all/all">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <rect
-                x="1.70688"
-                y="5.29285"
-                width="9"
-                height="2"
-                rx="0.999999"
-                transform="rotate(45 1.70688 5.29285)"
-                fill="currentColor"
-                fill-opacity="0.8" />
-              <rect
-                x="1.99985"
-                y="5.50012"
-                width="12"
-                height="2"
-                rx="1"
-                fill="currentColor"
-                fill-opacity="0.8" />
-              <rect
-                x="7.77817"
-                y="1.41418"
-                width="9"
-                height="2"
-                rx="0.999999"
-                transform="rotate(135 7.77817 1.41418)"
-                fill="currentColor"
-                fill-opacity="0.8" />
-            </svg>
-          </a>-->
         </li>
         <li>
-          <span class="Title">{$source$.name}</span>
+          <span class="Title">{source.name}</span>
         </li>
         <li>
-          <a class="modal_link" href="#id-source-info" rel="external">
+          <a
+            class="modal_link"
+            href="#id-source-info"
+            rel="external"
+            on:click={(event) => {
+              if (!document.getElementById('id-source-info')) {
+                event.preventDefault();
+              }
+            }}>
             <svg
               width="16"
               height="16"
@@ -186,26 +166,26 @@
     </InfoModal>
     <ToolBar {sidebar} />
     <Chapter
-      chapter={$chapter$}
+      {chapter}
       sourceNotes={$bookmarks$}
       path={$page.params.chapter.join('/')}
       bind:readerBody
       {sidebar}
       {media} />
-    <!-- {#if $source$._processing}
+    <!-- {#if source._processing}
       <ToolBar root={readerBody} hidden={true} />
       <div class="Processing">Processing...</div>
-      <Chapter chapter={$chapter$} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
-    {:else if $source$._unsupported}
+      <Chapter chapter={chapter} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
+    {:else if source._unsupported}
       <ToolBar root={readerBody} hidden={true} />
-      <Chapter chapter={$chapter$} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
+      <Chapter chapter={chapter} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
       <div class="Processing">
         Ink doesn't support displaying this file but you can
         <a href={download}>download it.</a>
       </div>
-    {:else if !$source$._empty}
+    {:else if !source._empty}
       <ToolBar root={readerBody} {sidebar} />
-      <Chapter chapter={$chapter$} sourceNotes={$sourceNotes$} path={$page.params.chapter.join("/")} bind:readerBody {sidebar} {media} />
+      <Chapter chapter={chapter} sourceNotes={$sourceNotes$} path={$page.params.chapter.join("/")} bind:readerBody {sidebar} {media} />
     {:else}
       <EmptySource />
     {/if} -->

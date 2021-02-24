@@ -128,6 +128,13 @@
   .Pane :global(.Editor) {
     background-color: white;
   }
+  .Pane :global(.Editor.ql-container.ql-snow) {
+    border: none;
+    display: grid;
+  }
+  .Pane :global(.ql-editor) {
+    border: 1px solid #ccc;
+  }
 </style>
 
 <div class="Pane" class:pasting>

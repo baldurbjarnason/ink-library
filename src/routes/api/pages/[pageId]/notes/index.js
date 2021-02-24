@@ -9,25 +9,28 @@ export const post = async function post(req, res, next) {
   delete req.body.collection;
   delete req.body._tags;
 
-  console.log(tags)
+  // console.log(tags)
   if (req.user && req.user.profile) {
     try {
       const response = await got
-        .post(`${process.env.API_SERVER}notebooks/${req.params.notebookId}/notes`, {
-          headers: {
-            "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
-          },
-          json: req.body
-        })
+        .post(
+          `${process.env.API_SERVER}notebooks/${req.params.notebookId}/notes`,
+          {
+            headers: {
+              "content-type": "application/ld+json",
+              Authorization: `Bearer ${req.user.token}`,
+            },
+            json: req.body,
+          }
+        )
         .json();
       if (tags && tags.length !== 0) {
         for (const tag of tags) {
           await got.put(`${response.id}/tags/${tag}`, {
             headers: {
               "content-type": "application/ld+json",
-              Authorization: `Bearer ${req.user.token}`
-            }
+              Authorization: `Bearer ${req.user.token}`,
+            },
           });
         }
       }
@@ -36,8 +39,8 @@ export const post = async function post(req, res, next) {
         await got.put(`${response.id}/tags/${workspace}`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
-          }
+            Authorization: `Bearer ${req.user.token}`,
+          },
         });
       }
       // Check collection
@@ -45,8 +48,8 @@ export const post = async function post(req, res, next) {
         await got.put(`${response.id}/tags/${collection}`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
-          }
+            Authorization: `Bearer ${req.user.token}`,
+          },
         });
       }
       return res.json(response);

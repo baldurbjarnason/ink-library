@@ -35,28 +35,30 @@ export async function get(req, res, next) {
           response.json.storageId,
           "index.json"
         );
-        const file = bucket.file(basePath);
-        const [exists] = await file.exists();
-        if (!exists) {
-          console.log("publication does not exist");
-          response._processing = true;
-        } else {
-          // console.log("publication exists")
-          const [data] = await file.download();
-          const stored = JSON.parse(data);
-          response.readingOrder = stored.readingOrder;
-          response.resources = stored.resources;
-          if (stored._processing) {
-            // console.log("publication processing")
-            response._processing = stored._processing;
-          }
-          if (stored._unsupported) {
-            // console.log("publication unsupported")
-            response._unsupported = stored._unsupported;
-          }
-          if (stored._error) {
-            // console.log("publication error")
-            response._error = stored._error;
+        if (!req.query.skipStorage) {
+          const file = bucket.file(basePath);
+          const [exists] = await file.exists();
+          if (!exists) {
+            // console.log("publication does not exist");
+            response._processing = true;
+          } else {
+            // console.log("publication exists")
+            const [data] = await file.download();
+            const stored = JSON.parse(data);
+            response.readingOrder = stored.readingOrder;
+            response.resources = stored.resources;
+            if (stored._processing) {
+              // console.log("publication processing")
+              response._processing = stored._processing;
+            }
+            if (stored._unsupported) {
+              // console.log("publication unsupported")
+              response._unsupported = stored._unsupported;
+            }
+            if (stored._error) {
+              // console.log("publication error")
+              response._error = stored._error;
+            }
           }
         }
       } catch (err) {

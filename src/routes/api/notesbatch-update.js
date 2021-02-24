@@ -20,7 +20,7 @@ export async function del(req, res, next) {
       responses = responses.concat(err.response);
     }
   }
-  console.log(res.json(responses));
+  // console.log(res.json(responses));
   return res.json(responses);
 }
 

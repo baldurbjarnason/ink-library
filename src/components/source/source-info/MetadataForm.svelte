@@ -1,5 +1,5 @@
 <script>
-  import { source$ } from "../../../../state/state";
+  import { source$ } from "../../../../state/state.ts";
   export let form;
   let languages;
   if ($source$.inLanguage) {
@@ -15,7 +15,7 @@
     "EBook",
     "GraphicNovel",
     "Hardcover",
-    "Paperback"
+    "Paperback",
   ];
   function validateLang(event) {
     const valid = event.target.checkValidity();
@@ -77,10 +77,7 @@
   <label class="Label" for="isbn">ISBN</label>
   <input name="isbn" type="text" value={$source$.isbn || ''} />
   <label class="Label" for="bookEdition">Edition</label>
-  <input
-    name="bookEdition"
-    type="text"
-    value={$source$.bookEdition || ''} />
+  <input name="bookEdition" type="text" value={$source$.bookEdition || ''} />
   <label class="Label" for="copyrightYear">Year of Publication</label>
   <input
     name="copyrightYear"
@@ -88,7 +85,7 @@
     value={$source$.copyrightYear || ''} />
   <label class="Label" for="genre">Genre</label>
   <input name="genre" type="text" value={$source$.genre || ''} />
-  
+
   <label class="Label" for="citation">Citation</label>
   <input name="citation" type="text" value={$source$.citation || ''} />
 
@@ -126,7 +123,7 @@
       type="text"
       value={[]
         .concat($source$.author)
-        .map(author => author.name)
+        .map((author) => author.name)
         .join(', ')}
       placeholder="First Author, Second Author" />
 
@@ -137,40 +134,46 @@
       type="text"
       value={[]
         .concat($source$.editor)
-        .map(editor => editor.name)
+        .map((editor) => editor.name)
         .join(', ')}
       placeholder="First Editor, Second Editor" />
 
-    <label class="Label" for="input-illustrator">Illustrators (comma separated)</label>
+    <label class="Label" for="input-illustrator">
+      Illustrators (comma separated)
+    </label>
     <input
       id="input-illustrator"
       name="_illustrator"
       type="text"
       value={[]
         .concat($source$.illustrator)
-        .map(illustrator => illustrator.name)
+        .map((illustrator) => illustrator.name)
         .join(', ')}
       placeholder="First illustrator, Second illustrator" />
 
-    <label class="Label" for="input-publisher">Publishers (comma separated)</label>
+    <label class="Label" for="input-publisher">
+      Publishers (comma separated)
+    </label>
     <input
       id="input-publisher"
       name="_publisher"
       type="text"
       value={[]
         .concat($source$.publisher)
-        .map(publisher => publisher.name)
+        .map((publisher) => publisher.name)
         .join(', ')}
       placeholder="First Publisher, Second Publisher" />
 
-    <label class="Label" for="input-translator">Translators (comma separated)</label>
+    <label class="Label" for="input-translator">
+      Translators (comma separated)
+    </label>
     <input
       id="input-translator"
       name="_translator"
       type="text"
       value={[]
         .concat($source$.translator)
-        .map(translator => translator.name)
+        .map((translator) => translator.name)
         .join(', ')}
       placeholder="First translator, Second translator" />
 
@@ -181,7 +184,7 @@
       type="text"
       value={[]
         .concat($source$.creator)
-        .map(creator => creator.name)
+        .map((creator) => creator.name)
         .join(', ')}
       placeholder="First creator, Second creator" />
 

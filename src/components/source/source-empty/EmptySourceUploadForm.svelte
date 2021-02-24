@@ -72,6 +72,12 @@
   .Pane :global(.Editor) {
     background-color: white;
   }
+  .NewForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 </style>
 
 <div class="Pane" class:uploading>
@@ -85,7 +91,7 @@
       </p>
       <form
         id="newform"
-        class="newForm"
+        class="NewForm"
         action="/api/publication/{source.shortId}/attach-file"
         on:submit={submit}
         bind:this={form}>
