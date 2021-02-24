@@ -3,26 +3,30 @@
   import { flip } from "svelte/animate";
   import NoteEditor from "../../widgets/NoteEditor.svelte";
 
+  export let type;
   export let addNewNote;
+  export let disabled;
   const flipDurationMs = 300;
   const dropFromOthersDisabled = true;
   let isDragging = false;
 
-  function handleSort(e) {
+  let handleSort = (e) => {
     items = e.detail.items;
     isDragging = true;
-  }
+    disabled = false;
+  };
 
-  function handleDrop(e) {
+  let handleDrop = (e) => {
     addNewNote = items.length ? true : false;
     items = e.detail.items;
     isDragging = false;
-  }
+  };
+
+  let Cancel = () => {
+    addNewNote = false;
+  };
 
   $: text = "";
-  let textType = "note",
-    noteType = ["note", "header"];
-
   $: items = [
     {
       body: [
@@ -36,11 +40,10 @@
       shortId: "12345",
       fresh: true,
       json: {
-        type: textType,
+        type: type,
       },
     },
   ];
-  //$: console.log(items[0]);
 </script>
 
 <style>
@@ -51,63 +54,18 @@
     background: var(--all-workspace);
     z-index: 5;
     margin: 0 auto;
-    width: calc(100% - 60px);
-    padding: 40px;
-    position: fixed;
-    right: 30px;
-    top: 30px;
-    border-radius: 30px;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 350px 20px;
+    padding: 15px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    align-items: end;
+    border-radius: 20px;
+    border-top-left-radius: 5px;
     transition: all 0.2s ease-out;
-  }
-  .NewNoteForm.isDragging {
-    opacity: 0.7;
-    width: max-content;
-  }
-  div.Header {
-    padding: 0;
-    margin: 6px 35px 0 0;
-    display: grid;
-    gap: 20px;
-    float: left;
-    grid-template-columns: repeat(2, max-content);
-  }
-  div.Header label {
-    display: grid;
-    gap: 5px;
-    cursor: pointer;
-    grid-template-columns: repeat(2, max-content);
-  }
-  div.Header label input[type="radio"] {
-    float: left;
-    width: 15px;
-    height: 15px;
-    -webkit-appearance: none;
-    border-radius: 50%;
-    position: relative;
-    padding: 0;
-    outline: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    cursor: pointer;
-    border: 1px solid var(--main-background-color);
-  }
-  div.Header label input[type="radio"]:checked:after {
-    content: "";
-    display: block;
-    background: var(--main-background-color);
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-  }
-  div.Header label p {
-    float: left;
-    margin: 0 0 0 5px;
-    line-height: 15px;
-    font-size: 0.9rem;
-    color: #ffffff;
-    text-transform: capitalize;
+    transform: translateX(52px);
   }
   .NewHeader ~ :global(.ql-toolbar.ql-snow),
   .NewHeader ~ :global(.Editor.ql-container.ql-snow) {
@@ -116,6 +74,7 @@
   /* ------ Editor ------ */
   .NewNoteForm :global(.ql-toolbar) {
     padding: 0 !important;
+    text-align: left;
   }
   .NewNoteForm :global(.ql-toolbar *),
   .NewNoteForm :global(.ql-toolbar.ql-snow .ql-formats),
@@ -158,68 +117,54 @@
   .NewNoteForm :global(.Editor) {
     background: var(--main-background-color);
     overflow: hidden;
-    min-height: 20vh;
+    overflow-y: scroll;
+    height: 150px;
+    max-height: 230px;
     display: grid;
     border-radius: 10px;
-    margin-top: 20px;
+    margin-top: 10px;
   }
   .NewNoteForm :global(.Editor p),
   .NewNoteForm :global(.Editor span) {
     background: transparent !important;
   }
   /* ------ Drag & Drop ------ */
-  .DragEle,
-  .NewNote {
-    padding-right: 16px;
-    border-radius: 10px;
-    position: absolute;
-    right: 40px;
-    top: 40px;
-    margin: 0;
+  .DragEle {
+    height: calc(100% - 20px);
     display: grid;
     align-items: center;
-    gap: 15px;
-    grid-template-columns: max-content max-content;
+    position: relative;
+    order: 2;
   }
   .DragEle.unDraggable ~ .NewNote {
     display: none;
   }
-  .DragEle p {
-    color: #ffffff;
-    font-size: 0.9rem;
-    margin: 0;
-    float: left;
-  }
-  .DragEle div {
+  .DragEle div.DragZone {
     display: grid;
     gap: 4px;
+    width: max-content;
+    margin: 0 auto;
+    grid-template-columns: repeat(2, 5px);
   }
-  .DragEle div span {
+  .DragEle div.DragZone span {
     background: #ffffff;
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    position: relative;
-  }
-  .DragEle div span::before,
-  .DragEle div span::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 8px;
-    background: #ffffff;
-    width: 4px;
-    height: 4px;
-    display: block;
-    border-radius: 50%;
-  }
-  .DragEle div span::after {
-    left: 16px;
+    margin-bottom: 4px;
   }
   .NewNote {
-    width: 100px;
-    padding: 0;
-    height: 25px;
+    border-radius: 10px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    display: grid;
+    align-items: center;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     display: block;
     z-index: 1;
   }
@@ -229,59 +174,96 @@
     overflow: hidden;
     opacity: 0;
     float: right;
+    text-align: left;
   }
-  .NewNote .Card :global(*),
-  .WillBeDragged :global(*) {
+  .NewNote:active .Card,
+  .NewNote .Card:active {
+    background: #ffffff !important;
+    overflow: hidden;
+    width: 300px;
+    opacity: 1;
+    border-radius: 10px;
+  }
+  .NewNote .Card :global(*) {
     margin: 0;
-    padding: 0;
-    font-size: 0.75rem;
+    padding: 10px;
     color: #333333;
+  }
+  .NewNote:active .Card.header,
+  .NewNote .Card.header:active {
+    max-height: 60px;
+  }
+  .NewNote .Card.header :global(*) {
+    font-size: 180%;
+    font-weight: 400;
+  }
+  .NewNote:active .Card.note,
+  .NewNote .Card.note:active {
+    max-height: 200px;
+  }
+  .NewNote .Card.note :global(*) {
+    font-size: 0.75rem;
     font-weight: 500;
-    background: transparent;
   }
   .NewHeader {
     width: 100%;
     border-radius: 15px;
     height: 60px;
     border: none;
-    margin-top: 20px;
+    margin-bottom: 10px;
     color: var(--workspace-color);
     font-size: 180%;
     padding: 0 20px;
   }
-  .NewNote .Card:active {
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 16px;
-    opacity: 1;
-    height: max-content;
-    width: calc((100vw - 350px) * 0.5);
-    max-width: calc((100vw - 350px) * 0.5) !important;
-    max-height: max-content !important;
-  }
-  .NewNoteForm.isDragging .NewNote ~ :global(*:not(.DragEle)),
+  .NewNoteForm.isDragging,
   .NewNote:active ~ :global(*:not(.DragEle)),
   .Hidding {
     display: none;
   }
-  .NewNoteForm.isDragging .DragEle,
   .NewNote:active ~ .DragEle {
     position: relative;
     right: 0;
     top: 0;
   }
+  .DragEle:active ~ .Content {
+    opacity: 0.1;
+  }
   .CancelBtn {
-    border: 2px solid var(--main-background-color);
-    color: var(--main-background-color);
-    padding: 5px 30px;
-    margin-top: 20px;
-    border-radius: 10px;
-    float: right;
+    border: 1px solid var(--main-background-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
+    transform: rotate(45deg);
+    background: none;
+    transition: all 0.25s ease-out;
   }
   .CancelBtn:hover {
     background: var(--main-background-color);
-    color: var(--workspace-color);
+  }
+  .CancelBtn::before,
+  .CancelBtn::after {
+    content: "";
+    width: 50%;
+    height: 2px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+    transition: all 0.25s ease-out;
+    background: var(--main-background-color);
+  }
+  .CancelBtn::after {
+    height: 50%;
+    width: 2px;
+  }
+  .CancelBtn:hover::before,
+  .CancelBtn:hover::after {
+    background: var(--workspace-color);
   }
   .Counter {
     color: #ffffff;
@@ -294,60 +276,38 @@
 </style>
 
 <main class="NewNoteForm" class:isDragging>
-  <section
-    class="NewNote {text ? '' : 'Hidding'}"
-    use:dndzone={{ items, flipDurationMs, dropFromOthersDisabled }}
-    on:consider={handleSort}
-    on:finalize={handleDrop}>
-    {#each items as item (item.id)}
-      <div
-        class="Card WillBeDragged"
-        animate:flip={{ duration: flipDurationMs }}>
-        {#if textType === 'header'}
-          <h4>{text}</h4>
-        {:else}
-          {@html text}
-        {/if}
-      </div>
-    {/each}
-  </section>
-  <div class="DragEle {text ? '' : 'unDraggable'}">
-    <p>Drag {textType}</p>
-    <div>
-      <span />
-      <span />
+  <div class="DragEle">
+    <section
+      class="NewNote {text ? '' : 'Hidding'}"
+      use:dndzone={{ items, flipDurationMs, dropFromOthersDisabled }}
+      on:consider={handleSort}
+      on:finalize={handleDrop}>
+      {#each items as item (item.id)}
+        <div class="Card {type}" animate:flip={{ duration: flipDurationMs }}>
+          {#if type === 'header'}
+            <h4>{text}</h4>
+          {:else}
+            {@html text}
+          {/if}
+        </div>
+      {/each}
+    </section>
+    <div class="DragZone">
+      {#each { length: 6 } as i}
+        <span />
+      {/each}
     </div>
   </div>
-  <div class="Header">
-    {#each noteType as type}
-      <label for={type}>
-        <input
-          id={type}
-          aria-label="Type of text"
-          name="typeOfText"
-          type="radio"
-          value={type}
-          bind:group={textType}
-          on:change={() => {
-            text = '';
-          }} />
-        <p>{type}</p>
-      </label>
-    {/each}
+  <div class="Content">
+    {#if type === 'header'}
+      <input type="text" maxlength="100" class="NewHeader" bind:value={text} />
+      <p class="Counter">
+        {text ? 100 - text.length : 100} character{text && text.length === 99 ? '' : 's'}
+        left
+      </p>
+    {:else}
+      <NoteEditor bind:richtext={text} />
+    {/if}
   </div>
-  {#if textType === 'header'}
-    <input type="text" maxlength="100" class="NewHeader" bind:value={text} />
-    <p class="Counter">
-      {text ? 100 - text.length : 100} character{text && text.length === 99 ? '' : 's'}
-      left
-    </p>
-  {/if}
-  <NoteEditor bind:richtext={text} />
-  <span
-    class="CancelBtn"
-    on:click={() => {
-      addNewNote = false;
-    }}>
-    Cancel
-  </span>
+  <button class="CancelBtn" on:click={Cancel} />
 </main>

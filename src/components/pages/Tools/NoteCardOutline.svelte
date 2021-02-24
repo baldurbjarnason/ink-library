@@ -9,8 +9,18 @@
   import FlagToDo from "../../img/FlagToDo.svelte";
   import FlagUrgent from "../../img/FlagUrgent.svelte";
   import NavSource from "../../img/NavSource.svelte";
-  import { page, addSelected, removeSelected } from "../../../stores";
-  export let note = {};
+  import { page, refreshOutline } from "../../../stores";
+  import IcoDelete from "../../img/IcoDelete.svelte";
+  import { getToken } from "../../../getToken";
+  import NoteEditor from "../../widgets/NoteEditor.svelte";
+  export let item;
+  export let editing = false;
+  export let requesting = false;
+
+  $: note = item;
+  let noteEdition;
+  $: if (editing === item.shortId && !noteEdition)
+    noteEdition = item.body[0].content;
 
   function assignIco(icon) {
     switch (icon) {
@@ -52,17 +62,84 @@
         params["styleColour"].find((item) => item === colour.name)))
       ? "NoColour"
       : colour.name;
+
+  let Cancel = () => {
+    editing = false;
+  };
+
+  let Save = async () => {
+    requesting = true;
+    const payload = Object.assign(
+      {},
+      {
+        body: [
+          { content: noteEdition, motivation: "commenting", language: "null" },
+        ],
+      }
+    );
+    payload["shortId"] = item.shortId;
+
+    try {
+      await fetch(
+        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "csrf-token": getToken(),
+          },
+        }
+      );
+      $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
+      requesting = false;
+      editing = false;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  let Delete = async () => {
+    requesting = true;
+    try {
+      await fetch(
+        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          body: JSON.stringify({ shortId: item.shortId }),
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "csrf-token": getToken(),
+          },
+        }
+      );
+      $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
+      requesting = false;
+    } catch (err) {
+      console.error(err);
+    }
+  };
 </script>
 
 <style>
   .Item {
     background: #ffffff;
     border-radius: 20px;
-    padding: 16px;
+    padding: 16px 40px 16px 16px;
     display: grid;
     gap: 10px;
     grid-template-rows: max-content;
     position: relative;
+  }
+  .Item.OutlineEdit {
+    padding: 16px;
+  }
+  .Item:not(.OutlineEdit) {
+    cursor: pointer;
   }
   .Item.two {
     grid-template-rows: repeat(2, max-content);
@@ -129,7 +206,11 @@
     background: #fcefe7;
   }
   .colour1 header .column,
-  .colour1 .OutlineFlags li {
+  .colour1 .OutlineFlags li,
+  .colour1 ~ .Cancel:hover,
+  .colour1 ~ .Cancel::before,
+  .colour1 ~ .Cancel::after,
+  .colour1 ~ footer button.Save {
     background: #d86801;
   }
   /* ------------ Colour 2 ------------ */
@@ -137,7 +218,11 @@
     background: #faebf4;
   }
   .colour2 header .column,
-  .colour2 .OutlineFlags li {
+  .colour2 .OutlineFlags li,
+  .colour2 ~ .Cancel:hover,
+  .colour2 ~ .Cancel::before,
+  .colour2 ~ .Cancel::after,
+  .colour2 ~ footer button.Save {
     background: #c0004e;
   }
   /* ------------ Colour 3 ------------ */
@@ -145,7 +230,11 @@
     background: #e2f7fb;
   }
   .colour3 header .column,
-  .colour3 .OutlineFlags li {
+  .colour3 .OutlineFlags li,
+  .colour3 ~ .Cancel:hover,
+  .colour3 ~ .Cancel::before,
+  .colour3 ~ .Cancel::after,
+  .colour3 ~ footer button.Save {
     background: #0693b2;
   }
   /* ------------ Colour 4 ------------ */
@@ -153,7 +242,11 @@
     background: #e7f3e3;
   }
   .colour4 header .column,
-  .colour4 .OutlineFlags li {
+  .colour4 .OutlineFlags li,
+  .colour4 ~ .Cancel:hover,
+  .colour4 ~ .Cancel::before,
+  .colour4 ~ .Cancel::after,
+  .colour4 ~ footer button.Save {
     background: #589b4c;
   }
   /* ------------ No colour ------------ */
@@ -198,38 +291,152 @@
   .Item .Highlight :global(strong) {
     font-weight: 700;
   }
+  .Cancel {
+    border: 1px solid var(--workspace-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transform: rotate(45deg);
+    background: none;
+    transition: all 0.25s ease-out;
+  }
+  .colour1 ~ .Cancel {
+    border: 1px solid #d86801;
+  }
+  .colour2 ~ .Cancel {
+    border: 1px solid #c0004e;
+  }
+  .colour3 ~ .Cancel {
+    border: 1px solid #0693b2;
+  }
+  .colour4 ~ .Cancel {
+    border: 1px solid #589b4c;
+  }
+  .Cancel:hover {
+    background: var(--workspace-color);
+  }
+  .Cancel::before,
+  .Cancel::after {
+    content: "";
+    width: 50%;
+    height: 2px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+    transition: all 0.25s ease-out;
+    background: var(--workspace-color);
+  }
+  .Cancel::after {
+    height: 50%;
+    width: 2px;
+  }
+  .Cancel:hover::before,
+  .Cancel:hover::after {
+    background: var(--main-background-color);
+  }
+  footer {
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+  }
+  button.Save {
+    background: var(--action);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    height: 34px;
+    font-weight: 500;
+    padding: 0 25px;
+    cursor: pointer;
+  }
+  button.Delete {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background: #fff;
+    width: 34px;
+    height: 34px;
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.25s ease-out;
+  }
+  button.Delete:hover {
+    background: rgba(239, 86, 87, 0.1);
+    border: 1px solid #f05657;
+  }
+  button.Delete :global(svg) {
+    color: #f05657;
+    height: 60%;
+    width: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .OutlineEdit :global(.Editor.hasFocus) {
+    background: transparent;
+  }
+  .OutlineEdit :global(.Editor .ql-editor) {
+    padding: 12px 2px;
+    background: transparent;
+  }
+  .OutlineEdit :global(*) {
+    font-size: 0.75rem;
+    line-height: 0.9rem;
+  }
 </style>
 
-<div
-  class="Item {noteColour}
-  {noted && (highlighed || note.source) ? 'two' : ''}">
-  {#if highlighed || note.source}
-    <header>
-      <div class="column" />
-      <div class="info">
-        {#if highlighed.content && (!params['styles'] || (!Array.isArray(params['styles']) && params['styles'] !== 'highlight') || (Array.isArray(params['styles']) && !params['styles'].find((item) => item === 'highlight')))}
-          <p class="Highlight {noted && noted.content ? '' : 'noNote'}">
-            {@html highlighed.content}
-          </p>
-        {/if}
-        {#if note.source && note.source.name}
-          <div class="Source">
-            <NavSource />
-            <p>{note.source.name}</p>
-          </div>
-        {/if}
-      </div>
-    </header>
-  {/if}
-  {#if noted && (!params['styles'] || (!Array.isArray(params['styles']) && params['styles'] !== 'note') || (Array.isArray(params['styles']) && !params['styles'].find((item) => item === 'note')))}
-    <p class="Note">
-      {@html noted.content}
-    </p>
-  {/if}
-  {#if params.styleFlags}
+{#if editing === item.shortId}
+  <div class="Item OutlineEdit {noteColour}">
+    <NoteEditor bind:richtext={noteEdition} html={noteEdition} />
+  </div>
+  <button class="Cancel" on:click={Cancel} />
+  <footer>
+    <button class="Delete" on:click={Delete}>
+      <IcoDelete />
+    </button>
+    <button class="Save" on:click={Save}>Save</button>
+  </footer>
+{:else}
+  <div
+    on:click={() => {
+      editing = item.shortId;
+    }}
+    class="Item {noteColour}
+    {noted && (highlighed || note.source) ? 'two' : ''}">
+    {#if highlighed || note.source}
+      <header>
+        <div class="column" />
+        <div class="info">
+          {#if highlighed.content && (!params['styles'] || (!Array.isArray(params['styles']) && params['styles'] !== 'highlight') || (Array.isArray(params['styles']) && !params['styles'].find((item) => item === 'highlight')))}
+            <p class="Highlight {noted && noted.content ? '' : 'noNote'}">
+              {@html highlighed.content}
+            </p>
+          {/if}
+          {#if note.source && note.source.name}
+            <div class="Source">
+              <NavSource />
+              <p>{note.source.name}</p>
+            </div>
+          {/if}
+        </div>
+      </header>
+    {/if}
+    {#if noted && (!params['styles'] || (!Array.isArray(params['styles']) && params['styles'] !== 'note') || (Array.isArray(params['styles']) && !params['styles'].find((item) => item === 'note')))}
+      <p class="Note">
+        {@html noted.content}
+      </p>
+    {/if}
     <ul class="OutlineFlags">
       {#each note.tags as flag}
-        {#if flag.type === 'flag' && ((!Array.isArray(params['styleFlags']) && params['styleFlags'] === flag.name.replace(' ', '')) || (Array.isArray(params['styleFlags']) && params['styleFlags'].find((item) => item === flag.name.replace(' ', ''))))}
+        {#if flag.type === 'flag'}
           <li>
             <svelte:component this={assignIco(flag.name)} />
             <p>{flag.name}</p>
@@ -237,5 +444,5 @@
         {/if}
       {/each}
     </ul>
-  {/if}
-</div>
+  </div>
+{/if}

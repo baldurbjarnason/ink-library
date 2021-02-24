@@ -14,6 +14,7 @@
   };
 
   $: if (!$page.query.notebook) menuTabs = "all";
+  $: if ($page.params.noteId) menuTabs = "notes";
 </script>
 
 <style>

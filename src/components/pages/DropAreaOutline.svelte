@@ -20,10 +20,12 @@
   export let items;
   export let requesting;
   export let outlineInfo;
+  export let filters;
+  export let keyboardNote;
+  export let disabled;
 
   $: params = $page.query;
-  $: isTransitioning =
-    items !== "loading" ? !!items.find((i) => i.isByeBye || i.isHi) : "";
+  let editing = false;
   const flipDurationMs = 300;
   let dropTargetStyle;
 
@@ -37,32 +39,6 @@
   function handleDrop(e) {
     handleSort(e);
     arrangement(e);
-  }
-
-  async function deleteItem(id) {
-    if (!items.length) return;
-
-    let note = { shortId: id };
-    requesting = true;
-    try {
-      await fetch(
-        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
-        {
-          method: "DELETE",
-          credentials: "include",
-          body: JSON.stringify(note),
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            "csrf-token": getToken(),
-          },
-        }
-      );
-      $refreshOutline = { id: $outline.id, time: Date.now() };
-      requesting = false;
-    } catch (err) {
-      console.error(err);
-    }
   }
 
   async function addNote(note, request) {
@@ -89,11 +65,12 @@
   }
 
   function arrangement(e) {
+    disabled = true;
     let id = e.detail.info.id;
     let index;
-    items.find((note, i) => {
-      if (id === note.id) index = i;
-    });
+    for (let i = 0; i < items.length; i++) {
+      if (id === items[i].id) index = i;
+    }
 
     const request = items[index]["contextId"] ? "PATCH" : "POST";
 
@@ -122,6 +99,68 @@
     if (request === "PATCH" && !note.next && !note.previous) return;
     addNote(note, request);
   }
+
+  let assignComp = (item) => {
+    if (item.json && item.json.type === "header") return NewHeaderCard;
+    else if (item.json && item.json.type === "note") return NewNoteCard;
+    else return NoteCardOutline;
+  };
+
+  let noteFocus, note;
+  let keyDown = (e) => {
+    if (editing) return;
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      noteFocus = e.target.id;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].shortId === noteFocus) {
+          note = i;
+          break;
+        }
+      }
+
+      if (e.key === "ArrowUp" && note === 0) return;
+      if (e.key === "ArrowDown" && !items[note + 1]) return;
+
+      let x = e.key === "ArrowUp" ? -1 : 1;
+      let current = items[note];
+      let newPos = items[note + x];
+      items[note + x] = current;
+      items[note] = newPos;
+
+      setTimeout(() => {
+        document.getElementById(noteFocus).focus();
+      }, 50);
+    } else if (e.key === "ArrowLeft" && note >= 0 && noteFocus) {
+      let index;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].shortId === noteFocus) {
+          index = i;
+          break;
+        }
+      }
+      note = false;
+      noteFocus = false;
+      arrangement({ detail: { info: { id: items[index].id } } });
+    }
+  };
+
+  $: if (keyboardNote) {
+    noteFocus = keyboardNote.shortId;
+    items.unshift(keyboardNote);
+    items = items;
+    keyboardNote = false;
+    setTimeout(() => {
+      note = 0;
+      document.getElementsByClassName("ItemsList")[0].firstElementChild.focus();
+    }, 50);
+  }
+
+  let startDrag = () => {
+    disabled = false;
+  };
+  let stopDrag = () => {
+    disabled = true;
+  };
 </script>
 
 <style>
@@ -146,26 +185,40 @@
     border-radius: 30px;
     transform: translateX(40px);
     list-style-type: none;
-  }
-  ul.ItemsList.alpha {
-    list-style-type: upper-alpha;
-  }
-  ul.ItemsList.roman {
-    list-style-type: upper-roman;
-  }
-  ul.ItemsList.decimal {
-    list-style-type: decimal;
-  }
-  ul.ItemsList.bPoint {
-    list-style-type: disc;
+    counter-reset: items;
   }
   li.Item {
     position: relative;
   }
-  li.Item::marker {
+  li.Hide {
+    display: none;
+  }
+  li.header:not(.Hide) + li {
+    counter-reset: items;
+  }
+  li:not(.header)::before {
     color: var(--workspace-color);
     font-size: 0.9rem;
     font-weight: 500;
+    counter-increment: items;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateX(calc(-100% - 7px));
+  }
+  ul.ItemsList.alpha li:not(.header)::before {
+    content: counter(items, upper-alpha) ". ";
+  }
+  ul.ItemsList.roman li:not(.header)::before {
+    content: counter(items, upper-roman) ". ";
+  }
+  ul.ItemsList.decimal li:not(.header)::before {
+    content: counter(items, decimal) ". ";
+  }
+  ul.ItemsList.bPoint li:not(.header)::before {
+    content: counter(items, disc);
+    font-size: 2rem;
+    line-height: 1.5rem;
   }
   .custom-shadow-item {
     position: absolute;
@@ -176,6 +229,9 @@
     visibility: visible;
     opacity: 0.5;
     margin: 0;
+  }
+  :global(.custom-shadow-item:first-child) {
+    background: blue;
   }
   .hi {
     animation: fadeIn 900ms ease;
@@ -218,62 +274,83 @@
     margin: 0;
     opacity: 0.5;
   }
+  li.Item.header {
+    transform: translateX(-20px);
+    width: calc(100% + 20px);
+  }
+  .noteFocus {
+    transform: translateX(40px);
+    box-shadow: 2px 2px 10px 0 rgba(184, 209, 236, 0.1);
+  }
+  div.DragZone {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: grid;
+    gap: 3px;
+    width: max-content;
+    cursor: grab;
+    opacity: 0.5;
+    grid-template-columns: repeat(2, 5px);
+  }
+  div.DragZone span {
+    background: var(--workspace-color);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    margin-bottom: 1px;
+  }
+  li.Item.header div.DragZone {
+    top: 1px;
+  }
 </style>
 
 <div class="Workarea">
-  <OutlineHeader {outlineInfo} />
+  <OutlineHeader {outlineInfo} notebook={$pageItem.notebook} />
   {#if requesting || items === 'loading'}
     <ul class="ItemsList">
       <Loader />
     </ul>
   {:else}
     <ul
-      class={`ItemsList ${params.list ? params.list : ''}`}
-      use:dndzone={{ items, flipDurationMs, dragDisabled: isTransitioning, dropFromOthersDisabled: isTransitioning, dropTargetStyle }}
+      class={`ItemsList ${filters.list ? filters.list : ''}`}
+      use:dndzone={{ items, flipDurationMs, dragDisabled: disabled, dropFromOthersDisabled: disabled, dropTargetStyle }}
       on:consider={handleSort}
       on:finalize={handleDrop}>
       {#each items as item, i (item.id)}
-        <li class="Item" animate:flip={{ duration: flipDurationMs }}>
-          {#if item.json && item.json.type}
-            {#if item.json.type === 'header' && (!params['filters'] || (!Array.isArray(params['filters']) && params.filter !== 'headers') || (Array.isArray(params['filters']) && !params['filters'].some(
-                    (item) => params['filters'].includes('headers')
-                  )))}
-              <NewHeaderCard {item} />
-              {#if item[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
-                <div
-                  in:fade={{ duration: 200, easing: cubicIn }}
-                  class="custom-shadow-item {item.isByeBye ? 'bye' : item.isHi ? 'hi' : ''}">
-                  <NewHeaderCard {item} />
-                </div>
-              {/if}
-            {:else if item.json.type === 'note' && (!params['filters'] || (!Array.isArray(params['filters']) && params.filter !== 'notes') || (Array.isArray(params['filters']) && !params['filters'].some(
-                    (item) => params['filters'].includes('notes')
-                  )))}
-              <NewNoteCard {item} />
-              {#if item[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
-                <div
-                  in:fade={{ duration: 200, easing: cubicIn }}
-                  class="custom-shadow-item {item.isByeBye ? 'bye' : item.isHi ? 'hi' : ''}">
-                  <NewNoteCard {item} />
-                </div>
-              {/if}
+        <li
+          on:keydown={keyDown}
+          id={item.shortId}
+          tabindex="0"
+          class="Item {item.json ? item.json.type : ''}"
+          class:noteFocus={noteFocus === item.shortId}
+          class:Hide={(item.json && filters.type.some((type) => type === item.json.type)) || (!item.json && item.tags.some((item) => filters.colour.includes(item.name) || filters.flags.includes(item.name)))}
+          animate:flip={{ duration: flipDurationMs }}>
+          {#if (item.json && !filters.type.some((type) => type === item.json.type)) || (!item.json && !item.tags.some((item) => filters.colour.includes(item.name) || filters.flags.includes(item.name)))}
+            <svelte:component
+              this={assignComp(item)}
+              {item}
+              bind:editing
+              bind:requesting />
+            {#if item[SHADOW_ITEM_MARKER_PROPERTY_NAME] && !editing}
+              <div
+                in:fade={{ duration: 200, easing: cubicIn }}
+                class="custom-shadow-item {item.isByeBye ? 'bye' : item.isHi ? 'hi' : ''}">
+                <svelte:component this={assignComp(item)} {item} />
+              </div>
             {/if}
-          {:else if !params['filterColour'] || (params['filterColour'] && !Array.isArray(params['filterColour']) && !item.tags.find((tag) => tag.name === params['filterColour'])) || (params['filterColour'] && Array.isArray(params['filterColour']) && !item.tags.some(
-                (item) => params['filterColour'].includes(item.name)
-              ))}
-            {#if !params['filterFlags'] || (params['filterFlags'] && !Array.isArray(params['filterFlags']) && !item.tags.find((tag) => tag.name.replace(' ', '') === params['filterFlags'])) || (params['filterFlags'] && Array.isArray(params['filterFlags']) && !item.tags.some(
-                  (item) =>
-                    params['filterFlags'].includes(item.name.replace(' ', ''))
-                ))}
-              <NoteCardOutline note={item} />
-              {#if item[SHADOW_ITEM_MARKER_PROPERTY_NAME]}
-                <div
-                  in:fade={{ duration: 200, easing: cubicIn }}
-                  class="custom-shadow-item {item.isByeBye ? 'bye' : item.isHi ? 'hi' : ''}">
-                  <NoteCardOutline note={item} />
-                </div>
-              {/if}
-            {/if}
+          {/if}
+          {#if !editing}
+            <div
+              class="DragZone"
+              aria-label="drag-handle"
+              on:mousedown={startDrag}
+              on:touchstart={startDrag}
+              on:mouseup={stopDrag}>
+              {#each { length: 6 } as i}
+                <span />
+              {/each}
+            </div>
           {/if}
         </li>
       {/each}

@@ -1,28 +1,52 @@
 <script>
-  import IcoGoBack from "../../img/IcoGoBack.svelte";
+  import History from "../../History.svelte";
   import IcoDelete from "../../img/IcoDelete.svelte";
+  import IcoEdit from "../../img/IcoEdit.svelte";
   import ArrowDropDown from "../../img/ArrowDropDown.svelte";
   import DeletionModal from "./DeletionModal.svelte";
-  import { page } from "../../../stores";
+  import { page, refreshOutline } from "../../../stores";
   import { getToken } from "../../../getToken";
   import { goto } from "@sapper/app";
 
   export let outlineInfo;
+  export let notebook;
   let activeModal = false;
+  let nameEdit = false;
+  let newValue,
+    init = (e, current) => {
+      e.focus();
+      newValue = current;
+    };
 
-  let returnPages = () => {
-    goto(`pages/${$page.params.pageId}`);
+  let remove = async () => {
+    goto(`notebooks/${notebook.shortId}`);
+
+    try {
+      await fetch(`/api/pages/${$page.params.pageId}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "csrf-token": getToken(),
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  async function remove() {
-    goto(`pages/${$page.params.pageId}`);
+  let submit = async (e) => {
+    const payload = Object.assign({}, outlineInfo);
+    payload.name = newValue;
 
     try {
       await fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}`,
         {
-          method: "DELETE",
+          method: "PUT",
           credentials: "include",
+          body: JSON.stringify(payload),
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -30,10 +54,14 @@
           },
         }
       );
+
+      nameEdit = false;
+      newValue = "";
+      $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 </script>
 
 <style>
@@ -41,8 +69,7 @@
     display: grid;
     gap: 5px;
   }
-  header h1,
-  header h5 {
+  header h1 {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -53,38 +80,8 @@
     gap: 15px;
     align-items: center;
     position: relative;
-    grid-template-columns: max-content max-content;
-  }
-  header .Title .DropDown {
-    width: 28px;
-    background: #f9fbfc;
-    display: grid;
-    height: 100%;
-    text-align: center;
-    align-items: center;
-    border-radius: 7px;
     cursor: pointer;
-    position: relative;
-    border: 1px solid transparent;
-    transition: all 0.2s ease-out;
-  }
-  header .Title .DropDown:hover {
-    border: 1px solid #eeeeee;
-  }
-  header .DropDown:hover::after {
-    content: "";
-    width: calc(100% + 60px);
-    top: 0;
-    right: 0;
-    height: calc(100% + 20px);
-    position: absolute;
-  }
-  header .Title .DropDown :global(svg) {
-    position: relative;
-    right: inherit;
-    top: inherit;
-    margin: 0 auto;
-    color: var(--workspace-color);
+    grid-template-columns: max-content max-content;
   }
   header h1 {
     font-weight: 600;
@@ -92,76 +89,110 @@
     color: var(--workspace-color);
     margin: 0;
   }
-  header h5 {
-    color: #888;
-    font-weight: 500;
-    margin: 0;
-    cursor: pointer;
-  }
-  header .DropDown:hover ~ .Delete,
-  header .Delete:hover {
-    display: grid;
-  }
   header .Delete {
-    border: 1px solid #eeeeee;
-    border-radius: 10px;
-    background: #ffffff;
-    display: none;
-    gap: 15px;
-    grid-template-columns: max-content max-content;
-    padding: 15px 30px;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background: #fff;
+    width: 34px;
+    display: grid;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transform: translateY(calc(100% + 5px));
-    box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.25s ease-out;
   }
-  .Delete::before {
-    content: "";
-    background: transparent;
-    width: 90%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    height: 70%;
-    position: absolute;
-    z-index: -1;
-    border-radius: 6px;
-  }
-  .Delete:hover::before {
+  header .Delete:hover {
     background: rgba(239, 86, 87, 0.1);
   }
-  header .Delete p,
   header .Delete :global(svg) {
     color: #f05657;
+    height: 60%;
+    width: auto;
   }
-  header .Delete p {
-    margin: 0;
-    font-size: 0.75rem;
+  /*----- Name/description edition -----*/
+  .NameCont {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: minmax(100px, 350px) repeat(3, max-content);
+  }
+  .NameEdit {
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 7px;
+    border: 1px solid #dde8ed;
+    background: var(--main-background-color);
+    color: var(--action);
     font-weight: 600;
+  }
+  .Edition button {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9px;
+    align-items: center;
+    display: grid;
+    padding: 0 10px;
+    border: none;
+    cursor: pointer;
+  }
+  .Edition button.Save {
+    background: var(--action);
+    color: #fff;
+  }
+  .Edition button.Cancel {
+    background: #ffffff;
+    color: var(--action);
+    border: 2px solid var(--action);
+  }
+  .Name :global(svg) {
+    position: absolute;
+    margin-right: 0;
+    width: 40px;
+    opacity: 0;
+    transition: all 0.25s ease-out;
+  }
+  .Name:hover :global(svg) {
+    opacity: 1;
   }
 </style>
 
 <header>
-  <h5 on:click={returnPages}>
-    <IcoGoBack />
-    Pages menu
-  </h5>
+  <History />
   <div class="Title">
-    <h1>{outlineInfo.name ? outlineInfo.name : '...'}</h1>
-    <div class="DropDown">
-      <ArrowDropDown />
-    </div>
-    <div
-      class="Delete"
-      on:click={() => {
-        activeModal = true;
-      }}>
-      <IcoDelete />
-      <p>Delete outline</p>
-    </div>
+    {#if nameEdit}
+      <div class="NameCont Edition">
+        <input
+          class="NameEdit"
+          required
+          type="text"
+          use:init={outlineInfo.name}
+          placeholder="Enter title"
+          bind:value={newValue} />
+        <button
+          class="Cancel"
+          on:click={() => {
+            nameEdit = false;
+          }}>
+          Cancel
+        </button>
+        <button class="Save" on:click={submit}>Save</button>
+        <div
+          class="Delete"
+          on:click={() => {
+            activeModal = true;
+          }}>
+          <IcoDelete />
+        </div>
+      </div>
+    {:else}
+      <h1
+        class="Name"
+        on:click={() => {
+          nameEdit = true;
+        }}>
+        {outlineInfo.name ? outlineInfo.name : '...'}
+        <IcoEdit />
+      </h1>
+    {/if}
   </div>
 </header>
 {#if activeModal}

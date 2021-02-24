@@ -1,18 +1,24 @@
 <script>
-  import Loader from "../Loader.svelte";
-  import Flags from "./Items/Flags.svelte";
-  import Colours from "./Items/Colours.svelte";
-  import ListNotebooks from "./Items/ListNotebooks.svelte";
-  import ListSources from "./Items/ListSources.svelte";
-  import History from "../History.svelte";
-  import IcoDelete from "../img/IcoDelete.svelte";
-  import { refreshNotes, refreshNote, page, tags, note } from "../../stores";
+  import Loader from "../../Loader.svelte";
+  import Flags from "../../notes/Items/Flags.svelte";
+  import Colours from "../../notes/Items/Colours.svelte";
+  import ListNotebooks from "../../notes/Items/ListNotebooks.svelte";
+  import ListSources from "../../notes/Items/ListSources.svelte";
+  import History from "../../History.svelte";
+  import IcoDelete from "../../img/IcoDelete.svelte";
+  import {
+    refreshNotebook,
+    refreshNote,
+    page,
+    tags,
+    note,
+  } from "../../../stores";
   import { goto } from "@sapper/app";
-  import Highlight from "./Highlight.svelte";
-  import NoteEditor from "../widgets/NoteEditor.svelte";
-  import { getToken } from "../../getToken";
-  import Button from "../widgets/Button.svelte";
-  import DeletionModal from "./Items/DeletionModal.svelte";
+  import Highlight from "../../notes/Highlight.svelte";
+  import NoteEditor from "../../widgets/NoteEditor.svelte";
+  import { getToken } from "../../../getToken";
+  import Button from "../../widgets/Button.svelte";
+  import DeletionModal from "../../notes/Items/DeletionModal.svelte";
 
   export let dialog = false;
 
@@ -140,18 +146,20 @@
         },
       });
 
+      if ($page.query.page) goto($page.path);
+      $refreshNotebook = { id: $page.params.id, time: Date.now() };
+      $refreshNote = { id: noteTest.shortId, time: Date.now() };
       updateHighlight(
         noteTest.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
-      if ($page.query.page) goto($page.path);
     } catch (err) {
       console.error(err);
     }
   }
 
   async function remove() {
-    goto(`notes/all/all/`);
+    goto(`notebooks/${$page.params.id}`);
 
     try {
       await fetch(`/api/note/${noteTest.shortId}`, {
@@ -375,7 +383,7 @@
   {#if noteTest.shortId}
     <div class="Top">
       {#if !dialog}
-        <History />
+        <History/>
         <span />
         <div class="CardBottom">
           {#if noteTest.updated && noteTest.published}

@@ -135,6 +135,9 @@
   .right {
     grid-template-rows: 15px 1fr;
   }
+  .right .cover {
+    cursor: pointer;
+  }
   .right .cover :global(svg) {
     float: left;
     transform: translateY(-4px);
@@ -477,9 +480,7 @@
     </div>
   {/if}
   <div
-    class="NewBox newNote {noteColour}"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}>
+    class="NewBox newNote {noteColour}">
     <form
       id="newform"
       class="newForm"
@@ -509,7 +510,13 @@
         <p class="Characters">{characters} characters left</p>
       </div>
       <div class="right">
-        <div class="cover">
+        <div
+          class="cover"
+          on:click={() => {
+            modal = true;
+            selection = coverImg;
+            document.querySelector('nav').classList.add('ntbkModal');
+          }}>
           <IcoEdit />
           <h5>Cover image</h5>
         </div>
@@ -532,8 +539,6 @@
 {:else}
   <span
     class="new-button"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}
     bind:this={newToggle}>
     <Button {click}>
       <IcoNewNotebook />

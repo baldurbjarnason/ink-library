@@ -4,33 +4,33 @@
     addingWorkspace,
     addedCollections,
     addedWorkspaces,
-    workspaces
+    workspaces,
   } from "../../stores";
   import Closer from "../widgets/Closer.svelte";
   import AutocompleteInput from "../widgets/AutocompleteInput.svelte";
   export let dark = false;
-  let filteredCollections = $collections.map(collection => collection.name);
+  let filteredCollections = $collections.map((collection) => collection.name);
   $: if ($addingWorkspace) {
     if ($addingWorkspace !== "all") {
-      filteredCollections = $collections.map(collection => {
+      filteredCollections = $collections.map((collection) => {
         return {
           label: getName(collection.name),
-          value: collection.id
+          value: collection.id,
         };
       });
     } else {
-      filteredCollections = $collections.map(collection => {
+      filteredCollections = $collections.map((collection) => {
         return {
           label: getName(collection.name),
-          value: collection.id
+          value: collection.id,
         };
       });
     }
   }
   $: if ($addedCollections) {
-    filteredCollections = filteredCollections.filter(collection => {
+    filteredCollections = filteredCollections.filter((collection) => {
       return !$addedCollections
-        .map(coll => coll.value)
+        .map((coll) => coll.value)
         .includes(collection.value);
     });
   }
@@ -53,7 +53,7 @@
   }
   // When addedCollections changes, need to update addedWorkspaces which is added to the request later on.
   function ids(arr) {
-    return arr.map(item => item.value);
+    return arr.map((item) => item.value);
   }
   function change(input, value) {
     if (value && ids(filteredCollections).includes(value.value)) {
@@ -65,21 +65,23 @@
   function removeTag(event) {
     const removedCollection = event.data.value;
     $addedCollections = $addedCollections.filter(
-      collection => collection.value !== removedCollection
+      (collection) => collection.value !== removedCollection
     );
     $addedWorkspaces = getWorkspaces();
   }
   function getCollection(suggestion) {
-    return $collections.find(collection => collection.id === suggestion.value);
+    return $collections.find(
+      (collection) => collection.id === suggestion.value
+    );
   }
   function mapCollections(item) {
     const collection = getCollection(item);
     const workspace = getWorkspace(collection.name);
-    return $workspaces.find(item => getWorkspace(item.name) === workspace);
+    return $workspaces.find((item) => getWorkspace(item.name) === workspace);
   }
   function getWorkspaces() {
     return Array.from(
-      new Set($addedCollections.map(mapCollections).filter(item => item))
+      new Set($addedCollections.map(mapCollections).filter((item) => item))
     );
   }
 </script>

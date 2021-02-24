@@ -4,8 +4,7 @@
   import { page } from "../../../../stores";
 
   export let addParams;
-
-  $: params = $page.query;
+  export let filters;
 
   let items = ["alpha", "roman", "decimal", "bPoint"];
 
@@ -124,9 +123,9 @@
   <p>List</p>
   <ul class="ListOptions">
     <li
-      class:Current={!params.list}
+      class:Current={!filters.list}
       on:click={() => {
-        addParams('list', undefined);
+        addParams(false);
       }}>
       <IcoChecked />
       <p>None</p>
@@ -134,9 +133,9 @@
     </li>
     {#each items as item}
       <li
-        class:Current={params.list && params.list === item}
+        class:Current={filters.list === item}
         on:click={() => {
-          addParams('list', item);
+          addParams(item);
         }}>
         <IcoChecked />
         <p class="Type">{item === 'bPoint' ? 'Bullet point' : item}</p>

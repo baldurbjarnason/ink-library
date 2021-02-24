@@ -11,6 +11,7 @@ export async function del(req, res, next) {
 
   for (const item of items) {
     if (req.body.notebook) type = item.body ? "notes/" : "sources/";
+
     try {
       const response = await got
         .delete(`${process.env.API_SERVER}${url}${type}${item.shortId}`, {
@@ -19,7 +20,7 @@ export async function del(req, res, next) {
           },
         })
         .json();
-      responses = responses.concat(res.json(response));
+      responses = responses.concat(response);
     } catch (err) {
       responses = responses.concat(err.response);
     }

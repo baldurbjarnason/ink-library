@@ -18,6 +18,8 @@
   } from "../../stores/page/notes.js";
   //export let items;
   export let requesting;
+  export let keyboardNote;
+  export let disabled;
 
   $: notebookNotes = $pageNotes;
   $: items = notebookNotes.items;
@@ -25,7 +27,6 @@
   const flipDurationMs = 300;
   let shouldIgnoreDndEvents = false;
   let dropFromOthersDisabled = true;
-  $: dragDisabled = requesting;
 
   function handleDndConsider(e) {
     const { trigger, id } = e.detail.info;
@@ -53,18 +54,11 @@
     }
   }
 
-  function transformDraggedElement(draggedEl, data, index) {
-    /*
-    const msg = `My index is ${index}`;
-    draggedEl.innerHTML = msg;*/
-    console.log("here");
-  }
-
   $: query = Object.assign({}, $page.query) || "";
 
   let filterOn = false;
   let clicked = false;
-  $: if ((query.stack || query.type || query.flag) && !clicked) filterOn = true;
+  $: if ((query.colour || query.flag) && !clicked) filterOn = true;
 
   let filter = () => {
     filterOn = !filterOn;
@@ -74,6 +68,26 @@
   let closeColumn = false;
   let handleClick = () => {
     closeColumn = !closeColumn;
+  };
+
+  let keyDown = (e) => {
+    if (e.key === "ArrowLeft") {
+      let note;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].shortId === e.target.id) {
+          note = i;
+          break;
+        }
+      }
+      keyboardNote = items[note];
+    }
+  };
+  let startDrag = () => {
+    if (requesting) return;
+    disabled = false;
+  };
+  let stopDrag = () => {
+    disabled = true;
   };
 </script>
 
@@ -122,7 +136,10 @@
     gap: 10px;
     overflow-y: scroll;
   }
-  .Notes .div:last-child {
+  .Notes .Note {
+    position: relative;
+  }
+  .Notes .Note:last-child {
     padding-bottom: 10px;
   }
   .Header {
@@ -130,28 +147,23 @@
     grid-template-columns: 1fr max-content;
     gap: 10px;
   }
-  .Header .Left h4,
-  .Header .Left h2 {
+  .ClosedNotesColumn .Header {
+    grid-template-columns: max-content;
+  }
+  .Header h2 {
     display: grid;
     font-weight: 500;
     grid-template-columns: max-content 1fr;
     align-items: center;
     gap: 5px;
   }
-  .Header .Left h2 {
+  .Header h2 {
     color: var(--workspace-color);
     font-size: 1rem;
   }
-  .Header .Left h2 :global(svg) {
+  .Header h2 :global(svg) {
     width: auto;
     height: 13px;
-  }
-  .Header .Left h4 {
-    color: #888888;
-  }
-  .Header .Left h4 :global(svg) {
-    width: auto;
-    height: 9px;
   }
   .Header .Right span {
     width: 34px;
@@ -251,21 +263,48 @@
     margin: 0;
     opacity: 0.5;
   }
+  .FiltersOn {
+    background: #f05657;
+    border-radius: 50%;
+    color: #fff;
+    width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    position: absolute;
+    top: -9px;
+    text-align: center;
+    right: -9px;
+    display: grid;
+    align-items: center;
+  }
+  div.DragZone {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: grid;
+    gap: 3px;
+    width: max-content;
+    cursor: grab;
+    opacity: 0.5;
+    grid-template-columns: repeat(2, 5px);
+  }
+  div.DragZone span {
+    background: var(--workspace-color);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    margin-bottom: 1px;
+  }
 </style>
 
 <div>
   <section class="NotesColumn" class:closeColumn>
     <div class="Header">
-      <div class="Left">
-        <h2>
-          <NavNotes />
-          Notes
-        </h2>
-        <h4>
-          <NavNotebook />
-          Notebook
-        </h4>
-      </div>
+      <h2>
+        <NavNotes />
+        Notes
+      </h2>
       <div class="Right">
         <span on:click={handleClick}>
           <IcoCloseColumn />
@@ -279,6 +318,9 @@
       </div>
       <section class="Filter {filterOn ? 'active' : ''}" on:click={filter}>
         <p>Filter</p>
+        {#if query.colour || query.flag}
+          <span class="FiltersOn">{query.colour && query.flag ? 2 : 1}</span>
+        {/if}
       </section>
     </div>
     <div class="Filters {filterOn ? 'active' : ''}">
@@ -290,12 +332,27 @@
       <div
         class="Notes"
         style={`grid-template-rows: repeat(${items.length}, max-content);`}
-        use:dndzone={{ items, flipDurationMs, dropFromOthersDisabled, transformDraggedElement, dragDisabled }}
+        use:dndzone={{ items, flipDurationMs, dropFromOthersDisabled, dragDisabled: disabled }}
         on:consider={handleDndConsider}
+        tabindex="0"
         on:finalize={handleDndFinalize}>
         {#each items as item (item.id)}
-          <div class="div" animate:flip={{ duration: flipDurationMs }}>
+          <div
+            class="Note"
+            id={item.shortId}
+            animate:flip={{ duration: flipDurationMs }}
+            on:keydown={keyDown}>
             <NoteCardPage note={item} />
+            <div
+              class="DragZone"
+              aria-label="drag-handle"
+              on:mousedown={startDrag}
+              on:touchstart={startDrag}
+              on:mouseup={stopDrag}>
+              {#each { length: 6 } as i}
+                <span />
+              {/each}
+            </div>
           </div>
         {/each}
       </div>
@@ -309,16 +366,10 @@
   {#if closeColumn}
     <section class="ClosedNotesColumn" on:click={handleClick}>
       <div class="Header">
-        <div class="Left">
-          <h2>
-            <NavNotes />
-            Notes
-          </h2>
-          <h4>
-            <NavNotebook />
-            Notebook
-          </h4>
-        </div>
+        <h2>
+          <NavNotes />
+          Notes
+        </h2>
       </div>
     </section>
   {/if}

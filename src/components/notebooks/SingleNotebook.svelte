@@ -1,16 +1,18 @@
 <script>
   import AddItems from "./AddItems.svelte";
   import SingleNotebookList from "./SingleNotebookList.svelte";
-  import IcoGoBack from "../img/IcoGoBack.svelte";
+  import History from "../History.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
-  import { notebook } from "../../stores";
+  import IcoEdit from "../img/IcoEdit.svelte";
+  import { notebook, refreshNotebook, page } from "../../stores";
   import DeletionModal from "../notes/Items/DeletionModal.svelte";
-  import EditSingleNotebook from "./Tools/EditSingleNotebook.svelte";
-  import NewPage from "../pages/NewPage.svelte";
+  import EditCoverImage from "./Tools/EditCoverImage.svelte";
+  import NoteEdit from "./Tools/NoteEdit.svelte";
   import { goto } from "@sapper/app";
   import { getToken } from "../../getToken";
 
   let activeModal = false;
+  let clickPage = false;
   async function remove() {
     goto(`notebooks`);
 
@@ -28,6 +30,43 @@
       console.error(err);
     }
   }
+
+  let itemEdit,
+    newValue,
+    coverImageModal,
+    init = (e, current) => {
+      e.focus();
+      newValue = current;
+    };
+
+  $: characters = newValue ? 150 - newValue.length : 150;
+
+  async function submit(e) {
+    e.preventDefault();
+    if (itemEdit !== "description" && !newValue) return;
+
+    try {
+      const payload = Object.assign({}, $notebook);
+      if (itemEdit === "cover") payload["settings"]["coverImg"] = newValue;
+      else payload[itemEdit] = newValue;
+
+      await window.fetch(`/api/notebooks/${$notebook.shortId}`, {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+          "csrf-token": getToken(),
+        },
+      });
+
+      itemEdit = false;
+      newValue = "";
+      $refreshNotebook = { id: notebook, time: Date.now() };
+    } catch (err) {
+      console.error(err);
+    }
+  }
 </script>
 
 <style>
@@ -40,13 +79,6 @@
     background-color: #ffffff;
     z-index: 3;
     padding: 20px calc(var(--base) * 2);
-  }
-  .Toolbar.Loader {
-    height: 100px;
-    display: flex;
-  }
-  .Toolbar.Loader :global(.Loading) {
-    margin: auto;
   }
   nav.Toolbar::before {
     content: "";
@@ -67,16 +99,8 @@
   }
   .Header {
     display: grid;
-    grid-template-columns: max-content max-content max-content 1fr;
+    grid-template-columns: max-content 1fr;
     grid-gap: 20px;
-  }
-  .breadcrumbs {
-    width: max-content;
-  }
-  .breadcrumbs h5 {
-    color: #888888;
-    font-weight: 500;
-    margin: 0;
   }
   .Title {
     display: grid;
@@ -97,6 +121,7 @@
   .library h3 {
     font-weight: 600;
     margin: 0;
+    cursor: pointer;
   }
   .Img {
     background-size: cover;
@@ -106,6 +131,7 @@
   }
   .Description {
     margin: 0;
+    cursor: pointer;
     background: #ffffff;
     font-size: 0.9rem;
   }
@@ -113,7 +139,6 @@
     display: grid;
     grid-gap: 10px;
   }
-  /*----- Colours -----*/
   .Icon {
     border-radius: 50%;
     width: 34px;
@@ -129,34 +154,141 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-  .Icon.colour1 {
-    background: #f5e7e6;
-  }
-  .Icon.colour1 :global(svg) {
-    color: #a43939;
-  }
-  .Icon.colour2 {
-    background: #ede6f5;
-  }
-  .Icon.colour2 :global(svg) {
-    color: #6f4c9b;
-  }
-  .Icon.colour3 {
-    background: #fae59b;
-  }
-  .Icon.colour3 :global(svg) {
-    color: #8f7000;
-  }
-  .Icon.colour4 {
-    background: #dcf3f0;
-  }
-  .Icon.colour4 :global(svg) {
-    color: #4c9b92;
-  }
   .Delete {
     color: #f05657;
     text-decoration: underline;
     cursor: pointer;
+  }
+  /*----- Name/description edition -----*/
+  .NameCont {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: minmax(100px, 350px) max-content max-content;
+  }
+  .NameEdit {
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 7px;
+    border: 1px solid #dde8ed;
+    background: var(--main-background-color);
+    color: var(--action);
+    font-weight: 500;
+  }
+  .Edition button {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9px;
+    align-items: center;
+    display: grid;
+    padding: 0 10px;
+    border: none;
+    cursor: pointer;
+  }
+  .Edition button.Save {
+    background: var(--action);
+    color: #fff;
+  }
+  .Edition button.Cancel {
+    background: #ffffff;
+    color: var(--action);
+    border: 2px solid var(--action);
+  }
+  .Name :global(svg),
+  .Description :global(svg) {
+    position: absolute;
+    margin-right: 0;
+    width: 40px;
+    opacity: 0;
+    transition: all 0.25s ease-out;
+  }
+  .Name:hover :global(svg),
+  .Description:hover :global(svg) {
+    opacity: 1;
+  }
+  .Edition textarea {
+    resize: none;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 7px;
+    border: 1px solid #dde8ed;
+    background: var(--main-background-color);
+    color: var(--action);
+    font-weight: 500;
+  }
+  .DescCont {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: minmax(100px, 350px);
+  }
+  .DescCont .DescButtons {
+    display: grid;
+    align-items: flex-start;
+    gap: 10px;
+    grid-template-columns: 1fr repeat(2, max-content);
+  }
+  .DescCont .DescButtons button {
+    padding: 7px 15px;
+    border: 2px solid var(--action);
+  }
+  .DescCont .Characters {
+    font-style: italic;
+    opacity: 0.7;
+    color: #888888;
+    margin: 0;
+    font-size: 0.75rem;
+  }
+  /*----- Cover image edition -----*/
+  .library .Img {
+    overflow: hidden;
+    position: relative;
+  }
+  .CoverCont {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0);
+    transition: all 0.25s ease-out;
+    border: none;
+    cursor: pointer;
+  }
+  .CoverCont:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .CoverCont :global(svg) {
+    border-radius: 50%;
+    transition: all 0.25s ease-out;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 5px;
+    width: 38px;
+    opacity: 0;
+    height: auto;
+  }
+  .CoverCont:hover :global(svg) {
+    opacity: 1;
+  }
+  /*-------- Notes editor --------------*/
+  .NotesEditor {
+    grid-template-columns: 300px 1fr;
+    grid-gap: 20px;
+    display: grid;
+  }
+  .NotesEditor :global(.CardHeader) {
+    display: none;
+  }
+  .NotesEditor :global(.Cards) {
+    padding: 20px 20px 0 20px;
+    height: 100vh;
+    overflow-y: scroll;
+    position: sticky;
+    top: 0;
+  }
+  .NotesEditor :global(.Cards:last-child::after) {
+    content: "";
+    background: transparent;
+    width: 100%;
+    height: 1px;
+    float: left;
   }
   @media (max-width: 720px) {
     nav.Toolbar::before {
@@ -170,9 +302,6 @@
     .Toolbar:first-child:nth-last-child(5) :global(.new-button) {
       display: none;
     }
-    .breadcrumbs h5 {
-      display: none;
-    }
     .library {
       grid-template-columns: 1fr;
     }
@@ -180,56 +309,141 @@
       width: 100%;
       height: 100px;
     }
+    .NotesEditor {
+      grid-template-columns: 1fr;
+    }
+    .NotesEditor .notesList {
+      display: none;
+    }
   }
 </style>
 
-<nav class="Toolbar">
-  <section>
-    <div class="Header">
-      <a href="/notebooks" class="breadcrumbs">
-        <IcoGoBack />
-        <h5>Notebooks library</h5>
-      </a>
-      <EditSingleNotebook notebook={$notebook} />
-      <h5
-        class="Delete"
-        on:click={() => {
-          activeModal = true;
-        }}>
-        Delete notebook
-      </h5>
-      <NewPage notebook={$notebook} />
-    </div>
-    <div class="library">
-      {#if $notebook.shortId}
-        <div
-          class="Img"
-          style={`background-image: url("/img/NotebookImg/${$notebook.settings.coverImg}.jpg")`} />
-        <div class="Info">
+{#if !$page.params.noteId}
+  <nav class="Toolbar">
+    <section>
+      <div class="Header">
+        <History />
+        <h5
+          class="Delete"
+          on:click={() => {
+            activeModal = true;
+          }}>
+          Delete notebook
+        </h5>
+      </div>
+      <div class="library">
+        {#if $notebook.shortId}
+          <div
+            class="Img"
+            style={`background-image: url("/img/NotebookImg/${$notebook.settings.coverImg}.jpg")`}>
+            <button
+              class="CoverCont"
+              on:click={() => {
+                itemEdit = 'cover';
+                document.querySelector('nav').classList.remove('ntbkModal');
+              }}>
+              <IcoEdit />
+            </button>
+          </div>
+          <div class="Info">
+            <div class="Title">
+              <div class="Icon">
+                <NavNotebook />
+              </div>
+              {#if itemEdit === 'name'}
+                <div class="NameCont Edition">
+                  <input
+                    class="NameEdit"
+                    required
+                    type="text"
+                    use:init={$notebook.name}
+                    placeholder="Enter notebook title"
+                    bind:value={newValue} />
+                  <button
+                    class="Cancel"
+                    on:click={() => {
+                      itemEdit = false;
+                    }}>
+                    Cancel
+                  </button>
+                  <button
+                    class="Save"
+                    on:click={(e) => {
+                      submit(e);
+                    }}>
+                    Save
+                  </button>
+                </div>
+              {:else}
+                <h3
+                  class="Name"
+                  on:click={() => {
+                    itemEdit = 'name';
+                  }}>
+                  {$notebook.name}
+                  <IcoEdit />
+                </h3>
+              {/if}
+            </div>
+            {#if itemEdit === 'description'}
+              <div class="DescCont Edition">
+                <textarea
+                  class="DescEdit"
+                  use:init={$notebook.description}
+                  placeholder="Add a description (optional)"
+                  bind:value={newValue}
+                  maxlength="150" />
+                <div class="DescButtons">
+                  <p class="Characters">{characters} characters left</p>
+                  <button
+                    class="Cancel"
+                    on:click={() => {
+                      itemEdit = false;
+                    }}>
+                    Cancel
+                  </button>
+                  <button
+                    class="Save"
+                    on:click={(e) => {
+                      submit(e);
+                    }}>
+                    Save
+                  </button>
+                </div>
+              </div>
+            {:else}
+              <div
+                class="Description"
+                on:click={() => {
+                  itemEdit = 'description';
+                }}>
+                {#if $notebook.description}
+                  {$notebook.description}
+                {:else}Add description...{/if}
+                <IcoEdit />
+              </div>
+            {/if}
+          </div>
+        {:else}
           <div class="Title">
-            <div class="Icon {$notebook.settings.colour}">
+            <div class="Icon">
               <NavNotebook />
             </div>
-            <h3>{$notebook.name}</h3>
+            <h3>...</h3>
           </div>
-          <div class="Description">{$notebook.description}</div>
-        </div>
-      {:else}
-        <div class="Title">
-          <div class="Icon">
-            <NavNotebook />
-          </div>
-          <h3>...</h3>
-        </div>
-      {/if}
-    </div>
-  </section>
-  <AddItems notebook={$notebook} />
-</nav>
-<div class="Body">
+        {/if}
+      </div>
+    </section>
+    <AddItems notebook={$notebook} bind:clickPage />
+  </nav>
+{/if}
+<div class="CardsContent" class:NotesEditor={$page.params.noteId}>
   <div class="notesList">
-    <SingleNotebookList notebook={$notebook} />
+    <SingleNotebookList notebook={$notebook} bind:clickPage />
   </div>
+  {#if $page.params.noteId}
+    <NoteEdit />
+  {/if}
 </div>
 {#if activeModal}
   <DeletionModal
@@ -237,4 +451,11 @@
     bind:activeModal
     type="notebook"
     items={[$notebook]} />
+{/if}
+{#if itemEdit === 'cover'}
+  <EditCoverImage
+    bind:itemEdit
+    currentCover={$notebook.settings.coverImg}
+    bind:newValue
+    {submit} />
 {/if}

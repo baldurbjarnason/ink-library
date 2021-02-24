@@ -52,7 +52,6 @@ export async function del(req, res, next) {
         },
       })
       .json();
-    // console.log(response);
     return res.json(response);
   } catch (err) {
     res.status(err.response.statusCode);

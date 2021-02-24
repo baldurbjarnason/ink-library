@@ -4,9 +4,9 @@
 
   export let checkAll;
   export let addArrParams;
+  export let filters;
 
-  $: params = $page.query;
-  let filtersOf = ["headers", "notes"];
+  let filtersOf = ["header", "note"];
 </script>
 
 <style>
@@ -16,10 +16,8 @@
 </style>
 
 <li
-  class:Current={!params.filters && !params.filterColour && !params.filterFlags}
-  on:click={() => {
-    params.filters || params.filterColour || params.filterFlags ? checkAll('filters') : '';
-  }}>
+  class:Current={!filters.type.length && !filters.colour.length && !filters.flags.length}
+  on:click={checkAll}>
   <IcoChecked />
   <p>Default</p>
 </li>
@@ -27,11 +25,11 @@
 {#each filtersOf as filter}
   <li
     on:click={() => {
-      addArrParams('filters', filter);
+      addArrParams('type', filter);
     }}>
     <span
       class="Checkbox"
-      class:Unchecked={(params['filters'] && !Array.isArray(params['filters']) && params['filters'] === filter) || (params['filters'] && Array.isArray(params['filters']) && params['filters'].find((item) => item === filter))} />
+      class:Unchecked={filters.type.find((item) => item === filter)} />
     <p class="StyleName">Enable {filter}</p>
     <span />
   </li>

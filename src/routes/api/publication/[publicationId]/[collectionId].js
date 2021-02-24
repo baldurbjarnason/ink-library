@@ -22,8 +22,8 @@ function addCollection(id, collection, token) {
     .put(`${id}tags/${collection}`, {
       headers: {
         "content-type": "application/ld+json",
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
     .json();
 }
@@ -49,8 +49,8 @@ function removeCollection(id, collection, token) {
     .delete(`${id}tags/${collection}`, {
       headers: {
         "content-type": "application/ld+json",
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
     .json();
 }

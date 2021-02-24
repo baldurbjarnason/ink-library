@@ -95,6 +95,7 @@
   <select
     name="sort-select"
     id="sort-select"
+    on:change={changed}
     on:blur={changed}
     bind:this={selectElement}>
     <option value="modified-asc" selected={selectedOption === 'modified-asc'}>
@@ -103,11 +104,13 @@
     <option value="modified-desc" selected={selectedOption === 'modified-desc'}>
       Date, Desc
     </option>
-    <option value="title-asc" selected={selectedOption === 'title-asc'}>
-      Title, A-Z
-    </option>
-    <option value="title-desc" selected={selectedOption === 'title-desc'}>
-      Title, Z-A
-    </option>
+    {#if !$page.path.startsWith('/notes/') && !$page.path.startsWith('/pages/')}
+      <option value="title-asc" selected={selectedOption === 'title-asc'}>
+        Title, A-Z
+      </option>
+      <option value="title-desc" selected={selectedOption === 'title-desc'}>
+        Title, Z-A
+      </option>
+    {/if}
   </select>
 </label>
