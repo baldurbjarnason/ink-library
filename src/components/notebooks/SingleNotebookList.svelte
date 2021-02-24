@@ -17,12 +17,12 @@
   import {
     pages,
     searchPages,
-    refreshNotebook,
     selectedItems,
     clearSelected,
   } from "../../stores";
   import { stores } from "@sapper/app";
   export let notebook = {};
+  export let clickPage;
   const { page } = stores();
   let filterOn = false;
   let clicked = false;
@@ -34,13 +34,13 @@
       Items = []
         .concat(notebook.sources)
         .concat(notebook.notes)
-        .concat(notebook.canvas);
+        .concat($pages.items);
     } else if (menuTabs === "sources") {
       Items = [].concat(notebook.sources);
     } else if (menuTabs === "notes") {
       Items = [].concat(notebook.notes);
     } else if (menuTabs === "pages") {
-      Items = [].concat(notebook.canvas);
+      Items = [].concat($pages.items);
     }
   } else {
     Items = "loading";
@@ -74,10 +74,6 @@
   } else {
     typeOfItem = false;
   }
-
-  let refresh = () => {
-    $refreshNotebook = { id: notebook, time: Date.now() };
-  };
 </script>
 
 <style>
@@ -97,6 +93,7 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-gap: var(--base);
     z-index: 0;
+    align-items: center;
     grid-auto-rows: max-content;
   }
   .CardHeader {
@@ -212,6 +209,52 @@
     width: 50%;
     max-width: 250px;
   }
+  button.Item {
+    text-decoration: none;
+    background-color: #f9fbfc;
+    position: relative;
+    border: 3px dashed #dde8ed;
+    border-radius: 15px;
+    padding: 30px 0;
+    text-align: center;
+    display: grid;
+    gap: 20px;
+    align-content: center;
+    cursor: pointer;
+    text-align: center;
+    height: 100%;
+    box-shadow: 2px 2px 10px 0 rgb(0 0 0 / 3%);
+  }
+  button.Item span {
+    background: var(--action);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    position: relative;
+    margin: 0 auto;
+  }
+  button.Item span::before,
+  button.Item span::after {
+    content: "";
+    position: absolute;
+    width: 40%;
+    height: 3px;
+    background: #f9fbfc;
+    border-radius: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  button.Item span::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  button.Item p {
+    margin: 0;
+    padding: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--action);
+  }
   @media (min-width: 641px) and (max-width: 720px) {
     .CardHeader {
       top: 0;
@@ -230,7 +273,10 @@
     }
   }
   @media (min-width: 721px) {
-    .Cards :global(.Item:only-child) {
+    :global(.Body:not(.NotesEditor) .Cards .Item:only-child) {
+      width: 100%;
+    }
+    :global(.Body .CardsContent:not(.NotesEditor) .Cards .Item:only-child) {
       width: calc(50% - var(--base) / 2);
     }
   }
@@ -276,6 +322,16 @@
   <Loader />
 {:else}
   <div class="Cards">
+    {#if menuTabs === 'pages' || menuTabs === 'all'}
+      <button
+        class="Item"
+        on:click={(e) => {
+          e.preventDefault(), (clickPage = true);
+        }}>
+        <span />
+        <p>Create a page</p>
+      </button>
+    {/if}
     {#if Items[0]}
       {#each Items as item}
         {#if item.body}
@@ -296,7 +352,6 @@
 {#if selecting && typeOfItem}
   <NotebookItemsBulk
     notebook={notebook.shortId}
-    {refresh}
     {typeOfItem}
     endSelection={() => {
       selecting = false;

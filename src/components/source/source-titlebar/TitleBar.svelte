@@ -1,4 +1,5 @@
 <script>
+  import History from "../../History.svelte";
   export let name = "";
   export let returnLink = "/library";
   import { onMount } from "svelte";
@@ -39,6 +40,8 @@
 <nav class="TitleBar" aria-label="Publication">
   <ol>
     <li>
+      <History />
+      <!--
       <a href={returnLink}>
         <svg
           width="14"
@@ -73,7 +76,7 @@
             fill="currentColor"
             fill-opacity="0.8" />
         </svg>
-      </a>
+      </a>-->
     </li>
     <li>
       <span class="Title">{name}</span>

@@ -2,9 +2,10 @@
   import NewNotebook from "./notebooks/NewNotebook.svelte";
   import NotebooksList from "./notebooks/NotebooksList.svelte";
   import SingleNotebook from "./notebooks/SingleNotebook.svelte";
-  import IcoGoBack from "./img/IcoGoBack.svelte";
+  import History from "./History.svelte";
   import NavNotebook from "./img/NavNotebook.svelte";
-  export let id = false;
+  export let id;
+  export let noteId;
 </script>
 
 <style>
@@ -34,14 +35,6 @@
   .Toolbar section * {
     float: left;
   }
-  .breadcrumbs {
-    margin-bottom: 10px;
-  }
-  .breadcrumbs h5 {
-    color: #888888;
-    font-weight: 500;
-    margin: 0;
-  }
   .library :global(svg) {
     width: 16px;
     margin-right: 5px;
@@ -67,22 +60,11 @@
       width: 100%;
       text-align: center;
     }
-    .breadcrumbs {
-      margin-bottom: 0;
-      margin-top: 3px;
-    }
-    .breadcrumbs h5 {
-      display: none;
-    }
     .library {
       float: inherit !important;
       display: inline-table;
     }
-    .noteColumn .notesList {
-      display: none;
-    }
   }
-
   .Body {
     display: grid; /*
     grid-gap: 1rem;*/
@@ -92,10 +74,7 @@
 {#if !id}
   <nav class="Toolbar">
     <section>
-      <a href="/" class="breadcrumbs">
-        <IcoGoBack />
-        <h5>Home</h5>
-      </a>
+      <History />
       <div class="library">
         <NavNotebook />
         <h3>Notebooks library</h3>
@@ -105,7 +84,7 @@
   </nav>
 {/if}
 
-<div class="Body {id ? 'noteColumn' : ''}">
+<div class="Body">
   {#if !id}
     <div class="notesList">
       <NotebooksList />

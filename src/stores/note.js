@@ -4,7 +4,9 @@ import { fetch } from "./fetch.js";
 
 export const refreshNote = writable({ id: null, time: Date.now() });
 
-const noteId = derived(page, $page => $page.params.id);
+const noteId = derived(page, ($page) =>
+  $page.params.noteId ? $page.params.noteId : $page.params.id
+);
 
 export const note = derived(
   [page, noteId, refreshNote],
@@ -13,15 +15,24 @@ export const note = derived(
       set({ body: [], source: { name: "" } });
     }
 
-    if (!$noteId || !$page.path.startsWith("/notes/all/all/") || $page.params.id !== $noteId) return
+    const paramNoteId = $page.params.noteId
+      ? $page.params.noteId
+      : $page.params.id;
+
+    let pagePath = false;
+    if ($page.path.startsWith("/notes/all/all/")) pagePath = true;
+    if ($page.path.startsWith("/notebooks/"))
+      if ($page.params.noteId === $noteId) pagePath = true;
+      else pagePath = false;
+
+    if (!$noteId || paramNoteId !== $noteId || !pagePath) return;
     if (!process.browser || !$noteId || $noteId.length === 22) return;
 
-    const url = `/api/note/${$noteId}`;
-    return fetch(url)
-      .then(lib => {
+    return fetch(`/api/note/${$noteId}`)
+      .then((lib) => {
         set(lib);
       })
-      .catch(err => {
+      .catch((err) => {
         set({ type: "failed" });
         console.error(err);
       });

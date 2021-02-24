@@ -20,8 +20,14 @@
       return [lang.native, lang.english].filter(item => item).join(" / ");
     }
   }*/
-
   $: metaProps = [
+    {
+      type: "string",
+      req: true,
+      prop: "Name",
+      key: "name",
+      value: $source$.name,
+    },
     {
       type: "list",
       req: true,

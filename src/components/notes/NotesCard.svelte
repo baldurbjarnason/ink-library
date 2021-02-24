@@ -57,13 +57,20 @@
         return FlagUrgent;
     }
   }
-
+  /*
   $: pagination =
     $page.query && $page.query.page
       ? `/notes/all/all/${note.shortId}?${new URLSearchParams({
           page: $page.query.page,
         }).toString()}`
-      : false;
+      : false;*/
+  $: symbol = $page.path.startsWith("/notebooks/") ? "&" : "?";
+  $: pagination =
+    $page.query && $page.query.page
+      ? `${symbol}${new URLSearchParams({
+          page: $page.query.page,
+        }).toString()}`
+      : "";
 
   $: if (!selecting && selected) selected = false;
   $: if (selected && note.id) addSelected(note);
@@ -81,12 +88,17 @@
         !obj.noteContexts &&
         ($page.path === "/notes/all/all" ||
           $page.path === "/notes/all/all/" ||
-          $page.path.startsWith("/notebooks/"))
+          ($page.path.startsWith("/notebooks/") && !$page.params.noteId))
           ? true
           : false;
     });
   } else {
-    selectable = $page.path === "/" ? false : true;
+    selectable =
+      $page.path === "/" ||
+      ($page.path.startsWith("/notebooks/") && $page.params.noteId) ||
+      ($page.path.startsWith("/notes/") && $page.params.id)
+        ? false
+        : true;
   }
 </script>
 
@@ -431,7 +443,6 @@
             <a
               class="Highlight {noted && noted.content ? '' : 'noNote'}"
               href={`/target${note.target.source}`}>
-              <!--{@html highlighed.content}-->
               <p>{note.target.selector.exact}</p>
             </a>
           {/if}
@@ -444,9 +455,10 @@
         </div>
       </header>
     {/if}
+    <!--pagination ? pagination : `/notes/all/all/${note.shortId}`}></a>-->
     <a
       class="Note"
-      href={pagination ? pagination : `/notes/all/all/${note.shortId}`}>
+      href={$page.path.startsWith('/notebooks/') ? `/notebooks/${$page.params.id}/note/${note.shortId}?notebook=${$page.params.id}${pagination}` : `/notes/all/all/${note.shortId}${pagination}`}>
       {#if noted}
         {#if !noted.content.startsWith('<p>') || !noted.content.startsWith('<span>')}
           <p>
@@ -459,12 +471,6 @@
         <p class="empty">Add note...</p>
       {/if}
     </a>
-    <!-- Adjust "Top" div when tags will be implemented
-    <ul class="Tags">
-      <li>
-        <p>#tag</p>
-      </li>
-    </ul>-->
   </div>
   <div class="Bottom">
     <ul class="Flags">

@@ -8,6 +8,7 @@
   export let activeModal;
   export let type;
   export let items;
+  $: console.log(items);
 </script>
 
 <style>
@@ -240,10 +241,17 @@
   <section>
     <NoDeletion />
     <p>
-      You are about to delete {items.length} {type}{items.length > 1 ? 's' : ''}.
-      This operation cannot be undone.
-      <br />
-      <strong>Are you sure you want to continue?</strong>
+      {#if type === 'notebook' && items.length === 1}
+        This action will delete the entire notebook, and will automatically
+        untag all notes and sources.
+        <br />
+        <strong>Are you sure you want to delete "{items[0].name}"?</strong>
+      {:else}
+        You are about to delete {items.length} {type}{items.length > 1 ? 's' : ''}.
+        This operation cannot be undone.
+        <br />
+        <strong>Are you sure you want to continue?</strong>
+      {/if}
     </p>
     <ul class="{type.charAt(0).toUpperCase()}{type.slice(1)}s">
       {#each items as item}

@@ -16,7 +16,7 @@
     refreshCollections,
     addedCollections,
     addedWorkspaces,
-    refreshNotebook
+    refreshNotebook,
   } from "../../stores";
   import { getToken } from "../../getToken";
   export let workspace;
@@ -63,12 +63,12 @@
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            "csrf-token": getToken()
+            "csrf-token": getToken(),
           },
           body: JSON.stringify({
             type: "stack",
-            name: value
-          })
+            name: value,
+          }),
         });
         $refreshCollections = Date.now();
       } catch (err) {
@@ -79,6 +79,7 @@
         const body = Object.fromEntries(
           new URLSearchParams(new FormData(target)).entries()
         );
+        if (body.citation) body.citation = {default: body.citation}
         body.addedCollections = $addedCollections;
         body.addedWorkspaces = $addedWorkspaces;
         $addedWorkspaces = [];
@@ -94,9 +95,9 @@
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            "csrf-token": getToken()
+            "csrf-token": getToken(),
           },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
         });
 
         if ($page.path === "/") $refreshInSource = Date.now();
@@ -329,16 +330,23 @@
     margin: calc(var(--base) * 0.25) 0;
     border-radius: 10px;
   }
+
+  .citation div {
+    font-size: 0.8rem;
+  }
+  .citation input {
+    width: 100%;
+    padding: calc(var(--base) * 0.5);
+    margin: calc(var(--base) * 0.25) 0;
+    border-radius: 10px;
+  }
   .typeDiv {
     position: relative;
   }
 </style>
 
 {#if open || atNotebook}
-  <div
-    class="NewBox"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}>
+  <div class="NewBox">
     <form
       id="newform"
       class="newForm"
@@ -404,7 +412,17 @@
                 placeholder="First Author, Second Author" />
             </label>
           </div>
-          <div />
+          <div class="citation">
+            <label for="input-citation">
+              <div>Citation</div>
+              <input
+                id="input-citation"
+                name="citation"
+                type="text"
+                placeholder="Citation" />
+            </label>
+          </div>
+
           <div class="footer">
             <WhiteButton>Create</WhiteButton>
             <Closer click={close} dark={true} />
@@ -420,11 +438,7 @@
   </div>
   <span />
 {:else}
-  <span
-    class="new-button"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}
-    bind:this={newToggle}>
+  <span class="new-button" bind:this={newToggle}>
     <Button {click}>
       <IcoNewSource />
       <span class="NewButtonLabel">Source</span>

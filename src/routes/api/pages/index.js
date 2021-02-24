@@ -15,7 +15,26 @@ export const post = async function post(req, res, next) {
         })
         .json();
 
-      return res.json(response);
+      const payload = Object.assign(
+        {},
+        { canvasId: response.shortId, name: "Undefined :/" }
+      );
+
+      const outline = await got
+        .post(`${process.env.API_SERVER}outlines`, {
+          body: JSON.stringify(payload),
+          headers: {
+            "content-type": "application/ld+json",
+            Authorization: `Bearer ${req.user.token}`,
+          },
+        })
+        .json();
+
+      if (outline)
+        res.redirect(
+          `/pages/${response.shortId}/outlines/${outline.shortId}?notebook=${req.body.notebookId}`
+        );
+      return res.json(outline);
     } catch (err) {
       console.error(err);
       res.status(err.response.statusCode);

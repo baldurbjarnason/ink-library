@@ -229,14 +229,6 @@
   :global(#sapper .Item .ql-container.ql-snow) {
     border: none;
   }
-  /* .breadcrumbs h5 {
-    float: left;
-    margin: 0;
-    color: #888888;
-    font-size: 0.75rem;
-    line-height: 14px;
-    font-weight: 500;
-  } */
   @media (max-width: 720px) {
     .Item {
       padding: 20px;

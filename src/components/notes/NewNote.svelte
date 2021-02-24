@@ -456,10 +456,7 @@
 </style>
 
 {#if open || atNotebook}
-  <div
-    class="NewBox newNote"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}>
+  <div class="NewBox newNote">
     <form
       id="newform"
       class="newForm"
@@ -497,11 +494,7 @@
   </div>
   <span />
 {:else}
-  <span
-    class="new-button"
-    out:send|local={{ key: 'new-box' }}
-    in:receive|local={{ key: 'new-box' }}
-    bind:this={newToggle}>
+  <span class="new-button" bind:this={newToggle}>
     <Button {click}>
       <IcoNewNote />
       <span class="NewButtonLabel">Note</span>

@@ -2,7 +2,7 @@
   import { pageItem, page, refreshPageItem } from "../../../stores";
   import { goto } from "@sapper/app";
   import { getToken } from "../../../getToken";
-  import IcoGoBack from "../../img/IcoGoBack.svelte";
+  import History from "../../History.svelte";
   import PageIcoOutline from "../../img/PageIcoOutline.svelte";
   import PageIcoMindmap from "../../img/PageIcoMindmap.svelte";
   import IcoStartArrow from "../../img/IcoStartArrow.svelte";
@@ -11,38 +11,7 @@
   import Loader from "../../Loader.svelte";
 
   export let type;
-  export let context;
-  export let pageInfo;
-  let loadItem = false;
-
-  async function newEle() {
-    loadItem = true;
-    const payload = {};
-    payload.canvasId = $page.params.pageId;
-    payload.name = `${type.charAt(0).toUpperCase()}${type.slice(1)}-${
-      pageInfo.name
-    }`;
-
-    try {
-      await fetch(`/api/pages/${$pageItem.shortId}/${type}s`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "csrf-token": getToken(),
-        },
-      });
-
-      $refreshPageItem = { id: $page.params.pageId, time: Date.now() };
-      setTimeout(() => {
-        loadItem = false;
-      }, 1000);
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  export let submit;
 
   let assignIco = (icon) => {
     switch (icon) {
@@ -54,49 +23,44 @@
         return PageIcoGrouping;
     }
   };
-
-  let handleClick = () => {
-    if (context) {
-      goto(
-        `${$page.path}/${type}s/${context.shortId}?notebook=${pageInfo.notebookId}`
-      );
-    } else {
-      if (type === "outline" && !loadItem) newEle();
-    }
-  };
 </script>
 
 <style>
   .PageCard {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 20px;
     width: 100%;
     padding: 22px 0px;
     display: grid;
-    gap: 3px;
-    cursor: pointer;
     position: relative;
     border: 1px solid #eeeeee;
     grid-template-rows: repeat(3, max-content);
     transition: all 0.2s ease-out;
     box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.05);
   }
+  .PageCard.outline {
+    cursor: pointer;
+  }
+  .PageCard.outline:hover {
+    background: rgba(255, 255, 255, 1);
+  }
   .PageCard .Icon {
     background: var(--main-background-color);
-    width: 90px;
-    height: 90px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    margin: 0 auto 20px;
+    margin: 0 auto 10px;
     display: grid;
     align-items: center;
     justify-content: center;
   }
   .PageCard .Icon :global(svg) {
     color: var(--workspace-color);
+    height: 15px;
+    width: auto;
   }
-  .PageCard.outline .Icon :global(svg) {
-    height: auto;
-    width: 35px;
+  .PageCard.mindmap .Icon :global(svg) {
+    height: 20px;
   }
   .PageCard h4,
   .PageCard p:not(.Unable) {
@@ -105,11 +69,13 @@
   }
   .PageCard h4 {
     color: var(--action);
+    text-align: center;
+    font-size: 0.9rem;
     text-transform: capitalize;
   }
   .PageCard p:not(.Unable) {
     color: #333;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     display: grid;
     grid-template-columns: max-content max-content;
     align-items: center;
@@ -151,39 +117,6 @@
   .PageCard.Empty p span::after {
     transform: translate(-50%, -50%) rotate(90deg);
   }
-  .PageCard .Unable {
-    display: none;
-    background: rgba(0, 34, 48, 0.9);
-    font-size: 0.75rem;
-    color: #fff;
-    padding: 7px;
-    z-index: 1;
-    font-weight: 500;
-    bottom: 0;
-    margin: 0;
-    width: 80%;
-    left: 50%;
-    position: absolute;
-    border-radius: 10px;
-    transform: translate(-50%, calc(100% + 5px));
-  }
-  .PageCard .Unable::after {
-    content: "";
-    top: -10px;
-    left: 50%;
-    width: 0px;
-    height: 0px;
-    border-radius: 3px;
-    position: absolute;
-    border-style: solid;
-    border-width: 7px;
-    transform: translate(-50%, 3px) rotate(45deg);
-    border-color: rgba(0, 34, 48, 0.9) transparent transparent
-      rgba(0, 34, 48, 0.9);
-  }
-  .PageCard:hover .Unable {
-    display: block;
-  }
   .PageCard.Loader {
     overflow: hidden;
     height: 199px;
@@ -192,33 +125,34 @@
   .PageCard.Loader :global(div.Loading) {
     margin: 5.5rem auto;
   }
+  .PageCard:not(.outline) {
+    border: 1px solid var(--workspace-color);
+    background: rgb(255, 255, 255, 0.1);
+  }
+  .PageCard:not(.outline) .Icon {
+    background: var(--workspace-color);
+  }
+  .PageCard:not(.outline) .Icon :global(svg),
+  .PageCard:not(.outline) p {
+    color: rgb(255, 255, 255, 0.3);
+  }
+  .PageCard:not(.outline) h4 {
+    color: rgb(255, 255, 255, 0.5);
+  }
 </style>
 
-{#if loadItem}
-  <div class="PageCard Loader">
-    <Loader />
+<div class={`PageCard ${type}`} on:click={type === 'outline' ? submit : ''}>
+  <div class="Icon">
+    <svelte:component this={assignIco(type)} />
   </div>
-{:else}
-  <div
-    class={`PageCard ${type} ${context ? '' : 'Empty'}`}
-    on:click={handleClick}>
-    <div class="Icon">
-      <svelte:component this={assignIco(type)} />
-    </div>
-    <h4>{type}</h4>
-    {#if context}
-      <p>
-        Continue to work
-        <IcoStartArrow />
-      </p>
+  <h4>{type}</h4>
+  <p>
+    {#if type === 'outline'}
+      Create & work
+      <IcoStartArrow />
     {:else}
-      <p>
-        <span />
-        New
-      </p>
+      <span />
+      Coming soon!
     {/if}
-    {#if type !== 'outline'}
-      <p class="Unable">Not available for the moment!</p>
-    {/if}
-  </div>
-{/if}
+  </p>
+</div>
