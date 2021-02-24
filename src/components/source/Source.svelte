@@ -12,6 +12,14 @@
   import MainInfo from "./source-info/Info.svelte";
   // import EmptySource from "../../../../components/publication/EmptySource.svelte";
   import { stores } from "@sapper/app";
+  export let chapter;
+  export let source;
+  $: if (source) {
+    source$.next(source);
+  }
+  $: if (chapter) {
+    chapter$.next(chapter);
+  }
   const { page } = stores();
   let base;
   let download;
@@ -56,8 +64,8 @@
   // export let info = false
 
   let readerBody;
-  $: if ($source$ && $source$.name) {
-    $title = $source$.name + " - Rebus Ink";
+  $: if (source && source.name) {
+    $title = source.name + " - Rebus Ink";
   }
 </script>
 
@@ -99,7 +107,7 @@
 <svelte:window />
 <div
   class="Publication TabSelected {$page.path.endsWith('info') ? 'Info' : ''}">
-  {#if $source$ && $chapter$}
+  {#if source && chapter}
     <nav class="TitleBar" aria-label="Publication">
       <ol>
         <li>
@@ -140,7 +148,7 @@
           </a>
         </li>
         <li>
-          <span class="Title">{$source$.name}</span>
+          <span class="Title">{source.name}</span>
         </li>
         <li>
           <a
@@ -191,26 +199,26 @@
     </InfoModal>
     <ToolBar {sidebar} />
     <Chapter
-      chapter={$chapter$}
+      {chapter}
       sourceNotes={$bookmarks$}
       path={$page.params.chapter.join('/')}
       bind:readerBody
       {sidebar}
       {media} />
-    <!-- {#if $source$._processing}
+    <!-- {#if source._processing}
       <ToolBar root={readerBody} hidden={true} />
       <div class="Processing">Processing...</div>
-      <Chapter chapter={$chapter$} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
-    {:else if $source$._unsupported}
+      <Chapter chapter={chapter} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
+    {:else if source._unsupported}
       <ToolBar root={readerBody} hidden={true} />
-      <Chapter chapter={$chapter$} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
+      <Chapter chapter={chapter} path={$page.params.chapter.join("/")} hidden={true} bind:readerBody />
       <div class="Processing">
         Ink doesn't support displaying this file but you can
         <a href={download}>download it.</a>
       </div>
-    {:else if !$source$._empty}
+    {:else if !source._empty}
       <ToolBar root={readerBody} {sidebar} />
-      <Chapter chapter={$chapter$} sourceNotes={$sourceNotes$} path={$page.params.chapter.join("/")} bind:readerBody {sidebar} {media} />
+      <Chapter chapter={chapter} sourceNotes={$sourceNotes$} path={$page.params.chapter.join("/")} bind:readerBody {sidebar} {media} />
     {:else}
       <EmptySource />
     {/if} -->

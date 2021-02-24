@@ -28,9 +28,9 @@ export const notebooks$ = web(notebooksURL$.pipe(distinctUntilChanged()));
 
 export const reader$ = web(readerURL$.pipe(distinctUntilChanged()));
 
-export const source$ = web(sourceURL$.pipe(distinctUntilChanged()));
+export const source$ = new BehaviorSubject({});
 
-export const chapter$ = web(chapterURL$.pipe(distinctUntilChanged()));
+export const chapter$ = new BehaviorSubject({ annotations: [] });
 
 export const chapterNotes$ = combineLatest([chapter$, createdNotes$]).pipe(
   map(([chapter, createdNotes = []]) => {
