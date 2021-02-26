@@ -190,8 +190,8 @@
   }
   ul.ItemsList {
     min-height: calc(90vh - 100px);
-    display: grid;
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
     margin: 0 auto;
     width: 70%;
     padding: 5%;
@@ -203,6 +203,7 @@
   }
   li.Item {
     position: relative;
+    margin-bottom: 20px;
   }
   li.Hide {
     display: none;
