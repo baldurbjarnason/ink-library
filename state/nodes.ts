@@ -103,9 +103,9 @@ export function topmost (intersections$: Observable<Set<ElementEntry>>, test: (v
     map((elements: Set<ElementEntry>) => {
       const filtered = new Map()
       for (const entry of elements) {
-        if (!filtered.get(test(entry))) {
+        if (test(entry) && !filtered.get(test(entry))) {
           filtered.set(test(entry), entry)
-        } else if (filtered.get(test(entry)) && filtered.get(test(entry)).top < entry.top){
+        } else if (test(entry) && filtered.get(test(entry)) && filtered.get(test(entry)).top < entry.top){
           filtered.set(test(entry), entry)
         }
       }

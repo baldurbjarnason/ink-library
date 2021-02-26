@@ -5,10 +5,16 @@ export async function get(req, res, next) {
   try {
     const response = await got(`${process.env.API_SERVER}tags`, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
-    res.json(response);
+    res.json(
+      response.map((item) => {
+        // all flags must have names, even when somebody accidentally/intentionally creates one without a name
+        item.name = item.name || "";
+        return item;
+      })
+    );
   } catch (err) {
     if (err.response && err.response.statusCode) {
       res.status(err.response.statusCode);

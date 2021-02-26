@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import ToCItem from "./ToCItem.svelte";
   import ToCItemPaged from "./ToCItemPaged.svelte";
   import Loading from "../../widgets/Loading.svelte";
@@ -72,17 +72,21 @@
 <nav class="ToC {contents.type}" aria-labelledby="toc-heading">
   {#if contents.type !== 'loading'}
     {#if contents.type === 'PDF'}
-      <h2 class="visually-hidden" id="toc-heading" data-ink-private>{contents.heading || 'Table of Contents'}</h2>
+      <h2 class="visually-hidden" id="toc-heading" data-ink-private>
+        {contents.heading || 'Table of Contents'}
+      </h2>
       <ol>
         {#each contents.children as item}
           <ToCItemPaged {item} {media} {path} />
         {/each}
       </ol>
     {:else}
-      <h2 id="toc-heading">{contents.heading || 'Table of Contents'}</h2>
+      <h2 id="toc-heading" data-ink-private>
+        {contents.heading || 'Table of Contents'}
+      </h2>
       <ol>
         {#each contents.children as item}
-          <ToCItem {item} {path}  />
+          <ToCItem {item} {path} />
         {/each}
       </ol>
     {/if}

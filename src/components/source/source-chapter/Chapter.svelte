@@ -8,38 +8,50 @@
   }
   import Sidebar from "../source-sidebar/Sidebar.svelte";
   import MarginNotes from "../source-margin/MarginNotes.svelte";
-  import {intersections} from "../../../../state/nodes"
-  export let chapter: Chapter = { resource: {}}
-  export let path = ""
-  export let media = ""
-  export let sidebar
-  export let sourceNotes = {items: []}
+  import { intersections } from "../../../../state/nodes";
+  import { stores } from "@sapper/app";
+  const { preloading } = stores();
+  let loading;
+  $: loading = $preloading;
+  export let chapter: Chapter = { resource: {} };
+  export let path = "";
+  export let media = "";
+  export let sidebar;
+  export let sourceNotes = { items: [] };
   export let readerBody = null;
   export let hidden = false;
-  const tspans$ = intersections("tspan[data-annotation-id]")
+  const tspans$ = intersections("tspan[data-annotation-id]");
   $: if ($tspans$) {
     for (const span of Array.from($tspans$)) {
-      highlightTspan(span.element)
+      highlightTspan(span.element);
     }
   }
-  const spans = new Map()
-  function highlightTspan (span) {
+  const spans = new Map();
+  function highlightTspan(span) {
     if (spans.has(span)) {
-      return console.log('has span')
+      return console.log("has span");
     } else {
-      spans.set(span, true)
+      spans.set(span, true);
     }
-    const parent = span.parentElement
-    const box = parent.getBBox()
-    const svgDocument = parent.ownerDocument
-    const rect = svgDocument.createElementNS("http://www.w3.org/2000/svg", "rect")
-    rect.dataset.annotationRenderBox = span.dataset.annotationId
-    const width = parent.getSubStringLength(parent.textContent.indexOf(span.textContent), span.textContent.length)
-    const x = parent.getStartPositionOfChar(parent.textContent.indexOf(span.textContent)).x
-    rect.setAttributeNS(null, "x", x - 5)
-    rect.setAttributeNS(null, "y", box.y - 5)
-    rect.setAttributeNS(null, "width", width)
-    rect.setAttributeNS(null, "height", box.height)
+    const parent = span.parentElement;
+    const box = parent.getBBox();
+    const svgDocument = parent.ownerDocument;
+    const rect = svgDocument.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+    rect.dataset.annotationRenderBox = span.dataset.annotationId;
+    const width = parent.getSubStringLength(
+      parent.textContent.indexOf(span.textContent),
+      span.textContent.length
+    );
+    const x = parent.getStartPositionOfChar(
+      parent.textContent.indexOf(span.textContent)
+    ).x;
+    rect.setAttributeNS(null, "x", x - 5);
+    rect.setAttributeNS(null, "y", box.y - 5);
+    rect.setAttributeNS(null, "width", width);
+    rect.setAttributeNS(null, "height", box.height);
     rect.classList.add("Highlight");
     rect.classList.add("Colour1");
     parent.insertAdjacentElement("beforebegin", rect);
@@ -93,6 +105,7 @@
     border: 1px solid #dddddd;
     display: block;
     max-height: inherit;
+    width: 100%;
   }
   .Chapter :global(ink-body#pdf-body h1),
   .Chapter :global(ink-body#pdf-body ink-page h2) {
@@ -129,6 +142,15 @@
   .Chapter :global(rect[data-annotation-highlight-box]) {
     display: none;
   }
+  .Chapter {
+    transition: opacity 250ms ease-in-out;
+  }
+  .loading {
+    opacity: 0.5;
+  }
+  .Chapter :global(ink-body#pdf-body tspan) {
+    color: transparent;
+  }
 </style>
 
 <svelte:head>
@@ -139,7 +161,7 @@
   {/if}
 </svelte:head>
 
-<div class="Reader" {hidden} class:noSidebar={$sidebar.hidden}>
+<div class="Reader" {hidden} class:noSidebar={$sidebar.hidden} class:loading>
   <div class="LeftSidebar" hidden={$sidebar.hidden}>
     <Sidebar contents={chapter.toc} {path} {sidebar} {media} {sourceNotes} />
   </div>

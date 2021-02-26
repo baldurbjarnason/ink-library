@@ -118,7 +118,7 @@
     width: 100%;
     display: grid;
     grid-template-columns: 1fr min-content;
-    z-index: 10;
+    z-index: 1200;
     background-color: #e0f5f5;
     padding: 1rem 2rem;
     grid-column-gap: 1rem;

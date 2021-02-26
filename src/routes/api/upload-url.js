@@ -15,16 +15,25 @@ export async function post(req, res, next) {
       version: "v4",
       action: "write",
       expires: Date.now() + 1000 * 60 * 60 * 24,
-      contentType: type
+      contentType: type,
     };
     const userPrefix = new URL(req.user.profile.id).pathname.replace("/", "");
     const filePrefix = translator.new();
-    const bucket = storage.bucket(process.env.GOOGLE_STORAGE_BUCKET);
-    const [url] = await bucket
-    .file(`${userPrefix}/${filePrefix}`)
-      .getSignedUrl(config);
-    const original = `https://storage.cloud.google.com/${process.env.GOOGLE_STORAGE_BUCKET}/${userPrefix}/${filePrefix}`;
-    console.log(original)
-    res.json({ url, type, publication, storageId: filePrefix, original });
+    try {
+      const bucket = storage.bucket(process.env.GOOGLE_STORAGE_BUCKET);
+      const [url] = await bucket
+        .file(`${userPrefix}/${filePrefix}`)
+        .getSignedUrl(config);
+      const original = `https://storage.cloud.google.com/${process.env.GOOGLE_STORAGE_BUCKET}/${userPrefix}/${filePrefix}`;
+      // console.log(original)
+      res.json({ url, type, publication, storageId: filePrefix, original });
+    } catch (err) {
+      res.json({
+        error: true,
+        message: err.message,
+        bucket: process.env.GOOGLE_STORAGE_BUCKET,
+        userPrefix,
+      });
+    }
   }
 }

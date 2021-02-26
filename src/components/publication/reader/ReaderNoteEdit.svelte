@@ -34,25 +34,25 @@
     annotation = store.annotation;
   }
   $: if ($flags && !selectedFlags) {
-    selectedFlags = $flags.map(flag => flag.name);
+    selectedFlags = $flags.map((flag) => flag.name);
   }
   let highlight;
   let colour;
   $: if ($colours && !colour) {
     colour = $colours
-      .find(tag => tag.name.startsWith("colour"))
+      .find((tag) => tag.name.startsWith("colour"))
       .name.replace(" ", "");
   }
 
   let availableColours;
   $: availableColours = $tags.items
-    .filter(tag => tag.type == "flag" && tag.name.startsWith("colour"))
-    .map(tag => tag.name.replace(" ", ""));
+    .filter((tag) => tag.type == "flag" && tag.name.startsWith("colour"))
+    .map((tag) => tag.name.replace(" ", ""));
 
   let availableFlags = [];
   $: if ($tags && $tags.items.length !== 0) {
     availableFlags = $tags.items.filter(
-      tag => tag.type === "flag" && !tag.name.startsWith("colour")
+      (tag) => tag.type === "flag" && !tag.name.startsWith("colour")
     );
   }
   let text = "";
@@ -64,19 +64,21 @@
     }
   }
   function updateHighlight(id, colour) {
-    console.log(colour);
-    document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach(node => {
-      node.classList.forEach(token => {
-        if (token.startsWith("Colour")) {
-          node.classList.remove(token);
-        }
+    // console.log(colour);
+    document
+      .querySelectorAll(`[data-annotation-id="${id}"]`)
+      .forEach((node) => {
+        node.classList.forEach((token) => {
+          if (token.startsWith("Colour")) {
+            node.classList.remove(token);
+          }
+        });
+        node.classList.add(colour);
       });
-      node.classList.add(colour);
-    });
     document
       .querySelectorAll(`[data-annotation-highlight-box="${id}"]`)
-      .forEach(node => {
-        node.classList.forEach(token => {
+      .forEach((node) => {
+        node.classList.forEach((token) => {
           if (token.startsWith("Colour")) {
             node.classList.remove(token);
           }
@@ -91,19 +93,19 @@
       const payload = Object.assign({}, $annotation);
       payload.tags = $tags
         .getIds([colour.replace("colour", "colour ")].concat(selectedFlags))
-        .map(id => {
+        .map((id) => {
           return { id: id };
         });
-      if (payload.body.find(body => body.motivation === "commenting")) {
+      if (payload.body.find((body) => body.motivation === "commenting")) {
         const body = payload.body.find(
-          body => body.motivation === "commenting"
+          (body) => body.motivation === "commenting"
         );
         body.content = text;
         clean(body);
       } else {
         payload.body = payload.body.concat({
           motivation: "commenting",
-          content: text
+          content: text,
         });
       }
       await fetch(`/api/note/${$annotation.shortId}`, {
@@ -113,8 +115,8 @@
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "csrf-token": getToken()
-        }
+          "csrf-token": getToken(),
+        },
       });
       refresh(`/api/note/${$annotation.shortId}`);
       updateHighlight(
@@ -583,7 +585,7 @@
             {new Date($annotation.updated).toLocaleString(undefined, {
               year: 'numeric',
               month: 'numeric',
-              day: 'numeric'
+              day: 'numeric',
             })}
           {/if}
         </span>
@@ -604,9 +606,7 @@
           </a>
         {/if}
         {#if stores.$publication}
-          <a
-            href="sources/{stores.$publication.shortId}"
-            class="Source">
+          <a href="sources/{stores.$publication.shortId}" class="Source">
             <NavSource />
             <p>{stores.$publication.name}</p>
           </a>

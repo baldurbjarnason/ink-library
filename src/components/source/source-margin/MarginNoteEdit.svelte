@@ -3,9 +3,10 @@
 
   import { assignIco } from "./assignIco.js";
   import NavSource from "../../img/NavSource.svelte";
-  import { tags$, getIdsFromNames, source$ } from "../../../../state/state.ts";
-  import { refresh } from "../../../../state/refresh.ts";
-  import { chapterURL$ } from "../../../../state/state-urls.ts";
+  import { tags$, getIdsFromNames } from "../../../../state/tags";
+  import { source$ } from "../../../../state/state";
+  import { refresh } from "../../../../state/refresh";
+  import { chapterURL$ } from "../../../../state/state-urls";
   // import { tags } from "../../../stores";
   import Highlight from "../../notes/Highlight.svelte";
   import { getToken } from "../../../getToken";

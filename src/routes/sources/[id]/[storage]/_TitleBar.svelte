@@ -1,7 +1,7 @@
 <script>
-  export let name = ""
+  export let name = "";
   export let returnLink = "/library";
-  export let infoLink = ""
+  export let infoLink = "";
 </script>
 
 <style>
@@ -12,7 +12,7 @@
     background-color: var(--all-workspace);
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 99;
   }
   .TitleBar * {
     color: #ffffff;
@@ -74,8 +74,7 @@
       <span class="Title">{name}</span>
     </li>
     <li>
-      <a
-        href={infoLink}>
+      <a href={infoLink}>
         <svg
           width="16"
           height="16"
