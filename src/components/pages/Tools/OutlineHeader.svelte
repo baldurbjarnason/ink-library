@@ -102,6 +102,7 @@
   }
   header .Delete:hover {
     background: rgba(239, 86, 87, 0.1);
+    border: 1px solid #f05657;
   }
   header .Delete :global(svg) {
     color: #f05657;
@@ -113,6 +114,7 @@
     display: grid;
     gap: 10px;
     grid-template-columns: minmax(100px, 350px) repeat(3, max-content);
+    grid-template-rows: 30px;
   }
   .NameEdit {
     padding: 5px 10px;

@@ -8,7 +8,6 @@
   export let activeModal;
   export let type;
   export let items;
-  $: console.log(items);
 </script>
 
 <style>

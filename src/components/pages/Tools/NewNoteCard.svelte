@@ -77,11 +77,16 @@
   :global(#dnd-action-dragged-el.note) {
     background: var(--main-background-color);
     border-radius: 20px;
-    padding: 16px !important;
     display: grid;
     position: relative;
     overflow: hidden;
+  }
+  .Item {
+    padding: 16px 40px 16px 16px;
+  }
+  :global(#dnd-action-dragged-el.note) {
     max-height: 230px;
+    padding: 16px !important;
   }
   .Item.OutlineEdit {
     padding: 16px;
