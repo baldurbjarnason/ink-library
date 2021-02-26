@@ -127,6 +127,7 @@
       );
       $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
       requesting = false;
+      editing = false;
     } catch (err) {
       console.error(err);
     }

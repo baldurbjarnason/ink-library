@@ -199,6 +199,7 @@
     transform: translateX(40px);
     list-style-type: none;
     counter-reset: items;
+    grid-template-rows: inherit;
   }
   li.Item {
     position: relative;
