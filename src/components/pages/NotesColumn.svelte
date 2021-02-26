@@ -1,4 +1,5 @@
 <script>
+  import KeyboardTuto from "./Tools/KeyboardTuto.svelte";
   import FilterNote from "./Tools/FilterNote.svelte";
   import NavNotes from "../img/NavNotes.svelte";
   import NoNotes from "../img/NoNotes.svelte";
@@ -80,6 +81,7 @@
         }
       }
       keyboardNote = items[note];
+      from = "outline";
     }
   };
   let startDrag = () => {
@@ -88,6 +90,20 @@
   };
   let stopDrag = () => {
     disabled = true;
+  };
+
+  let tuto,
+    timer,
+    from = "notes";
+  let Tuto = (e) => {
+    if (e.key === "Tab") {
+      tuto = true;
+      clearTimeout(timer);
+
+      timer = setTimeout(() => {
+        tuto = false;
+      }, 2500);
+    }
   };
 </script>
 
@@ -329,8 +345,12 @@
     {#if notebookNotes.type === 'loading'}
       <Loader />
     {:else if items.length}
+      {#if tuto}
+        <KeyboardTuto bind:tuto {from} />
+      {/if}
       <div
         class="Notes"
+        on:keydown={Tuto}
         style={`grid-template-rows: repeat(${items.length}, max-content);`}
         use:dndzone={{ items, flipDurationMs, dropFromOthersDisabled, dragDisabled: disabled }}
         on:consider={handleDndConsider}

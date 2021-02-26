@@ -55,6 +55,7 @@
   .Toolbar {
     display: grid;
     grid-template-columns: 1fr max-content;
+    grid-template-rows: max-content;
     align-items: center;
   }
   .Toolbar .Buttons {
