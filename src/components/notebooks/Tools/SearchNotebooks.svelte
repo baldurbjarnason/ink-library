@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import { notebookSearched, page, searchNotebooks } from "../../../stores";
 
   let input;
@@ -13,6 +14,10 @@
       $searchNotebooks = input.value;
     }
   }
+
+  onMount(() => {
+    $searchNotebooks = null;
+  });
 </script>
 
 <style>

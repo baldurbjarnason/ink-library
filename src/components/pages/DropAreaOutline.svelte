@@ -7,6 +7,7 @@
   import NewNoteCard from "./Tools/NewNoteCard.svelte";
   import OutlineHeader from "./Tools/OutlineHeader.svelte";
   import Loader from "../Loader.svelte";
+  import KeyboardTuto from "./Tools/KeyboardTuto.svelte";
   import { getToken } from "../../getToken";
   import { flip } from "svelte/animate";
   import {
@@ -144,6 +145,19 @@
     }
   };
 
+  let tuto, timer;
+  let Tuto = (e) => {
+    if (editing) return;
+    if (e.key === "Tab") {
+      tuto = true;
+      clearTimeout(timer);
+
+      timer = setTimeout(() => {
+        tuto = false;
+      }, 2500);
+    }
+  };
+
   $: if (keyboardNote) {
     noteFocus = keyboardNote.shortId;
     items.unshift(keyboardNote);
@@ -176,8 +190,7 @@
   }
   ul.ItemsList {
     min-height: calc(90vh - 100px);
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 20px;
     margin: 0 auto;
     width: 70%;
@@ -312,7 +325,11 @@
       <Loader />
     </ul>
   {:else}
+    {#if tuto}
+      <KeyboardTuto bind:tuto from="outline" />
+    {/if}
     <ul
+      on:keydown={Tuto}
       class={`ItemsList ${filters.list ? filters.list : ''}`}
       use:dndzone={{ items, flipDurationMs, dragDisabled: disabled, dropFromOthersDisabled: disabled, dropTargetStyle }}
       on:consider={handleSort}

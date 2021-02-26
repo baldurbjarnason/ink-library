@@ -1,5 +1,5 @@
 <script>
-  // your script goes here
+  import { onMount } from "svelte";
   import { afterUpdate } from "svelte";
   import { searchNotes, searchAddNotes, page } from "../stores";
 
@@ -13,10 +13,15 @@
       $searchNotes = input.value;
     }
   }
+
   afterUpdate(() => {
     if (open) {
       input.focus();
     }
+  });
+
+  onMount(() => {
+    $searchNotes = null;
   });
 </script>
 

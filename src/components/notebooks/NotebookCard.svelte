@@ -69,7 +69,7 @@
   .BulkSelector::before {
     width: 14px;
     height: 14px;
-    border: 1px solid #888888;
+    border: 1px solid var(--workspace-color);
     background: #ffffff;
   }
   .BulkSelector::after {
@@ -78,31 +78,7 @@
     background: transparent;
   }
   .BulkSelector:checked::after {
-    background: #888888;
-  }
-  .colour1 .BulkSelector::before {
-    border: 1px solid #a43939;
-  }
-  .colour2 .BulkSelector::before {
-    border: 1px solid #6f4c9b;
-  }
-  .colour3 .BulkSelector::before {
-    border: 1px solid #8f7000;
-  }
-  .colour4 .BulkSelector::before {
-    border: 1px solid #4c9b92;
-  }
-  .colour1 .BulkSelector:checked::after {
-    background: #a43939;
-  }
-  .colour2 .BulkSelector:checked::after {
-    background: #6f4c9b;
-  }
-  .colour3 .BulkSelector:checked::after {
-    background: #8f7000;
-  }
-  .colour4 .BulkSelector:checked::after {
-    background: #4c9b92;
+    background: var(--workspace-color);
   }
   /* ---------- Cover image --------------*/
   .Img {
@@ -122,6 +98,7 @@
     width: 34px;
     height: 34px;
     position: relative;
+    background: var(--main-background-color);
   }
   h5 {
     font-weight: 600;
@@ -138,6 +115,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
+    color: var(--workspace-color);
     transform: translate(-50%, -50%);
   }
   .name,
@@ -148,31 +126,6 @@
   }
   .InfoContent {
     overflow: hidden;
-  }
-  /*----- Colours -----*/
-  .Icon.colour1 {
-    background: #f5e7e6;
-  }
-  .Icon.colour1 :global(svg) {
-    color: #a43939;
-  }
-  .Icon.colour2 {
-    background: #ede6f5;
-  }
-  .Icon.colour2 :global(svg) {
-    color: #6f4c9b;
-  }
-  .Icon.colour3 {
-    background: #fae59b;
-  }
-  .Icon.colour3 :global(svg) {
-    color: #8f7000;
-  }
-  .Icon.colour4 {
-    background: #dcf3f0;
-  }
-  .Icon.colour4 :global(svg) {
-    color: #4c9b92;
   }
   @media (min-width: 721px) {
     div.NotebookCard:only-child {

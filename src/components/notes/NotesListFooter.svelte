@@ -15,6 +15,7 @@
     refreshNotebooks,
     refreshDate,
     tags,
+    page,
   } from "../../stores";
 
   export let endSelection = function() {};
@@ -39,7 +40,7 @@
 
       if (colour) {
         obj["colour"] = true;
-        obj.tags = [...obj.tags, ...$tags.getIds([colour])];
+        obj.tags = [...obj.tags, ...$tags.getIds([colour.replace(" ", "")])];
       }
       if (selectedFlags.length)
         obj.tags = [...obj.tags, ...$tags.getIds(selectedFlags)];
@@ -113,7 +114,10 @@
     });
   }
 
-  let menu = ["Delete", "Check all", "Edit", "Close"];
+  $: menu = ["Delete", "Check all", "Edit", "Close"];
+  $: if ($page.path.startsWith("/notebooks"))
+    menu = menu.filter((i) => i !== "Edit");
+
   let react = (func) => {
     if (func === "Delete") activeModal = true;
     else if (func === "Edit") editing = true;
@@ -196,7 +200,6 @@
     padding: 0;
     list-style: none;
     display: grid;
-    grid-template-columns: 100px repeat(3, 100px);
     grid-template-rows: 70px;
     gap: 50px;
   }
@@ -339,13 +342,8 @@
         {#if type === 'source'}
           <Footer {endSelection} bind:editing />
         {:else}
-          {#if type === 'note'}
-            <DropDownColour bind:colour />
-            <DropDownFlags bind:selectedFlags />
-          {:else}
-            <DropDownColourNotebook bind:colour />
-            <span />
-          {/if}
+          <DropDownColour bind:colour />
+          <DropDownFlags bind:selectedFlags />
           <span />
           <span class="FooterButtons">
             <SecondaryButton
@@ -359,7 +357,7 @@
         {/if}
       </div>
     {:else}
-      <ul>
+      <ul style={`grid-template-columns: repeat(${menu.length}, 100px);`}>
         {#each menu as button}
           <li
             class="Button {button.replace(' ', '')}

@@ -1,11 +1,11 @@
 <script>
-  // your script goes here
+  import { onMount } from "svelte";
   import { afterUpdate } from "svelte";
   import {
     searchStore,
     searchAddSources,
     sourceSearched,
-    page
+    page,
   } from "../stores";
 
   let open = false;
@@ -27,6 +27,10 @@
     if (open) {
       input.focus();
     }
+  });
+
+  onMount(() => {
+    $searchStore = null;
   });
 </script>
 
