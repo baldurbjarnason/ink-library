@@ -53,7 +53,7 @@
     rect.setAttributeNS(null, "width", width);
     rect.setAttributeNS(null, "height", box.height);
     rect.classList.add("Highlight");
-    rect.classList.add("Colour1");
+    rect.setAttributeNS(null, "class", span.getAttributeNS(null, "class"));
     parent.insertAdjacentElement("beforebegin", rect);
   }
 </script>
@@ -119,25 +119,33 @@
     width: 1px;
     white-space: nowrap;
   }
-  .Chapter :global(.Colour) {
+  .Chapter :global(mark.Colour),
+  .Chapter :global(rect.Colour) {
     background-color: var(--highlight-color1);
-    fill: #ffff9866;
+    fill: var(--highlight-color1);
   }
-  .Chapter :global(.Colour1) {
+  .Chapter :global(mark.Colour1),
+  .Chapter :global(rect.Colour1) {
     background-color: var(--highlight-color1);
-    fill: #fea95b66;
+    fill: var(--highlight-color1);
   }
-  .Chapter :global(.Colour2) {
+  .Chapter :global(mark.Colour2),
+  .Chapter :global(rect.Colour2) {
     background-color: var(--highlight-color2);
-    fill: #ff8ebe66;
+    fill: var(--highlight-color2);
   }
-  .Chapter :global(.Colour3) {
+  .Chapter :global(mark.Colour3),
+  .Chapter :global(rect.Colour3) {
     background-color: var(--highlight-color3);
-    fill: #ff8ebe66;
+    fill: var(--highlight-color3);
   }
-  .Chapter :global(.Colour4) {
+  .Chapter :global(mark.Colour4),
+  .Chapter :global(rect.Colour4) {
     background-color: var(--highlight-color4);
-    fill: #6fe1fa66;
+    fill: var(--highlight-color4);
+  }
+  .Chapter :global(rect[data-annotation-render-box]) {
+    opacity: 0.4;
   }
   .Chapter :global(rect[data-annotation-highlight-box]) {
     display: none;
