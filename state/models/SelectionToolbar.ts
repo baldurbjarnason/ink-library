@@ -42,14 +42,14 @@ class Toolbar {
   }
   public getBoundingClientRect() {
     if (this.range) {
-      // range.getBoundingClientRect() is wonky in SVG in Firefox. Seems to get the width wrong.
-      // Probably doesn't take into account the transformations done to make text fit.
-      if (
-        this.range.commonAncestorContainer.parentElement instanceof SVGElement
-      ) {
-        return (this.range.startContainer
-          .parentElement as HTMLElement).getBoundingClientRect();
-      }
+      // // range.getBoundingClientRect() is wonky in SVG in Firefox. Seems to get the width wrong.
+      // // Probably doesn't take into account the transformations done to make text fit.
+      // if (
+      //   this.range.commonAncestorContainer.parentElement instanceof SVGElement
+      // ) {
+      //   return (this.range.startContainer
+      //     .parentElement as HTMLElement).getBoundingClientRect();
+      // }
       return this.range.getBoundingClientRect();
     } else if (temporary) {
       return oldRange.getBoundingClientRect();
