@@ -56,19 +56,6 @@ export function highlightRange(range, root) {
           "rect"
         );
         rect.dataset.annotationRenderBox = tempId;
-        const width = parent.getSubStringLength(
-          parent.textContent.indexOf(node.textContent),
-          node.textContent.length
-        );
-        const x = parent.getStartPositionOfChar(
-          parent.textContent.indexOf(node.textContent)
-        ).x;
-        rect.setAttributeNS(null, "x", x);
-        rect.setAttributeNS(null, "y", Number.parseInt(box.y, 10));
-        rect.setAttributeNS(null, "width", width);
-        rect.setAttributeNS(null, "height", Number.parseInt(box.height, 10));
-        rect.classList.add("Highlight");
-        parent.insertAdjacentElement("afterend", rect);
         const highlight = svgDocument.createElementNS(
           "http://www.w3.org/2000/svg",
           "tspan"
@@ -77,6 +64,29 @@ export function highlightRange(range, root) {
         // highlight.classList.add("Highlight");
         node.parentNode.replaceChild(highlight, node);
         highlight.appendChild(node);
+        const spanBox = highlight.getBBox();
+        const width = parent.getSubStringLength(
+          parent.textContent.indexOf(node.textContent),
+          node.textContent.length
+        );
+        const x = parent.getStartPositionOfChar(
+          parent.textContent.indexOf(node.textContent)
+        ).x;
+        const parentWidth = parent.getSubStringLength(
+          0,
+          parent.textContent.length
+        );
+        const actualWidth = Number.parseFloat(
+          parent.getAttributeNS(null, "textLength")
+        );
+        const ratio = actualWidth / parentWidth;
+        rect.dataset.annotationId = tempId;
+        rect.setAttributeNS(null, "x", spanBox.x);
+        rect.setAttributeNS(null, "y", box.y);
+        rect.setAttributeNS(null, "width", highlight.getComputedTextLength());
+        rect.setAttributeNS(null, "height", Number.parseInt(box.height, 10));
+        rect.classList.add("Highlight");
+        parent.insertAdjacentElement("afterend", rect);
         // Need to add a tspan with the annotation data
       } else {
         node.parentNode.replaceChild(highlight, node);
@@ -112,6 +122,7 @@ export function updateHighlight(oldId, newId, colour) {
     )
     .forEach((node) => {
       (node as HTMLElement).dataset.annotationId = newId;
+      (node as HTMLElement).dataset.annotationRenderBox = newId;
       if (colour) {
         (node as HTMLElement).classList.add(colour);
       }

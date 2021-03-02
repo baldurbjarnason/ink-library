@@ -35,22 +35,16 @@
     }
     const parent = span.parentElement;
     const box = parent.getBBox();
+    const spanBox = span.getBBox();
     const svgDocument = parent.ownerDocument;
     const rect = svgDocument.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"
     );
     rect.dataset.annotationRenderBox = span.dataset.annotationId;
-    const width = parent.getSubStringLength(
-      parent.textContent.indexOf(span.textContent),
-      span.textContent.length
-    );
-    const x = parent.getStartPositionOfChar(
-      parent.textContent.indexOf(span.textContent)
-    ).x;
-    rect.setAttributeNS(null, "x", x - 5);
-    rect.setAttributeNS(null, "y", box.y - 5);
-    rect.setAttributeNS(null, "width", width);
+    rect.setAttributeNS(null, "x", spanBox.x);
+    rect.setAttributeNS(null, "y", box.y);
+    rect.setAttributeNS(null, "width", span.getComputedTextLength());
     rect.setAttributeNS(null, "height", box.height);
     rect.classList.add("Highlight");
     rect.setAttributeNS(null, "class", span.getAttributeNS(null, "class"));
