@@ -55,8 +55,7 @@ export function highlightRange(range, root) {
           "http://www.w3.org/2000/svg",
           "rect"
         );
-        rect.dataset.annotationHighlightBox = tempId;
-        rect.dataset.annotationId = tempId;
+        rect.dataset.annotationRenderBox = tempId;
         const width = parent.getSubStringLength(
           parent.textContent.indexOf(node.textContent),
           node.textContent.length
@@ -69,8 +68,15 @@ export function highlightRange(range, root) {
         rect.setAttributeNS(null, "width", width);
         rect.setAttributeNS(null, "height", Number.parseInt(box.height, 10));
         rect.classList.add("Highlight");
-        rect.classList.add("Colour1");
         parent.insertAdjacentElement("afterend", rect);
+        const highlight = svgDocument.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "tspan"
+        );
+        highlight.dataset.annotationId = tempId;
+        // highlight.classList.add("Highlight");
+        node.parentNode.replaceChild(highlight, node);
+        highlight.appendChild(node);
         // Need to add a tspan with the annotation data
       } else {
         node.parentNode.replaceChild(highlight, node);
@@ -100,9 +106,10 @@ export function highlightRange(range, root) {
 // Update highlight - takes an (temp)Id and an annotation object -> updates mark and links to match.
 
 export function updateHighlight(oldId, newId, colour) {
-  // console.log(oldId, newId);
   document
-    .querySelectorAll(`[data-annotation-id="${oldId}"]`)
+    .querySelectorAll(
+      `[data-annotation-id="${oldId}"], [data-annotation-render-box="${oldId}"]`
+    )
     .forEach((node) => {
       (node as HTMLElement).dataset.annotationId = newId;
       if (colour) {
@@ -119,8 +126,8 @@ export function updateHighlight(oldId, newId, colour) {
     });
 }
 export function clearHighlight(id) {
-  // console.log(oldId, newId);
   document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach((node) => {
+    console.log(node, node.replaceWith);
     (node as HTMLElement).replaceWith(...Array.from(node.childNodes));
   });
 }
