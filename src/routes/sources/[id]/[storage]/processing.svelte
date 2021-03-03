@@ -26,7 +26,8 @@
   });
   $: if ($updated && !$updated._processing && $updated.readingOrder[0].url) {
     goto(
-      `/sources/${source.shortId}/${source.json.storageId}/${$updated.readingOrder[0].url}`
+      `/sources/${source.shortId}/${source.json.storageId}/${$updated.readingOrder[0].url}`,
+      { replaceState: true }
     );
   }
   if (source.name) {
