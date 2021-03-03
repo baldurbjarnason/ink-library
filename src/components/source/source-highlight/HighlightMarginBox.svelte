@@ -11,6 +11,7 @@
   import HighlightMarginEdit from "./HighlightMarginEdit.svelte";
   import IcoNotebook from "../../img/IcoNotebook.svelte";
   import HighlightButton from "./HighlightButton.svelte";
+  import { updateNoteHeight } from "../../../../state/state";
   export let note;
   export let annotations;
   export let element;
@@ -48,6 +49,12 @@
   }
   let editing;
   let modal;
+  let height;
+  let oldHeight;
+  $: if (height && height !== oldHeight) {
+    updateNoteHeight({ id: note.id, height });
+    oldHeight = height;
+  }
 </script>
 
 <style>
@@ -272,6 +279,7 @@
 </style>
 
 {#if $note && !$note.deleted}
+
   <fg-modal
     id="delete-note-{annotation.shortId}"
     bind:this={modal}
@@ -328,70 +336,72 @@
       </div>
     </div>
   </fg-modal>
-  {#if editing}
-    <HighlightMarginEdit
-      {annotation}
-      note={$note}
-      stopEditing={() => {
-        editing = false;
-      }}
-      {modal} />
-  {:else}
-    <div
-      class="Note"
-      bind:this={noteElement}
-      on:click={(event) => {
-        if (!editing) {
-          editing = true;
-        }
-      }}>
-      <div class="Comment">
-        {#if noted}
-          {@html noted.content || noted.value}
-        {:else}
-          <button
-            type="button"
-            class="TextButton"
-            on:click={() => {
-              editing = true;
-            }}>
-            Add note...
-          </button>
-        {/if}
+  <div bind:offsetHeight={height}>
+    {#if editing}
+      <HighlightMarginEdit
+        {annotation}
+        note={$note}
+        stopEditing={() => {
+          editing = false;
+        }}
+        {modal} />
+    {:else}
+      <div
+        class="Note"
+        bind:this={noteElement}
+        on:click={(event) => {
+          if (!editing) {
+            editing = true;
+          }
+        }}>
+        <div class="Comment">
+          {#if noted}
+            {@html noted.content || noted.value}
+          {:else}
+            <button
+              type="button"
+              class="TextButton"
+              on:click={() => {
+                editing = true;
+              }}>
+              Add note...
+            </button>
+          {/if}
 
-      </div>
-      <div class="Footer">
-        <div class="Tags">
-          {#each flags as flag}
-            <div class="Flag Item">
-              <svelte:component this={assignIco(flag.name)} />
-              <span class={flag.name}>
-                {flag.name[0].toUpperCase()}{flag.name.slice(1)}
-              </span>
-            </div>
-          {:else}
-            <span />
-          {/each}
-          {#each annotation.notebooks as notebook}
-            <div class="Flag Item">
-              <IcoNotebook />
-              <span class={notebook.name}>
-                {notebook.name[0].toUpperCase()}{notebook.name.slice(1)}
-              </span>
-            </div>
-          {:else}
-            <span />
-          {/each}
         </div>
-        {#if annotation.updated || annotation.published}
-          <div class="Flag">
-            <span />
-            <DateFormat
-              updated={annotation.updated}
-              published={annotation.published} />
+        <div class="Footer">
+          <div class="Tags">
+            {#each flags as flag}
+              <div class="Flag Item">
+                <svelte:component this={assignIco(flag.name)} />
+                <span class={flag.name}>
+                  {flag.name[0].toUpperCase()}{flag.name.slice(1)}
+                </span>
+              </div>
+            {:else}
+              <span />
+            {/each}
+            {#each annotation.notebooks as notebook}
+              <div class="Flag Item">
+                <IcoNotebook />
+                <span class={notebook.name}>
+                  {notebook.name[0].toUpperCase()}{notebook.name.slice(1)}
+                </span>
+              </div>
+            {:else}
+              <span />
+            {/each}
           </div>
-        {/if}
+          {#if annotation.updated || annotation.published}
+            <div class="Flag">
+              <span />
+              <DateFormat
+                updated={annotation.updated}
+                published={annotation.published} />
+            </div>
+          {/if}
+        </div>
       </div>
-    </div>
-  {/if}
+    {/if}
+  </div>
 {/if}

@@ -18,6 +18,7 @@ import {
 import { distinctUntilChanged, map } from "rxjs/operators";
 import { combineLatest, BehaviorSubject } from "rxjs";
 import { Annotation$, createdNotes$ } from "./models/Annotation";
+import { intersections, topmost } from "./nodes";
 
 // Figure how to do search with these.
 // export const library$ = web(libraryURL$.pipe(distinctUntilChanged()));
@@ -51,6 +52,85 @@ export const chapterNotes$ = combineLatest([chapter$, createdNotes$]).pipe(
         return new Annotation$(annotation);
       });
     return annotations.concat(Array.from(createdNotes));
+  })
+);
+
+// combineLatest -> chapterNotes, topmost, heights, should result in a dictionary of entry objects with annotation property, note heights/position, and entry bounding box mapped to annotation id? Maybe an array? Render all notes, non-positioned are placed at bottom, with opacity 0 and aria-hidden.
+
+let noteHeights = [];
+const noteHeights$ = new BehaviorSubject(noteHeights);
+let tempNoteHeights = [];
+let animationFrame;
+export function updateNoteHeight(noteHeight: { id: string; height: number }) {
+  tempNoteHeights = tempNoteHeights.concat(noteHeight);
+  if (!animationFrame) {
+    animationFrame = window.requestAnimationFrame(() => {
+      noteHeights = noteHeights.concat(tempNoteHeights);
+      noteHeights$.next(noteHeights);
+      animationFrame = null;
+    });
+  }
+}
+const highlights$ = intersections("[data-annotation-id]", {
+  root: document.documentElement,
+  rootMargin: "1000px 0px 0px 1000px",
+});
+const topmost$ = topmost(highlights$, (entry) => {
+  return entry.element.dataset.annotationId;
+});
+export const positionedNotes$ = combineLatest([
+  chapterNotes$,
+  noteHeights$,
+  topmost$,
+]).pipe(
+  map(([chapterNotes, heights, topmost]) => {
+    const entries = chapterNotes.map((annotation) => {
+      const entry = Array.from(topmost).find(
+        (entry) => entry.element.dataset.annotationId === annotation.id
+      );
+      let note = heights.find((entry) => entry.id === annotation.id);
+      if (!note) {
+        note = {
+          id: annotation.id,
+          height: 90,
+        };
+      }
+      return {
+        annotation,
+        entry,
+        note,
+      };
+    });
+    const adjustedEntries = Array.from(topmost).map((entry, index) => {
+      const item = entries.find((item) => {
+        return item.annotation.id === entry.element.dataset.annotationId;
+      });
+      if (!item) {
+        return null;
+      }
+      if (index !== 0) {
+        // Check preceding item height and position, adjust your top to match
+        const previousEntry = Array.from(topmost)[index - 1];
+        const previous = entries.find((item) => {
+          return (
+            item.annotation.id === previousEntry.element.dataset.annotationId
+          );
+        });
+        if (previous && previous.note.bottom >= item.entry.top) {
+          item.note.top = previous.note.bottom + 10;
+          item.note.bottom = item.note.top + item.note.height;
+        } else {
+          item.note.top = item.entry.top;
+          item.note.bottom = item.note.top + item.note.height;
+        }
+        return item;
+      } else {
+        item.note.top = item.entry.top;
+        item.note.bottom = item.entry.top + item.note.height;
+        return item;
+      }
+    });
+    return adjustedEntries.filter((item) => item);
   })
 );
 
