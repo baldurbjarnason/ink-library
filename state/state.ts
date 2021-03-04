@@ -57,7 +57,7 @@ export const chapterNotes$ = combineLatest([chapter$, createdNotes$]).pipe(
 
 // combineLatest -> chapterNotes, topmost, heights, should result in a dictionary of entry objects with annotation property, note heights/position, and entry bounding box mapped to annotation id? Maybe an array? Render all notes, non-positioned are placed at bottom, with opacity 0 and aria-hidden.
 
-let noteHeights = [];
+let noteHeights = {};
 const noteHeights$ = new BehaviorSubject(noteHeights);
 let tempNoteHeights = [];
 let animationFrame;
@@ -65,7 +65,10 @@ export function updateNoteHeight(noteHeight: { id: string; height: number }) {
   tempNoteHeights = tempNoteHeights.concat(noteHeight);
   if (!animationFrame) {
     animationFrame = window.requestAnimationFrame(() => {
-      noteHeights = noteHeights.concat(tempNoteHeights);
+      for (const height of tempNoteHeights) {
+        noteHeights[height.id] = height.height;
+      }
+      tempNoteHeights = [];
       noteHeights$.next(noteHeights);
       animationFrame = null;
     });
@@ -78,17 +81,28 @@ const highlights$ = intersections("[data-annotation-id]", {
 const topmost$ = topmost(highlights$, (entry) => {
   return entry.element.dataset.annotationId;
 });
+
+type Note = {
+  bottom?: number;
+  top?: number;
+  id: string;
+  height: number;
+};
+
 export const positionedNotes$ = combineLatest([
   chapterNotes$,
   noteHeights$,
   topmost$,
 ]).pipe(
   map(([chapterNotes, heights, topmost]) => {
+    const top = Array.from(topmost).sort((a, b) => {
+      return a.top - b.top;
+    });
     const entries = chapterNotes.map((annotation) => {
-      const entry = Array.from(topmost).find(
+      const entry = top.find(
         (entry) => entry.element.dataset.annotationId === annotation.id
       );
-      let note = heights.find((entry) => entry.id === annotation.id);
+      let note: Note = { id: annotation.id, height: heights[annotation.id] };
       if (!note) {
         note = {
           id: annotation.id,
@@ -101,7 +115,7 @@ export const positionedNotes$ = combineLatest([
         note,
       };
     });
-    const adjustedEntries = Array.from(topmost).map((entry, index) => {
+    const adjustedEntries = top.map((entry, index) => {
       const item = entries.find((item) => {
         return item.annotation.id === entry.element.dataset.annotationId;
       });
@@ -110,7 +124,7 @@ export const positionedNotes$ = combineLatest([
       }
       if (index !== 0) {
         // Check preceding item height and position, adjust your top to match
-        const previousEntry = Array.from(topmost)[index - 1];
+        const previousEntry = top[index - 1];
         const previous = entries.find((item) => {
           return (
             item.annotation.id === previousEntry.element.dataset.annotationId
