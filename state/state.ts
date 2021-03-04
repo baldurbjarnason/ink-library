@@ -126,7 +126,13 @@ export const positionedNotes$ = combineLatest([
         };
       })
       .sort((a, b) => {
-        return a.entry.top - b.entry.top;
+        if (!a.entry) {
+          return -1;
+        } else if (!b.entry) {
+          return 1;
+        } else {
+          return a.entry.top - b.entry.top;
+        }
       });
     const adjustedEntries = top.map((entry, index) => {
       const item = entries.find((item) => {
