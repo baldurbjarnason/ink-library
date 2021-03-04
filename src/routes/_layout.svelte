@@ -129,6 +129,7 @@
     justify-content: center;
     align-items: center;
   }
+
   @media (max-width: 720px) {
     .grid {
       display: flex;
@@ -205,5 +206,6 @@
       <slot />
     </div>
   </main>
+  <div id="scratch" aria-hidden="true" class="visually-hidden" />
   <NoteEditDialog />
 {/if}

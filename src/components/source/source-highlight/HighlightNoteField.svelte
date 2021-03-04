@@ -38,8 +38,10 @@
 <style>
   /* ------ Editor ------ */
   .Editor {
-    display: block;
+    display: grid;
     grid-column: 1/-1;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
     color: #333;
   }
   .Editor textarea {
@@ -49,9 +51,24 @@
     width: 100%;
     border: none;
     font-size: 0.85rem;
+    grid-column: 1/-1;
+    grid-row: 1/-1;
   }
   .Editor textarea:focus:not(:focus-visible) {
     outline: none;
+  }
+  .Editor .Sizer {
+    background: transparent;
+    display: grid;
+    margin: 0.5rem 0;
+    width: 100%;
+    border: none;
+    font-size: 0.85rem;
+    grid-column: 1/-1;
+    grid-row: 1/-1;
+    visibility: hidden;
+    white-space: pre-wrap;
+    pointer-events: none;
   }
 </style>
 
@@ -63,4 +80,5 @@
     rows="5"
     bind:value={plaintext}
     placeholder="New note..." />
+  <div class="Sizer" aria-hidden="true">{plaintext}</div>
 </div>
