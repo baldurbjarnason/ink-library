@@ -96,30 +96,38 @@ export const positionedNotes$ = combineLatest([
 ]).pipe(
   map(([chapterNotes, heights, topmost]) => {
     const top = Array.from(topmost).sort((a, b) => {
-      return a.top - b.top;
+      if (a.top === b.top) {
+        return a.left - b.left;
+      } else {
+        return a.top - b.top;
+      }
     });
-    const entries = chapterNotes.map((annotation) => {
-      const entry = top.find(
-        (entry) => entry.element.dataset.annotationId === annotation.id
-      );
-      let note: Note = { id: annotation.id, height: heights[annotation.id] };
-      if (!note) {
-        note = {
-          id: annotation.id,
-          height: 90,
+    const entries = chapterNotes
+      .map((annotation) => {
+        const entry = top.find(
+          (entry) => entry.element.dataset.annotationId === annotation.id
+        );
+        let note: Note = { id: annotation.id, height: heights[annotation.id] };
+        if (!note.height) {
+          note = {
+            id: annotation.id,
+            height: 90,
+          };
+        }
+        let id = annotation.id;
+        // if (annotation.id === "temporary-selection-highlight") {
+        //   id = "temp-" + Math.floor(Math.random() * 10000000000000);
+        // }
+        return {
+          id,
+          annotation,
+          entry,
+          note,
         };
-      }
-      let id = annotation.id;
-      if (annotation.id === "temporary-selection-highlight") {
-        id = "temp-" + Math.floor(Math.random() * 10000000000000);
-      }
-      return {
-        id,
-        annotation,
-        entry,
-        note,
-      };
-    });
+      })
+      .sort((a, b) => {
+        return a.entry.top - b.entry.top;
+      });
     const adjustedEntries = top.map((entry, index) => {
       const item = entries.find((item) => {
         return item.annotation.id === entry.element.dataset.annotationId;
