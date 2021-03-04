@@ -1,4 +1,6 @@
 <script>
+  import { onMount } from "svelte";
+
   // import { tags } from "../../../stores";
   import { getToken } from "../../../getToken";
   export let plaintext;
@@ -33,6 +35,10 @@
       }
     }
   }
+  let textarea;
+  onMount(() => {
+    textarea.focus();
+  });
 </script>
 
 <style>
@@ -78,6 +84,7 @@
     id="html"
     cols="40"
     rows="5"
+    bind:this={textarea}
     bind:value={plaintext}
     placeholder="New note..." />
   <div class="Sizer" aria-hidden="true">{plaintext}</div>
