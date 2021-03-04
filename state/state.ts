@@ -109,7 +109,12 @@ export const positionedNotes$ = combineLatest([
           height: 90,
         };
       }
+      let id = annotation.id;
+      if (annotation.id === "temporary-selection-highlight") {
+        id = "temp-" + Math.floor(Math.random() * 10000000000000);
+      }
       return {
+        id,
         annotation,
         entry,
         note,

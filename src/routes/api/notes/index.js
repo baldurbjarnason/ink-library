@@ -75,9 +75,37 @@ export async function get(req, res, next) {
         Authorization: `Bearer ${req.user.token}`,
       },
     }).json();
+    response.items = fixItems(response.items);
     res.json(response);
   } catch (err) {
     res.status(err.response.statusCode);
     return res.json(JSON.parse(err.response.body));
   }
+}
+
+function fixItems(items) {
+  const fixed = items.map(fixItem).filter((item) => item);
+  return fixed.filter((item) => {
+    if (
+      item.target.selector.type === "TextQuoteSelector" &&
+      !item.target.selector.exact
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+}
+
+function fixItem(item) {
+  item.body = [].concat(item.body).map((body) => {
+    return {
+      type: "TextualBody",
+      content: body.content || "",
+      format: "text/html",
+      purpose: body.motivation,
+      motivation: body.motivation,
+    };
+  });
+  return item;
 }

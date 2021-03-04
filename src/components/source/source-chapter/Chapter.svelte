@@ -29,7 +29,7 @@
   const spans = new Map();
   function highlightTspan(span) {
     if (spans.has(span)) {
-      return console.log("has span");
+      return;
     } else {
       spans.set(span, true);
     }

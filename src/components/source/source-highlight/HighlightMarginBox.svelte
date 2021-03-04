@@ -15,13 +15,14 @@
   export let note;
   export let annotations;
   export let element;
-  $: if (element && annotations) {
-    element.addEventListener("annotation-id-change", () => {
-      note = annotations[element.dataset.annotationId];
-    });
-  }
+  // $: if (element && annotations) {
+  //   element.addEventListener("annotation-id-change", () => {
+  //     note = annotations[element.dataset.annotationId];
+  //   });
+  // }
   let annotation;
   $: if ($note && $note.annotation) {
+    console.log($note, $note.annotation.body);
     annotation = $note.annotation;
   }
   let clean = "";

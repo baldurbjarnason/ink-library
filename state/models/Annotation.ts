@@ -146,11 +146,15 @@ export class Annotation {
           purpose: "commenting",
           type: "TextualBody",
           value: content,
+          content,
         });
     }
     payload.body = payload.body.map((item) => {
       if (item.purpose && !item.motivation) {
         item.motivation = item.purpose;
+      }
+      if (item.value && !item.content) {
+        item.content = item.value;
       }
       return item;
     });
