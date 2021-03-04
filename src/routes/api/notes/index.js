@@ -78,14 +78,22 @@ export async function get(req, res, next) {
     response.items = fixItems(response.items);
     res.json(response);
   } catch (err) {
-    res.status(err.response.statusCode);
-    return res.json(JSON.parse(err.response.body));
+    if (err.response && err.response.statusCode) {
+      res.status(err.response.statusCode);
+      return res.json(JSON.parse(err.response.body));
+    } else {
+      res.status(500);
+      return res.json(JSON.parse(err));
+    }
   }
 }
 
 function fixItems(items) {
   const fixed = items.map(fixItem).filter((item) => item);
   return fixed.filter((item) => {
+    if (!item || !item.target || !item.target.selector) {
+      return false;
+    }
     if (
       item.target.selector.type === "TextQuoteSelector" &&
       !item.target.selector.exact
@@ -98,14 +106,19 @@ function fixItems(items) {
 }
 
 function fixItem(item) {
-  item.body = [].concat(item.body).map((body) => {
-    return {
-      type: "TextualBody",
-      content: body.content || "",
-      format: "text/html",
-      purpose: body.motivation,
-      motivation: body.motivation,
-    };
-  });
-  return item;
+  try {
+    const body = [].concat(item.body).map((body) => {
+      return {
+        type: "TextualBody",
+        content: body.content || "",
+        format: "text/html",
+        purpose: body.motivation,
+        motivation: body.motivation,
+      };
+    });
+    item.body = body;
+    return item;
+  } catch (err) {
+    return null;
+  }
 }

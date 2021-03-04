@@ -9,7 +9,9 @@ export function highlightRange(range, root) {
   // console.log(positions);
   let svg = false;
   // const tempId = "temp-" + Math.floor(Math.random() * 10000000000000);
-  const tempId = "temporary-selection-highlight";
+  const tempId =
+    "temporary-selection-highlight" +
+    Math.floor(Math.random() * 10000000000000);
   const seeker = document.createNodeIterator(root, window.NodeFilter.SHOW_TEXT);
   function split(where) {
     const count = seek(seeker, where);
@@ -118,7 +120,7 @@ export function highlightRange(range, root) {
 export function updateHighlight(oldId, newId, colour) {
   document
     .querySelectorAll(
-      `[data-annotation-id="${oldId}"], [data-annotation-render-box="${oldId}"]`
+      `[data-annotation-id^="${oldId}"], [data-annotation-render-box^="${oldId}"]`
     )
     .forEach((node) => {
       (node as HTMLElement).dataset.annotationId = newId;
@@ -137,7 +139,7 @@ export function updateHighlight(oldId, newId, colour) {
     });
 }
 export function clearHighlight(id) {
-  document.querySelectorAll(`[data-annotation-id="${id}"]`).forEach((node) => {
+  document.querySelectorAll(`[data-annotation-id^="${id}"]`).forEach((node) => {
     console.log(node, node.replaceWith);
     (node as HTMLElement).replaceWith(...Array.from(node.childNodes));
   });

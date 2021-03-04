@@ -13,6 +13,7 @@
   import MainInfo from "./source-info/Info.svelte";
   // import EmptySource from "../../../../components/publication/EmptySource.svelte";
   import { stores } from "@sapper/app";
+  import { find } from "rxjs/operators";
   export let chapter;
   export let source;
   $: if (source) {
@@ -62,6 +63,22 @@
       element.scrollIntoView({ behavior: "smooth" });
     }
   });
+  let path = $page.params.chapter.join("/");
+  function findCurrent(accumulator, item) {
+    if (accumulator.label) return accumulator;
+    if (path === item.url) {
+      return item;
+    } else {
+      if (item.children) {
+        return item.children.reduce(findCurrent, {});
+      }
+    }
+  }
+  let chapterTitle;
+  $: if (chapter.toc && path) {
+    const item = chapter.toc.children.reduce(findCurrent, {});
+    chapterTitle = item.label;
+  }
   // export let info = false
 
   let readerBody;
@@ -164,7 +181,7 @@
       <InfoToolBar />
       <MainInfo />
     </InfoModal>
-    <ToolBar {sidebar} />
+    <ToolBar {sidebar} {chapterTitle} />
     <Chapter
       {chapter}
       sourceNotes={$bookmarks$}

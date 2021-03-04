@@ -12,6 +12,8 @@
   import IcoNotebook from "../../img/IcoNotebook.svelte";
   import HighlightButton from "./HighlightButton.svelte";
   import { updateNoteHeight } from "../../../../state/state";
+  import { onDestroy, onMount } from "svelte";
+  import { text } from "svelte/internal";
   export let note;
   export let annotations;
   export let element;
@@ -22,7 +24,7 @@
   // }
   let annotation;
   $: if ($note && $note.annotation) {
-    console.log($note, $note.annotation.body);
+    // console.log($note, $note.annotation.body);
     annotation = $note.annotation;
   }
   let clean = "";
@@ -56,6 +58,18 @@
     updateNoteHeight({ id: note.id, height });
     oldHeight = height;
   }
+  let wrapper;
+  function handleEvent(event) {
+    if (event.target.matches(`[data-annotation-id="${annotation.id}"]`)) {
+      editing = true;
+    }
+  }
+  onDestroy(() => {
+    document.removeEventListener("click", handleEvent);
+  });
+  onMount(() => {
+    document.addEventListener("click", handleEvent);
+  });
 </script>
 
 <style>
@@ -337,7 +351,7 @@
       </div>
     </div>
   </fg-modal>
-  <div bind:offsetHeight={height}>
+  <div bind:offsetHeight={height} bind:this={wrapper}>
     {#if editing}
       <HighlightMarginEdit
         {annotation}

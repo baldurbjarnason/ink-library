@@ -76,6 +76,7 @@ export class Annotation {
   public async create(json, tempId?: string) {
     const processed = this.processCreate(json);
     const updated = await this._create(processed);
+    // console.log(processed, updated);
     let colour;
     if (json.tags.find((tag) => tag.type === "colour")) {
       const colourObject = json.tags.find((tag) => tag.type === "colour");
@@ -100,7 +101,6 @@ export class Annotation {
     if (body) {
       payload.body = payload.body.concat(body);
     }
-    payload.id = "temporary-selection-highlight";
     return payload;
   }
 
@@ -173,6 +173,14 @@ export class Annotation {
       },
     });
     if (result.ok) {
+      let colour;
+      if (json.tags.find((tag) => tag.type === "colour")) {
+        const colourObject = json.tags.find((tag) => tag.type === "colour");
+        colour = colourObject.name.replace("c", "C");
+      } else {
+        colour = "Colour1";
+      }
+      updateHighlight(this.annotation.id, this.annotation.id, colour);
       return result;
     } else {
       // Should we update the annotation object with an error object

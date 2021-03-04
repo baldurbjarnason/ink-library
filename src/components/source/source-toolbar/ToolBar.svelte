@@ -1,6 +1,7 @@
 <script>
   import CloseSidebar from "../../img/IcoCloseColumn.svelte";
   export let hidden = false;
+  export let chapterTitle = "";
   export let sidebar;
 </script>
 
@@ -225,7 +226,9 @@
       </button>
     </li>
   </ol>
-  <ol />
+  <ol>
+    <li>{chapterTitle}</li>
+  </ol>
   <ol style="transform: translateX(10px);">
     <li>
       <svg

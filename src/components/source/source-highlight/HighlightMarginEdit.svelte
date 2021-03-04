@@ -1,4 +1,5 @@
 <script>
+  import DOMPurify from "dompurify";
   import HighlightColours from "./HighlightColours.svelte";
   import HighlightFlags from "./HighlightFlags.svelte";
   import HighlightButton from "./HighlightButton.svelte";
@@ -16,12 +17,6 @@
   import { notebooks$, source$, chapter$ } from "../../../../state/state";
   import { tags$ } from "../../../../state/tags";
   import { setColour } from "./setColour.js";
-  import {
-    getNoted,
-    getHighlighted,
-    getFlags,
-    getColours,
-  } from "../source-margin/processNote.js";
   let toolbar;
   let hidden;
   let range;
@@ -37,29 +32,50 @@
   export let annotation;
   export let stopEditing = () => {};
   let noted;
-  $: if (annotation && !plaintext) {
-    noted = getNoted(annotation);
-    if (noted) {
-      window
-        .fetch("/api/markdown", {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/html",
-            "csrf-token": getToken(),
-          },
-          body: noted.content || noted.value,
-        })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            return { content: "" };
-          }
-        })
-        .then((json) => {
-          plaintext = json.content;
-        });
+  function getNoted(note) {
+    const body = [].concat(note.body).find((item) => {
+      return item.motivation === "commenting" || item.purpose === "commenting";
+    });
+    let content;
+    if (body) {
+      content = body.content || body.value;
     }
+    let result;
+    if (body && content) {
+      const fragment = DOMPurify.sanitize(`<div>${content}</div>`, {
+        RETURN_DOM: true,
+        RETURN_DOM_FRAGMENT: true,
+      });
+      const scratch = document.getElementById("scratch");
+      scratch.append(fragment);
+      result = scratch.innerText;
+      scratch.innerHTML = "";
+    }
+    return result;
+  }
+  $: if (annotation && !plaintext) {
+    plaintext = getNoted(annotation);
+    // if (noted) {
+    //   window
+    //     .fetch("/api/markdown", {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "text/html",
+    //         "csrf-token": getToken(),
+    //       },
+    //       body: noted.content || noted.value,
+    //     })
+    //     .then((response) => {
+    //       if (response.ok) {
+    //         return response.json();
+    //       } else {
+    //         return { content: "" };
+    //       }
+    //     })
+    //     .then((json) => {
+    //       plaintext = json.content;
+    //     });
+    // }
   }
 
   $: if (annotation && annotation.tags) {
@@ -108,6 +124,7 @@
       .filter((item) => item);
     let body;
     if (plaintext) {
+      // use textcontent
       const content = await window
         .fetch("/api/markdown", {
           method: "POST",
