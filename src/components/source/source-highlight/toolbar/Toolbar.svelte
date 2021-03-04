@@ -142,6 +142,7 @@
       .Chapter
       .Highlight[data-annotation-id^="temporary-selection-highlight"]) {
     background-color: rgba(120, 120, 120, 0.2);
+    fill: rgba(120, 120, 120, 0.5);
   }
   .ButtonBar {
     display: flex;

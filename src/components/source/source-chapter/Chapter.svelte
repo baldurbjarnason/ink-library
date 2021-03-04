@@ -33,6 +33,11 @@
     } else {
       spans.set(span, true);
     }
+    if (
+      span.dataset.annotationId &&
+      span.dataset.annotationId.startsWith("temporary-selection-highlight")
+    )
+      return;
     const parent = span.parentElement;
     const box = parent.getBBox();
     const spanBox = span.getBBox();
@@ -47,7 +52,11 @@
     rect.setAttributeNS(null, "width", span.getComputedTextLength());
     rect.setAttributeNS(null, "height", box.height);
     rect.classList.add("Highlight");
-    rect.setAttributeNS(null, "class", span.getAttributeNS(null, "class"));
+    rect.setAttributeNS(
+      null,
+      "class",
+      span.getAttributeNS(null, "class") || "Highlight"
+    );
     parent.insertAdjacentElement("beforebegin", rect);
   }
 </script>
@@ -152,6 +161,8 @@
   }
   .Chapter :global(ink-body#pdf-body tspan) {
     color: transparent;
+    fill: transparent;
+    background-color: transparent;
   }
 </style>
 
