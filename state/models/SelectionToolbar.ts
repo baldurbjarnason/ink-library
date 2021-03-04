@@ -42,6 +42,32 @@ class Toolbar {
   }
   public getBoundingClientRect() {
     if (this.range) {
+      // // range.getBoundingClientRect() is wonky in SVG in Firefox. Seems to get the width wrong.
+      // // Probably doesn't take into account the transformations done to make text fit.
+      // if (
+      //   this.range.commonAncestorContainer.parentElement instanceof SVGElement
+      // ) {
+      //   const parent: SVGTextElement = this.range.commonAncestorContainer
+      //     .parentElement as any;
+      //   const parentTextWidth = parent.getComputedTextLength();
+      //   const parentWidth = parent.getBoundingClientRect().width;
+      //   const ratio = parentTextWidth / parentWidth;
+      //   const rect = this.range.getBoundingClientRect();
+      //   const width = rect.width / ratio;
+      //   console.log(width, rect.width, parentTextWidth, parentWidth, parent);
+      //   const returnRect = {
+      //     width,
+      //     x: rect.x / ratio,
+      //     y: rect.y,
+      //     height: rect.height,
+      //     right: rect.x / ratio + width,
+      //     top: rect.top,
+      //     bottom: rect.bottom,
+      //     left: rect.left / ratio,
+      //   };
+      //   console.log(returnRect, rect);
+      //   return returnRect;
+      // }
       return this.range.getBoundingClientRect();
     } else if (temporary) {
       return oldRange.getBoundingClientRect();

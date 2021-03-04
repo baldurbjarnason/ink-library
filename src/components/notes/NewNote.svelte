@@ -67,7 +67,8 @@
   }
   let text;
   $: flagsArr = $tags.items.filter(
-    (item) => item.type === "flag" && !item.name.startsWith("colour")
+    (item) =>
+      item.type === "flag" && (!item.name || !item.name.startsWith("colour"))
   );
 
   async function submit(event) {
@@ -113,7 +114,8 @@
       console.error(err);
     }
   }
-  $: atNotebook = $page.path.startsWith("/notebooks/") ? true : false;
+  $: atNotebook =
+    $page.path && $page.path.startsWith("/notebooks/") ? true : false;
 </script>
 
 <style>

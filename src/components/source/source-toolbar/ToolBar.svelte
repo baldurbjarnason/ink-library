@@ -19,6 +19,7 @@
     top: 0;
     overflow-x: hidden;
     z-index: 100;
+    height: 41px;
   }
   ol {
     list-style: none;

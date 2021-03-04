@@ -93,7 +93,7 @@
       </ol>
     </details>
   {:else if item.url}
-    <a href={url(item.url)} class="PageLevel">
+    <a href={url('index.html' + item.url)} class="PageLevel">
       <img src="{media}/{item.image}" alt={item.label} />
     </a>
   {:else}
