@@ -46,7 +46,7 @@
   {#if root}
     <HighlightToolbar {root} />
     {#if $positionedNotes$}
-      {#each $positionedNotes$ as entry, index (entry.annotation.id)}
+      {#each $positionedNotes$ as entry, index (entry.id)}
         <div
           style="top: {entry.note.top ? entry.note.top - 113 : 0}px; left:
           0;right: 0;"
