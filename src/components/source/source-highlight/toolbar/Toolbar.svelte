@@ -140,7 +140,7 @@
   }
   :global(#sapper
       .Chapter
-      .Highlight[data-annotation-id="temporary-selection-highlight"]) {
+      .Highlight[data-annotation-id^="temporary-selection-highlight"]) {
     background-color: rgba(120, 120, 120, 0.2);
   }
   .ButtonBar {

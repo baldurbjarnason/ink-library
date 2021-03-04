@@ -76,7 +76,7 @@ class Toolbar {
 
   public setOldRange() {
     const annotations = document.querySelectorAll(
-      '[data-annotation-id="temporary-selection-highlight"]'
+      '[data-annotation-id^="temporary-selection-highlight"]'
     );
     const first = annotations[0];
     const last = annotations[annotations.length - 1];
