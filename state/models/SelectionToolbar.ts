@@ -13,6 +13,7 @@ const selection$ = selection().pipe(
 
 let oldRange: Range = null;
 let temporary: any;
+const positioner = document.getElementById("positioner");
 class Toolbar {
   public range: Range;
   public selection: Selection;
@@ -68,27 +69,31 @@ class Toolbar {
       //   console.log(returnRect, rect);
       //   return returnRect;
       // }
-      return this.range.getBoundingClientRect();
+      this.positions = this.range.getBoundingClientRect();
+      return this.positions;
     } else if (temporary) {
-      return oldRange.getBoundingClientRect();
+      return positioner.getBoundingClientRect();
     }
   }
 
   public setOldRange() {
-    const annotations = document.querySelectorAll(
-      '[data-annotation-id^="temporary-selection-highlight"]'
+    const positions = {
+      left: window.scrollX + this.positions.left,
+      top: window.scrollY + this.positions.top,
+      width: this.positions.width,
+      height: this.positions.height,
+    };
+    positioner.setAttribute(
+      "style",
+      `position: absolute;top: ${positions.top}px;left: ${positions.left}px;width: ${positions.width}px;height: ${positions.height}px;visibility: hidden;pointer-events:none;`
     );
-    const first = annotations[0];
-    const last = annotations[annotations.length - 1];
-    const range = document.createRange();
-    range.setStartBefore(first);
-    range.setEndAfter(last);
-    oldRange = range;
+    positioner.classList.remove("visually-hidden");
   }
 
   collapse() {
-    oldRange = null;
     this.selection.collapseToStart();
+    positioner.classList.add("visually-hidden");
+    positioner.setAttribute("style", "");
     if (temporary) {
       clearTemporaryHighlight();
       temporary = null;
@@ -98,8 +103,8 @@ class Toolbar {
 
   public tempHighlight(source, chapter) {
     if (temporary) return temporary;
-    const highlightedRange = highlightRange(oldRange, this.root);
     this.setOldRange();
+    const highlightedRange = highlightRange(oldRange, this.root);
     temporary = new Annotation(
       highlightToAnnotation(highlightedRange, this.root, source, chapter)
     );
@@ -110,6 +115,7 @@ class Toolbar {
   public clearTemporaryHighlight() {
     return clearTemporaryHighlight();
   }
+  // We need to add a way to cancel the highlight
   async highlight(source, chapter, json) {
     if (temporary) {
       temporary.create(json, "temporary-selection-highlight");

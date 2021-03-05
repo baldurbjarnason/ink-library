@@ -207,5 +207,6 @@
     </div>
   </main>
   <div id="scratch" aria-hidden="true" class="visually-hidden" />
+  <div id="positioner" aria-hidden="true" class="visually-hidden" />
   <NoteEditDialog />
 {/if}
