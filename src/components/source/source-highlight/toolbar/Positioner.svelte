@@ -8,6 +8,7 @@
   export let hidden;
   export let colour;
   let positions;
+  const positioner = document.getElementById("positioner");
   const virtual = {
     getBoundingClientRect() {
       if ($toolbar$) {
@@ -15,10 +16,18 @@
           positions = $toolbar$.getBoundingClientRect();
           return positions;
         } else {
-          return positions || document.body.getBoundingClientRect();
+          if (!positioner.classList.contains("visually-hidden")) {
+            return positioner.getBoundingClientRect();
+          } else {
+            return positions || document.body.getBoundingClientRect();
+          }
         }
       } else {
-        return positions || document.body.getBoundingClientRect();
+        if (!positioner.classList.contains("visually-hidden")) {
+          return positioner.getBoundingClientRect();
+        } else {
+          return positions || document.body.getBoundingClientRect();
+        }
       }
     },
   };

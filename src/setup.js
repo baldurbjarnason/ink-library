@@ -71,7 +71,7 @@ export function setup(sapper, options = {}) {
       secure: !dev,
       name: process.env.COOKIE_NAME || "__session",
       httpOnly: true,
-      sameSite: "none",
+      sameSite: dev ? "lax" : "none",
     },
   });
   // app.use((req, res, next) => {
