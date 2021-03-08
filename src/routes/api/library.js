@@ -17,8 +17,8 @@ export async function get(req, res, next) {
     url = `${url}?${query.toString()}`;
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
     res.json(response);
   } catch (err) {
