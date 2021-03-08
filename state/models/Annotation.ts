@@ -136,11 +136,19 @@ export class Annotation {
     const payload = Object.assign({}, this.annotation, { tags, notebooks });
     if (body) {
       payload.body = this.annotation.body
-        .filter((item) => item.purpose !== "commenting")
+        .filter((item) => {
+          return (
+            item.purpose !== "commenting" && item.motivation !== "commenting"
+          );
+        })
         .concat(body);
     } else if (content) {
       payload.body = this.annotation.body
-        .filter((item) => item.purpose !== "commenting")
+        .filter((item) => {
+          return (
+            item.purpose !== "commenting" && item.motivation !== "commenting"
+          );
+        })
         .concat({
           format: "text/html",
           purpose: "commenting",
