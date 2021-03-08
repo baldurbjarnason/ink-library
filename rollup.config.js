@@ -79,10 +79,11 @@ export default {
           ],
         }),
 
-      !dev &&
-        terser({
-          module: true,
-        }),
+      // !dev &&
+      //   !process.env.DEPLOY_STAGE === "development" &&
+      //   terser({
+      //     module: true,
+      //   }),
     ],
 
     preserveEntrySignatures: false,
