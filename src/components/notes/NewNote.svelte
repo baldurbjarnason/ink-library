@@ -21,7 +21,6 @@
   import { stores } from "@sapper/app";
   const { page } = stores();
   export let note = { body: [], source: { name: "" } };
-  $: console.log(page, $tags);
   let selectedFlags = [];
 
   $: colours = $tags.items.filter((tag) => tag.type === "colour");

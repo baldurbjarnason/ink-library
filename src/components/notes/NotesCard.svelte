@@ -459,7 +459,7 @@
     <a
       class="Note"
       href={$page.path.startsWith('/notebooks/') ? `/notebooks/${$page.params.id}/note/${note.shortId}?notebook=${$page.params.id}${pagination}` : `/notes/all/all/${note.shortId}${pagination}`}>
-      {#if noted}
+      {#if noted && noted.content}
         {#if !noted.content.startsWith('<p>') || !noted.content.startsWith('<span>')}
           <p>
             {@html noted.content}
