@@ -1,12 +1,12 @@
 import got from "got";
 
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
   try {
     const response = await got(`${process.env.API_SERVER}tags`, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
     res.json(response);
   } catch (err) {

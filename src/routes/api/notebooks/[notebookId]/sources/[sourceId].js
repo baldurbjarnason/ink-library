@@ -5,7 +5,7 @@ import ISO6391 from "iso-639-1";
 
 // This needs to filter by workspace
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
   const url = `${process.env.API_SERVER}notebooks/${req.params.notebookId}/sources/${req.params.sourceId}`;
   try {
     const response = await got(url, {

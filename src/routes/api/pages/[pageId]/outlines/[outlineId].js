@@ -4,7 +4,7 @@ import got from "got";
 
 // This needs to filter by workspace
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
   const url = `${process.env.API_SERVER}outlines/${req.params.outlineId}`;
 
   try {

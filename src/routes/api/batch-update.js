@@ -8,7 +8,7 @@
 import got from "got";
 
 export async function del(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
   if (!req.body.items) return;
 
   const ids = req.body.items.map((item) => item.id);

@@ -1,7 +1,7 @@
 import got from "got";
 
 export const post = async function post(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
 
   if (req.user && req.user.profile) {
     try {

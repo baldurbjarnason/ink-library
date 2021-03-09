@@ -5,19 +5,19 @@ import ISO6391 from "iso-639-1";
 
 // This needs to filter by workspace
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
   const url = `${process.env.API_SERVER}sources/${req.params.sourceId}`;
   try {
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
-    response._inLanguage = [].concat(response.inLanguage).map(code => {
+    response._inLanguage = [].concat(response.inLanguage).map((code) => {
       return {
         code,
         english: ISO6391.getName(code),
-        native: ISO6391.getNativeName(code)
+        native: ISO6391.getNativeName(code),
       };
     });
     response.keywords = response.keywords || [];
