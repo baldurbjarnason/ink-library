@@ -15,16 +15,16 @@
   let fileName;
   async function change(event) {
     file = event.target.files[0];
-    fileName = file.name
+    fileName = file.name;
     const response = await fetch("/api/upload-url", {
       method: "POST",
       credentials: "include",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "csrf-token": getToken()
+        "csrf-token": getToken(),
       },
-      body: JSON.stringify({ file: file.name })
+      body: JSON.stringify({ file: file.name }),
     });
     const payload = await response.json();
     url = payload.url;
@@ -39,9 +39,9 @@
         mode: "cors",
         headers: {
           "Content-Type": type,
-          "Content-Disposition": `attachment; filename="${fileName}"`
+          "Content-Disposition": `attachment; filename="${fileName}"`,
         },
-        body: file
+        body: file,
       });
       working = false;
       done = true;
