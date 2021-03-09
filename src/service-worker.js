@@ -41,7 +41,9 @@ async function fetchAndCache(request) {
 
   try {
     const response = await fetch(request);
-    cache.put(request, response.clone());
+    cache.put(request, response.clone()).catch((err) => {
+      console.error(err);
+    });
     return response;
   } catch (err) {
     const response = await cache.match(request);
