@@ -67,8 +67,9 @@ self.addEventListener("fetch", (event) => {
     url.host === self.location.host && staticAssets.has(url.pathname);
   const skipBecauseUncached =
     event.request.cache === "only-if-cached" && !isStaticAsset;
+  const root = url.pathname === "/";
 
-  if (isHttp && !isDevServerRequest && !skipBecauseUncached) {
+  if (isHttp && !isDevServerRequest && !skipBecauseUncached && !root) {
     event.respondWith(
       (async () => {
         // always serve static files and bundler-generated assets from cache.
