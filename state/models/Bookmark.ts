@@ -155,10 +155,11 @@ const bookmarksURL$ = page().pipe(
 export const bookmarks$ = web(bookmarksURL$.pipe(distinctUntilChanged())).pipe(
   map((result = { items: [] }) => {
     const { items = [] } = result;
-    return []
+    const bookmarks = []
       .concat(items)
       .filter((item) => item)
       .map((item) => new Bookmark(item));
+    return bookmarks;
   })
 );
 

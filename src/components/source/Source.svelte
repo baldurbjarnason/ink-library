@@ -63,7 +63,11 @@
       element.scrollIntoView({ behavior: "smooth" });
     }
   });
-  let path = $page.params.chapter.join("/");
+  let path;
+  $: if ($page.params.chapter) {
+    path = $page.params.chapter.join("/");
+  }
+
   function findCurrent(accumulator, item) {
     if (accumulator.label) return accumulator;
     if (path === item.url) {
