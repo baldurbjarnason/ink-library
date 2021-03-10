@@ -21,7 +21,7 @@ class Toolbar {
   public positions: DOMRect;
   constructor(selection: Selection) {
     this.selection = selection;
-    this.root = document.querySelector("ink-html");
+    this.root = document.getElementById("reader-body");
     if (selection.isCollapsed) {
       this.range = null;
     } else if (
@@ -103,6 +103,7 @@ class Toolbar {
 
   public tempHighlight(source, chapter) {
     if (temporary) return temporary;
+    this.getBoundingClientRect();
     this.setOldRange();
     const highlightedRange = highlightRange(oldRange, this.root);
     temporary = new Annotation(
