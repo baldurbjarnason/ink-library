@@ -21,9 +21,10 @@
     "watch": "npm-run-all --parallel watch:*",
     "deploy-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs12 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize --memory=2048MB --timeout=300s --project fb-ink-dev",
     "deploy-dev-function": "cd functions/onfinalize && gcloud functions deploy triggerWrapper --runtime nodejs12 --trigger-resource ink-frontend-server-dev-uploads --trigger-event google.storage.object.finalize --project ink-frontend-server-dev --memory=2048MB --timeout=300s",
-    "deploy-dev": "npm run build && gcloud app deploy app-dev.yaml --project ink-frontend-server-dev",
+    "deploy-dev": "NODE_ENV=development npm run build && gcloud app deploy app-dev.yaml --project ink-frontend-server-dev",
     "deploy-production": "npm run build && gcloud app deploy app.yaml --project fb-ink-dev",
-    "save-config": "node save-config.js"
+    "save-config": "node save-config.js",
+    "preinstall": "node save-keyfile.js"
   },
   "postcss": {
     "plugins": {

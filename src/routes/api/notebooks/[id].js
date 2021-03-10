@@ -1,7 +1,7 @@
 import got from "got";
 
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
   try {
     const url = `${process.env.API_SERVER}notebooks/${req.params.id}`;
     const response = await got(url, {

@@ -3,13 +3,13 @@ import got from "got";
 // We need to take uploadURL, uploadType, storageId and uploadPublication and turn it into a link type
 // Access URL is `/api/stored-${file}` where file is storageId
 export async function post(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
   let author;
   if (req.body.author) {
-    author = req.body.author.split(",").map(name => {
+    author = req.body.author.split(",").map((name) => {
       return {
         type: "Person",
-        name: name.trim()
+        name: name.trim(),
       };
     });
   }
@@ -19,21 +19,21 @@ export async function post(req, res, next) {
     links = [
       {
         rel: "alternate",
-        url: req.body.newURL
-      }
+        url: req.body.newURL,
+      },
     ];
   } else if (req.body.storageId) {
     links = [
       {
         rel: ["alternate", "enclosure"],
         encodingFormat: "application/json",
-        url: `/api/download/${req.body.storageId}`
+        url: `/api/download/${req.body.storageId}`,
       },
       {
         rel: "contents",
         encodingFormat: "application/json",
-        url: `/api/toc/${req.body.storageId}`
-      }
+        url: `/api/toc/${req.body.storageId}`,
+      },
     ];
     // if publication add another alternate with a publication manifest media type.
   }
@@ -42,7 +42,7 @@ export async function post(req, res, next) {
     author,
     links,
     json: { storageId: req.body.storageId },
-    name: req.body.name
+    name: req.body.name,
   };
   // console.log(body);
   if (req.user && req.user.profile) {
@@ -52,9 +52,9 @@ export async function post(req, res, next) {
         .post(`${process.env.API_SERVER}sources`, {
           headers: {
             "content-type": "application/ld+json",
-            Authorization: `Bearer ${req.user.token}`
+            Authorization: `Bearer ${req.user.token}`,
           },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
         })
         .json();
 
@@ -63,8 +63,8 @@ export async function post(req, res, next) {
           await got.put(`${response.id}/tags/${tag}`, {
             headers: {
               "content-type": "application/ld+json",
-              Authorization: `Bearer ${req.user.token}`
-            }
+              Authorization: `Bearer ${req.user.token}`,
+            },
           });
         }
       }
@@ -74,8 +74,8 @@ export async function post(req, res, next) {
           .put(`${response.id}tags/${req.body.addWorkspace}`, {
             headers: {
               "content-type": "application/ld+json",
-              Authorization: `Bearer ${req.user.token}`
-            }
+              Authorization: `Bearer ${req.user.token}`,
+            },
           })
           .json();
       }
@@ -85,8 +85,8 @@ export async function post(req, res, next) {
             .put(`${response.id}tags/${workspace.id}`, {
               headers: {
                 "content-type": "application/ld+json",
-                Authorization: `Bearer ${req.user.token}`
-              }
+                Authorization: `Bearer ${req.user.token}`,
+              },
             })
             .json();
         }
@@ -97,8 +97,8 @@ export async function post(req, res, next) {
             .put(`${response.id}tags/${coll.value}`, {
               headers: {
                 "content-type": "application/ld+json",
-                Authorization: `Bearer ${req.user.token}`
-              }
+                Authorization: `Bearer ${req.user.token}`,
+              },
             })
             .json();
         }

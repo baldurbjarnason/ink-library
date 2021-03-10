@@ -7,7 +7,7 @@ const storage = new Storage();
 
 // Prefix with user id and with random id.
 export async function post(req, res, next) {
-  if (req.user.profile && req.user.profile.id) {
+  if (!req.user || (req.user.profile && req.user.profile.id)) {
     const suffix = path.extname(req.body.file);
     const type = mime.getType(suffix);
     const publication = suffix === ".epub" || suffix === ".docx";

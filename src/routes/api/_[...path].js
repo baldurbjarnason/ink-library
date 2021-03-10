@@ -1,13 +1,13 @@
 import got from "got";
 
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
   try {
     const url = `${process.env.API_SERVER}${req.params.path.join("/")}`;
     const response = await got(url, {
       headers: {
-        Authorization: `Bearer ${req.user.token}`
-      }
+        Authorization: `Bearer ${req.user.token}`,
+      },
     }).json();
     res.json(response);
   } catch (err) {

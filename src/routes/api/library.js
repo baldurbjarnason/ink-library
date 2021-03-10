@@ -2,7 +2,7 @@ import got from "got";
 
 // This needs to filter by workspace
 export async function get(req, res, next) {
-  if (!req.user.profile) return res.sendStatus(401);
+  if (!req.user || !req.user.profile) return res.sendStatus(401);
   try {
     let url = `${process.env.API_SERVER}library`;
     const query = new URLSearchParams(req.query);

@@ -21,6 +21,10 @@
     margin: 1em auto;
   }
 
+  .Wrap {
+    max-width: 400px;
+    margin: 2rem auto;
+  }
   @media (min-width: 480px) {
     h1 {
       font-size: 4em;
@@ -32,10 +36,16 @@
   <title>{status}</title>
 </svelte:head>
 
-<h1>{status}</h1>
+<div class="Wrap">
+  <h1>{status}</h1>
 
-<p>{error.message}</p>
+  <p>{error.message}</p>
 
-{#if dev && error.stack}
-  <pre>{error.stack}</pre>
-{/if}
+  <p>
+    <a href="/library/all/all" on:click={() => window.history.back()}>Return</a>
+  </p>
+
+  {#if dev && error.stack}
+    <pre>{error.stack}</pre>
+  {/if}
+</div>
