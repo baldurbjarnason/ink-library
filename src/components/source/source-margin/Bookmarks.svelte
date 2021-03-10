@@ -5,7 +5,7 @@
   export let root;
   export let bookmarks;
   const headings$ = intersections(
-    "h1:not([data-ink-page-title]):not([data-ink-private]),h2:not(#navigation-header):not(#toc-heading):not([data-ink-private]),h3,h4"
+    "h1:not([data-ink-page-title]):not([data-ink-private]),h2:not(#navigation-header):not(#toc-heading):not([data-ink-private])"
   );
   function findMark(entry) {
     const mark = bookmarks.find((mark) => {
