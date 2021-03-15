@@ -83,17 +83,18 @@
     overflow: hidden;
     background-color: white;
   }
-  .Comment {
+  .CommentBlock {
+    display: block;
     padding: 0 1rem 0.5rem;
   }
-  .Comment,
-  .Comment :global(*) {
+  .CommentBlock,
+  .CommentBlock :global(*) {
     font-size: 0.75rem;
   }
-  .Comment :global(p) {
+  .CommentBlock :global(p) {
     margin: 0;
   }
-  .Comment :global(p + p) {
+  .CommentBlock :global(p + p) {
     margin-top: 1em;
   }
   .TextButton,
@@ -369,7 +370,7 @@
             editing = true;
           }
         }}>
-        <div class="Comment">
+        <div class="CommentBlock">
           {#if noted}
             {@html noted.content || noted.value}
           {:else}

@@ -6,7 +6,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "sapper dev",
-    "build": "npm run build:typescript && sapper build sapper --legacy",
+    "build": "npm run build:typescript && sapper build sapper --legacy && npm run save-keyfile",
     "build:typescript": "tsc",
     "build:test": "rollup --config rollup.test.config.js && tsc",
     "export": "sapper export --legacy",
@@ -24,7 +24,7 @@
     "deploy-dev": "NODE_ENV=development npm run build && gcloud app deploy app-dev.yaml --project ink-frontend-server-dev",
     "deploy-production": "npm run build && gcloud app deploy app.yaml --project fb-ink-dev",
     "save-config": "node save-config.js",
-    "preinstall": "node save-keyfile.js"
+    "save-keyfile": "node save-keyfile.js"
   },
   "postcss": {
     "plugins": {

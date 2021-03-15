@@ -15,10 +15,10 @@
     padding: 0;
     border: none;
     background: transparent;
-    display: grid;
+    display: flex;
     grid-template-columns: max-content 1fr;
     text-align: left;
-    gap: 5px;
+    align-items: center;
     cursor: pointer;
     width: max-content;
   }
@@ -29,6 +29,7 @@
     color: #888888;
     font-weight: 500;
     margin: 0;
+    margin-left: 5px;
   }
   .breadcrumbs.atSource h5,
   .breadcrumbs.atSource :global(*) {
