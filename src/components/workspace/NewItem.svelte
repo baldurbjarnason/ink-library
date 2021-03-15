@@ -25,10 +25,14 @@
   let open = false;
   let input;
   let newToggle;
+  let selected;
+  let searchResultsDisplay = false;
+
   function click() {
     open = !open;
     itemType = "source";
   }
+  $: searchResults = []
 
   async function close() {
     if (atNotebook) {
@@ -45,6 +49,37 @@
       input.focus();
     }
   });
+
+  async function select(event) {
+    event.preventDefault()
+    console.log('searchResults', searchResults)
+    selected = searchResults.find(({title}) => title === event.target.value)
+  }
+
+  async function submitSource(event) {
+    close()
+    event.preventDefault();
+    if (selected.title) {
+      selected.name = selected.title
+    }
+    if (selected.isPartOf && selected.isPartOf.title) selected.isPartOf.name = selected.isPartOf.title
+    if (!selected.inLanguage) selected.inLanguage = null
+
+    
+       const response = await fetch(`/api/create-publication`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "csrf-token": getToken(),
+          },
+          body: JSON.stringify(selected),
+        });
+        $refreshCollections = Date.now();
+        const json = await response.json()
+      console.log(json)
+  }
 
   async function submit(event) {
     event.preventDefault();
@@ -109,6 +144,41 @@
       }
     }
   }
+
+  async function search(event) {
+    event.preventDefault();
+    searchResultsDisplay = true;
+    const { target } = event;
+    const newInput = window.document.getElementById("new-input").value;
+    //if (newInput[0] === "#") {
+      try {
+        const response = await fetch(`/api/metadata?title=${newInput}&crossref=true&doaj=true&loc=true`, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "csrf-token": getToken(),
+          }
+        });
+        const json = await response.json();
+        console.log('json??', json)
+        if (json.crossref && json.crossref.length>0) {
+          searchResults = searchResults.concat(json.crossref)
+          
+        }
+        if (json.doaj && json.doaj.length>0) {
+          searchResults = searchResults.concat(json.doaj)
+        }
+        if (json.loc && json.loc.length>0) {
+          searchResults = searchResults.concat(json.loc)
+        }
+      } catch (err) {
+        console.error(err);
+      }
+      
+  }
+
 
   let itemType = "source";
   function changeType(value) {
@@ -351,7 +421,7 @@
       id="newform"
       class="newForm"
       action="/api/create-publication"
-      on:submit={submit}>
+      on:submit={itemType === 'search' ? search : submit}>
       <section class="header">
         {#if !atNotebook}
           <section class="typeOfItem">
@@ -372,12 +442,21 @@
                 on:click={() => changeType('stack')} />
               <p>New stack</p>
             </label>
+            <label>
+              <input
+                aria-label="search metadata"
+                name="typeOfItem"
+                type="radio"
+                on:click={() => changeType('search')} />
+              <p>Search Metadata</p>
+            </label>
           </section>
         {/if}
         <label class="visually-hidden" id="new-label" for="new-input">
           New item:
         </label>
         <input type="hidden" name="type" value="Publication" />
+        {#if itemType === 'source'}
         <input
           type="title"
           required
@@ -385,9 +464,56 @@
           id="new-input"
           class="title-field"
           value=""
-          placeholder={itemType === 'source' ? 'Enter a new Source Title' : 'Enter a new stack name'}
+          placeholder='Enter a new Source Title'
           bind:this={input}
           autocomplete="off" />
+          {/if}
+          {#if itemType === 'stack'}
+          <input
+            type="title"
+            required
+            name="name"
+            id="new-input"
+            class="title-field"
+            value=""
+            placeholder='Enter a new stack name'
+            bind:this={input}
+            autocomplete="off" />
+            {/if}
+            {#if itemType === 'search'}
+            <input
+              type="title"
+              required
+              name="name"
+              id="new-input"
+              class="title-field"
+              value=""
+              placeholder='Enter a title to search'
+              bind:this={input}
+              autocomplete="off" />
+
+              {#if searchResults}  
+              <form on:submit={submitSource}>   
+                {#if searchResultsDisplay}
+                <WhiteButton>Select</WhiteButton>
+                {/if}
+                  {#each searchResults as item}
+                  <label>
+                  <input type=radio group="metadata" bind:value={item.title} on:change={select} >
+
+                    <strong>{item.title}</strong><br/>
+                    authors: {item.author}
+                      <br/>
+                    {item.isPartOf.title}<br/>
+                </label>
+                {/each}
+                
+
+            </form>
+
+              {/if}
+  
+              {/if}
       </section>
       {#if itemType === 'source'}
         <div class="MoreItems">
@@ -428,11 +554,16 @@
             <Closer click={close} dark={true} />
           </div>
         </div>
-      {:else}
+      {:else if itemType === 'stack'}
         <section class="footer stack">
           <WhiteButton>Create</WhiteButton>
           <Closer click={close} dark={true} />
         </section>
+      {:else if !searchResultsDisplay}
+      <section class="footer search">
+        <WhiteButton>Search</WhiteButton>
+        <Closer click={close} dark={true} />
+      </section>
       {/if}
     </form>
   </div>
