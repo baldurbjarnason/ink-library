@@ -43,13 +43,26 @@ class Toolbar {
   }
   public getBoundingClientRect() {
     if (this.range) {
-      // So it turns out that getting the positions and sizes of text nodes and ranges in SVG that have been transformed in some way (which is 99% of the time in SVG) is underspecified in the standards. Which means that you get slightly different results for this in each of the major browser engines when dealing with PDFs as ink uses SVG to render PDFs.
+      // So it turns out that getting the positions and sizes of text nodes and
+      //  ranges in SVG that have been transformed in some way (which is 99% of
+      // the time in SVG) is underspecified in the standards. Which means that
+      // you get slightly different results for this in each of the major
+      // browser engines when dealing with PDFs as ink uses SVG to render PDFs.
       //
-      // Chrome/Edge seems to mostly do what you'd expect. Firefox tends to be on the side to what you expect because most of the text transforms are width transforms. Safari, OTOH, gets the height wrong. So what needs to be done here is get the top position and bottom position of the first and last <text> element in the SVG and use those instead.
+      // Chrome/Edge seems to mostly do what you'd expect. Firefox tends to be
+      // on the side to what you expect because most of the text transforms are
+      // width transforms. Safari, OTOH, gets the height wrong. So what needs
+      // to be done here is get the top position and bottom position of the first
+      // and last <text> element in the SVG and use those instead.
       //
-      // Long term the best fix here would be to switch to HTML rendering for the text layer when rendering PDFs but, even though changing the text layer rendering itself shouldn't be too complicated, switching to it would mean that the project would have to start to manage page sizing in the reading UI using JS which might be a substantial change.
+      // Long term the best fix here would be to switch to HTML rendering for
+      // the text layer when rendering PDFs but, even though changing the text
+      // layer rendering itself shouldn't be too complicated, switching to it
+      // would mean that the project would have to start to manage page sizing
+      // in the reading UI using JS which might be a substantial change.
       //
-      // In the meantime the positioning is adjusted based on estimates that approximate the transforms that the browsers should be doing.
+      // In the meantime the positioning is adjusted based on estimates that
+      // approximate the transforms that the browsers should be doing.
       if (
         this.range.commonAncestorContainer.parentElement instanceof SVGElement
       ) {
