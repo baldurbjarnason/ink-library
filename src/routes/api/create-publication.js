@@ -1,5 +1,4 @@
 import got from "got";
-import { resourceLimits } from "worker_threads";
 
 // We need to take uploadURL, uploadType, storageId and uploadPublication and turn it into a link type
 // Access URL is `/api/stored-${file}` where file is storageId
