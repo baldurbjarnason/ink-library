@@ -59,6 +59,14 @@
   } else {
     publication = false;
   }
+  // We need to create this CSS variable because mobile browsers
+  // have a dynamic height
+  let windowHeight;
+  $: if (windowHeight) {
+    document
+      .querySelector(":root")
+      .style.setProperty("--viewheight", windowHeight + "px");
+  }
 </script>
 
 <style global>
@@ -148,7 +156,7 @@
   <meta name="csrftoken" content={$session.csrfToken} />
   <title>{$title}</title>
 </svelte:head>
-
+<svelte:window bind:innerHeight={windowHeight} />
 {#if $error}
   {#if $error.response.body}
     <h1>Something went wrong.</h1>
