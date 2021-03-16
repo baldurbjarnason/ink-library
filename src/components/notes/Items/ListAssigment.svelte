@@ -17,15 +17,15 @@
   $: itemsLoader =
     type === "source" ? $noteAddSources.type : $noteAddNotebooks.type;
 
-  let Searcher = type => {
+  let Searcher = (type) => {
     return type === "source" ? Search : SearchNotebooks;
   };
 
-  let addNotebook = item => {
+  let addNotebook = (item) => {
     assignItem = [...assignItem, item];
   };
 
-  let addSource = item => {
+  let addSource = (item) => {
     assignItem = item;
     clicked = true;
   };
@@ -139,8 +139,10 @@
             <p>{li.name}</p>
           </li>
         {/if}
-      {:else if (!itemInfo.length && !assignItem.length) || (!assignItem.length && itemInfo.length && !itemInfo.find(notebook => notebook.id === li.id)) || (!itemInfo.length && assignItem.length && !assignItem.find(notebook => notebook.id === li.id)) || (itemInfo.length && assignItem.length && !itemInfo.find(notebook => notebook.id === li.id) && !assignItem.find(notebook => notebook.id === li.id))}
-        <li class={li.settings.colour} on:click={addNotebook(li)}>
+      {:else if (!itemInfo.length && !assignItem.length) || (!assignItem.length && itemInfo.length && !itemInfo.find((notebook) => notebook.id === li.id)) || (!itemInfo.length && assignItem.length && !assignItem.find((notebook) => notebook.id === li.id)) || (itemInfo.length && assignItem.length && !itemInfo.find((notebook) => notebook.id === li.id) && !assignItem.find((notebook) => notebook.id === li.id))}
+        <li
+          class={li && li.settings && li.settings.colour}
+          on:click={addNotebook(li)}>
           <span>
             <IcoNotebook />
           </span>

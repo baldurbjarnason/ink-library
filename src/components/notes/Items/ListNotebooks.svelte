@@ -294,7 +294,7 @@
     {#if noteTest.notebooks.length}
       {#each noteTest.notebooks as notebook}
         <li
-          class="Notebook {notebook.settings.colour}
+          class="Notebook {notebook && notebook.settings && notebook.settings.colour}
           {removeNotebook.find((item) => item.shortId === notebook.shortId) ? 'Removing' : ''}">
           <a href={`notebooks/${notebook.shortId}`}>
             <span>
@@ -313,7 +313,9 @@
       {/each}
     {/if}
     {#each addNotebook as notebook}
-      <li class="Notebook {notebook.settings.colour} Adding">
+      <li
+        class="Notebook {notebook && notebook.settings && notebook.settings.colour}
+        Adding">
         <a href={`notebooks/${notebook.shortId}`}>
           <span>
             <IcoNotebook />
