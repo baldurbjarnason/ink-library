@@ -91,9 +91,6 @@ export async function get(req, res, next) {
 function fixItems(items) {
   const fixed = items.map(fixItem).filter((item) => item);
   return fixed.filter((item) => {
-    if (!item || !item.target || !item.target.selector) {
-      return false;
-    }
     if (
       item.target.selector.type === "TextQuoteSelector" &&
       !item.target.selector.exact
@@ -117,8 +114,15 @@ function fixItem(item) {
       };
     });
     item.body = body;
+    if (!item.target) {
+      item.target = {};
+    }
+    if (!item.target.selector) {
+      item.target.selector = {};
+    }
     return item;
   } catch (err) {
+    console.error(item);
     return null;
   }
 }
