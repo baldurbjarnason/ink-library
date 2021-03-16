@@ -167,6 +167,7 @@
       console.error(err);
     }
   }
+  $: console.log(replaceSource, noteTest);
 </script>
 
 <style>
@@ -401,7 +402,7 @@
       <div class="SourceHilight {colour}">
         <ListSources {highlight} {noteTest} bind:replaceSource />
         <div class="info">
-          <a class="Highlight" href="library/all/all{noteTest.document}">
+          <a class="Highlight" href="target{noteTest.document}">
             <Highlight body={highlight} edit={true} {colour} />
           </a>
         </div>
