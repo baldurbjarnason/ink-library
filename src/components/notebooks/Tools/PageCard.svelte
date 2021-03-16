@@ -72,6 +72,8 @@
     -webkit-appearance: none;
     outline: none;
     cursor: pointer;
+    /* You need to set border to none as well as inputs in Mobile Safari's default stylesheet have a border */
+    border: none;
     z-index: 2;
   }
   .BulkSelector::before,

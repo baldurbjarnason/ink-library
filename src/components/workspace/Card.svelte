@@ -102,6 +102,8 @@
     width: 40px;
     height: 40px;
     -webkit-appearance: none;
+    /* You need to set border to none as well as inputs in Mobile Safari's default stylesheet have a border */
+    border: none;
     outline: none;
     cursor: pointer;
     z-index: 1;
