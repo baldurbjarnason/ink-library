@@ -3,8 +3,31 @@
   import EmptySourcePaster from "./EmptySourcePaster.svelte";
   import { getToken } from "../../../getToken";
   import { goto } from "@sapper/app";
+  import DOMPurify from "dompurify";
   export let source;
   export let pasting = false;
+  const commentConfig = {
+    ALLOWED_TAGS: [
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "p",
+      "i",
+      "em",
+      "strong",
+      "a",
+      "b",
+      "ul",
+      "li",
+      "ol",
+      "blockquote",
+      "img",
+      "pre",
+      "code",
+    ],
+    FORBID_ATTR: ["style"],
+  };
   let textType = "htmlType";
   if (process.browser) {
     textType = "richText";
@@ -19,11 +42,16 @@
     const url = `/api/upload-small-file?filePath=${source.name}`;
     let file;
     let fileType;
+    // So because most pasted rich text and HTML is a bit rubbish semantically,
+    // we need to clean it up before submitting
+    function clean(html) {
+      return DOMPurify.sanitize(html, commentConfig);
+    }
     if (textType === "richText") {
-      file = richtext;
+      file = clean(richtext);
       fileType = "text/html";
     } else if (textType === "htmlType") {
-      file = plaintext;
+      file = clean(plaintext);
       fileType = "text/html";
     } else {
       file = plaintext;
@@ -36,9 +64,9 @@
       headers: {
         Accept: "application/json",
         "Content-Type": fileType,
-        "csrf-token": getToken()
+        "csrf-token": getToken(),
       },
-      body
+      body,
     });
     const payload = await response.json();
     const uploadPublication = payload.publication;
@@ -49,7 +77,7 @@
       storageId,
       uploadType: type,
       uploadURL: original,
-      uploadPublication
+      uploadPublication,
     };
     try {
       await fetch(`/api/publication/${source.shortId}/attach-file`, {
@@ -58,16 +86,16 @@
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "csrf-token": getToken()
+          "csrf-token": getToken(),
         },
-        body: JSON.stringify(updatedSource)
+        body: JSON.stringify(updatedSource),
       });
     } catch (err) {
       console.error(err);
     }
     pasting = false;
     processing = false;
-    return goto(`/sources/${source.shortId}/${storageId}`)
+    return goto(`/sources/${source.shortId}/${storageId}`);
   }
 </script>
 
