@@ -296,9 +296,14 @@
     border-radius: 50%;
     margin-bottom: 1px;
   }
+  .NotesColumnContext {
+    /* This is a hack to force the note column into a new stacking context.
+       By forcing a new stacking context we get proper z-index layering back. */
+    transform: translate(0, 0);
+  }
 </style>
 
-<div>
+<div class="NotesColumnContext">
   <section class="NotesColumn" class:closeColumn>
     <div class="Header">
       <h2>
