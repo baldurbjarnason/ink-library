@@ -117,6 +117,9 @@
     right: 15px;
     width: 20px;
     height: 20px;
+    /* Never assume that the default padding is always going to be zero, either
+     use a reset stylesheet or always reset it in your styles */
+    padding: 0;
     cursor: pointer;
     transform: rotate(45deg);
     background: none;
