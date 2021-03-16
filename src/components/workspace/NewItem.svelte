@@ -87,9 +87,8 @@
           },
           body: JSON.stringify(selected),
         });
-        $refreshCollections = Date.now();
-        $refreshInSource = Date.now();
-        searchResults = []
+        $refreshDate = Date.now();
+        searchResults = [];
         searchResultsDisplay = false;
   }
 
