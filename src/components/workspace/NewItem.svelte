@@ -58,7 +58,6 @@
    // event.preventDefault()
     selected = item;
     searchResults = searchResults.map(result => {
-      console.log(result, selected)
       if (result.title === selected.title) {
         result.selected = true;
       } else {
@@ -89,7 +88,7 @@
           body: JSON.stringify(selected),
         });
         $refreshCollections = Date.now();
-
+        $refreshInSource = Date.now();
         searchResults = []
         searchResultsDisplay = false;
   }
@@ -176,7 +175,6 @@
         loading = false;
         searchResultsDisplay = true;
         const json = await response.json();
-        console.log('json??', json)
         if (json.crossref && json.crossref.length>0) {
           searchResults = searchResults.concat(json.crossref)
           
