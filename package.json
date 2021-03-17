@@ -6,7 +6,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "sapper dev",
-    "build": "npm run build:typescript && sapper build sapper --legacy && npm run save-keyfile",
+    "build": "tsc && sapper build sapper --legacy && node save-keyfile.js",
     "build:typescript": "tsc",
     "build:test": "rollup --config rollup.test.config.js && tsc",
     "export": "sapper export --legacy",
