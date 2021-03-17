@@ -32,6 +32,7 @@
   ];
   export let dark = false;
   export let noDefault = false;
+  export let defaultValue = null;
 </script>
 
 <style>
@@ -100,7 +101,7 @@
     <slot />
   </div>
   <ArrowDropDown />
-  <select name="pubType" id="select-pubType">
+  <select name="pubType" id="select-pubType" value={defaultValue}>
     {#if noDefault}
       <option value="none">None</option>
     {/if}
