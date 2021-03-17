@@ -10,15 +10,12 @@
   import { getToken } from "../../getToken";
   import { refreshNotebooks } from "../../stores";
 
-  let colours = ["colour1", "colour2", "colour3", "colour4"];
   let modal = false;
   let open = false;
   let newToggle;
-  let noteColour;
 
   function click() {
     open = !open;
-    noteColour = "colour1";
     coverImg = coverImgs[~~(Math.random() * coverImgs.length)];
     title = "";
     description = "";
@@ -71,7 +68,6 @@
         const payload = Object.assign({}, inputBody);
         payload.name = title;
         payload.description = description;
-        payload.settings.colour = noteColour;
         payload.settings.coverImg = `${coverImg}`;
 
         await window.fetch(`/api/notebooks`, {
@@ -84,7 +80,6 @@
           },
         });
         $refreshNotebooks = Date.now();
-        console.log(payload);
       } catch (err) {
         console.error(err);
       }
@@ -172,60 +167,6 @@
     color: #ffffff;
     margin: 0;
     font-size: 0.9rem;
-  }
-  /* ------ Colours ------ */
-  .colours {
-    float: left;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(4, 15px);
-    grid-column-gap: 20px;
-  }
-  .colours input {
-    width: 15px;
-    height: 15px;
-    -webkit-appearance: none;
-    border-radius: 50%;
-    position: relative;
-    padding: 0;
-    cursor: pointer;
-    outline: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-  }
-  .colours input:checked::after {
-    content: "";
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-  }
-  input.colour1 {
-    background: #fe5b5b;
-  }
-  input.colour1::after {
-    background: #a43939;
-  }
-  input.colour2 {
-    background: #b28eff;
-  }
-  input.colour2::after {
-    background: #6f4c9b;
-  }
-  input.colour3 {
-    background: #f7e482;
-  }
-  input.colour3::after {
-    background: #8f7000;
-  }
-  input.colour4 {
-    background: #7bdbc4;
-  }
-  input.colour4::after {
-    background: #4c9b92;
   }
   /* ------ Editor ------ */
   input,
@@ -402,10 +343,6 @@
       font-size: 0.9rem;
       border-radius: 20px !important;
     }
-    .colours {
-      margin: 0 0 15px 0;
-      width: 100%;
-    }
     .left,
     .right {
       grid-column: 1/3;
@@ -480,25 +417,13 @@
     </div>
   {/if}
   <div
-    class="NewBox newNote {noteColour}">
+    class="NewBox newNote">
     <form
       id="newform"
       class="newForm"
       action="/api/create-publication"
       on:submit={submit}>
       <div class="left">
-        <ul class="colours">
-          {#each colours as colour}
-            <li>
-              <input
-                name="noteColour"
-                type="radio"
-                class={colour}
-                bind:group={noteColour}
-                value={colour} />
-            </li>
-          {/each}
-        </ul>
         <input
           type="text"
           placeholder="Enter notebook title"

@@ -17,14 +17,14 @@
   export let filters;
 
   let flags = [
-    "furtherreading",
+    "further reading",
     "idea",
     "important",
-    "importantterm",
+    "important term",
     "question",
     "reference",
     "revisit",
-    "todo",
+    "to do",
     "urgent",
   ];
 
@@ -94,9 +94,7 @@
         <span
           class="Checkbox"
           class:Unchecked={filters.flags.find((item) => item === flag)} />
-        <p class="FlagName">
-          {flag === 'todo' ? 'To do' : flag === 'importantterm' ? 'Important term' : flag === 'furtherreading' ? 'Further reading' : flag}
-        </p>
+        <p class="FlagName">{flag}</p>
         <svelte:component this={assignIco(flag)} />
       </li>
     {/each}

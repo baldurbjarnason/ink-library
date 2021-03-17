@@ -14,7 +14,7 @@
     profileNotebooks,
     profileSources,
     refreshReader,
-    reader
+    reader,
   } from "../../stores";
   const { session } = stores();
 
@@ -40,13 +40,13 @@
     notebooks: isNumber($profileNotebooks),
     canvas: 0,
     stacks: $profileSources.tags
-      ? $profileSources.tags.filter(item => {
+      ? $profileSources.tags.filter((item) => {
           if (item.type === "stack") return item;
         }).length
-      : 0
+      : 0,
   };
 
-  let isNumber = n => {
+  let isNumber = (n) => {
     return typeof n === "number" ? n : 0;
   };
 
@@ -75,8 +75,8 @@
         body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
-          "csrf-token": getToken()
-        }
+          "csrf-token": getToken(),
+        },
       });
 
       $refreshReader = { id: $reader, time: Date.now() };
@@ -338,7 +338,7 @@
           <div class="Icon {activity}">
             <svelte:component this={assignIco(activity)} />
           </div>
-          <p class="Item">{activity} created</p>
+          <p class="Item">{activity}</p>
           <p class="Quantity">{update[activity]}</p>
         </section>
       {/each}
@@ -390,7 +390,7 @@
           {new Date(user.profile.published).toLocaleString(undefined, {
             year: 'numeric',
             month: 'numeric',
-            day: 'numeric'
+            day: 'numeric',
           })}
         </p>
       </label>

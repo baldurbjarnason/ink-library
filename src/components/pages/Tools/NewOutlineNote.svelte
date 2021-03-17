@@ -275,6 +275,8 @@
     margin: 20px 0 0;
     float: left;
     font-style: italic;
+    width: 100%;
+    text-align: left;
   }
 </style>
 
