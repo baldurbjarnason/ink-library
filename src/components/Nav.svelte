@@ -23,7 +23,11 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    max-height: 100vh;
+    /* We're creating this variable in _layout.svelte because you can't just 
+       use 100vh on mobile. Mobile browsers have a dynamic viewport height 
+       because their toolbars collapse. If you want to do full screen height 
+       using CSS and have that work on mobile then you need to get creative.*/
+    max-height: var(--viewheight, 95vh);
   }
   :global(nav.ntbkModal::after) {
     content: "";

@@ -11,7 +11,7 @@
   let awesomplete;
   $: if (input && list) {
     awesomplete = new Awesomplete(input, { list, minChars: 0 });
-    input.addEventListener("awesomplete-selectcomplete", event => {
+    input.addEventListener("awesomplete-selectcomplete", (event) => {
       change(input, event.text);
     });
   }
@@ -82,7 +82,7 @@
   .dark input {
     border-color: transparent;
     color: var(--all-workspace);
-    background-color: rgba(255, 255, 255, 1);
+    background-color: hsla(0, 0%, 100%, 0.1);
   }
   input:focus {
     outline: none;
@@ -92,7 +92,7 @@
     box-shadow: 0 0 2px 2px white;
   }
   .dark input::placeholder {
-    color: rgb(0, 34, 48, 0.5);
+    color: #fff;
   }
   label > :global(svg) {
     right: 15px !important;

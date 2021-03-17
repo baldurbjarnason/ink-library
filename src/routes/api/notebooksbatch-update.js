@@ -17,7 +17,14 @@ export async function del(req, res, next) {
         .json();
       responses = responses.concat(response);
     } catch (err) {
-      responses = responses.concat(err.response);
+      console.error(err.response.body);
+      let body;
+      try {
+        body = JSON.parse(err.response.body);
+      } catch (err) {
+        body = err.response.body;
+      }
+      responses = responses.concat(body);
     }
   }
   // console.log(res.json(responses));

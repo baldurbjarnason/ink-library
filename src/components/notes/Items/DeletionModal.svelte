@@ -264,7 +264,7 @@
             <p>{item.name}</p>
           </li>
         {:else}
-          <li class="Notebook {item.settings.colour}">
+          <li class="Notebook {item && item.settings && item.settings.colour}">
             <span>
               <IcoNotebook />
             </span>

@@ -74,10 +74,7 @@ export function updateNoteHeight(noteHeight: { id: string; height: number }) {
     });
   }
 }
-const highlights$ = intersections("[data-annotation-id]", {
-  root: document.documentElement,
-  rootMargin: "1000px 0px 0px 1000px",
-});
+const highlights$ = intersections("[data-annotation-id]");
 const topmost$ = topmost(highlights$, (entry) => {
   return entry.element.dataset.annotationId;
 });

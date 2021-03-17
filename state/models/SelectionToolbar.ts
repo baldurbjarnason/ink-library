@@ -70,16 +70,26 @@ class Toolbar {
         let start;
         if (!startNode.closest) {
           start = startNode.parentElement;
+        } else {
+          start = startNode;
         }
         let endNode: any = this.range.endContainer;
         let end;
         if (!endNode.closest) {
           end = endNode.parentElement;
+        } else {
+          end = endNode;
         }
         const top = start.getBoundingClientRect().top;
         const bottom = end.getBoundingClientRect().bottom;
-        const parent: SVGTextElement = this.range.commonAncestorContainer
+        const parentElement = this.range.commonAncestorContainer
           .parentElement as any;
+        let parent;
+        if (parentElement instanceof SVGTextElement) {
+          parent = parentElement;
+        } else {
+          parent = start;
+        }
         const parentTextWidth = parent.getComputedTextLength();
         const parentWidth = parent.getBoundingClientRect().width;
         const ratio = parentTextWidth / parentWidth;
