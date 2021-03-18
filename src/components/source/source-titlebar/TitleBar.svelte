@@ -1,8 +1,8 @@
 <script>
   import History from "../../History.svelte";
-  export let name = "";
-  export let returnLink = "/library";
   import { onMount } from "svelte";
+  export let name = "";
+  export let source;
   let Info;
   onMount(async () => {
     const module = await import("./Info.svelte");
@@ -124,4 +124,4 @@
   </ol>
 </nav>
 
-<svelte:component this={Info} />
+<svelte:component this={Info} {source} />
