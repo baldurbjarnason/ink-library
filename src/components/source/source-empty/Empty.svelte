@@ -1,8 +1,8 @@
 <script lang="ts">
   import EmptySourcePasteForm from "./EmptySourcePasteForm.svelte";
   import EmptySourceUploadForm from "./EmptySourceUploadForm.svelte";
-  import TitleBar from '../source-titlebar/TitleBar.svelte';
-	// import { onMount } from 'svelte';
+  import TitleBar from "../source-titlebar/TitleBar.svelte";
+  // import { onMount } from 'svelte';
   export let source;
   let uploading = false;
   let pasting = false;
@@ -33,7 +33,7 @@
 </style>
 
 <div class="TitleBar">
-  <TitleBar returnLink="/library/all/all" name={source.name} />
+  <TitleBar name={source.name} {source} />
 </div>
 <!-- 
 <svelte:component this={Info} /> -->

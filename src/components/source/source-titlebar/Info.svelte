@@ -3,6 +3,10 @@
   import MainInfo from "../source-info/Info.svelte";
   import InfoToolBar from "../../publication/reader/InfoToolBar.svelte";
   import { source$ } from "../../../../state/state";
+  export let source;
+  $: if (source) {
+    source$.next(source);
+  }
 </script>
 
 <style>
