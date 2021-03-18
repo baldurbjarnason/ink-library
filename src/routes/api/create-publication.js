@@ -5,8 +5,8 @@ import got from "got";
 export async function post(req, res, next) {
   if (!req.user || !req.user.profile) return res.sendStatus(401);
   let author;
-  if (req.body.author && !typeof req.body.author === 'string') {
-    author = req.body.author.split(",").map(name => {
+  if (req.body.author && typeof req.body.author === "string") {
+    author = req.body.author.split(",").map((name) => {
       return {
         type: "Person",
         name: name.trim(),
@@ -50,7 +50,7 @@ export async function post(req, res, next) {
     url: req.body.url,
     abstract: req.body.abstract,
   };
-  // console.log(body);
+  console.log(body);
   if (req.user && req.user.profile) {
     try {
       const tags = req.body._tags;
