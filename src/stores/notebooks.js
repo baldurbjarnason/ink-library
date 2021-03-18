@@ -27,7 +27,7 @@ export const notebooks = derived(
     } else {
       url = `/api/notebooks`;
     }
-    console.log($page);
+
     return fetch(url)
       .then((lib) => {
         set(lib);

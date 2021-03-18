@@ -8,7 +8,7 @@
   }
   import Sidebar from "../source-sidebar/Sidebar.svelte";
   import MarginNotes from "../source-margin/MarginNotes.svelte";
-  import { intersections } from "../../../../state/nodes";
+  import { nodes } from "../../../../state/nodes";
   import { stores } from "@sapper/app";
   const { preloading } = stores();
   let loading;
@@ -20,10 +20,10 @@
   export let sourceNotes = { items: [] };
   export let readerBody = null;
   export let hidden = false;
-  const tspans$ = intersections("tspan[data-annotation-id]");
-  $: if ($tspans$) {
-    for (const span of Array.from($tspans$)) {
-      highlightTspan(span.element);
+  const nodes$ = nodes("tspan[data-annotation-id]");
+  $: if ($nodes$) {
+    for (const span of Array.from($nodes$)) {
+      highlightTspan(span);
     }
   }
   const spans = new Map();
@@ -58,6 +58,19 @@
       span.getAttributeNS(null, "class") || "Highlight"
     );
     parent.insertAdjacentElement("beforebegin", rect);
+    // We need to inject an empty SVG element to hack around Safari's poor
+    // IntersectionObserver support for child SVG elements. Since we only use
+    // the topmost element for positioning in the sidebar, extra elements should not matter
+    const childSvg = svgDocument.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    );
+    childSvg.dataset.annotationId = span.dataset.annotationId;
+    childSvg.setAttributeNS(null, "x", spanBox.x);
+    childSvg.setAttributeNS(null, "y", box.y);
+    childSvg.setAttributeNS(null, "width", span.getComputedTextLength());
+    childSvg.setAttributeNS(null, "height", box.height);
+    parent.insertAdjacentElement("beforebegin", childSvg);
   }
 </script>
 

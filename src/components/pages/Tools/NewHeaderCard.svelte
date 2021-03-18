@@ -65,6 +65,7 @@
       );
       $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
       requesting = false;
+      editing = false;
     } catch (err) {
       console.error(err);
     }
@@ -157,6 +158,8 @@
     float: left;
     margin-bottom: 10px;
     font-style: italic;
+    width: 100%;
+    text-align: left;
   }
   footer {
     display: flex;
@@ -168,7 +171,7 @@
     border: none;
     border-radius: 10px;
     font-size: 0.9rem;
-    height: 100%;
+    height: 34px;
     font-weight: 500;
     padding: 0 25px;
     cursor: pointer;

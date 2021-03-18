@@ -144,7 +144,7 @@
         noteTest.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
-      if ($page.query.page) goto($page.path);
+      goto(`notes/all/all/`);
     } catch (err) {
       console.error(err);
     }
