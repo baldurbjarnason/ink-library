@@ -7,19 +7,21 @@
   export let root;
   export let bookmarks;
   // import { publicationStores } from "../../../stores/utilities/publicationStores.js";
-  const highlights$ = intersections("[data-annotation-id]");
-  const topmost$ = topmost(highlights$, (entry) => {
-    return entry.element.dataset.annotationId;
-  });
+  // const highlights$ = intersections("[data-annotation-id]");
+  // const topmost$ = topmost(highlights$, (entry) => {
+  //   return entry.element.dataset.annotationId;
+  // });
   let annotations;
-  $: if ($positionedNotes$) {
-    const notes = {};
-    for (const entry of $positionedNotes$) {
-      notes[entry.annotation.id] = entry.annotation;
+  $: {
+    if ($positionedNotes$) {
+      const notes = {};
+      for (const entry of $positionedNotes$) {
+        notes[entry.annotation.id] = entry.annotation;
+      }
+      annotations = notes;
+    } else {
+      annotations = {};
     }
-    annotations = notes;
-  } else {
-    annotations = {};
   }
 </script>
 
