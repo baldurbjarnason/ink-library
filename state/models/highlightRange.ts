@@ -89,7 +89,20 @@ export function highlightRange(range, root) {
         rect.setAttributeNS(null, "height", Number.parseInt(box.height, 10));
         rect.classList.add("Highlight");
         parent.insertAdjacentElement("afterend", rect);
-        // Need to add a tspan with the annotation data
+        // We need to inject an empty SVG element to hack around Safari's poor
+        // IntersectionObserver support for child SVG elements. Since we only use
+        // the topmost element for positioning in the sidebar, extra elements should not matter
+        const childSvg = svgDocument.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+        );
+        childSvg.dataset.annotationId = tempId;
+        childSvg.setAttributeNS(null, "x", spanBox.x);
+        childSvg.setAttributeNS(null, "y", box.y);
+        childSvg.setAttributeNS(null, "width", highlight.getComputedTextLength());
+        childSvg.setAttributeNS(null, "height", Number.parseInt(box.height, 10));
+        childSvg.classList.add("Highlight");
+        parent.insertAdjacentElement("afterend", childSvg);
       } else {
         node.parentNode.replaceChild(highlight, node);
         highlight.appendChild(node);
