@@ -28,12 +28,82 @@
   let selected;
   let searchResultsDisplay = false;
   let loading = false;
+  let editForm = false;
+  let formData;
 
   function click() {
     open = !open;
     itemType = "source";
   }
-  $: searchResults = []
+  $: searchResults = [];
+
+  function selectedToForm(selected) {
+    let yearPublished, monthPublished, datePublished
+    if (selected.isPartOf && selected.isPartOf.datePublished) {
+      let date = new Date(selected.isPartOf.datePublished);
+      yearPublished = date.getFullYear();
+      monthPublished = date.getMonth()+1;
+      datePublished = date.getDate();
+    }
+
+    let authors;
+    if (selected.author && typeof (selected.author) === 'string') {
+      authors = selected.author
+    } else if (selected.author) {
+      authors = selected.author.join();
+    }
+
+    let keywords;
+    if (selected.keywords) {
+      keywords = selected.keywords.join();
+    }
+
+    let form = {
+      name: selected.title,
+      type: selected.type,
+      pagination: selected.pagination,
+      journal: selected.isPartOf ? selected.isPartOf.title : null,
+      issueNumber: selected.isPartOf ? selected.isPartOf.issueNumber : null,
+      volumeNumber: selected.isPartOf ? selected.isPartOf.volumeNumber : null,
+      yearPublished,
+      monthPublished,
+      datePublished,
+      url: selected.url,
+      inLanguage: selected.inLanguage,
+      authors,
+      abstract: selected.abstract,
+      keywords
+    }
+    return form;
+  }
+
+  function formToSource(form) {
+    let date
+    if (form.yearPublished) {
+      date = new Date(form.yearPublished, form.monthPublished-1 || 0, form.datePublished || 1);
+    }
+
+
+    let source = {
+      name: form.name,
+      type: form.type,
+      pagination: form.pagination,
+      isPartOf: {
+        title: form.journal,
+        issueNumber: form.issueNumber,
+        volumeNumber: form.volumeNumber,
+        datePublished: date,
+
+      },
+      url: form.url,
+      inLanguage: form.inLanguage ? form.inLanguage.split(',') : null,
+      authors: form.authors ? form.authors.split(',') : null,
+      abstract: form.abstract,
+      keywords: form.keywords? form.keywords.split(',') : null
+    }
+
+    return source
+  }
 
   async function close() {
     if (atNotebook) {
@@ -49,7 +119,7 @@
   searchResultsDisplay = false;
 
   afterUpdate(() => {
-    if (open) {
+    if (open && !editForm) {
       input.focus();
     }
   });
@@ -67,16 +137,25 @@
     })
   }
 
-  async function submitSource(event) {
-    close()
+  function selectSource(event) {
     event.preventDefault();
-    if (selected.title) {
-      selected.name = selected.title
-    }
-    if (selected.isPartOf && selected.isPartOf.title) selected.isPartOf.name = selected.isPartOf.title
-    if (!selected.inLanguage) selected.inLanguage = null
+    editForm = true;
+    formData = selectedToForm(selected)
+    console.log(formData)
+  }
 
-    
+  async function submitSource(event) {
+    event.preventDefault();
+    const body = Object.fromEntries(new URLSearchParams(new FormData(event.target)).entries());
+    formData.type = body.pubType || formData.type;
+    body.addedCollections = $addedCollections;
+    body.addedWorkspaces = $addedWorkspaces;
+        $addedWorkspaces = [];
+        $addedCollections = [];
+        console.log('body???', body)
+    const sourceData = formToSource(formData)
+    sourceData.addedCollections = body.addedCollections;
+
        await fetch(`/api/create-publication`, {
           method: "POST",
           credentials: "include",
@@ -85,11 +164,12 @@
             Accept: "application/json",
             "csrf-token": getToken(),
           },
-          body: JSON.stringify(selected),
+          body: JSON.stringify(sourceData),
         });
         $refreshDate = Date.now();
         searchResults = [];
         searchResultsDisplay = false;
+        close()
   }
 
   async function submit(event) {
@@ -134,7 +214,6 @@
         let url = atNotebook
           ? `/api/notebooks/${$page.params.id}/sources/`
           : `/api/create-publication`;
-
         await fetch(url, {
           method: "POST",
           credentials: "include",
@@ -517,7 +596,6 @@
             {#if itemType === 'search'}
             <input
               type="title"
-              required
               name="name"
               id="new-input"
               class="title-field"
@@ -525,9 +603,8 @@
               placeholder='Enter a title to search'
               bind:this={input}
               autocomplete="off" />
-
-              {#if searchResults}  
-              <form on:submit={submitSource}>  
+              {#if searchResults && !editForm}  
+              <form on:submit={selectSource}>  
                 {#if loading}
                  <Loading/>
                 {/if}
@@ -554,12 +631,105 @@
 
                 </div>
                 <br/>
-                <WhiteButton>Create Source</WhiteButton>
+                <WhiteButton>Select Source</WhiteButton>
 
                 {/if}
 
             </form>
 
+              {/if}
+
+              {#if editForm}
+              <form on:submit={submitSource}>
+                <label for="editTitle">title</label>
+                <input
+                id="editTitle"
+                required
+                bind:value={formData.name}
+                placeholder='Enter a title to search'
+                autocomplete="off" />
+
+                <div class="typeDiv">
+                  <TypeSelect dark={true} defaultValue="Article">Type</TypeSelect>
+                </div>
+
+                <label for="editAuthor">Authors (comma separated)</label>
+                <input
+                id="editAuthor"
+                bind:value={formData.authors}
+                placeholder='Authors (comma separated)'
+                autocomplete="off" />
+
+                <label for="editJournal">Journal / Source title</label>
+                <input
+                id="editJournal"
+                bind:value={formData.journal}
+                placeholder='Journal / Source title'
+                autocomplete="off" />
+
+                <label for="editIssue">Issue Number</label>
+                <input
+                id="editIssue"
+                bind:value={formData.issueNumber}
+                placeholder='Issue number'
+                autocomplete="off" />
+
+                <label for="editVolume">Volume Number</label>
+                <input
+                id="editVolume"
+                bind:value={formData.volumeNumber}
+                placeholder='Volume number'
+                autocomplete="off" />
+
+                <br/>
+                <p>Date published:</p>
+                <label for="editYear">Year</label>
+                <input
+                id="editYear"
+                bind:value={formData.yearPublished}
+                placeholder='Year'
+                autocomplete="off" />
+                <label for="editYear">Month (number 1-12)</label>
+                <input
+                id="editMonth"
+                bind:value={formData.monthPublished}
+                placeholder='Month number'
+                autocomplete="off" />
+                <label for="editDate">Date (number 1-31)</label>
+                <input
+                id="editDate"
+                bind:value={formData.datePublished}
+                placeholder='Date'
+                autocomplete="off" />
+                <br/>
+                <label for="editPagination">pagination</label>
+                <input
+                id="editPagination"
+                bind:value={formData.pagination}
+                placeholder='Startpage-Endpage'
+                autocomplete="off" />
+
+                <label for="editUrl">url</label>
+                <input
+                id="editUrl"
+                bind:value={formData.url}
+                placeholder='url'
+                autocomplete="off" />
+                <FileInput dark={true} name="newFile" type="file" />
+
+
+                <label for="editAbstract">Abstract</label>
+                <input
+                type="textarea"
+                id="editAbstract"
+                bind:value={formData.abstract}
+                placeholder='Abstract'
+                autocomplete="off" />
+
+                <AddCollections dark={true} />
+
+                <WhiteButton>Create Source</WhiteButton>
+              </form>
               {/if}
   
               {/if}
