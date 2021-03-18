@@ -98,7 +98,11 @@
       json.tags = json.tags.concat(colour);
     }
     hidden = true;
-    await $toolbar$.highlight($source$, $chapter$, json);
+    try {
+      await $toolbar$.highlight($source$, $chapter$, json);
+    } catch (err) {
+      console.error(err);
+    }
     // refresh($chapterURL$);
     // reset state
     reset();
