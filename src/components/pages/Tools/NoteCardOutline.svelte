@@ -19,8 +19,10 @@
 
   $: note = item;
   let noteEdition;
-  $: if (editing === item.shortId && !noteEdition)
-    noteEdition = item.body[0].content;
+  $: if (editing === item.shortId && !noteEdition) {
+    noteEdition = item.body.find((note) => note.motivation === "commenting");
+    noteEdition = noteEdition ? noteEdition.content : "";
+  }
 
   function assignIco(icon) {
     switch (icon) {
@@ -69,14 +71,20 @@
 
   let Save = async () => {
     requesting = true;
-    const payload = Object.assign(
-      {},
-      {
-        body: [
+    const payload = Object.assign({}, { body: item.body });
+    if (payload.body[0].motivation === "commenting")
+      payload.body[0].content = noteEdition;
+    else {
+      if (!payload.body[1]) {
+        payload.body = [
+          ...payload.body,
           { content: noteEdition, motivation: "commenting", language: "null" },
-        ],
+        ];
+      } else {
+        payload.body[1].content = noteEdition;
       }
-    );
+    }
+
     payload["shortId"] = item.shortId;
 
     try {
@@ -119,6 +127,7 @@
       );
       $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
       requesting = false;
+      editing = false;
     } catch (err) {
       console.error(err);
     }

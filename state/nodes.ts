@@ -65,7 +65,7 @@ export function intersections(
       let observed: Set<Element> = new Set();
       function handle(entries) {
         for (const entry of entries) {
-          if (observed.has(entry.target)) {
+          if (entry.isIntersecting && observed.has(entry.target)) {
             intersecting.add({
               element: entry.target,
               left: window.scrollX + entry.boundingClientRect.left,

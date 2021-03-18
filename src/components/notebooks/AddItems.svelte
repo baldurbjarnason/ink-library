@@ -308,7 +308,7 @@
     transform: translateY(calc(100% + 3px));
     background: #fff;
     list-style: none;
-    width: 100px;
+    width: 125px;
     padding: 0;
     border-radius: 10px;
     border-top-right-radius: 5px;
@@ -322,8 +322,8 @@
     display: block;
   }
   .ItemsList button {
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 500;
     padding: 10px 20px;
     display: grid;
     width: 100%;

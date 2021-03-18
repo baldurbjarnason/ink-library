@@ -23,7 +23,7 @@
   export let note = { body: [], source: { name: "" } };
   let selectedFlags = [];
 
-  $: colours = $tags.items.filter((tag) => tag.type === "colour");
+  const colours = ["colour1", "colour2", "colour3", "colour4"];
 
   function assignIco(icon) {
     switch (icon) {
@@ -50,13 +50,11 @@
   export let ntbkClose;
   let open = false;
   let newToggle;
-  let noteColour = { name: "colour 1" };
-
-  $: if (colours[0] && !noteColour.id) noteColour = colours[0];
+  let noteColour = "colour1";
 
   function click() {
     open = !open;
-    noteColour = colours[0] ? colours[0] : null;
+    noteColour = noteColour = "colour1";
   }
 
   async function close() {
@@ -81,9 +79,8 @@
     // Get all tags, filter through them to match name of adding tags, add ids as prop
     try {
       const payload = Object.assign({}, note);
-      payload._tags = [noteColour.id].concat(
-        selectedFlags.map((item) => item.id)
-      );
+      let colourId = $tags.getIds([noteColour]);
+      payload._tags = [colourId].concat(selectedFlags.map((item) => item.id));
       if (payload.body.find((body) => body.motivation === "commenting")) {
         const body = payload.body.find(
           (body) => body.motivation === "commenting"
@@ -471,16 +468,16 @@
             <input
               name="noteColour"
               type="radio"
-              class={colour.name.replace(' ', '')}
+              class={colour}
               bind:group={noteColour}
               value={colour} />
           </li>
         {/each}
       </ul>
-      <div class="Editor {noteColour.name.replace(' ', '')}">
+      <div class="Editor {noteColour}">
         <NoteEditor bind:richtext={text} />
       </div>
-      <ul class="flags {noteColour.name.replace(' ', '')}">
+      <ul class="flags {noteColour}">
         {#each flagsArr as flag}
           <li>
             <input type="checkbox" bind:group={selectedFlags} value={flag} />

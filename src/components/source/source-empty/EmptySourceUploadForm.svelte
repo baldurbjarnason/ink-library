@@ -4,14 +4,17 @@
   import { getToken } from "../../../getToken";
   import { goto } from "@sapper/app";
   import FileInput from "./EmptySourceFileInput.svelte";
+  function sleep(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
   export let source;
   export let uploading = false;
   let form;
-  let storageId
-  let fileName
+  let storageId;
+  let fileName;
   async function submit(event) {
     event.preventDefault();
-    if (!storageId) return
+    if (!storageId) return;
     try {
       const body = Object.fromEntries(
         new URLSearchParams(new FormData(form)).entries()
@@ -22,15 +25,16 @@
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "csrf-token": getToken()
+          "csrf-token": getToken(),
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
     } catch (err) {
       console.error(err);
     }
     uploading = false;
-    return goto(`/sources/${source.shortId}/${storageId}`)
+    await sleep(500);
+    return goto(`/sources/${source.shortId}/${storageId}`);
   }
 </script>
 
@@ -96,7 +100,7 @@
         on:submit={submit}
         bind:this={form}>
 
-        <FileInput name="newFile" type="file" bind:storageId={storageId} bind:fileName />
+        <FileInput name="newFile" type="file" bind:storageId bind:fileName />
         <div class="ButtonRow">
           <Button click={submit}>Save</Button>
         </div>

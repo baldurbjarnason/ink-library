@@ -2,12 +2,12 @@
   import IcoNewSource from "../img/IcoNewSource.svelte";
   import Button from "../widgets/Button.svelte";
   import WhiteButton from "./WhiteButton.svelte";
-  import { send, receive } from "../../routes/_crossfade.js";
   import Input from "./Input.svelte";
   import FileInput from "./FileInput.svelte";
   import TypeSelect from "./TypeSelect.svelte";
   import Closer from "../widgets/Closer.svelte";
   import AddCollections from "./AddCollections.svelte";
+  import Loading from "../widgets/Loading.svelte"
   import { afterUpdate, tick } from "svelte";
   import {
     page,
@@ -25,10 +25,15 @@
   let open = false;
   let input;
   let newToggle;
+  let selected;
+  let searchResultsDisplay = false;
+  let loading = false;
+
   function click() {
     open = !open;
     itemType = "source";
   }
+  $: searchResults = []
 
   async function close() {
     if (atNotebook) {
@@ -37,14 +42,55 @@
       open = false;
       await tick();
       newToggle.querySelector("button").focus();
+      loading = false;
     }
   }
+
+  searchResultsDisplay = false;
 
   afterUpdate(() => {
     if (open) {
       input.focus();
     }
   });
+
+  async function select(item) {
+   // event.preventDefault()
+    selected = item;
+    searchResults = searchResults.map(result => {
+      if (result.title === selected.title) {
+        result.selected = true;
+      } else {
+        result.selected = false;
+      }
+      return result;
+    })
+  }
+
+  async function submitSource(event) {
+    close()
+    event.preventDefault();
+    if (selected.title) {
+      selected.name = selected.title
+    }
+    if (selected.isPartOf && selected.isPartOf.title) selected.isPartOf.name = selected.isPartOf.title
+    if (!selected.inLanguage) selected.inLanguage = null
+
+    
+       await fetch(`/api/create-publication`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "csrf-token": getToken(),
+          },
+          body: JSON.stringify(selected),
+        });
+        $refreshDate = Date.now();
+        searchResults = [];
+        searchResultsDisplay = false;
+  }
 
   async function submit(event) {
     event.preventDefault();
@@ -109,6 +155,46 @@
       }
     }
   }
+
+  async function search(event) {
+    event.preventDefault();
+    loading = true;
+    const newInput = window.document.getElementById("new-input").value;
+    //if (newInput[0] === "#") {
+      try {
+        const response = await fetch(`/api/metadata?title=${newInput}&crossref=true&doaj=true&loc=true`, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "csrf-token": getToken(),
+          }
+        });
+        loading = false;
+        searchResultsDisplay = true;
+        const json = await response.json();
+        if (json.crossref && json.crossref.length>0) {
+          searchResults = searchResults.concat(json.crossref)
+          
+        }
+        if (json.doaj && json.doaj.length>0) {
+          searchResults = searchResults.concat(json.doaj)
+        }
+        if (json.loc && json.loc.length>0) {
+          searchResults = searchResults.concat(json.loc)
+        }
+        searchResults = searchResults.map(result => {
+          result.selected = false;
+          return result;
+        })
+      } catch (err) {
+        loading = false;
+        console.error(err);
+      }
+      
+  }
+
 
   let itemType = "source";
   function changeType(value) {
@@ -343,6 +429,24 @@
   .typeDiv {
     position: relative;
   }
+  .searchResultList {
+    background: white;
+    border-radius: 10px;
+    height: 200px;
+    overflow: auto;
+    color: black;
+  }
+  .searchResultItem {
+    border-bottom: rgba(0, 0, 0, 0.2) 1px solid;
+    padding: 15px;
+  }
+  .searchResultItem:hover {
+    background:rgba(0, 0, 0, 0.2);
+  }
+  .searchResultItemSelected {
+    background:rgba(0, 34, 48, 0.3) !important;
+  }
+  
 </style>
 
 {#if open || atNotebook}
@@ -351,7 +455,7 @@
       id="newform"
       class="newForm"
       action="/api/create-publication"
-      on:submit={submit}>
+      on:submit={itemType === 'search' ? search : submit}>
       <section class="header">
         {#if !atNotebook}
           <section class="typeOfItem">
@@ -372,12 +476,21 @@
                 on:click={() => changeType('stack')} />
               <p>New stack</p>
             </label>
+            <label>
+              <input
+                aria-label="search metadata"
+                name="typeOfItem"
+                type="radio"
+                on:click={() => changeType('search')} />
+              <p>Search for a Source</p>
+            </label>
           </section>
         {/if}
         <label class="visually-hidden" id="new-label" for="new-input">
           New item:
         </label>
         <input type="hidden" name="type" value="Publication" />
+        {#if itemType === 'source'}
         <input
           type="title"
           required
@@ -385,9 +498,71 @@
           id="new-input"
           class="title-field"
           value=""
-          placeholder={itemType === 'source' ? 'Enter a new Source Title' : 'Enter a new stack name'}
+          placeholder='Enter a new Source Title'
           bind:this={input}
           autocomplete="off" />
+          {/if}
+          {#if itemType === 'stack'}
+          <input
+            type="title"
+            required
+            name="name"
+            id="new-input"
+            class="title-field"
+            value=""
+            placeholder='Enter a new stack name'
+            bind:this={input}
+            autocomplete="off" />
+            {/if}
+            {#if itemType === 'search'}
+            <input
+              type="title"
+              required
+              name="name"
+              id="new-input"
+              class="title-field"
+              value=""
+              placeholder='Enter a title to search'
+              bind:this={input}
+              autocomplete="off" />
+
+              {#if searchResults}  
+              <form on:submit={submitSource}>  
+                {#if loading}
+                 <Loading/>
+                {/if}
+                {#if searchResultsDisplay}
+                  <div class="searchResultList">
+                  {#each searchResults as item}
+                  <div class={item.selected ? "searchResultItem searchResultItemSelected" : "searchResultItem"} on:click={select(item)}>
+                  <!--<label>
+                  <input type=radio class="searchResultRadio" group="metadata" bind:value={item.title} on:change={select} >
+                  -->
+                    <strong>{item.title}</strong><br/>
+                    {#if item.author}
+                    authors: {item.author}
+                    {/if}
+                    {#if item.isPartOf && item.isPartOf.title}
+                      <br/>
+                    {item.isPartOf.title}
+                    {/if}
+                    <br/>
+
+                <!--</label>-->
+                </div>
+                {/each}
+
+                </div>
+                <br/>
+                <WhiteButton>Create Source</WhiteButton>
+
+                {/if}
+
+            </form>
+
+              {/if}
+  
+              {/if}
       </section>
       {#if itemType === 'source'}
         <div class="MoreItems">
@@ -428,11 +603,16 @@
             <Closer click={close} dark={true} />
           </div>
         </div>
-      {:else}
+      {:else if itemType === 'stack'}
         <section class="footer stack">
           <WhiteButton>Create</WhiteButton>
           <Closer click={close} dark={true} />
         </section>
+      {:else if !searchResultsDisplay}
+      <section class="footer search">
+        <WhiteButton>Search</WhiteButton>
+        <Closer click={close} dark={true} />
+      </section>
       {/if}
     </form>
   </div>

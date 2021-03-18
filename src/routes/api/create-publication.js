@@ -5,15 +5,15 @@ import got from "got";
 export async function post(req, res, next) {
   if (!req.user || !req.user.profile) return res.sendStatus(401);
   let author;
-  if (req.body.author) {
-    author = req.body.author.split(",").map((name) => {
+  if (req.body.author && !typeof req.body.author === 'string') {
+    author = req.body.author.split(",").map(name => {
       return {
         type: "Person",
         name: name.trim(),
       };
     });
   }
-  const type = req.body.pubType || "Source";
+  const type = req.body.pubType || req.body.type || "Source";
   let links;
   if (req.body.newURL) {
     links = [
@@ -43,6 +43,12 @@ export async function post(req, res, next) {
     links,
     json: { storageId: req.body.storageId },
     name: req.body.name,
+    isPartOf: req.body.isPartOf,
+    pagination: req.body.pagination,
+    inLanguage: req.body.inLanguage,
+    keywords: req.body.keywords,
+    url: req.body.url,
+    abstract: req.body.abstract,
   };
   // console.log(body);
   if (req.user && req.user.profile) {
