@@ -7,7 +7,7 @@
   import TypeSelect from "./TypeSelect.svelte";
   import Closer from "../widgets/Closer.svelte";
   import AddCollections from "./AddCollections.svelte";
-  import Loading from "../widgets/Loading.svelte";
+  import Loading from "../widgets/Loading.svelte"
   import { afterUpdate, tick } from "svelte";
   import {
     page,
@@ -38,17 +38,17 @@
   $: searchResults = [];
 
   function selectedToForm(selected) {
-    let yearPublished, monthPublished, datePublished;
+    let yearPublished, monthPublished, datePublished
     if (selected.isPartOf && selected.isPartOf.datePublished) {
       let date = new Date(selected.isPartOf.datePublished);
       yearPublished = date.getFullYear();
-      monthPublished = date.getMonth() + 1;
+      monthPublished = date.getMonth()+1;
       datePublished = date.getDate();
     }
 
     let authors;
-    if (selected.author && typeof selected.author === "string") {
-      authors = selected.author;
+    if (selected.author && typeof (selected.author) === 'string') {
+      authors = selected.author
     } else if (selected.author) {
       authors = selected.author.join();
     }
@@ -72,20 +72,17 @@
       inLanguage: selected.inLanguage,
       authors,
       abstract: selected.abstract,
-      keywords,
-    };
+      keywords
+    }
     return form;
   }
 
   function formToSource(form) {
-    let date;
+    let date
     if (form.yearPublished) {
-      date = new Date(
-        form.yearPublished,
-        form.monthPublished - 1 || 0,
-        form.datePublished || 1
-      );
+      date = new Date(form.yearPublished, form.monthPublished-1 || 0, form.datePublished || 1);
     }
+
 
     let source = {
       name: form.name,
@@ -96,15 +93,16 @@
         issueNumber: form.issueNumber,
         volumeNumber: form.volumeNumber,
         datePublished: date,
+
       },
       url: form.url,
-      inLanguage: form.inLanguage ? form.inLanguage.split(",") : null,
+      inLanguage: form.inLanguage ? form.inLanguage.split(',') : null,
       author: form.authors,
       abstract: form.abstract,
-      keywords: form.keywords ? form.keywords.split(",") : null,
-    };
+      keywords: form.keywords? form.keywords.split(',') : null
+    }
 
-    return source;
+    return source
   }
 
   async function close() {
@@ -127,52 +125,50 @@
   });
 
   async function select(item) {
-    // event.preventDefault()
+   // event.preventDefault()
     selected = item;
-    searchResults = searchResults.map((result) => {
+    searchResults = searchResults.map(result => {
       if (result.title === selected.title) {
         result.selected = true;
       } else {
         result.selected = false;
       }
       return result;
-    });
+    })
   }
 
   function selectSource(event) {
     event.preventDefault();
     editForm = true;
-    formData = selectedToForm(selected);
-    console.log(formData);
+    formData = selectedToForm(selected)
+    console.log(formData)
   }
 
   async function submitSource(event) {
     event.preventDefault();
-    const body = Object.fromEntries(
-      new URLSearchParams(new FormData(event.target)).entries()
-    );
+    const body = Object.fromEntries(new URLSearchParams(new FormData(event.target)).entries());
     formData.type = body.pubType || formData.type;
     body.addedCollections = $addedCollections;
     body.addedWorkspaces = $addedWorkspaces;
-    $addedWorkspaces = [];
-    $addedCollections = [];
-    const sourceData = formToSource(formData);
+        $addedWorkspaces = [];
+        $addedCollections = [];
+    const sourceData = formToSource(formData)
     sourceData.addedCollections = body.addedCollections;
 
-    await fetch(`/api/create-publication`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "csrf-token": getToken(),
-      },
-      body: JSON.stringify(sourceData),
-    });
-    $refreshDate = Date.now();
-    searchResults = [];
-    searchResultsDisplay = false;
-    close();
+       await fetch(`/api/create-publication`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "csrf-token": getToken(),
+          },
+          body: JSON.stringify(sourceData),
+        });
+        $refreshDate = Date.now();
+        searchResults = [];
+        searchResultsDisplay = false;
+        close()
   }
 
   async function submit(event) {
@@ -208,7 +204,7 @@
         const body = Object.fromEntries(
           new URLSearchParams(new FormData(target)).entries()
         );
-        if (body.citation) body.citation = { default: body.citation };
+        if (body.citation) body.citation = {default: body.citation}
         body.addedCollections = $addedCollections;
         body.addedWorkspaces = $addedWorkspaces;
         $addedWorkspaces = [];
@@ -243,40 +239,40 @@
     loading = true;
     const newInput = window.document.getElementById("new-input").value;
     //if (newInput[0] === "#") {
-    try {
-      const response = await fetch(
-        `/api/metadata?title=${newInput}&crossref=true&doaj=true&loc=true`,
-        {
+      try {
+        const response = await fetch(`/api/metadata?title=${newInput}&crossref=true&doaj=true&loc=true`, {
           method: "GET",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
             "csrf-token": getToken(),
-          },
+          }
+        });
+        loading = false;
+        searchResultsDisplay = true;
+        const json = await response.json();
+        if (json.crossref && json.crossref.length>0) {
+          searchResults = searchResults.concat(json.crossref)
+          
         }
-      );
-      loading = false;
-      searchResultsDisplay = true;
-      const json = await response.json();
-      if (json.crossref && json.crossref.length > 0) {
-        searchResults = searchResults.concat(json.crossref);
+        if (json.doaj && json.doaj.length>0) {
+          searchResults = searchResults.concat(json.doaj)
+        }
+        if (json.loc && json.loc.length>0) {
+          searchResults = searchResults.concat(json.loc)
+        }
+        searchResults = searchResults.map(result => {
+          result.selected = false;
+          return result;
+        })
+      } catch (err) {
+        loading = false;
+        console.error(err);
       }
-      if (json.doaj && json.doaj.length > 0) {
-        searchResults = searchResults.concat(json.doaj);
-      }
-      if (json.loc && json.loc.length > 0) {
-        searchResults = searchResults.concat(json.loc);
-      }
-      searchResults = searchResults.map((result) => {
-        result.selected = false;
-        return result;
-      });
-    } catch (err) {
-      loading = false;
-      console.error(err);
-    }
+      
   }
+
 
   let itemType = "source";
   function changeType(value) {
@@ -523,11 +519,12 @@
     padding: 15px;
   }
   .searchResultItem:hover {
-    background: rgba(0, 0, 0, 0.2);
+    background:rgba(0, 0, 0, 0.2);
   }
   .searchResultItemSelected {
-    background: rgba(0, 34, 48, 0.3) !important;
+    background:rgba(0, 34, 48, 0.3) !important;
   }
+  
 </style>
 
 {#if open || atNotebook}
@@ -572,6 +569,18 @@
         </label>
         <input type="hidden" name="type" value="Publication" />
         {#if itemType === 'source'}
+        <input
+          type="title"
+          required
+          name="name"
+          id="new-input"
+          class="title-field"
+          value=""
+          placeholder='Enter a new Source Title'
+          bind:this={input}
+          autocomplete="off" />
+          {/if}
+          {#if itemType === 'stack'}
           <input
             type="title"
             required
@@ -579,159 +588,150 @@
             id="new-input"
             class="title-field"
             value=""
-            placeholder="Enter a new Source Title"
+            placeholder='Enter a new stack name'
             bind:this={input}
             autocomplete="off" />
-        {/if}
-        {#if itemType === 'stack'}
-          <input
-            type="title"
-            required
-            name="name"
-            id="new-input"
-            class="title-field"
-            value=""
-            placeholder="Enter a new stack name"
-            bind:this={input}
-            autocomplete="off" />
-        {/if}
-        {#if itemType === 'search'}
-          <input
-            type="title"
-            name="name"
-            id="new-input"
-            class="title-field"
-            value=""
-            placeholder="Enter a title to search"
-            bind:this={input}
-            autocomplete="off" />
-          {#if searchResults && !editForm}
-            <form on:submit={selectSource}>
-              {#if loading}
-                <Loading />
-              {/if}
-              {#if searchResultsDisplay}
-                <div class="searchResultList">
+            {/if}
+            {#if itemType === 'search'}
+            <input
+              type="title"
+              name="name"
+              id="new-input"
+              class="title-field"
+              value=""
+              placeholder='Enter a title to search'
+              bind:this={input}
+              autocomplete="off" />
+              {#if searchResults && !editForm}  
+              <form on:submit={selectSource}>  
+                {#if loading}
+                 <Loading/>
+                {/if}
+                {#if searchResultsDisplay}
+                  <div class="searchResultList">
                   {#each searchResults as item}
-                    <div
-                      class={item.selected ? 'searchResultItem searchResultItemSelected' : 'searchResultItem'}
-                      on:click={select(item)}>
-                      <!--<label>
+                  <div class={item.selected ? "searchResultItem searchResultItemSelected" : "searchResultItem"} on:click={select(item)}>
+                  <!--<label>
                   <input type=radio class="searchResultRadio" group="metadata" bind:value={item.title} on:change={select} >
                   -->
-                      <strong>{item.title}</strong>
-                      <br />
-                      {#if item.author}authors: {item.author}{/if}
-                      {#if item.isPartOf && item.isPartOf.title}
-                        <br />
-                        {item.isPartOf.title}
-                      {/if}
-                      <br />
+                    <strong>{item.title}</strong><br/>
+                    {#if item.author}
+                    authors: {item.author}
+                    {/if}
+                    {#if item.isPartOf && item.isPartOf.title}
+                      <br/>
+                    {item.isPartOf.title}
+                    {/if}
+                    <br/>
 
-                      <!--</label>-->
-                    </div>
-                  {/each}
+                <!--</label>-->
+                </div>
+                {/each}
 
                 </div>
-                <br />
+                <br/>
                 <WhiteButton>Select Source</WhiteButton>
-              {/if}
+
+                {/if}
 
             </form>
-          {/if}
 
-          {#if editForm}
-            <form on:submit={submitSource}>
-              <label for="editTitle">title</label>
-              <input
+              {/if}
+
+              {#if editForm}
+              <form on:submit={submitSource}>
+                <label for="editTitle">title</label>
+                <input
                 id="editTitle"
                 required
                 bind:value={formData.name}
-                placeholder="Enter a title to search"
+                placeholder='Enter a title to search'
                 autocomplete="off" />
 
-              <div class="typeDiv">
-                <TypeSelect dark={true} defaultValue="Article">Type</TypeSelect>
-              </div>
+                <div class="typeDiv">
+                  <TypeSelect dark={true} defaultValue="Article">Type</TypeSelect>
+                </div>
 
-              <label for="editAuthor">Authors (comma separated)</label>
-              <input
+                <label for="editAuthor">Authors (comma separated)</label>
+                <input
                 id="editAuthor"
                 bind:value={formData.authors}
-                placeholder="Authors (comma separated)"
+                placeholder='Authors (comma separated)'
                 autocomplete="off" />
 
-              <label for="editJournal">Journal / Source title</label>
-              <input
+                <label for="editJournal">Journal / Source title</label>
+                <input
                 id="editJournal"
                 bind:value={formData.journal}
-                placeholder="Journal / Source title"
+                placeholder='Journal / Source title'
                 autocomplete="off" />
 
-              <label for="editIssue">Issue Number</label>
-              <input
+                <label for="editIssue">Issue Number</label>
+                <input
                 id="editIssue"
                 bind:value={formData.issueNumber}
-                placeholder="Issue number"
+                placeholder='Issue number'
                 autocomplete="off" />
 
-              <label for="editVolume">Volume Number</label>
-              <input
+                <label for="editVolume">Volume Number</label>
+                <input
                 id="editVolume"
                 bind:value={formData.volumeNumber}
-                placeholder="Volume number"
+                placeholder='Volume number'
                 autocomplete="off" />
 
-              <br />
-              <p>Date published:</p>
-              <label for="editYear">Year</label>
-              <input
+                <br/>
+                <p>Date published:</p>
+                <label for="editYear">Year</label>
+                <input
                 id="editYear"
                 bind:value={formData.yearPublished}
-                placeholder="Year"
+                placeholder='Year'
                 autocomplete="off" />
-              <label for="editYear">Month (number 1-12)</label>
-              <input
+                <label for="editYear">Month (number 1-12)</label>
+                <input
                 id="editMonth"
                 bind:value={formData.monthPublished}
-                placeholder="Month number"
+                placeholder='Month number'
                 autocomplete="off" />
-              <label for="editDate">Date (number 1-31)</label>
-              <input
+                <label for="editDate">Date (number 1-31)</label>
+                <input
                 id="editDate"
                 bind:value={formData.datePublished}
-                placeholder="Date"
+                placeholder='Date'
                 autocomplete="off" />
-              <br />
-              <label for="editPagination">pagination</label>
-              <input
+                <br/>
+                <label for="editPagination">pagination</label>
+                <input
                 id="editPagination"
                 bind:value={formData.pagination}
-                placeholder="Startpage-Endpage"
+                placeholder='Startpage-Endpage'
                 autocomplete="off" />
 
-              <label for="editUrl">url</label>
-              <input
+                <label for="editUrl">url</label>
+                <input
                 id="editUrl"
                 bind:value={formData.url}
-                placeholder="url"
+                placeholder='url'
                 autocomplete="off" />
-              <FileInput dark={true} name="newFile" type="file" />
+                <FileInput dark={true} name="newFile" type="file" />
 
-              <label for="editAbstract">Abstract</label>
-              <input
+
+                <label for="editAbstract">Abstract</label>
+                <input
                 type="textarea"
                 id="editAbstract"
                 bind:value={formData.abstract}
-                placeholder="Abstract"
+                placeholder='Abstract'
                 autocomplete="off" />
 
-              <AddCollections dark={true} />
+                <AddCollections dark={true} />
 
-              <WhiteButton>Create Source</WhiteButton>
-            </form>
-          {/if}
-        {/if}
+                <WhiteButton>Create Source</WhiteButton>
+              </form>
+              {/if}
+  
+              {/if}
       </section>
       {#if itemType === 'source'}
         <div class="MoreItems">
@@ -778,10 +778,10 @@
           <Closer click={close} dark={true} />
         </section>
       {:else if !searchResultsDisplay}
-        <section class="footer search">
-          <WhiteButton>Search</WhiteButton>
-          <Closer click={close} dark={true} />
-        </section>
+      <section class="footer search">
+        <WhiteButton>Search</WhiteButton>
+        <Closer click={close} dark={true} />
+      </section>
       {/if}
     </form>
   </div>
