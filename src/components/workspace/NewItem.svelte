@@ -78,7 +78,6 @@
   }
 
   function formToSource(form) {
-    console.log(form);
     let date;
     if (form.yearPublished) {
       date = new Date(
@@ -100,7 +99,7 @@
       },
       url: form.url,
       inLanguage: form.inLanguage ? form.inLanguage.split(",") : null,
-      authors: form.authors ? form.authors.split(",") : null,
+      author: form.authors,
       abstract: form.abstract,
       keywords: form.keywords ? form.keywords.split(",") : null,
     };
@@ -157,9 +156,7 @@
     body.addedWorkspaces = $addedWorkspaces;
     $addedWorkspaces = [];
     $addedCollections = [];
-    console.log("body???", body);
     const sourceData = formToSource(formData);
-    console.log(sourceData, formData, body);
     sourceData.addedCollections = body.addedCollections;
 
     await fetch(`/api/create-publication`, {
