@@ -97,7 +97,7 @@
       },
       url: form.url,
       inLanguage: form.inLanguage ? form.inLanguage.split(',') : null,
-      authors: form.authors ? form.authors.split(',') : null,
+      author: form.authors,
       abstract: form.abstract,
       keywords: form.keywords? form.keywords.split(',') : null
     }
@@ -152,7 +152,6 @@
     body.addedWorkspaces = $addedWorkspaces;
         $addedWorkspaces = [];
         $addedCollections = [];
-        console.log('body???', body)
     const sourceData = formToSource(formData)
     sourceData.addedCollections = body.addedCollections;
 

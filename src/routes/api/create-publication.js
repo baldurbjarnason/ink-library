@@ -50,7 +50,6 @@ export async function post(req, res, next) {
     url: req.body.url,
     abstract: req.body.abstract,
   };
-  console.log(body);
   if (req.user && req.user.profile) {
     try {
       const tags = req.body._tags;
