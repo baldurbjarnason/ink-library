@@ -16,3 +16,10 @@ Both also require you to be signed in using the gcloud utility and have user acc
 ## Github Action
 
 The GitHub action attached to the `ink-library` repository is set up to automatically deploy to development if the tests pass. It does so using an `app.yaml` file that's saved as an ENV secret in the repository's settings and written out to a file as a part of the action.
+
+## Cloud Functions
+
+To deploy the cloud functions you need to change your working directory to `functions/onfinalize` and run one of the `npm` deployment scripts set up in that directory:
+
+- `npm run deploy-function` will run `gcloud functions deploy triggerWrapper --runtime nodejs12 --trigger-resource ink-upload-files --trigger-event google.storage.object.finalize --memory=2048MB --timeout=300s --project fb-ink-dev` which will deploy the function to the `ink-upload-files` bucket in `fb-ink-dev`
+- `npm run deploy-dev-function` will run `gcloud functions deploy triggerWrapper --runtime nodejs12 --trigger-resource ink-frontend-server-dev-uploads --trigger-event google.storage.object.finalize --project ink-frontend-server-dev --memory=2048MB --timeout=300s` which will take care of the dev deployment.
