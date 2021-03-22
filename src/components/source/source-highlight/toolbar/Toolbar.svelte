@@ -13,7 +13,7 @@
   import { notebooks$, source$, chapter$ } from "../../../../../state/state";
   import { chapterURL$ } from "../../../../../state/state-urls";
   import { refresh } from "../../../../../state/refresh";
-  import { toolbar$ } from "../../../../../state/models/SelectionToolbar";
+  import { toolbar$ } from "../../../../../state/controllers/SelectionToolbar";
   import { tags$ } from "../../../../../state/tags";
   import { setColour } from "../setColour.js";
   import { getToken } from "../../../../getToken";
