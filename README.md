@@ -1,5 +1,9 @@
 # `ink-library` -- The front end service for Rebus Ink
 
+## Building
+
+During dev you probably need to be running `npm run watch:typescript` alongside `npm run dev` if you're working with typescript code.
+
 ## Overview
 
 The code in this repository is the [sapper](https://sapper.svelte.dev/) server that's used to serve the front end to the Rebus Ink project.
@@ -21,6 +25,26 @@ Using sapper and expressjs this server provides:
 - Signed URL generation for direct uploading to a Google Storage bucket (other storage backends aren't supported)
 - A Google Cloud Function that processes uploaded files and turns them into more easily processable JSON files (using [`ink-engine`](https://github.com/RebusFoundation/ink-engine)). Found at [`functions/onfinalize/index.js`](functions/onfinalize)
 - A `read` endpoint that takes those processed JSON files, matches annotations to the server-rendered HTML (using `ink-engine` and [`rehype-annotate`](https://github.com/RebusFoundation/rehype-annotate))
+
+## `npm` scripts
+
+- "dev": runs the sapper dev server
+- "build": builds the typescript files, the sapper app, and if necessary will also save the Google Cloud keyfile from env
+- "build:typescript": builds typescript files
+- "export": "sapper export --legacy",
+- "start": starts the built server, make sure to run `build` first,
+- "lint": runs the `healthier` linter and `svelte-check`,
+- "snapshots": updates the test snapshots,
+- "test": runs the tests,
+- "watch:test": runs the tests in watch mode,
+- "watch:typescript": runs the typescript compiler in watch mode,
+- "watch": runs all watch scripts in parallel,
+- "deploy-function": deploys the production google cloud function for uploads,
+- "deploy-dev-function": deploys the dev google cloud function for uploads,
+- "deploy-dev": deploys the app to development,
+- "deploy-production": deploys the app to production,
+- "save-config": saves the app.yaml config file from env, used by the GitHub Action for automatic deployments,
+- "save-keyfile": saves the keyfile from env, necessary if hosting outside of the Google Cloud Platform
 
 ## Directory Structure
 
