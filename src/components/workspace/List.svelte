@@ -16,7 +16,6 @@
   let items;
 
   $: if ($library) items = $library.items;
-
   let selection = function() {
     selectAll = false;
     if (!selecting) selecting = true;
@@ -243,5 +242,7 @@
     }} />
 {/if}
 {#if items && items.length}
-  <PaginationButtons itemsLenght={items.length} />
+{$library.totalItems}
+{$library.page}
+  <PaginationButtons itemsLenght={items.length} totalItems={$library.totalItems} />
 {/if}

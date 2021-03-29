@@ -36,7 +36,7 @@ export async function get(req, res, next) {
       query.delete("orderBy");
     }
     query.delete("dir");
-    url = `${url}?${query.toString()}`;
+    url = `${url}?limit=50&${query.toString()}`;
     const response = await got(url, {
       headers: {
         Authorization: `Bearer ${req.user.token}`,
