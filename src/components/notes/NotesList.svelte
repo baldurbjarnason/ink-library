@@ -249,5 +249,5 @@
     }} />
 {/if}
 {#if !$page.params.id && items && items.length}
-  <PaginationButtons itemsLenght={items.length} />
+  <PaginationButtons itemsLenght={items.length} totalItems={$notes.totalItems} />
 {/if}

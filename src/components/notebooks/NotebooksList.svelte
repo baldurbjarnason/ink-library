@@ -151,5 +151,5 @@
     }} />
 {/if}
 {#if items && items.length}
-  <PaginationButtons itemsLenght={items.length} />
+  <PaginationButtons itemsLenght={items.length} totalItems={$notebooks.totalItems}/>
 {/if}
