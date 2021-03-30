@@ -4,6 +4,7 @@
     refreshDate,
     addedCollections,
     addedWorkspaces,
+    notebooks
   } from "../../stores";
   // import RiskyButton from "../widgets/RiskyButton.svelte";
   import SecondaryButton from "../widgets/SecondaryButton.svelte";
@@ -28,6 +29,8 @@
     body.addedWorkspaces = $addedWorkspaces;
     $addedWorkspaces = [];
     $addedCollections = [];
+    console.log('notebooks?', $notebooks)
+    console.log(target.action)
     endSelection();
     try {
       await fetch(target.action, {
