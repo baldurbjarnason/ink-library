@@ -10,7 +10,6 @@
   import Closer from "../widgets/Closer.svelte";
   import AutocompleteInput from "../widgets/AutocompleteInput.svelte";
   export let dark = false;
-  console.log("???", $notebooks)
   let filteredCollections = $collections.map((collection) => collection.name);
   $: if ($addingWorkspace) {
     if ($addingWorkspace !== "all") {
@@ -145,17 +144,6 @@
     {/each}
 
 
-    {#if $notebooks.type === 'loading'}
-<div class="Loading" />
-{:else}
-{#each $notebooks as notebook}
-  {notebook.name}
-{:else}
-  <div class="Empty">
-    empty
-  </div>
-{/each}
-{/if}
   </div>
 
   

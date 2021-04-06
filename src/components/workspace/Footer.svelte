@@ -1,9 +1,11 @@
 <script>
+
   import {
     selectedItems,
     refreshDate,
     addedCollections,
     addedWorkspaces,
+    addedNotebooks,
     notebooks
   } from "../../stores";
   // import RiskyButton from "../widgets/RiskyButton.svelte";
@@ -13,6 +15,7 @@
   import Input from "./Input.svelte";
   import { getToken } from "../../getToken";
   import AddCollections from "./AddCollections.svelte";
+  import AddNotebooks from "./AddNotebooks.svelte";
 
   export let endSelection = function() {};
   export let editing;
@@ -27,12 +30,14 @@
     body.items = Array.from($selectedItems);
     body.addedCollections = $addedCollections;
     body.addedWorkspaces = $addedWorkspaces;
+    body.addedNotebooks = $addedNotebooks;
     $addedWorkspaces = [];
     $addedCollections = [];
-    console.log('notebooks?', $notebooks)
-    console.log(target.action)
+    $addedNotebooks = [];
+
     endSelection();
     try {
+      console.log(target.action)
       await fetch(target.action, {
         method: "PUT",
         credentials: "include",
@@ -74,11 +79,34 @@
   $: editSource = Array.from($selectedItems);
   let removeTag = [];
   $: console.log(removeTag);
+  let removeNotebooks = [];
   let test = async (id) => {
     if (removeTag.some((getId) => getId === id)) return;
     removeTag = [...removeTag].concat(id);
     const body = { publicationId: editSource[0].shortId, collectionId: id };
 
+    try {
+      await fetch(`/api/publication/${editSource[0].shortId}/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "csrf-token": getToken(),
+        },
+        body: JSON.stringify(body),
+      });
+      $refreshDate = Date.now();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  let testNotebook = async (id) => {
+    if (removeNotebooks.some((getId) => getId === id)) return;
+    removeNotebooks = [...removeNotebooks].concat(id);
+    const body = { publicationId: editSource[0].shortId, notebookId: id };
+console.log(body)
     try {
       await fetch(`/api/publication/${editSource[0].shortId}/${id}`, {
         method: "DELETE",
@@ -241,6 +269,25 @@
       </ul>
     {/if}
   </div>
+
+  <div class="Notebooks">
+    <AddNotebooks />
+    <!-- {#if editSource.length === 1 && editSource[0].notebooks.length > 0}
+      <ul
+        class="RemoveNotebooks"
+        style={`grid-template-columns: repeat(${editSource[0].notebooks.length}, max-content)`}>
+        {#each editSource[0].notebooks as notebook}
+          {#if !removeNotebooks.some((getId) => getId === notebook.shortId)}
+            <li>
+              {notebook.name}
+              <span on:click={() => testNotebook(notebook.shortId)} />
+            </li>
+          {/if}
+        {/each}
+      </ul>
+    {/if} -->
+  </div>
+
   <span class="FooterButtons">
     <SecondaryButton
       click={() => {
