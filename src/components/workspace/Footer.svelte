@@ -78,7 +78,6 @@
 
   $: editSource = Array.from($selectedItems);
   let removeTag = [];
-  $: console.log(removeTag);
   let removeNotebooks = [];
   let test = async (id) => {
     if (removeTag.some((getId) => getId === id)) return;
@@ -106,7 +105,6 @@
     if (removeNotebooks.some((getId) => getId === id)) return;
     removeNotebooks = [...removeNotebooks].concat(id);
     const body = { publicationId: editSource[0].shortId, notebookId: id };
-console.log(body)
     try {
       await fetch(`/api/publication/${editSource[0].shortId}/${id}`, {
         method: "DELETE",
