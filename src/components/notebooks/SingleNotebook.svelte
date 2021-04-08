@@ -46,7 +46,7 @@
     if (itemEdit !== "description" && !newValue) return;
 
     try {
-      const payload = Object.assign({}, $notebook);
+      const payload = Object.assign({settings: {}}, $notebook);
       if (itemEdit === "cover") payload["settings"]["coverImg"] = newValue;
       else payload[itemEdit] = newValue;
 
@@ -455,7 +455,7 @@
 {#if itemEdit === 'cover'}
   <EditCoverImage
     bind:itemEdit
-    currentCover={$notebook.settings.coverImg}
+    currentCover={$notebook.settings ? $notebook.settings.coverImg : ''}
     bind:newValue
     {submit} />
 {/if}
