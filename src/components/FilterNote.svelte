@@ -75,7 +75,7 @@
   let unFilterIt = (a) => {
     let queries = Object.assign({}, $page.query);
     delete queries[a];
-
+    queries.page = 1;
     let mark = Object.keys(queries).length ? "?" : "";
     goto(`${$page.path}${mark}${new URLSearchParams(queries).toString()}`);
   };
@@ -83,7 +83,7 @@
   let filterIt = (a, b) => {
     let queries = Object.assign({}, $page.query);
     queries[a] = b;
-
+    queries.page = 1;
     goto(`${$page.path}?${new URLSearchParams(queries).toString()}`);
   };
 </script>
