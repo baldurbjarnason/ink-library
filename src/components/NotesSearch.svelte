@@ -8,9 +8,9 @@
   let searchToggle;
   function loadSearch() {
     if ($page.path.startsWith("/notebooks/")) {
-      $searchAddNotes = input.value;
+      $searchAddNotes = input.value.trim();
     } else {
-      $searchNotes = input.value;
+      $searchNotes = input.value.trim();
     }
   }
 

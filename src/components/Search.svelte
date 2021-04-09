@@ -16,11 +16,11 @@
 
   function loadSearch() {
     if ($page.path.startsWith("/notebooks/")) {
-      $searchAddSources = input.value;
+      $searchAddSources = input.value.trim();
     } else if ($page.path.startsWith("/notes/all/all/")) {
-      $sourceSearched = input.value;
+      $sourceSearched = input.value.trim();
     } else {
-      $searchStore = input.value;
+      $searchStore = input.value.trim();
     }
   }
   afterUpdate(() => {

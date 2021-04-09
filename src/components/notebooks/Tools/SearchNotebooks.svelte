@@ -3,15 +3,14 @@
   import { notebookSearched, page, searchNotebooks } from "../../../stores";
 
   let input;
-
   function loadSearch() {
     if (
       $page.path.startsWith("/notes/all/all") ||
       $page.path.startsWith("/library/all/all")
     ) {
-      $notebookSearched = input.value;
+      $notebookSearched = input.value.trim();
     } else if ($page.path.startsWith("/notebooks")) {
-      $searchNotebooks = input.value;
+      $searchNotebooks = input.value.trim();
     }
   }
 

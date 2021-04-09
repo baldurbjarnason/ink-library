@@ -85,7 +85,12 @@ export class Annotation {
       colour = "Colour1";
     }
     updated.tags = json.tags;
-    updated.notebooks = json.notebooks;
+    updated.notebooks = json.notebooks.map(notebook => {
+      notebook.status = 'active'
+      notebook.settings = {colour: '', coverImg: ''};
+      return notebook;
+    }); 
+
     updated.body = processed.body;
     if (tempId) {
       updateHighlight(tempId, updated.id, colour);

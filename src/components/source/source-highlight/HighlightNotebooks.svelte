@@ -114,7 +114,6 @@
       noteBookMenu.open = false;
     }
   }} />
-
 <details class="notebooks {colour.name}" bind:this={noteBookMenu}>
   <summary>Notebooks</summary>
   <details-menu role="menu">

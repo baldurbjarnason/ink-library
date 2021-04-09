@@ -44,6 +44,7 @@ export async function put(req, res, next) {
 }
 
 export async function del(req, res, next) {
+  console.log(req.params.id)
   try {
     const response = await got
       .delete(`${process.env.API_SERVER}notebooks/${req.params.id}`, {

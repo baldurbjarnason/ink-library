@@ -77,6 +77,7 @@ export async function put(req, res, next) {
           responses = responses.concat(response);
         }
       }
+
       if (req.body.addedWorkspaces && req.body.addedWorkspaces !== "all") {
         for (const workspace of req.body.addedWorkspaces) {
           await got
@@ -94,6 +95,32 @@ export async function put(req, res, next) {
       responses = responses.concat(err.response.body);
     }
     let patch;
+
+    if (req.body.addedNotebooks) {
+      patch = Object.assign({}, patch, {
+        operation: 'add',
+        property: 'notebooks',
+        sources: req.body.items.map(item => item.shortId),
+        value: req.body.addedNotebooks.map(notebook => notebook.shortId)
+      })
+        try {
+        const response = await got
+          .patch(`${process.env.API_SERVER}sources/batchUpdate`, {
+            headers: {
+              "content-type": "application/ld+json",
+              Authorization: `Bearer ${req.user.token}`,
+            },
+            json: patch,
+          })
+          .json();
+
+        responses = responses.concat(response);
+      } catch (err) {
+        responses = responses.concat(err.response.body);
+      }
+    
+    }
+
     if (req.body.pubType !== "none") {
       patch = {
         type: req.body.pubType,
