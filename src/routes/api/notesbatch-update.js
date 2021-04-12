@@ -31,6 +31,7 @@ export async function put(req, res, next) {
   const items = req.body.items;
   const tags = req.body.tags;
   const colour = req.body.colour;
+  const notebooks = req.body.notebooks;
 
   let responses = [];
   for (const item of items) {
@@ -44,7 +45,7 @@ export async function put(req, res, next) {
       ? Array.from(new Set(tags.concat(currentTags)))
       : tags;
     item.tags = [];
-
+    item.notebooks = notebooks;
     try {
       const response = await got
         .put(url, {
