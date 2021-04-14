@@ -8,7 +8,7 @@
     export let dark = false;
     let items;
     $: items = $notebooks ? $notebooks.items : [];
-    addedNotebooks = [];
+    $addedNotebooks = [];
     function change(input, value) {
         const newNotebook = items.find(notebook => notebook.name === value.value)
         $addedNotebooks = Array.from(new Set($addedNotebooks.concat(newNotebook)));
