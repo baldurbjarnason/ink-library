@@ -37,7 +37,6 @@
 
     endSelection();
     try {
-      console.log(target.action)
       await fetch(target.action, {
         method: "PUT",
         credentials: "include",
@@ -270,20 +269,6 @@
 
   <div class="Notebooks">
     <AddNotebooks />
-    <!-- {#if editSource.length === 1 && editSource[0].notebooks.length > 0}
-      <ul
-        class="RemoveNotebooks"
-        style={`grid-template-columns: repeat(${editSource[0].notebooks.length}, max-content)`}>
-        {#each editSource[0].notebooks as notebook}
-          {#if !removeNotebooks.some((getId) => getId === notebook.shortId)}
-            <li>
-              {notebook.name}
-              <span on:click={() => testNotebook(notebook.shortId)} />
-            </li>
-          {/if}
-        {/each}
-      </ul>
-    {/if} -->
   </div>
 
   <span class="FooterButtons">

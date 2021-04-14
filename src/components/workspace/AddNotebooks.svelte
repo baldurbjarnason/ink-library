@@ -1,28 +1,27 @@
 <script>
     import {
-      addedCollections,
       notebooks,
       addedNotebooks,
       //addingNotebooks
     } from "../../stores";
-    import Closer from "../widgets/Closer.svelte";
     import AutocompleteInput from "../widgets/AutocompleteInput.svelte";
     export let dark = false;
     let items;
     $: items = $notebooks ? $notebooks.items : [];
-
-
+    addedNotebooks = [];
     function change(input, value) {
         const newNotebook = items.find(notebook => notebook.name === value.value)
         $addedNotebooks = Array.from(new Set($addedNotebooks.concat(newNotebook)));
         input.value = "";
     }
-    function removeTag(event) {
-      const removedNotebook = event.data.value;
-      $addedNotebooks = $addedCollections.filter(
+    function removeNotebook(event) {
+      event.preventDefault()
+      const removedNotebook = event.target.value;
+      $addedNotebooks = []; $addedNotebooks.filter(
         (notebook) => notebook.name !== removedNotebook
       );
     }
+
 
   </script>
   
@@ -54,16 +53,45 @@
       color: white;
       background-color: rgba(255, 255, 255, 0.2);
     }
+    .removeButton {
+    font-family: var(--sans-fonts);
+    font-size: 0.9rem;
+    flex: 0 1 auto;
+    line-height: 1;
+
+    display: inline-block;
+
+    padding: 0.5rem;
+    margin: auto calc(var(--base) * 0.5);
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-align: center;
+    white-space: nowrap;
+    text-decoration: none;
+    font-weight: 500;
+    color: var(--workspace-color);
+    border-radius: 15px;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    /* transition: box-shadow 0.15s ease-in-out; */
+    background-color: transparent;
+    text-decoration: none !important;
+    transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
+    border: none;
+  }
   </style>
   
   <!-- markup (zero or more items) goes here -->
 
   <div>
     {#if $notebooks.type === 'loading'}
-        <div class="Loading" >loading????</div>
+        <div class="Loading" />
     {:else}
     {#if $addedNotebooks.length < 1}
-    <div>
+      <div>
         <AutocompleteInput
           placeholder="Notebook Name"
           {dark}
@@ -79,11 +107,10 @@
         {#each $addedNotebooks as notebook}
           <span class="Collection">
             {notebook.name}
-            <Closer
-              {dark}
-              value={notebook.value}
-              click={removeTag}
-              small={true} />
+            <button
+              value={notebook.name}
+              on:click={removeNotebook}
+              class="removeButton">x</button>
           </span>
         {/each}
       </div>
