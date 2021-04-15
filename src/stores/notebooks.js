@@ -7,6 +7,7 @@ import { goto } from "@sapper/app";
 export const refreshNotebooks = writable(Date.now());
 export const searchNotebooks = writable();
 export const addedNotebooks = writable([]);
+export const defaultNotebook = writable();
 
 export const notebooks = derived(
   [page, refreshNotebooks, searchNotebooks],
