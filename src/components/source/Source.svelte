@@ -101,14 +101,17 @@
   .Publication.Info {
     grid-template-rows: max-content max-content minmax(100vh, auto);
   }
+  .Header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
   .TitleBar {
     width: 100%;
     margin: 0;
     padding: 0;
     background-color: var(--all-workspace);
-    position: sticky;
     top: 0;
-    z-index: 99;
   }
   .TitleBar * {
     color: #ffffff;
@@ -131,6 +134,8 @@
 <div
   class="Publication TabSelected {$page.path.endsWith('info') ? 'Info' : ''}">
   {#if $source$ && $chapter$}
+  <div class="Header">
+
     <nav class="TitleBar" aria-label="Publication">
       <ol>
         <li>
@@ -187,6 +192,8 @@
       <MainInfo />
     </InfoModal>
     <ToolBar {sidebar} {chapterTitle} />
+    </div>
+
     <Chapter
       {chapter}
       sourceNotes={$bookmarks$}
