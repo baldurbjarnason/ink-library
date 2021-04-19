@@ -1,5 +1,6 @@
 <script>
   import ItemStacks from "./ItemStacks.svelte";
+  import IcoNotebook from "../img/IcoNotebook.svelte"
   import {
     addSelected,
     removeSelected,
@@ -233,5 +234,15 @@
         <ItemStacks {item} {selected} />
       {/if}
     </div>
+    {#if item.notebooks}
+    <ul class="Flags">
+      {#each item.notebooks as notebook}
+        <li>
+          <IcoNotebook/>
+          <p>{notebook.name}</p>
+        </li>
+      {/each}
+    </ul>
+    {/if}
   </footer>
 </div>

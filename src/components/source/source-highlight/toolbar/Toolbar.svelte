@@ -11,8 +11,8 @@
   import IcoFlag from "../../../img/IcoFlag.svelte";
   import CloseIcon from "../CloseIcon.svelte";
   import { notebooks$, source$, chapter$ } from "../../../../../state/state";
-  import { chapterURL$ } from "../../../../../state/state-urls";
-  import { refresh } from "../../../../../state/refresh";
+  import { chapterURL$, notebooksURL$ } from "../../../../../state/state-urls";
+  import { refresh, refreshAll } from "../../../../../state/refresh";
   import { toolbar$ } from "../../../../../state/controllers/SelectionToolbar";
   import { tags$ } from "../../../../../state/tags";
   import { setColour } from "../setColour.js";
@@ -80,6 +80,7 @@
           }
         })
         .then((json) => {
+
           return json.content;
         });
       json.body = [
@@ -103,9 +104,17 @@
     } catch (err) {
       console.error(err);
     }
-    // refresh($chapterURL$);
-    // reset state
+
+    if (createdNotebooks.length > 0) {
+      console.log('refreshing notebooks')
+      //TODO: fix this to remove the timeout. If I don't put it, the list of notebooks doesn't refresh right away
+      setTimeout(function() { refresh("/api/notebooks") }, 500);
+    }
+
+    
+
     reset();
+
   }
   function reset() {
     selectedFlags = [];
