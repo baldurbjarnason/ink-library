@@ -3,6 +3,7 @@ import { page } from './page'
 import { derived, writable } from 'svelte/store';
 import { error } from './error.js'
 import { fetch } from './fetch.js'
+import { goto } from "@sapper/app";
 
 export const refreshDate = writable(Date.now())
 export const searchStore = writable()
@@ -21,9 +22,18 @@ export const library = derived([page, refreshDate, searchStore], ([$page, $refre
 
   if ($searchStore) {
     query.search = $searchStore
+    if (parseInt(query.page) > 1) {
+      goto($page.path)
+    }
+    query.page = "1";
   } else if ($page.query.search) {
     query.search = $page.query.search
+    if (parseInt(query.page) > 1) {
+      goto($page.path)
+    }
+    query.page = "1";
   }
+  
 
   let url
   if (query) {

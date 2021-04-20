@@ -1,5 +1,6 @@
 <script>
   import ItemStacks from "./ItemStacks.svelte";
+  import IcoNotebook from "../img/IcoNotebook.svelte"
   import {
     addSelected,
     removeSelected,
@@ -82,6 +83,18 @@
     -webkit-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
+  }
+  .Flags {
+    line-height: 0.8rem;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+  .Flags li {
+    display: inline-table;
+    margin-right: 7px;
   }
   a {
     cursor: pointer;
@@ -233,5 +246,14 @@
         <ItemStacks {item} {selected} />
       {/if}
     </div>
+    {#if item.notebooks}
+    <ul class="Flags">
+      {#each item.notebooks as notebook}
+        <li>
+          <p><IcoNotebook/> {notebook.name}</p>
+        </li>
+      {/each}
+    </ul>
+    {/if}
   </footer>
 </div>

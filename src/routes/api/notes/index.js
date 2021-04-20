@@ -8,7 +8,6 @@ export const post = async function post(req, res, next) {
   delete req.body._workspace;
   delete req.body.collection;
   delete req.body._tags;
-
   if (req.user && req.user.profile) {
     try {
       const response = await got

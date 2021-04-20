@@ -12,7 +12,7 @@
   import CloseIcon from "./CloseIcon.svelte";
   import { onDestroy } from "svelte";
   import { notebooks$, source$, chapter$ } from "../../../../state/state";
-  import { chapterURL$ } from "../../../../state/state-urls";
+  import { chapterURL$, notebooksURL$ } from "../../../../state/state-urls";
   import { refresh } from "../../../../state/refresh";
   import { createPopper } from "@popperjs/core";
   import { selectionHighlight$ } from "../../../../state/models/Selection";
@@ -175,7 +175,7 @@
             "csrf-token": getToken(),
           },
           body: plaintext,
-        })
+        }) 
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -184,6 +184,7 @@
           }
         })
         .then((json) => {
+
           return json.content;
         });
       json.body = [
@@ -305,7 +306,7 @@
   }}>
   <ol>
     <HighlightColours bind:colour tags={$tags$} />
-    <li>
+    <li>  werwe
       <HighlightFlags
         {colour}
         tags={$tags$}
