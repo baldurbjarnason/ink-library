@@ -2,6 +2,7 @@ import { page } from "./page";
 import { derived, writable } from "svelte/store";
 import { error } from "./error.js";
 import { fetch } from "./fetch.js";
+import { goto } from "@sapper/app";
 
 export const refreshNotes = writable(Date.now());
 export const searchNotes = writable();
@@ -23,8 +24,16 @@ export const notes = derived(
 
     if ($searchNotes) {
       query.search = $searchNotes;
+      if (parseInt(query.page) > 1) {
+        goto($page.path)
+      }
+      query.page = "1";
     } else if ($page.query.search) {
       query.search = $page.query.search;
+      if (parseInt(query.page) > 1) {
+        goto($page.path)
+      }
+      query.page = "1";
     }
 
     let url;
