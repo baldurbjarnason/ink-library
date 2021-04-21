@@ -17,6 +17,7 @@
   import { tags$ } from "../../../../../state/tags";
   import { setColour } from "../setColour.js";
   import { getToken } from "../../../../getToken";
+  import { defaultNotebook } from "../../../../stores"
 
   let toolbar;
   let colour;
@@ -26,6 +27,8 @@
   let noteBookMenu;
   let plaintext;
   let hidden;
+  let useDefault = true;
+  
   $: if (colour) {
     setColour(colour, toolbar);
   } else if (toolbar) {
@@ -69,6 +72,9 @@
       tags: createdFlags.concat(selectedFlags),
       notebooks: createdNotebooks.concat(selectedNotebooks),
     };
+    if ($defaultNotebook && useDefault) {
+      json.notebooks = json.notebooks.concat($defaultNotebook)
+    }
     if (plaintext) {
       const content = await window
         .fetch("/api/markdown", {
@@ -106,6 +112,7 @@
       json.tags = json.tags.concat(colour);
     }
     hidden = true;
+    useDefault = true;
     try {
       await $toolbar$.highlight($source$, $chapter$, json);
     } catch (err) {
@@ -225,7 +232,14 @@
     <li>
       <HighlightNotebooks
         {colour}
-        notebooks={$notebooks$ ? $notebooks$.items : []}
+        notebooks={$notebooks$ ? $notebooks$.items.filter(item => {
+          if ($defaultNotebook && useDefault) {
+            return item.id !== $defaultNotebook.id
+          } else {
+            return true;
+          }
+          
+          }) : []}
         bind:selectedNotebooks
         bind:noteBookMenu
         create={createNotebook} />
@@ -239,7 +253,7 @@
         }} />
     </li>
   </ol>
-  {#if (selectedFlags && selectedFlags.length !== 0) || (selectedNotebooks && selectedNotebooks.length !== 0) || createdNotebooks.length !== 0 || createdFlags.length !== 0}
+  {#if (selectedFlags && selectedFlags.length !== 0) || (selectedNotebooks && selectedNotebooks.length !== 0) || createdNotebooks.length !== 0 || createdFlags.length !== 0 || (defaultNotebook && useDefault)}
     <div class="Flags">
       {#if selectedFlags}
         {#each selectedFlags as flag}
@@ -296,6 +310,16 @@
           </div>
         {/each}
       {/if}
+      {#if $defaultNotebook && $defaultNotebook.name && useDefault}
+        <div class="Flag Item">
+          <IcoNotebook />
+          <span class={$defaultNotebook.name}>{$defaultNotebook.name}!!!</span>
+          <CloseIcon
+            click={() => {
+              useDefault = false;
+            }} />
+        </div>
+    {/if}
       {#if selectedNotebooks}
         {#each selectedNotebooks as notebook}
           <div class="Flag Item">

@@ -13,7 +13,7 @@
   import MainInfo from "./source-info/Info.svelte";
   // import EmptySource from "../../../../components/publication/EmptySource.svelte";
   import { stores } from "@sapper/app";
-  import { find } from "rxjs/operators";
+  import DefaultNotebookForm from "../publication/reader/DefaultNotebookForm.svelte"
   export let chapter;
   export let source;
   $: if (source) {
@@ -112,6 +112,7 @@
     padding: 0;
     background-color: var(--all-workspace);
     top: 0;
+    z-index: 99;
   }
   .TitleBar * {
     color: #ffffff;
@@ -143,6 +144,9 @@
         </li>
         <li>
           <span class="Title">{source.name}</span>
+        </li>
+        <li>
+          <DefaultNotebookForm />
         </li>
         <li>
           <a

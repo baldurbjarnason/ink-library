@@ -1,27 +1,26 @@
 <script>
     import {
-      notebooks,
-      addedNotebooks,
       defaultNotebook
-    } from "../../../stores";
+    } from "../../../stores/notebooks";
+    import { notebooks$ } from "../../../../state/state";
+
     import AutocompleteInput from "../../widgets/AutocompleteInput.svelte";
     export let dark = false;
     let items;
-    $: items = $notebooks ? $notebooks.items : [];
-    $addedNotebooks = [];
+    $: items = $notebooks$ ? $notebooks$.items : [];
     function change(input, value) {
         const newNotebook = items.find(notebook => notebook.name === value.value)
         $defaultNotebook = newNotebook
-
     }
-
-
 
   </script>
   
   <style>
     div {
       position: relative;
+    }
+    .DefaultNotebook {
+      z-index: 200;
     }
     .Collection {
       width: auto;
@@ -79,22 +78,16 @@
   </style>
   
   <!-- markup (zero or more items) goes here -->
-
-  <div>
-    {#if $notebooks.type === 'loading'}
-        <div class="Loading" />
-    {:else}
+  <div class="DefaultNotebook">
       <div>
         <AutocompleteInput
-          placeholder="Notebook Name"
+          placeholder="Default notebook"
           {dark}
           name="new-notebooks"
           list={items.map(item => item.name)}
           {change}>
-          Assign notebooks
         </AutocompleteInput>
       </div>
-    {/if}
   </div>
   
   
