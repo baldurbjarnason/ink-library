@@ -71,9 +71,9 @@
   function setDefaultNotebook(event) {
     event.preventDefault;
     if ($page.path.startsWith("/notebooks/")) {
-     // defaultNotebook = $notebooks.items.find(item => item.shortId === $page.params.id)
+      $defaultNotebook = $notebooks.items.find(item => item.shortId === $page.params.id)
     } else {
-     // defaultNotebook = null;
+      $defaultNotebook = null;
     }
   } 
 </script>

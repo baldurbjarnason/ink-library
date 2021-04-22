@@ -313,7 +313,7 @@
       {#if $defaultNotebook && $defaultNotebook.name && useDefault}
         <div class="Flag Item">
           <IcoNotebook />
-          <span class={$defaultNotebook.name}>{$defaultNotebook.name}!!!</span>
+          <span class={$defaultNotebook.name}>{$defaultNotebook.name}</span>
           <CloseIcon
             click={() => {
               useDefault = false;

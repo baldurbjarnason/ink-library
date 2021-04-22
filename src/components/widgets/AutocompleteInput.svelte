@@ -6,6 +6,7 @@
   export let dark = false;
   export let type = "text";
   export let list = false;
+  export let value;
   export let change = () => {};
   let input;
   let awesomplete;
@@ -118,6 +119,7 @@
     {name}
     id="input-{name}"
     {placeholder}
+    {value}
     autocomplete="off"
     on:change={change}
     bind:this={input}
