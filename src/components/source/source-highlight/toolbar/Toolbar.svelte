@@ -58,6 +58,13 @@
     }
   }
   async function createHighlight() {
+    createdNotebooks = createdNotebooks.map(notebook => {
+      notebook.settings = {
+        coverImg: "mike-c-s-7HlJkjH3k60"
+      }
+      return notebook
+    })
+
     const json = {
       tags: createdFlags.concat(selectedFlags),
       notebooks: createdNotebooks.concat(selectedNotebooks),

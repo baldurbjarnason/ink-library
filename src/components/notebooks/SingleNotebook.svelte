@@ -335,7 +335,7 @@
         {#if $notebook.shortId}
           <div
             class="Img"
-            style={`background-image: url("/img/NotebookImg/${$notebook.settings ? $notebook.settings.coverImg : 'tools-for-motivation-KvTOwKoji7g'}.jpg")`}>
+            style={`background-image: url("/img/NotebookImg/${$notebook.settings ? $notebook.settings.coverImg : 'mike-c-s-7HlJkjH3k60'}.jpg")`}>
             <button
               class="CoverCont"
               on:click={() => {
