@@ -20,61 +20,9 @@
       position: relative;
     }
     .DefaultNotebook {
-      z-index: 200;
+      z-index: 300;
     }
-    .Collection {
-      width: auto;
-      float: left;
-      font-size: 0.7rem;
-      padding: calc(var(--base) * 0.25);
-      margin-right: calc(var(--base) * 0.25);
-      margin-bottom: calc(var(--base) * 0.25);
-      border-radius: 5px;
-      color: black;
-      background-color: white;
-      text-transform: uppercase;
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .Tags {
-      grid-column: 1;
-      grid-gap: calc(var(--base) * 0.25);
-      grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
-    }
-    .dark .Collection {
-      color: white;
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-    .removeButton {
-    font-family: var(--sans-fonts);
-    font-size: 0.9rem;
-    flex: 0 1 auto;
-    line-height: 1;
 
-    display: inline-block;
-
-    padding: 0.5rem;
-    margin: auto calc(var(--base) * 0.5);
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    text-align: center;
-    white-space: nowrap;
-    text-decoration: none;
-    font-weight: 500;
-    color: var(--workspace-color);
-    border-radius: 15px;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    /* transition: box-shadow 0.15s ease-in-out; */
-    background-color: transparent;
-    text-decoration: none !important;
-    transition: background-color 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
-    border: none;
-  }
   </style>
   
   <!-- markup (zero or more items) goes here -->
