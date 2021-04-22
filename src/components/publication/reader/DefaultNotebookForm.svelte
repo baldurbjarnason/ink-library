@@ -10,7 +10,7 @@
     $: items = $notebooks$ ? $notebooks$.items : [];
     function change(input, value) {
         const newNotebook = items.find(notebook => notebook.name === value.value)
-        $defaultNotebook = newNotebook
+        //$defaultNotebook = newNotebook
     }
 
   </script>
@@ -84,6 +84,7 @@
           placeholder="Default notebook"
           {dark}
           name="new-notebooks"
+          
           list={items.map(item => item.name)}
           {change}>
         </AutocompleteInput>
