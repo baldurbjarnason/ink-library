@@ -88,6 +88,7 @@
     const updateUrl =
       type === "source" ? "/api/batch-update" : `/api/note${url}sbatch-update`;
     try {
+      console.log(updateUrl)
       body.notebooks = $addedNotebooks
       await fetch(updateUrl, {
         method: "PUT",
