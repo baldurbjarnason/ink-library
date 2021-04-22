@@ -150,7 +150,7 @@
       class="Img"
       style={`background-image: url("/img/NotebookImg/${notebook.settings.coverImg}.jpg")`} />
   {:else}
-    <div class="Img" style={'background-color: #888888'} />
+    <div class="Img" style={'background-image: url("/img/NotebookImg/mike-c-s-7HlJkjH3k60.jpg")'} />
   {/if}
   <div class="Info">
     <div class="Icon {notebook.settings.colour}">
