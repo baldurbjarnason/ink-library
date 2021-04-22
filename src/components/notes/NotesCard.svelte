@@ -36,7 +36,7 @@
     ? note.tags.find((flag) => flag.name.startsWith("colour"))
     : "";
 
-  $: notebooks = note.notebooks 
+  $: notebooks = note.notebooks || [];
 
   function assignIco(icon) {
     switch (icon) {
