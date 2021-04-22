@@ -246,7 +246,7 @@
         <ItemStacks {item} {selected} />
       {/if}
     </div>
-    {#if item.notebooks}
+    {#if item.notebooks && item.notebooks.length >0}
     <ul class="Flags">
       {#each item.notebooks as notebook}
         <li>
