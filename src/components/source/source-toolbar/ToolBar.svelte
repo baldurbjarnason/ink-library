@@ -19,7 +19,7 @@
     align-items: center;
     position: sticky;
     top: 0;
-    overflow-x: hidden;
+    overflow: visible;
     z-index: 100;
     height: 41px;
   }
@@ -103,6 +103,9 @@
   .Button:focus {
     outline: none;
     box-shadow: 0 0 0 3px #68d6d499;
+  }
+  .defaultNotebook {
+    margin-left: 100px; /*To fix: should be floating right somehow*/
   }
   @media (max-width: 720px) {
     .Button {
@@ -229,7 +232,7 @@
   </ol>
   <ol>
     <li>{chapterTitle}</li>
-
+    <li class="defaultNotebook"><DefaultNotebookForm /></li>
   </ol>
   <ol style="transform: translateX(10px);">
 

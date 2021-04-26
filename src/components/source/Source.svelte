@@ -146,9 +146,6 @@
           <span class="Title">{source.name}</span>
         </li>
         <li>
-          <DefaultNotebookForm />
-        </li>
-        <li>
           <a
             class="modal_link"
             href="#id-source-info"
