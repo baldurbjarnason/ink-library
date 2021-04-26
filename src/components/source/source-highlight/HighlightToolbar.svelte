@@ -11,6 +11,7 @@
   import IcoFlag from "../../img/IcoFlag.svelte";
   import CloseIcon from "./CloseIcon.svelte";
   import { onDestroy } from "svelte";
+  import { defaultNotebook } from "../../../stores"
   import { notebooks$, source$, chapter$ } from "../../../../state/state";
   import { chapterURL$, notebooksURL$ } from "../../../../state/state-urls";
   import { refresh } from "../../../../state/refresh";
@@ -90,7 +91,7 @@
   });
   let colour;
   let selectedFlags;
-  let selectedNotebooks;
+  let selectedNotebooks = [$defaultNotebook];
   let flagMenu;
   let noteBookMenu;
   let highlight;
@@ -161,6 +162,7 @@
     }
   }
   async function createHighlight() {
+    console.log('%%%%%%%%%%%%', $defaultNotebook);
     const json = {
       tags: createdFlags.concat(selectedFlags),
       notebooks: createdNotebooks.concat(selectedNotebooks),
@@ -280,7 +282,7 @@
     if (!event.target.closest('nav.HighlightToolbar') && (!$selectionHighlight$ || $selectionHighlight$.selection.isCollapsed) && range) {
       range = null;
       selectedFlags = [];
-      selectedNotebooks = [];
+      selectedNotebooks = [$defaultNotebook];
       plaintext = '';
       openNote = false;
       colour = '';
@@ -306,7 +308,7 @@
   }}>
   <ol>
     <HighlightColours bind:colour tags={$tags$} />
-    <li>  werwe
+    <li>
       <HighlightFlags
         {colour}
         tags={$tags$}

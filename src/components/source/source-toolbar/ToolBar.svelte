@@ -1,5 +1,6 @@
 <script>
   import CloseSidebar from "../../img/IcoCloseColumn.svelte";
+  import DefaultNotebookForm from "../../publication/reader/DefaultNotebookForm.svelte"
   export let hidden = false;
   export let chapterTitle = "";
   export let sidebar;
@@ -18,7 +19,7 @@
     align-items: center;
     position: sticky;
     top: 0;
-    overflow-x: hidden;
+    overflow: visible;
     z-index: 100;
     height: 41px;
   }
@@ -102,6 +103,9 @@
   .Button:focus {
     outline: none;
     box-shadow: 0 0 0 3px #68d6d499;
+  }
+  .defaultNotebook {
+    margin-left: 100px; /*To fix: should be floating right somehow*/
   }
   @media (max-width: 720px) {
     .Button {
@@ -228,45 +232,11 @@
   </ol>
   <ol>
     <li>{chapterTitle}</li>
+    <li class="defaultNotebook"><DefaultNotebookForm /></li>
   </ol>
   <ol style="transform: translateX(10px);">
-    <li>
-      <svg
-        width="34"
-        height="34"
-        viewBox="0 0 34 34"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg">
-        <mask id="path-2-inside-1" fill="white">
-          <rect x="11" y="9" width="12" height="16" rx="1" />
-        </mask>
-        <rect
-          x="11"
-          y="9"
-          width="12"
-          height="16"
-          rx="1"
-          stroke="#002230"
-          stroke-width="3"
-          mask="url(#path-2-inside-1)" />
-        <rect x="10" y="12" width="3.5" height="1.5" rx="0.75" fill="#002230" />
-        <rect x="14.5" y="10" width="1.5" height="14" fill="#002230" />
-        <rect
-          x="10"
-          y="16.25"
-          width="3.5"
-          height="1.5"
-          rx="0.75"
-          fill="#002230" />
-        <rect
-          x="10"
-          y="20.5"
-          width="3.5"
-          height="1.5"
-          rx="0.75"
-          fill="#002230" />
-      </svg>
 
-    </li>
+
+
   </ol>
 </nav>

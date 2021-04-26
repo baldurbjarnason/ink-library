@@ -6,6 +6,8 @@
     removeSelected,
     page,
     selectedItems,
+    defaultNotebook,
+    notebooks
   } from "../../stores";
   export let item = {};
   export let selecting;
@@ -65,6 +67,15 @@
   } else {
     selectable = true;
   }
+
+  function setDefaultNotebook(event) {
+    event.preventDefault;
+    if ($page.path.startsWith("/notebooks/")) {
+      $defaultNotebook = $notebooks.items.find(item => item.shortId === $page.params.id)
+    } else {
+      $defaultNotebook = null;
+    }
+  } 
 </script>
 
 <style>
@@ -217,7 +228,7 @@
 </style>
 
 <div class="Item" class:selected>
-  <a href="sources/{item.shortId}">_</a>
+  <a href="sources/{item.shortId}" on:click={setDefaultNotebook}>_</a>
   {#if selectable}
     <input
       class="BulkSelector"

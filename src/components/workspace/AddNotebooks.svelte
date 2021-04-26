@@ -98,7 +98,7 @@
           name="new-notebooks"
           list={items.map(item => item.name)}
           {change}>
-          Assign notebooks
+          Assign notebooks  
         </AutocompleteInput>
       </div>
       {:else}
