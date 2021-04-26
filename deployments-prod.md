@@ -1,4 +1,6 @@
 
+- default notebook
+- titlebar in reading interface is sticky
 
 Deployment April 23, 2021
 - default notebook image for notebooks created in the reading interface
