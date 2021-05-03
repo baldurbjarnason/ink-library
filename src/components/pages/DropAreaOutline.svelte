@@ -17,7 +17,7 @@
   } from "svelte-dnd-action";
   import { fade } from "svelte/transition"; // fade in works, but fade-out is a known issue
   import { cubicIn } from "svelte/easing";
-  import { pageItem, page, outline, refreshOutline } from "../../stores";
+  import { pageItem, page, outline, refreshOutline, outlineNotesList } from "../../stores";
   export let items;
   export let requesting;
   export let outlineInfo;
@@ -42,10 +42,49 @@
     arrangement(e);
   }
 
+  function randomString() {
+    let result = [];
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for ( var i = 0; i < 8; i++ ) {
+      result.push(characters.charAt(Math.floor(Math.random() * characters.length)));
+   }
+   return result.join('');
+  }
+
   async function addNote(note, request) {
+    if (request === 'POST') {
+      note.oldId = note.shortId
+      const index = $outline.readerId.indexOf('/readers/');
+      const readerShortId = $outline.readerId.substring(index + 9);
+      note.shortId = `${readerShortId}-${randomString()}`
+      note.id = note.shortId; // not sure why necessary?
+      note.display = 'pending'
+      let list = $outlineNotesList;
+      list.push(note);
+      if (note.previous) {
+        list = list.map(item => {
+          if (item.shortId === note.previous) {
+            item.next = note.shortId;
+          }
+          return item;
+        })
+      }
+      if (note.next) {
+        list = list.map(item => {
+          if (item.shortId === note.next) {
+            item.previous = note.shortId;
+          }
+          return item;
+        })
+      }
+      
+      $outlineNotesList = list;
+
+     // $refreshOutline = { id: $outline.id, time: Date.now() };
+    }
     requesting = true;
     try {
-      await window.fetch(
+       window.fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
         {
           method: request,
@@ -57,8 +96,6 @@
           },
         }
       );
-
-      $refreshOutline = { id: $outline.id, time: Date.now() };
       requesting = false;
     } catch (err) {
       console.error(err);
@@ -72,12 +109,14 @@
     for (let i = 0; i < items.length; i++) {
       if (id === items[i].id) index = i;
     }
-
     const request = items[index]["contextId"] ? "PATCH" : "POST";
 
     let note = {
       shortId: items[index].shortId,
       fresh: items[index].fresh,
+      body: items[index].body,
+      json: items[index].json,
+      tags: items[index].tags
     };
 
     if (note.fresh) {

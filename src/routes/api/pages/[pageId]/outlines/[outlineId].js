@@ -5,7 +5,7 @@ import got from "got";
 // This needs to filter by workspace
 export async function get(req, res, next) {
   if (!req.user || !req.user.profile) return res.sendStatus(401);
-  const url = `${process.env.API_SERVER}outlines/${req.params.outlineId}`;
+  const url = `${process.env.API_SERVER}noteContexts/${req.params.outlineId}`;
 
   try {
     const response = await got(url, {

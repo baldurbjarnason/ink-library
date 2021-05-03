@@ -423,6 +423,7 @@
     }}
     class="Item {noteColour}
     {noted && (highlighed || note.source) ? 'two' : ''}">
+    {note.display}
     {#if highlighed || note.source}
       <header>
         <div class="column" />
