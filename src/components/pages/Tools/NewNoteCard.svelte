@@ -3,6 +3,7 @@
   import { page, refreshOutline } from "../../../stores";
   import { getToken } from "../../../getToken";
   import NoteEditor from "../../widgets/NoteEditor.svelte";
+  import SmallLoader from "../../SmallLoader.svelte"
   export let item;
   export let editing = false;
   export let requesting = false;
@@ -217,6 +218,12 @@
     on:click={() => {
       editing = item.shortId;
     }}>
+        {#if item.display === 'pending'}
+        <div class="loader"><SmallLoader /></div>
+        {/if}
+        {#if item.display === 'error'}
+        ERROR!!!
+        {/if}
     <p class="Note">
       {@html item.body[0].content}
     </p>

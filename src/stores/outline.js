@@ -12,7 +12,6 @@ export const orderedOutlineNotes = derived([outlineNotesList, refreshOutline, ou
   if (!$refreshOutline.id || $refreshOutline.id !== $outlineId) {
     set([]);
   }
-  console.log('new ordered list?', $outlineNotesList.length)
   const orderedList = []
    let list = $outlineNotesList;
    if (list.length === 0) return [];
@@ -46,7 +45,6 @@ export const orderedOutlineNotes = derived([outlineNotesList, refreshOutline, ou
       current = next
     }
   })
-  console.log('lenght: ', orderedList.length)
   set(orderedList)
   return orderedList
 })

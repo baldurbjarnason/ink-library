@@ -52,14 +52,16 @@
   }
 
   async function addNote(note, request) {
+    let list
     if (request === 'POST') {
-      note.oldId = note.shortId
+      note.oldId = note.shortId === '12345' ? null : note.shortId
       const index = $outline.readerId.indexOf('/readers/');
       const readerShortId = $outline.readerId.substring(index + 9);
       note.shortId = `${readerShortId}-${randomString()}`
       note.id = note.shortId; // not sure why necessary?
-      note.display = 'pending'
-      let list = $outlineNotesList;
+      note.display = 'pending';
+      note.contextId = $outline.shortId;
+      list = $outlineNotesList;
       list.push(note);
       if (note.previous) {
         list = list.map(item => {
@@ -80,7 +82,61 @@
       
       $outlineNotesList = list;
 
-     // $refreshOutline = { id: $outline.id, time: Date.now() };
+    } else {
+      note.display = 'pending'
+      list = $outlineNotesList;
+      note.id = note.shortId; // why?
+
+      // adjusting notes that were 'previous' or 'next' before
+      const oldNote = list.find(item => {
+        return item.shortId === note.shortId;
+      })
+      if (oldNote.previous) {
+        list = list.map(item => {
+          if (item.shortId === oldNote.previous) {
+            item.next = oldNote.next;
+          }
+          return item;
+        })
+      }
+      if (oldNote.next) {
+        list = list.map(item => {
+          if (item.shortId === oldNote.next) {
+            item.previous = oldNote.previous;
+          }
+          return item;
+        })
+      }
+
+      // replacing the note with the new one
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+           return note;
+        } else {
+          return item;
+        }
+      })
+
+      // adjusting the new 'next' and 'previous'
+      if (note.previous) {
+        list = list.map(item => {
+          if (item.shortId === note.previous) {
+            item.next = note.shortId;
+          }
+          return item;
+        })
+      }
+      if (note.next) {
+        list = list.map(item => {
+          if (item.shortId === note.next) {
+            item.previous = note.shortId;
+          }
+          return item;
+        })
+      }
+      
+      $outlineNotesList = list;
+
     }
     requesting = true;
     try {
@@ -95,7 +151,30 @@
             "csrf-token": getToken(),
           },
         }
-      );
+      ).then((res) => {
+            if (res.status === 201 || res.status === 200) {
+                list = list.map(item => {
+              if (item.shortId === note.shortId) {
+                item.display = 'ok'
+              }
+              return item;
+            })
+            $outlineNotesList = list;
+          } else {
+            list = list.map(item => {
+              if (item.shortId === note.shortId) {
+                item.display = 'error'
+              }
+              return item;
+            })
+            $outlineNotesList = list;
+            setTimeout(() => {
+              $refreshOutline = { id: $outline.id, time: Date.now() };
+            }, 3000)
+
+
+          }
+      })
       requesting = false;
     } catch (err) {
       console.error(err);
@@ -116,9 +195,9 @@
       fresh: items[index].fresh,
       body: items[index].body,
       json: items[index].json,
-      tags: items[index].tags
+      tags: items[index].tags,
+      contextId: items[index].contextId
     };
-
     if (note.fresh) {
       note["body"] = items[index].body;
       note["json"] = items[index].json;

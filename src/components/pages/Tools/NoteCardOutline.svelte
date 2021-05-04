@@ -16,6 +16,7 @@
   export let item;
   export let editing = false;
   export let requesting = false;
+  import SmallLoader from "../../SmallLoader.svelte"
 
   $: note = item;
   let noteEdition;
@@ -403,6 +404,9 @@
     font-size: 0.75rem;
     line-height: 0.9rem;
   }
+  .loader {
+    float:left;
+  }
 </style>
 
 {#if editing === item.shortId}
@@ -423,7 +427,12 @@
     }}
     class="Item {noteColour}
     {noted && (highlighed || note.source) ? 'two' : ''}">
-    {note.display}
+    {#if note.display === 'pending'}
+    <div class="loader"><SmallLoader /></div>
+    {/if}
+    {#if note.display === 'error'}
+    ERROR!!!
+    {/if}
     {#if highlighed || note.source}
       <header>
         <div class="column" />
