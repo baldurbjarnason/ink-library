@@ -17,7 +17,7 @@ export const post = async function post(req, res, next) {
 
       const payload = Object.assign(
         {},
-        { canvasId: response.shortId, name: "Undefined :/" }
+        { canvasId: response.shortId, name: "Untitled :/" }
       );
 
       const outline = await got

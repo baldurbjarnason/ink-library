@@ -2,6 +2,7 @@
   import IcoDelete from "../../img/IcoDelete.svelte";
   import { page, refreshOutline } from "../../../stores";
   import { getToken } from "../../../getToken";
+  import SmallLoader from '../../SmallLoader.svelte'
   export let item;
   export let editing = false;
   export let requesting = false;
@@ -223,6 +224,12 @@
     on:click={() => {
       editing = item.shortId;
     }}>
+        {#if item.display === 'pending'}
+        <div class="loader"><SmallLoader /></div>
+        {/if}
+        {#if item.display === 'error'}
+        ERROR!!!
+        {/if}
     <h3>{item.body[0].content}</h3>
   </main>
 {/if}

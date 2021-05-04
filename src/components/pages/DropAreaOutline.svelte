@@ -17,7 +17,7 @@
   } from "svelte-dnd-action";
   import { fade } from "svelte/transition"; // fade in works, but fade-out is a known issue
   import { cubicIn } from "svelte/easing";
-  import { pageItem, page, outline, refreshOutline } from "../../stores";
+  import { pageItem, page, outline, refreshOutline, outlineNotesList } from "../../stores";
   export let items;
   export let requesting;
   export let outlineInfo;
@@ -42,10 +42,105 @@
     arrangement(e);
   }
 
+  function randomString() {
+    let result = [];
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for ( var i = 0; i < 8; i++ ) {
+      result.push(characters.charAt(Math.floor(Math.random() * characters.length)));
+   }
+   return result.join('');
+  }
+
   async function addNote(note, request) {
+    let list
+    if (request === 'POST') {
+      note.oldId = note.shortId === '12345' ? null : note.shortId
+      const index = $outline.readerId.indexOf('/readers/');
+      const readerShortId = $outline.readerId.substring(index + 9);
+      note.shortId = `${readerShortId}-${randomString()}`
+      note.id = note.shortId; // not sure why necessary?
+      note.display = 'pending';
+      note.contextId = $outline.shortId;
+      list = $outlineNotesList;
+      list.push(note);
+      if (note.previous) {
+        list = list.map(item => {
+          if (item.shortId === note.previous) {
+            item.next = note.shortId;
+          }
+          return item;
+        })
+      }
+      if (note.next) {
+        list = list.map(item => {
+          if (item.shortId === note.next) {
+            item.previous = note.shortId;
+          }
+          return item;
+        })
+      }
+      
+      $outlineNotesList = list;
+
+    } else {
+      note.display = 'pending'
+      list = $outlineNotesList;
+      note.id = note.shortId; // why?
+
+      // adjusting notes that were 'previous' or 'next' before
+      const oldNote = list.find(item => {
+        return item.shortId === note.shortId;
+      })
+      if (oldNote.previous) {
+        list = list.map(item => {
+          if (item.shortId === oldNote.previous) {
+            item.next = oldNote.next;
+          }
+          return item;
+        })
+      }
+      if (oldNote.next) {
+        list = list.map(item => {
+          if (item.shortId === oldNote.next) {
+            item.previous = oldNote.previous;
+          }
+          return item;
+        })
+      }
+
+      // replacing the note with the new one
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+           return note;
+        } else {
+          return item;
+        }
+      })
+
+      // adjusting the new 'next' and 'previous'
+      if (note.previous) {
+        list = list.map(item => {
+          if (item.shortId === note.previous) {
+            item.next = note.shortId;
+          }
+          return item;
+        })
+      }
+      if (note.next) {
+        list = list.map(item => {
+          if (item.shortId === note.next) {
+            item.previous = note.shortId;
+          }
+          return item;
+        })
+      }
+      
+      $outlineNotesList = list;
+
+    }
     requesting = true;
     try {
-      await window.fetch(
+       window.fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
         {
           method: request,
@@ -56,9 +151,30 @@
             "csrf-token": getToken(),
           },
         }
-      );
+      ).then((res) => {
+            if (res.status === 201 || res.status === 200) {
+                list = list.map(item => {
+              if (item.shortId === note.shortId) {
+                item.display = 'ok'
+              }
+              return item;
+            })
+            $outlineNotesList = list;
+          } else {
+            list = list.map(item => {
+              if (item.shortId === note.shortId) {
+                item.display = 'error'
+              }
+              return item;
+            })
+            $outlineNotesList = list;
+            setTimeout(() => {
+              $refreshOutline = { id: $outline.id, time: Date.now() };
+            }, 3000)
 
-      $refreshOutline = { id: $outline.id, time: Date.now() };
+
+          }
+      })
       requesting = false;
     } catch (err) {
       console.error(err);
@@ -72,14 +188,16 @@
     for (let i = 0; i < items.length; i++) {
       if (id === items[i].id) index = i;
     }
-
     const request = items[index]["contextId"] ? "PATCH" : "POST";
 
     let note = {
       shortId: items[index].shortId,
       fresh: items[index].fresh,
+      body: items[index].body,
+      json: items[index].json,
+      tags: items[index].tags,
+      contextId: items[index].contextId
     };
-
     if (note.fresh) {
       note["body"] = items[index].body;
       note["json"] = items[index].json;

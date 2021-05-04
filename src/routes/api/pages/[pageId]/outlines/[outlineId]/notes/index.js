@@ -1,5 +1,6 @@
 import got from "got";
-
+import crypto from "crypto";
+import { note } from "../../../../../../../stores";
 export async function patch(req, res, next) {
   const url = `${process.env.API_SERVER}outlines/${req.params.outlineId}/notes/${req.body.shortId}`;
   delete req.body.shortId;
@@ -23,21 +24,19 @@ export async function patch(req, res, next) {
 }
 
 export async function post(req, res, next) {
-  const hasId = req.body.fresh ? "" : `?source=${req.body.shortId}`;
+  const hasId = req.body.fresh ? "" : `?source=${req.body.oldId}`;
   const url = `${process.env.API_SERVER}outlines/${req.params.outlineId}/notes${hasId}`;
-  delete req.body.shortId;
+  //delete req.body.shortId;
   delete req.body.id;
   delete req.body.fresh;
-
   try {
     const response = await got.post(url, {
       headers: {
         "content-type": "application/json",
         Authorization: `Bearer ${req.user.token}`,
       },
-      json: req.body,
+      json: req.body, 
     });
-
     return res.sendStatus(response.statusCode);
   } catch (err) {
     console.log(err);
