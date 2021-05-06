@@ -2,6 +2,8 @@
   import { dndzone } from "svelte-dnd-action";
   import { flip } from "svelte/animate";
   import NoteEditor from "../../widgets/NoteEditor.svelte";
+  import { outline, outlineNotesList, page, refreshOutline } from "../../../stores";
+  import { getToken } from "../../../getToken";
 
   export let type;
   export let addNewNote;
@@ -17,7 +19,10 @@
   };
 
   let handleDrop = (e) => {
-    addNewNote = items.length ? true : false;
+    // if dropped outside of the outline, note will not disappear
+    if (e.detail.info.trigger === "droppedIntoAnother") {
+      addNewNote = items.length ? true : false;
+    }
     items = e.detail.items;
     isDragging = false;
   };
@@ -44,6 +49,103 @@
       },
     },
   ];
+
+  let onKeyPress = (e) => {
+    if (e.charCode === 13) {
+      addNoteToEnd({
+        body: [
+          {
+            motivation: "commenting",
+            content: text
+          }
+        ],
+        json: {
+          type: type
+        }
+      })
+      addNewNote = false;
+
+    }
+  }
+
+  function randomString() {
+    let result = [];
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for ( var i = 0; i < 8; i++ ) {
+      result.push(characters.charAt(Math.floor(Math.random() * characters.length)));
+   }
+   return result.join('');
+  }
+
+  export async function addNoteToEnd(note) {
+    let list = $outlineNotesList;
+    
+    // format the note
+    const index = $outline.readerId.indexOf('/readers/');
+    const readerShortId = $outline.readerId.substring(index + 9);
+    note.shortId = `${readerShortId}-${randomString()}`
+    note.id = note.shortId;
+    note.display = 'pending';
+    note.contextId = $outline.shortId;
+    note.fresh= true;
+
+    let lastItem = list.find(item => {
+      return !item.next;
+    })
+    note.previous = lastItem.shortId;
+
+    // add the note
+    list.push(note)
+
+    // edit the lastItem to have a next
+    list = list.map(item => {
+      if (item.shortId === lastItem.shortId) {
+        item.next = note.shortId;
+      }
+      return item;
+    })
+
+    $outlineNotesList = list;
+    try {
+       window.fetch(
+        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
+        {
+          method: 'POST',
+          credentials: "include",
+          body: JSON.stringify(note),
+          headers: {
+            "Content-Type": "application/json",
+            "csrf-token": getToken(),
+          },
+        }
+      ).then((res) => {
+            if (res.status === 201 || res.status === 200) {
+              list = list.map(item => {
+                if (item.shortId === note.shortId) {
+                  item.display = 'ok'
+                }
+                return item;
+              })
+            $outlineNotesList = list;
+          } else {
+            list = list.map(item => {
+              if (item.shortId === note.shortId) {
+                item.display = 'error'
+              }
+              return item;
+            })
+            $outlineNotesList = list;
+            setTimeout(() => {
+              $refreshOutline = { id: $outline.id, time: Date.now() };
+            }, 3000)
+
+          }
+      })
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
 </script>
 
 <style>
@@ -305,13 +407,13 @@
   </div>
   <div class="Content">
     {#if type === 'header'}
-      <input type="text" maxlength="100" class="NewHeader" bind:value={text} />
+      <input type="text" maxlength="100" on:keypress={onKeyPress} class="NewHeader" bind:value={text} />
       <p class="Counter">
         {text ? 100 - text.length : 100} character{text && text.length === 99 ? '' : 's'}
         left
       </p>
     {:else}
-      <NoteEditor bind:richtext={text} />
+      <NoteEditor bind:richtext={text} {addNoteToEnd} />
     {/if}
   </div>
   <button class="CancelBtn" on:click={Cancel} />
