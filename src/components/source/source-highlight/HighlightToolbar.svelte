@@ -162,7 +162,6 @@
     }
   }
   async function createHighlight() {
-    console.log('%%%%%%%%%%%%', $defaultNotebook);
     const json = {
       tags: createdFlags.concat(selectedFlags),
       notebooks: createdNotebooks.concat(selectedNotebooks),

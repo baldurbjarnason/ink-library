@@ -120,7 +120,6 @@
     }
 
     if (createdNotebooks.length > 0) {
-      console.log('refreshing notebooks')
       //TODO: fix this to remove the timeout. If I don't put it, the list of notebooks doesn't refresh right away
       setTimeout(function() { refresh("/api/notebooks") }, 500);
     }
