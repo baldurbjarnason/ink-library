@@ -150,6 +150,7 @@
   {#if plainHighlight || note.source}
     <header>
       <div class="column" />
+      
       <div class="info">
         {#if plainHighlight}
           <p class="Highlight {noted && noted.content ? '' : 'noNote'}">
