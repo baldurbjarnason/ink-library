@@ -9,7 +9,7 @@
   import FlagToDo from "../../img/FlagToDo.svelte";
   import FlagUrgent from "../../img/FlagUrgent.svelte";
   import NavSource from "../../img/NavSource.svelte";
-  import { page, refreshOutline } from "../../../stores";
+  import { page, refreshOutline, outlineNotesList } from "../../../stores";
   import IcoDelete from "../../img/IcoDelete.svelte";
   import { getToken } from "../../../getToken";
   import NoteEditor from "../../widgets/NoteEditor.svelte";
@@ -88,8 +88,19 @@
 
     payload["shortId"] = item.shortId;
 
+    // update the local list of outline notes
+    let list = $outlineNotesList;
+    list = list.map(note => {
+      if (note.shortId === item.shortId) {
+        return Object.assign(note, payload, {display: 'pending'});
+      } else {
+        return note;
+      }
+    })
+    $outlineNotesList = list;
+
     try {
-      await fetch(
+      fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
         {
           method: "PATCH",
@@ -101,8 +112,29 @@
             "csrf-token": getToken(),
           },
         }
-      );
-      $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
+      ).then((res) => {
+        if (res.status === 201 || res.status === 200) {
+                list = list.map(item => {
+              if (item.shortId === note.shortId) {
+                item.display = 'ok'
+              }
+              return item;
+            })
+            $outlineNotesList = list;
+          } else {
+            list = list.map(item => {
+              if (item.shortId === note.shortId) {
+                item.display = 'error'
+              }
+              return item;
+            })
+            $outlineNotesList = list;
+            setTimeout(() => {
+              $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
+            }, 3000)
+          }
+      });
+     // $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
       requesting = false;
       editing = false;
     } catch (err) {
