@@ -10,13 +10,15 @@
   import Loader from "../Loader.svelte";
   import PageNotesSearcher from "./Tools/PageNotesSearcher.svelte";
   import { flip } from "svelte/animate";
+  import { getToken } from "../../getToken";
   import { dndzone, TRIGGERS } from "svelte-dnd-action";
-  import { page } from "../../stores";
+  import { outline, refreshOutline, page, selectedItems, clearSelected, outlineNotesList, note } from "../../stores";
   import {
     pageNotes,
     refreshPageNotes,
     searchPageNotes,
   } from "../../stores/page/notes.js";
+  import Button from "../widgets/Button.svelte"
   //export let items;
   export let requesting;
   export let keyboardNote;
@@ -28,6 +30,170 @@
   const flipDurationMs = 300;
   let shouldIgnoreDndEvents = false;
   let dropFromOthersDisabled = true;
+
+  let selecting = true;
+  let selection = function() {
+    //selectAll = false;
+    if (!selecting) selecting = true;
+  };
+
+  async function moveNotes() {
+    selecting = false;
+    await addNoteToEnd()
+    clearSelected()
+  }
+
+  function randomString() {
+    let result = [];
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for ( var i = 0; i < 8; i++ ) {
+      result.push(characters.charAt(Math.floor(Math.random() * characters.length)));
+   }
+   return result.join('');
+  }
+
+  async function addNoteToEnd() {
+    let list = $outlineNotesList;
+    let notes = Array.from($selectedItems);
+
+    let editedNotes = notes.map((note, i) => {
+      // format the note
+      note.oldId = note.shortId
+      const index = $outline.readerId.indexOf('/readers/');
+      const readerShortId = $outline.readerId.substring(index + 9);
+      note.shortId = `${readerShortId}-${randomString()}`
+      note.id = note.shortId;
+      note.display = 'pending';
+      note.contextId = $outline.shortId;
+      note.fresh= false;
+
+      return note;
+    })
+
+    let lastItem = list.find(item => {
+      return !item.next;
+    })
+    let previous
+    if (lastItem) {
+      previous = lastItem.shortId;
+    }
+
+    editedNotes = editedNotes.map((note, i) => {
+      if (previous) {
+        note.previous = previous
+      } else {
+        note.previous = null;
+      }
+      let next = notes[i + 1];
+      if (next) {
+        note.next = next.shortId;
+      }
+      previous = note.shortId;
+      return note;
+    }) 
+
+    // add the note
+    list = list.concat(editedNotes)
+
+    // edit the lastItem to have a next
+    if (lastItem) {
+      list = list.map(item => {
+      if (item.shortId === lastItem.shortId) {
+          item.next = editedNotes[0].shortId;
+        }
+        return item;
+      })
+    }
+
+    $outlineNotesList = list;
+
+    // edit last note
+    if (lastItem) {
+      lastItem.next = editedNotes[0].shortId
+      try {
+       window.fetch(
+        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes/${lastItem.shortId}`,
+        {
+          method: 'PUT',
+          credentials: "include",
+          body: JSON.stringify(lastItem),
+          headers: {
+            "Content-Type": "application/json",
+            "csrf-token": getToken(),
+          },
+        }
+      ).then((res) => {
+            if (res.status === 201 || res.status === 200) {
+              list = list.map(item => {
+                if (item.shortId === note.shortId) {
+                  item.display = 'ok'
+                }
+                return item;
+              })
+            $outlineNotesList = list;
+          } else {
+            list = list.map(item => {
+              if (item.shortId === note.shortId) {
+                item.display = 'error'
+              }
+              return item;
+            })
+            $outlineNotesList = list;
+            setTimeout(() => {
+              $refreshOutline = { id: $outline.id, time: Date.now() };
+            }, 3000)
+
+          }
+        })
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // add new notes
+    editedNotes.forEach(note => {
+      try {
+       window.fetch(
+        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
+        {
+          method: 'POST',
+          credentials: "include",
+          body: JSON.stringify(note),
+          headers: {
+            "Content-Type": "application/json",
+            "csrf-token": getToken(),
+          },
+        }
+      ).then((res) => {
+            if (res.status === 201 || res.status === 200) {
+              list = list.map(item => {
+                if (item.shortId === note.shortId) {
+                  item.display = 'ok'
+                }
+                return item;
+              })
+            $outlineNotesList = list;
+          } else {
+            list = list.map(item => {
+              if (item.shortId === note.shortId) {
+                item.display = 'error'
+              }
+              return item;
+            })
+            $outlineNotesList = list;
+            setTimeout(() => {
+              $refreshOutline = { id: $outline.id, time: Date.now() };
+            }, 3000)
+
+          }
+      })
+    } catch (err) {
+      console.error(err);
+    }
+    })
+
+  }
+
 
   function handleDndConsider(e) {
     const { trigger, id } = e.detail.info;
@@ -153,7 +319,7 @@
     overflow-y: scroll;
   }
   .Notes .Note {
-    position: relative;
+    position: static;
   }
   .Notes .Note:last-child {
     padding-bottom: 10px;
@@ -317,6 +483,10 @@
        By forcing a new stacking context we get proper z-index layering back. */
     transform: translate(0, 0);
   }
+  .button {
+    
+  }
+
 </style>
 
 <div class="NotesColumnContext">
@@ -331,6 +501,7 @@
           <IcoCloseColumn />
         </span>
       </div>
+
     </div>
     <PageNotesSearcher />
     <div class="ListStyle">
@@ -346,10 +517,17 @@
     </div>
     <div class="Filters {filterOn ? 'active' : ''}">
       <FilterNote />
+
     </div>
+
     {#if notebookNotes.type === 'loading'}
       <Loader />
     {:else if items.length}
+    <div class="button">
+      <Button disabled={!$selectedItems.size} click={moveNotes}>Move notes to Outline</Button>
+
+    </div>
+
       {#if tuto}
         <KeyboardTuto bind:tuto {from} />
       {/if}
@@ -367,7 +545,7 @@
             id={item.shortId}
             animate:flip={{ duration: flipDurationMs }}
             on:keydown={keyDown}>
-            <NoteCardPage note={item} />
+            <NoteCardPage note={item} {selection} {selecting} />
             <div
               class="DragZone"
               aria-label="drag-handle"
@@ -381,12 +559,15 @@
           </div>
         {/each}
       </div>
+
     {:else}
       <div class="EmptyOutline">
         <NoNotes />
         <p>Your notebook is empty</p>
       </div>
     {/if}
+
+    
   </section>
   {#if closeColumn}
     <section class="ClosedNotesColumn" on:click={handleClick}>

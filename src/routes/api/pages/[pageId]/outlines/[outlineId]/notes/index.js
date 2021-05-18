@@ -29,6 +29,14 @@ export async function post(req, res, next) {
   //delete req.body.shortId;
   delete req.body.id;
   delete req.body.fresh;
+  delete req.body.oldId;
+  delete req.body.contextId;
+  delete req.body.display;
+  // not sure why this is needed. Probably something wrong with the backend?
+  if (!req.body.previous) req.body.previous = null;
+  if (!req.body.next) req.body.next = null;
+  if (!req.body.parentId) req.body.parentId = null;
+
   try {
     const response = await got.post(url, {
       headers: {

@@ -38,7 +38,7 @@
   }
 
   function handleDrop(e) {
-    handleSort(e);
+    handleSort(e, 'test');
     arrangement(e);
   }
 

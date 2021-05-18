@@ -36,7 +36,7 @@
   /* your styles go here */
 </style>
 
-<Editor bind:richtext>
+<Editor bind:richtext >
   <div>
     {@html clean(html)}
   </div>

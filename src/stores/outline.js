@@ -8,6 +8,13 @@ const outlineId = derived(page, ($page) => $page.params.outlineId);
 
 export const outlineNotesList = writable([])
 
+export const addNoteToEndOfOutline = function (notes) {
+
+
+
+
+}
+
 export const orderedOutlineNotes = derived([outlineNotesList, refreshOutline, outlineId], ([$outlineNotesList, $refreshOutline, $outlineId], set) => {
   if (!$refreshOutline.id || $refreshOutline.id !== $outlineId) {
     set([]);
