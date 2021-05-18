@@ -4,6 +4,10 @@ import { note } from "../../../../../../../stores";
 export async function patch(req, res, next) {
   const url = `${process.env.API_SERVER}outlines/${req.params.outlineId}/notes/${req.body.shortId}`;
   delete req.body.shortId;
+    // not sure why this is needed. Probably something wrong with the backend?
+    if (!req.body.previous) req.body.previous = null;
+    if (!req.body.next) req.body.next = null;
+    if (!req.body.parentId) req.body.parentId = null;
   try {
     const response = await got.patch(url, {
       headers: {

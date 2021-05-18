@@ -319,7 +319,7 @@
     overflow-y: scroll;
   }
   .Notes .Note {
-    position: static;
+    position: relative;
   }
   .Notes .Note:last-child {
     padding-bottom: 10px;
@@ -461,7 +461,7 @@
     align-items: center;
   }
   div.DragZone {
-    position: absolute;
+    position:absolute;
     top: 15px;
     right: 15px;
     display: grid;
