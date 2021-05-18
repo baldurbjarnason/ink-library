@@ -319,7 +319,7 @@
     overflow-y: scroll;
   }
   .Notes .Note {
-    position: static;
+    position: relative;
   }
   .Notes .Note:last-child {
     padding-bottom: 10px;
