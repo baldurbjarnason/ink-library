@@ -25,6 +25,12 @@
     noteEdition = noteEdition ? noteEdition.content : "";
   }
 
+  let noteEditions;
+  $: if (editing === item.shortId && !noteEditions) {
+    noteEditions = item.body.map(item => item.content);
+  }
+
+
   function assignIco(icon) {
     switch (icon) {
       case "further reading":
@@ -73,19 +79,23 @@
   let Save = async () => {
     requesting = true;
     const payload = Object.assign({}, { body: item.body });
-    if (payload.body[0].motivation === "commenting")
-      payload.body[0].content = noteEdition;
-    else {
-      if (!payload.body[1]) {
-        payload.body = [
-          ...payload.body,
-          { content: noteEdition, motivation: "commenting", language: "null" },
-        ];
-      } else {
-        payload.body[1].content = noteEdition;
-      }
-    }
-
+    payload.body = noteEditions.map((editedNote, i) => {
+      payload.body[i].content = editedNote;
+      return Object.assign(payload.body[i], { content: editedNote })
+    })
+    // if (payload.body[0].motivation === "commenting")
+    //   payload.body[0].content = noteEdition;
+    // else {
+    //   if (!payload.body[1]) {
+    //     payload.body = [
+    //       ...payload.body,
+    //       { content: noteEdition, motivation: "commenting", language: "null" },
+    //     ];
+    //   } else {
+    //     payload.body[1].content = noteEdition;
+    //   }
+    // }
+console.log(payload)
     payload["shortId"] = item.shortId;
 
     // update the local list of outline notes
@@ -443,7 +453,11 @@
 
 {#if editing === item.shortId}
   <div class="Item OutlineEdit {noteColour}">
-    <NoteEditor bind:richtext={noteEdition} html={noteEdition} />
+    {#if noteEditions}
+    {#each noteEditions as edition}
+    <NoteEditor bind:richtext={edition} html={edition} />
+    {/each}
+    {/if}
   </div>
   <button class="Cancel" on:click={Cancel} />
   <footer>

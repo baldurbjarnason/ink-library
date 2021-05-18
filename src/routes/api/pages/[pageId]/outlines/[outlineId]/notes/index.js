@@ -4,7 +4,6 @@ import { note } from "../../../../../../../stores";
 export async function patch(req, res, next) {
   const url = `${process.env.API_SERVER}outlines/${req.params.outlineId}/notes/${req.body.shortId}`;
   delete req.body.shortId;
-
   try {
     const response = await got.patch(url, {
       headers: {
