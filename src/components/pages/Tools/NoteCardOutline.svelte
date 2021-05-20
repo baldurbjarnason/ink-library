@@ -19,15 +19,16 @@
   import SmallLoader from "../../SmallLoader.svelte"
 
   $: note = item;
-  let noteEdition;
-  $: if (editing === item.shortId && !noteEdition) {
-    noteEdition = item.body.find((note) => note.motivation === "commenting");
-    noteEdition = noteEdition ? noteEdition.content : "";
-  }
 
   let noteEditions;
   $: if (editing === item.shortId && !noteEditions) {
     noteEditions = item.body.map(item => item.content);
+    noteEditions = item.body.sort((a,b) => {
+      return a.motivation !== 'highlighting'
+    });
+    if (noteEditions.length === 1 && noteEditions[0].motivation === 'highlighting') {
+      noteEditions.push({content: '', motivation: 'commenting'})
+    }
   }
 
 
@@ -80,22 +81,10 @@
     requesting = true;
     const payload = Object.assign({}, { body: item.body });
     payload.body = noteEditions.map((editedNote, i) => {
-      payload.body[i].content = editedNote;
-      return Object.assign(payload.body[i], { content: editedNote })
+      payload.body[i].content = editedNote.content;
+      return Object.assign(payload.body[i], { content: editedNote.content })
     })
-    // if (payload.body[0].motivation === "commenting")
-    //   payload.body[0].content = noteEdition;
-    // else {
-    //   if (!payload.body[1]) {
-    //     payload.body = [
-    //       ...payload.body,
-    //       { content: noteEdition, motivation: "commenting", language: "null" },
-    //     ];
-    //   } else {
-    //     payload.body[1].content = noteEdition;
-    //   }
-    // }
-console.log(payload)
+
     payload["shortId"] = item.shortId;
 
     // update the local list of outline notes
@@ -455,7 +444,7 @@ console.log(payload)
   <div class="Item OutlineEdit {noteColour}">
     {#if noteEditions}
     {#each noteEditions as edition}
-    <NoteEditor bind:richtext={edition} html={edition} />
+    <NoteEditor bind:richtext={edition.content} html={edition.content} />
     {/each}
     {/if}
   </div>

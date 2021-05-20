@@ -17,10 +17,8 @@ export async function patch(req, res, next) {
       },
       json: req.body,
     });
-
     return res.sendStatus(response.statusCode);
   } catch (err) {
-    console.log(err);
     res.status(err.response.statusCode);
     return res.json(JSON.parse(err.response.body));
   }
@@ -39,7 +37,7 @@ export async function post(req, res, next) {
   if (!req.body.previous) req.body.previous = null;
   if (!req.body.next) req.body.next = null;
   if (!req.body.parentId) req.body.parentId = null;
-
+console.log('before', req.body.next, req.body.previous)
   try {
     const response = await got.post(url, {
       headers: {
@@ -48,6 +46,8 @@ export async function post(req, res, next) {
       },
       json: req.body, 
     });
+    let body = JSON.parse(response.body)
+    console.log('after', body.next, body.previous)
     return res.sendStatus(response.statusCode);
   } catch (err) {
     console.log(err);
