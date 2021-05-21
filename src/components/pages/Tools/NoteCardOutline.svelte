@@ -29,6 +29,7 @@
     if (noteEditions.length === 1 && noteEditions[0].motivation === 'highlighting') {
       noteEditions.push({content: '', motivation: 'commenting'})
     }
+    console.log(noteEditions)
   }
 
 
@@ -230,6 +231,13 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
   }
+  .highlighting {
+    padding: 5px;
+    margin-right: 20px;
+    border-radius: 5px;
+    background-color: white;
+  }
+
   /* -------------- Note -------------- */
   .Note,
   .Highlight {
@@ -246,7 +254,9 @@
   .colour1 {
     background: #fcefe7;
   }
+
   .colour1 header .column,
+  .colour1 .OutlineEdit .column,
   .colour1 .OutlineFlags li,
   .colour1 ~ .Cancel:hover,
   .colour1 ~ .Cancel::before,
@@ -254,6 +264,11 @@
   .colour1 ~ footer button.Save {
     background: #d86801;
   }
+
+  .colour1 .highlighting {
+    border: #d86801 solid;
+  }
+
   /* ------------ Colour 2 ------------ */
   .colour2 {
     background: #faebf4;
@@ -266,6 +281,11 @@
   .colour2 ~ footer button.Save {
     background: #c0004e;
   }
+
+  .colour2 .highlighting {
+    border: #c0004e solid;
+  }
+
   /* ------------ Colour 3 ------------ */
   .colour3 {
     background: #e2f7fb;
@@ -278,6 +298,10 @@
   .colour3 ~ footer button.Save {
     background: #0693b2;
   }
+  .colour3 .highlighting {
+    border: #0693b2 solid;
+  }
+
   /* ------------ Colour 4 ------------ */
   .colour4 {
     background: #e7f3e3;
@@ -290,6 +314,11 @@
   .colour4 ~ footer button.Save {
     background: #589b4c;
   }
+
+  .colour4 .highlighting {
+    border: #589b4c solid;
+  }
+
   /* ------------ No colour ------------ */
   .NoColour {
     background: transparent;
@@ -297,6 +326,9 @@
   .NoColour header .column,
   .NoColour .OutlineFlags li {
     background: #888888;
+  }
+  .NoColour .highlighting {
+    border: #888888 solid;
   }
 
   .OutlineFlags {
@@ -444,7 +476,9 @@
   <div class="Item OutlineEdit {noteColour}">
     {#if noteEditions}
     {#each noteEditions as edition}
+    <div class={edition.motivation}>
     <NoteEditor bind:richtext={edition.content} html={edition.content} />
+  </div>
     {/each}
     {/if}
   </div>
