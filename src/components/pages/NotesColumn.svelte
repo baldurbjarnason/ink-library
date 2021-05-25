@@ -107,53 +107,10 @@
 
     $outlineNotesList = list;
 
-    // edit last note
-    if (lastItem) {
-      lastItem.next = editedNotes[0].shortId
+    // add new notes 
+    await editedNotes.forEach(async note => {
       try {
-       window.fetch(
-        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes/${lastItem.shortId}`,
-        {
-          method: 'PUT',
-          credentials: "include",
-          body: JSON.stringify(lastItem),
-          headers: {
-            "Content-Type": "application/json",
-            "csrf-token": getToken(),
-          },
-        }
-      ).then((res) => {
-            if (res.status === 201 || res.status === 200) {
-              list = list.map(item => {
-                if (item.shortId === note.shortId) {
-                  item.display = 'ok'
-                }
-                return item;
-              })
-            $outlineNotesList = list;
-          } else {
-            list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'error'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-            setTimeout(() => {
-              $refreshOutline = { id: $outline.id, time: Date.now() };
-            }, 3000)
-
-          }
-        })
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // add new notes
-    editedNotes.forEach(note => {
-      try {
-       window.fetch(
+       await window.fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
         {
           method: 'POST',
@@ -167,11 +124,11 @@
       ).then((res) => {
             if (res.status === 201 || res.status === 200) {
               list = list.map(item => {
-                if (item.shortId === note.shortId) {
-                  item.display = 'ok'
-                }
-                return item;
-              })
+              if (item.shortId === note.shortId) {
+                item.display = 'ok'
+              }
+              return item;
+            })
             $outlineNotesList = list;
           } else {
             list = list.map(item => {
@@ -191,6 +148,31 @@
       console.error(err);
     }
     })
+
+
+    // edit last note
+    if (lastItem) {
+      lastItem.next = editedNotes[0].shortId
+      try {
+       window.fetch(
+        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
+        {
+          method: 'PATCH',
+          credentials: "include",
+          body: JSON.stringify(lastItem),
+          headers: {
+            "Content-Type": "application/json",
+            "csrf-token": getToken(),
+          },
+        }
+      ).then((res) => {
+        $outlineNotesList = list;
+
+        })
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
   }
 
@@ -461,7 +443,7 @@
     align-items: center;
   }
   div.DragZone {
-    position: absolute;
+    position:absolute;
     top: 15px;
     right: 15px;
     display: grid;
