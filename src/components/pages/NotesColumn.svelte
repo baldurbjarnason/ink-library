@@ -55,33 +55,59 @@
 
   function addMultipleNotesToEndOfOutline (notes) {
   let list = $outlineNotesList;
-  let lastId
-
+  let lastId;
+  console.log(list.length)
   list = list.map(item => {
     if (!item.next) {
-      item.next = firstNew.shortId;
+      item.next = notes[0].shortId;
       lastId = item.shortId;
     }
-    return item
+    return item;
   })
 
   notes = notes.map((item, i) => {
     item.previous = lastId
-    item.next = notes[i+1].shortId
+    item.next = notes[i+1] ? notes[i+1].shortId : undefined;
     lastId = item.shortId;
     return item;
   })
 
-  list.concat(notes);
-  
+  list  = list.concat(notes);
   $outlineNotesList = list;
+  return notes
 
 }
+
+async function handleResponse(status, notes) {
+    let list = $outlineNotesList;
+    if (status === 201 || status === 200) {
+      list = list.map(item => {
+        if (notes.find(notesItem => {
+          return notesItem.shortId === item.shortId
+        })) {
+          item.display = 'ok'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+    } else {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'error'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+      setTimeout(() => {
+        $refreshOutline = { id: $outline.id, time: Date.now() };
+      }, 3000)
+
+    }
+  }
 
   async function addNoteToEnd() {
     let list = $outlineNotesList;
     let notes = Array.from($selectedItems);
-
     let editedNotes = notes.map((note, i) => {
       // format the note
       note.oldId = note.shortId
@@ -96,73 +122,27 @@
       return note;
     })
 
-    addMultipleNotesToEndOfOutline(editedNotes)
 
+    let orderedNotes = addMultipleNotesToEndOfOutline(editedNotes)
     // add new notes 
-    await editedNotes.forEach(async note => {
-      try {
+
+    try {
        await window.fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
         {
           method: 'POST',
           credentials: "include",
-          body: JSON.stringify(note),
+          body: JSON.stringify(orderedNotes),
           headers: {
             "Content-Type": "application/json",
             "csrf-token": getToken(),
           },
         }
-      ).then((res) => {
-            if (res.status === 201 || res.status === 200) {
-              list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'ok'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-          } else {
-            list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'error'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-            setTimeout(() => {
-              $refreshOutline = { id: $outline.id, time: Date.now() };
-            }, 3000)
-
-          }
+      ).then(async (res) => {
+          await handleResponse(res.status, orderedNotes)
       })
     } catch (err) {
       console.error(err);
-    }
-    })
-
-
-    // edit last note
-    if (lastItem) {
-      lastItem.next = editedNotes[0].shortId
-      try {
-       window.fetch(
-        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
-        {
-          method: 'PATCH',
-          credentials: "include",
-          body: JSON.stringify(lastItem),
-          headers: {
-            "Content-Type": "application/json",
-            "csrf-token": getToken(),
-          },
-        }
-      ).then((res) => {
-        $outlineNotesList = list;
-
-        })
-      } catch (err) {
-        console.error(err);
-      }
     }
 
   }
