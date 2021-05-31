@@ -106,11 +106,10 @@ async function handleResponse(status, notes) {
   }
 
   async function addNoteToEnd() {
-    let list = $outlineNotesList;
     let notes = Array.from($selectedItems);
     let editedNotes = notes.map((note, i) => {
       // format the note
-      note.oldId = note.shortId
+      note.original = note.shortId
       const index = $outline.readerId.indexOf('/readers/');
       const readerShortId = $outline.readerId.substring(index + 9);
       note.shortId = `${readerShortId}-${randomString()}`
