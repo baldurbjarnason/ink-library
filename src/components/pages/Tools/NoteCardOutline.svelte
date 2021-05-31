@@ -78,6 +78,43 @@
     editing = false;
   };
 
+  let UpdateOutlineNote = (note) => {
+    let list = $outlineNotesList;
+    list = list.map(item => {
+      if (item.shortId === note.shortId) {
+        return Object.assign(item, note, {display: 'pending'});
+      } else {
+        return item;
+      }
+    })
+    $outlineNotesList = list;
+  }
+
+  async function handleResponse(status, note) {
+    let list = $outlineNotesList;
+    if (status === 201 || status === 200) {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'ok'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+    } else {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'error'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+      setTimeout(() => {
+        $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
+      }, 3000)
+
+    }
+  }
+
   let Save = async () => {
     requesting = true;
     const payload = Object.assign({}, { body: item.body });
@@ -89,15 +126,7 @@
     payload["shortId"] = item.shortId;
 
     // update the local list of outline notes
-    let list = $outlineNotesList;
-    list = list.map(note => {
-      if (note.shortId === item.shortId) {
-        return Object.assign(note, payload, {display: 'pending'});
-      } else {
-        return note;
-      }
-    })
-    $outlineNotesList = list;
+    UpdateOutlineNote(note)
 
     try {
       fetch(
@@ -112,27 +141,8 @@
             "csrf-token": getToken(),
           },
         }
-      ).then((res) => {
-        if (res.status === 201 || res.status === 200) {
-                list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'ok'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-          } else {
-            list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'error'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-            setTimeout(() => {
-              $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
-            }, 3000)
-          }
+      ).then(async (res) => {
+        await handleResponse(res.status)
       });
      // $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
       requesting = false;

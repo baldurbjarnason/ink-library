@@ -52,6 +52,32 @@
    return result.join('');
   }
 
+
+  function addMultipleNotesToEndOfOutline (notes) {
+  let list = $outlineNotesList;
+  let lastId
+
+  list = list.map(item => {
+    if (!item.next) {
+      item.next = firstNew.shortId;
+      lastId = item.shortId;
+    }
+    return item
+  })
+
+  notes = notes.map((item, i) => {
+    item.previous = lastId
+    item.next = notes[i+1].shortId
+    lastId = item.shortId;
+    return item;
+  })
+
+  list.concat(notes);
+  
+  $outlineNotesList = list;
+
+}
+
   async function addNoteToEnd() {
     let list = $outlineNotesList;
     let notes = Array.from($selectedItems);
@@ -70,42 +96,7 @@
       return note;
     })
 
-    let lastItem = list.find(item => {
-      return !item.next;
-    })
-    let previous
-    if (lastItem) {
-      previous = lastItem.shortId;
-    }
-
-    editedNotes = editedNotes.map((note, i) => {
-      if (previous) {
-        note.previous = previous
-      } else {
-        note.previous = null;
-      }
-      let next = notes[i + 1];
-      if (next) {
-        note.next = next.shortId;
-      }
-      previous = note.shortId;
-      return note;
-    }) 
-
-    // add the note
-    list = list.concat(editedNotes)
-
-    // edit the lastItem to have a next
-    if (lastItem) {
-      list = list.map(item => {
-      if (item.shortId === lastItem.shortId) {
-          item.next = editedNotes[0].shortId;
-        }
-        return item;
-      })
-    }
-
-    $outlineNotesList = list;
+    addMultipleNotesToEndOfOutline(editedNotes)
 
     // add new notes 
     await editedNotes.forEach(async note => {
