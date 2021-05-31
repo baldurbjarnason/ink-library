@@ -219,6 +219,11 @@
     </header>
   {/if}
   {#if plainComment}
+  <input
+  class="BulkSelector"
+  type="checkbox"
+  bind:checked={selected}
+  on:click={() => selection()} />
     <p class="Note">{plainComment}</p>
   {/if}
 </div>
