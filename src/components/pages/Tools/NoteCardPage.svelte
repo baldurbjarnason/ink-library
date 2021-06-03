@@ -196,12 +196,13 @@
   {plainComment && (plainHighlight || note.source) ? 'two' : ''}">
   {#if plainHighlight || note.source}
     <header>
-      <input
+      <!-- bulk add to outline -->
+      <!-- <input
       class="BulkSelector"
       type="checkbox"
       bind:checked={selected}
       on:click={() => selection()} />
-      <div class="column" />
+      <div class="column" /> -->
       
       <div class="info">
         {#if plainHighlight}
@@ -219,6 +220,12 @@
     </header>
   {/if}
   {#if plainComment}
+    <!-- bulk add to outline -->
+  <!-- <input
+  class="BulkSelector"
+  type="checkbox"
+  bind:checked={selected}
+  on:click={() => selection()} /> -->
     <p class="Note">{plainComment}</p>
   {/if}
 </div>

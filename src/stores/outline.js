@@ -1,6 +1,7 @@
 import { page } from "./page";
 import { derived, writable } from "svelte/store";
 import { fetch } from "./fetch.js";
+import set from "date-fns/set";
 
 export const refreshOutline = writable({ id: null, time: Date.now() });
 
@@ -8,20 +9,14 @@ const outlineId = derived(page, ($page) => $page.params.outlineId);
 
 export const outlineNotesList = writable([])
 
-export const addNoteToEndOfOutline = function (notes) {
-
-
-
-
-}
 
 export const orderedOutlineNotes = derived([outlineNotesList, refreshOutline, outlineId], ([$outlineNotesList, $refreshOutline, $outlineId], set) => {
   if (!$refreshOutline.id || $refreshOutline.id !== $outlineId) {
     set([]);
   }
-  const orderedList = []
-   let list = $outlineNotesList;
-   if (list.length === 0) return [];
+  const orderedList = [];
+  let list = $outlineNotesList;
+  if (list.length === 0) return [];
   
    list = list.map(note => {
      // needs a note.previous, note.next...

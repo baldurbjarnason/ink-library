@@ -52,126 +52,109 @@
    return result.join('');
   }
 
-  async function addNoteToEnd() {
-    let list = $outlineNotesList;
-    let notes = Array.from($selectedItems);
 
+  function addMultipleNotesToEndOfOutline (notes) {
+  let list = $outlineNotesList;
+  notes = notes.map(note => {
+    note.previous = null;
+    note.next = null;
+    return note;
+  })
+  if (list.length) list[0].previous = null;
+
+  let lastId = undefined;
+  list = list.map(item => {
+    if (!item.next) {
+     // item.next = notes[0].shortId;
+      lastId = item.shortId;
+    }
+    return item;
+  })
+
+  let orderedNotes = notes.map((item, i) => {
+    item.previous = lastId
+    lastId = item.shortId;
+    item.next = notes[i+1] ? notes[i+1].shortId : undefined;
+    return item;
+  })
+
+  list = list.map(item => {
+    if (!item.next) {
+      item.next = orderedNotes[0].shortId;
+      //lastId = item.shortId;
+    }
+    return item;
+  })
+
+  list  = list.concat(orderedNotes);
+  $outlineNotesList = list;
+  return orderedNotes
+
+}
+
+async function handleResponse(status, notes) {
+    let list = $outlineNotesList;
+    if (status === 201 || status === 200) {
+      list = list.map(item => {
+        if (notes.find(notesItem => {
+          return notesItem.shortId === item.shortId
+        })) {
+          item.display = 'ok'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+    } else {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'error'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+      setTimeout(() => {
+        $refreshOutline = { id: $outline.id, time: Date.now() };
+      }, 3000)
+
+    }
+  }
+
+  async function addNoteToEnd() {
+    let notes = Array.from($selectedItems);
     let editedNotes = notes.map((note, i) => {
       // format the note
-      note.oldId = note.shortId
+      note.original = note.shortId;
+      note.oldId = note.shortId;
       const index = $outline.readerId.indexOf('/readers/');
       const readerShortId = $outline.readerId.substring(index + 9);
       note.shortId = `${readerShortId}-${randomString()}`
       note.id = note.shortId;
       note.display = 'pending';
-      note.contextId = $outline.shortId;
+      note.contextId = $outline.id;
       note.fresh= false;
 
       return note;
     })
 
-    let lastItem = list.find(item => {
-      return !item.next;
-    })
-    let previous
-    if (lastItem) {
-      previous = lastItem.shortId;
-    }
-
-    editedNotes = editedNotes.map((note, i) => {
-      if (previous) {
-        note.previous = previous
-      } else {
-        note.previous = null;
-      }
-      let next = notes[i + 1];
-      if (next) {
-        note.next = next.shortId;
-      }
-      previous = note.shortId;
-      return note;
-    }) 
-
-    // add the note
-    list = list.concat(editedNotes)
-
-    // edit the lastItem to have a next
-    if (lastItem) {
-      list = list.map(item => {
-      if (item.shortId === lastItem.shortId) {
-          item.next = editedNotes[0].shortId;
-        }
-        return item;
-      })
-    }
-
-    $outlineNotesList = list;
-
-    // add new notes 
-    await editedNotes.forEach(async note => {
-      try {
+    let orderedNotes = addMultipleNotesToEndOfOutline(editedNotes)
+    clearSelected()
+    try {
        await window.fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
         {
           method: 'POST',
           credentials: "include",
-          body: JSON.stringify(note),
+          body: JSON.stringify(orderedNotes),
           headers: {
             "Content-Type": "application/json",
             "csrf-token": getToken(),
           },
         }
-      ).then((res) => {
-            if (res.status === 201 || res.status === 200) {
-              list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'ok'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-          } else {
-            list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'error'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-            setTimeout(() => {
-              $refreshOutline = { id: $outline.id, time: Date.now() };
-            }, 3000)
-
-          }
+      ).then(async (res) => {
+          await handleResponse(res.status, orderedNotes)
       })
     } catch (err) {
       console.error(err);
-    }
-    })
-
-
-    // edit last note
-    if (lastItem) {
-      lastItem.next = editedNotes[0].shortId
-      try {
-       window.fetch(
-        `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
-        {
-          method: 'PATCH',
-          credentials: "include",
-          body: JSON.stringify(lastItem),
-          headers: {
-            "Content-Type": "application/json",
-            "csrf-token": getToken(),
-          },
-        }
-      ).then((res) => {
-        $outlineNotesList = list;
-
-        })
-      } catch (err) {
-        console.error(err);
-      }
     }
 
   }
@@ -505,10 +488,11 @@
     {#if notebookNotes.type === 'loading'}
       <Loader />
     {:else if items.length}
-    <div class="button">
+      <!-- bulk add to outline -->
+    <!-- <div class="button">
       <Button disabled={!$selectedItems.size} click={moveNotes}>Move notes to Outline</Button>
 
-    </div>
+    </div> -->
 
       {#if tuto}
         <KeyboardTuto bind:tuto {from} />

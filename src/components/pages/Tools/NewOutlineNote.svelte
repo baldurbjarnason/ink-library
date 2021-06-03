@@ -77,17 +77,33 @@
    return result.join('');
   }
 
-  export async function addNoteToEnd(note) {
+  async function handleResponse(status, note) {
     let list = $outlineNotesList;
-    
-    // format the note
-    const index = $outline.readerId.indexOf('/readers/');
-    const readerShortId = $outline.readerId.substring(index + 9);
-    note.shortId = `${readerShortId}-${randomString()}`
-    note.id = note.shortId;
-    note.display = 'pending';
-    note.contextId = $outline.shortId;
-    note.fresh= true;
+    if (status === 201 || status === 200) {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'ok'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+    } else {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'error'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+      setTimeout(() => {
+        $refreshOutline = { id: $outline.id, time: Date.now() };
+      }, 3000)
+
+    }
+  }
+
+  function addNoteToEndOfOutline(note) {
+    let list = $outlineNotesList;
 
     let lastItem = list.find(item => {
       return !item.next;
@@ -106,6 +122,22 @@
     })
 
     $outlineNotesList = list;
+    return note;
+  }
+
+  export async function addNoteToEnd(note) {
+    
+    // format the note
+    const index = $outline.readerId.indexOf('/readers/');
+    const readerShortId = $outline.readerId.substring(index + 9);
+    note.shortId = `${readerShortId}-${randomString()}`
+    note.id = note.shortId;
+    note.display = 'pending';
+    note.contextId = $outline.shortId;
+    note.fresh= true;
+
+    note = addNoteToEndOfOutline(note)
+
     try {
        window.fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
@@ -118,28 +150,8 @@
             "csrf-token": getToken(),
           },
         }
-      ).then((res) => {
-            if (res.status === 201 || res.status === 200) {
-              list = list.map(item => {
-                if (item.shortId === note.shortId) {
-                  item.display = 'ok'
-                }
-                return item;
-              })
-            $outlineNotesList = list;
-          } else {
-            list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'error'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-            setTimeout(() => {
-              $refreshOutline = { id: $outline.id, time: Date.now() };
-            }, 3000)
-
-          }
+      ).then(async (res) => {
+        await handleResponse(res.status, note)
       })
     } catch (err) {
       console.error(err);

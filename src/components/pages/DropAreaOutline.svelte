@@ -17,7 +17,8 @@
   } from "svelte-dnd-action";
   import { fade } from "svelte/transition"; // fade in works, but fade-out is a known issue
   import { cubicIn } from "svelte/easing";
-  import { pageItem, page, outline, refreshOutline, outlineNotesList } from "../../stores";
+  import { pageItem, page, outline, 
+    refreshOutline, outlineNotesList } from "../../stores";
   export let items;
   export let requesting;
   export let outlineInfo;
@@ -51,42 +52,33 @@
    return result.join('');
   }
 
-  async function addNote(note, request) {
-    let list
-    if (request === 'POST') {
-      note.oldId = note.shortId === '12345' ? null : note.shortId
-      const index = $outline.readerId.indexOf('/readers/');
-      const readerShortId = $outline.readerId.substring(index + 9);
-      note.shortId = `${readerShortId}-${randomString()}`
-      note.id = note.shortId; // not sure why necessary?
-      note.display = 'pending';
-      note.contextId = $outline.shortId;
-      list = $outlineNotesList;
-      list.push(note);
-      if (note.previous) {
-        list = list.map(item => {
-          if (item.shortId === note.previous) {
-            item.next = note.shortId;
-          }
-          return item;
-        })
-      }
-      if (note.next) {
-        list = list.map(item => {
-          if (item.shortId === note.next) {
-            item.previous = note.shortId;
-          }
-          return item;
-        })
-      }
-      
-      $outlineNotesList = list;
+  // OUTLINE STUFF
+  
+  function addNoteToOutline (note) {
+    let list = $outlineNotesList;
+    if (note.previous) {
+      list = list.map(item => {
+        if (item.shortId === note.previous) {
+          item.next = note.shortId;
+        }
+        return item;
+      })
+    }
+    if (note.next) {
+      list = list.map(item => {
+        if (item.shortId === note.next) {
+          item.previous = note.shortId;
+        }
+        return item;
+      })
+    }
+    list.push(note)
+    $outlineNotesList = list;
+  }
 
-    } else {
-      note.display = 'pending'
-      list = $outlineNotesList;
+  function moveNoteInOutline (note) {
+      let list = $outlineNotesList;
       note.id = note.shortId; // why?
-
       // adjusting notes that were 'previous' or 'next' before
       const oldNote = list.find(item => {
         return item.shortId === note.shortId;
@@ -136,6 +128,49 @@
       }
       
       $outlineNotesList = list;
+  }
+
+  async function handleResponse(status, note) {
+    let list = $outlineNotesList;
+    if (status === 201 || status === 200) {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'ok'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+    } else {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'error'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+      setTimeout(() => {
+        $refreshOutline = { id: $outline.id, time: Date.now() };
+      }, 3000)
+
+    }
+  }
+
+  // END OUTLINE STUFF
+
+  async function addNote(note, request) {
+    if (request === 'POST') {
+      note.oldId = note.shortId === '12345' ? null : note.shortId
+      const index = $outline.readerId.indexOf('/readers/');
+      const readerShortId = $outline.readerId.substring(index + 9);
+      note.shortId = `${readerShortId}-${randomString()}`
+      note.id = note.shortId; // not sure why necessary?
+      note.display = 'pending';
+      note.contextId = $outline.shortId;
+      addNoteToOutline(note)
+
+    } else {
+      note.display = 'pending'
+      moveNoteInOutline(note)
 
     }
     requesting = true;
@@ -151,29 +186,8 @@
             "csrf-token": getToken(),
           },
         }
-      ).then((res) => {
-            if (res.status === 201 || res.status === 200) {
-                list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'ok'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-          } else {
-            list = list.map(item => {
-              if (item.shortId === note.shortId) {
-                item.display = 'error'
-              }
-              return item;
-            })
-            $outlineNotesList = list;
-            setTimeout(() => {
-              $refreshOutline = { id: $outline.id, time: Date.now() };
-            }, 3000)
-
-
-          }
+      ).then(async (res) => {
+        await handleResponse(res.status, note)
       })
       requesting = false;
     } catch (err) {
