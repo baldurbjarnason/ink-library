@@ -55,26 +55,40 @@
 
   function addMultipleNotesToEndOfOutline (notes) {
   let list = $outlineNotesList;
-  let lastId;
-  console.log(list.length)
+  notes = notes.map(note => {
+    note.previous = null;
+    note.next = null;
+    return note;
+  })
+  if (list.length) list[0].previous = null;
+
+  let lastId = undefined;
   list = list.map(item => {
     if (!item.next) {
-      item.next = notes[0].shortId;
+     // item.next = notes[0].shortId;
       lastId = item.shortId;
     }
     return item;
   })
 
-  notes = notes.map((item, i) => {
+  let orderedNotes = notes.map((item, i) => {
     item.previous = lastId
-    item.next = notes[i+1] ? notes[i+1].shortId : undefined;
     lastId = item.shortId;
+    item.next = notes[i+1] ? notes[i+1].shortId : undefined;
     return item;
   })
 
-  list  = list.concat(notes);
+  list = list.map(item => {
+    if (!item.next) {
+      item.next = orderedNotes[0].shortId;
+      //lastId = item.shortId;
+    }
+    return item;
+  })
+
+  list  = list.concat(orderedNotes);
   $outlineNotesList = list;
-  return notes
+  return orderedNotes
 
 }
 
@@ -109,22 +123,21 @@ async function handleResponse(status, notes) {
     let notes = Array.from($selectedItems);
     let editedNotes = notes.map((note, i) => {
       // format the note
-      note.original = note.shortId
+      note.original = note.shortId;
+      note.oldId = note.shortId;
       const index = $outline.readerId.indexOf('/readers/');
       const readerShortId = $outline.readerId.substring(index + 9);
       note.shortId = `${readerShortId}-${randomString()}`
       note.id = note.shortId;
       note.display = 'pending';
-      note.contextId = $outline.shortId;
+      note.contextId = $outline.id;
       note.fresh= false;
 
       return note;
     })
 
-
     let orderedNotes = addMultipleNotesToEndOfOutline(editedNotes)
-    // add new notes 
-
+    clearSelected()
     try {
        await window.fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
@@ -475,10 +488,11 @@ async function handleResponse(status, notes) {
     {#if notebookNotes.type === 'loading'}
       <Loader />
     {:else if items.length}
-    <div class="button">
+      <!-- bulk add to outline -->
+    <!-- <div class="button">
       <Button disabled={!$selectedItems.size} click={moveNotes}>Move notes to Outline</Button>
 
-    </div>
+    </div> -->
 
       {#if tuto}
         <KeyboardTuto bind:tuto {from} />

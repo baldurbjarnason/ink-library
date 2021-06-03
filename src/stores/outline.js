@@ -10,38 +10,13 @@ const outlineId = derived(page, ($page) => $page.params.outlineId);
 export const outlineNotesList = writable([])
 
 
-// export const addMultipleNotesToEndOfOutline = function (notes) {
-//   let list = $outlineNotesList;
-//   let lastId
-
-//   list = list.map(item => {
-//     if (!item.next) {
-//       item.next = firstNew.shortId;
-//       lastId = item.shortId;
-//     }
-//     return item
-//   })
-
-//   notes = notes.map((item, i) => {
-//     item.previous = lastId
-//     item.next = notes[i+1].shortId
-//     lastId = item.shortId;
-//     return item;
-//   })
-
-//   list.concat(notes);
-  
-//   $outlineNotesList = list;
-// }
-
-
 export const orderedOutlineNotes = derived([outlineNotesList, refreshOutline, outlineId], ([$outlineNotesList, $refreshOutline, $outlineId], set) => {
   if (!$refreshOutline.id || $refreshOutline.id !== $outlineId) {
     set([]);
   }
-  const orderedList = []
-   let list = $outlineNotesList;
-   if (list.length === 0) return [];
+  const orderedList = [];
+  let list = $outlineNotesList;
+  if (list.length === 0) return [];
   
    list = list.map(note => {
      // needs a note.previous, note.next...

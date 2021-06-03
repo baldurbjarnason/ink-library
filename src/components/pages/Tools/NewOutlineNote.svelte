@@ -122,10 +122,10 @@
     })
 
     $outlineNotesList = list;
+    return note;
   }
 
   export async function addNoteToEnd(note) {
-    let list = $outlineNotesList;
     
     // format the note
     const index = $outline.readerId.indexOf('/readers/');
@@ -136,7 +136,7 @@
     note.contextId = $outline.shortId;
     note.fresh= true;
 
-    addNoteToEndOfOutline(note)
+    note = addNoteToEndOfOutline(note)
 
     try {
        window.fetch(
