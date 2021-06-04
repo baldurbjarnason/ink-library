@@ -17,6 +17,7 @@ export async function patch(req, res, next) {
       },
       json: req.body,
     });
+    console.log(response)
     return res.sendStatus(response.statusCode);
   } catch (err) {
     res.status(err.response.statusCode);

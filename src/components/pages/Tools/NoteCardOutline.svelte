@@ -29,7 +29,6 @@
     if (noteEditions.length === 1 && noteEditions[0].motivation === 'highlighting') {
       noteEditions.push({content: '', motivation: 'commenting'})
     }
-    console.log(noteEditions)
   }
 
 
@@ -82,7 +81,7 @@
     let list = $outlineNotesList;
     list = list.map(item => {
       if (item.shortId === note.shortId) {
-        return Object.assign(item, note, {display: 'pending'});
+        return Object.assign({}, item, note, {display: 'pending'});
       } else {
         return item;
       }
@@ -92,6 +91,7 @@
 
   async function handleResponse(status, note) {
     let list = $outlineNotesList;
+
     if (status === 201 || status === 200) {
       list = list.map(item => {
         if (item.shortId === note.shortId) {
@@ -113,17 +113,19 @@
       }, 3000)
 
     }
+    
   }
 
   let Save = async () => {
     requesting = true;
-    const payload = Object.assign({}, { body: item.body });
-    payload.body = noteEditions.map((editedNote, i) => {
-      payload.body[i].content = editedNote.content;
-      return Object.assign(payload.body[i], { content: editedNote.content })
-    })
+    // const payload = Object.assign({}, { body: item.body });
+    // payload.body = noteEditions.map((editedNote, i) => {
 
-    payload["shortId"] = item.shortId;
+    //   payload.body[i].content = editedNote.content;
+    //   return Object.assign(payload.body[i], { content: editedNote.content })
+    // })
+
+    // payload["shortId"] = item.shortId;
 
     // update the local list of outline notes
     UpdateOutlineNote(note)
@@ -134,7 +136,7 @@
         {
           method: "PATCH",
           credentials: "include",
-          body: JSON.stringify(payload),
+          body: JSON.stringify(item),
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -142,7 +144,7 @@
           },
         }
       ).then(async (res) => {
-        await handleResponse(res.status)
+        await handleResponse(res.status, note)
       });
      // $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
       requesting = false;

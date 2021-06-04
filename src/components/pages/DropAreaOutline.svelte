@@ -55,6 +55,7 @@
   // OUTLINE STUFF
   
   function addNoteToOutline (note) {
+    console.log('new note???', note.shortId)
     let list = $outlineNotesList;
     if (note.previous) {
       list = list.map(item => {
