@@ -201,8 +201,8 @@
       class="BulkSelector"
       type="checkbox"
       bind:checked={selected}
-      on:click={() => selection()} />
-      <div class="column" /> -->
+      on:click={() => selection()} /> -->
+      <div class="column" /> 
       
       <div class="info">
         {#if plainHighlight}
