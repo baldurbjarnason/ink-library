@@ -235,8 +235,8 @@
           if ($defaultNotebook && useDefault) {
             return item.id !== $defaultNotebook.id
           } else {
-            return true;
-          }
+            return item.name !== '--no notebook--'
+          } 
           
           }) : []}
         bind:selectedNotebooks

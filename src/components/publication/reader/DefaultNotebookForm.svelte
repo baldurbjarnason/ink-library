@@ -8,9 +8,16 @@
     export let dark = false;
     let items;
     $: items = $notebooks$ ? $notebooks$.items : [];
+    $: items.unshift({id: 'none', name: '--no notebook--'})
     function change(input, value) {
+      console.log(items)
+      if (!value || value.label==="--no notebook--") {
+        $defaultNotebook = null;
+      } else {
         const newNotebook = items.find(notebook => notebook.name === value.value)
         $defaultNotebook = newNotebook
+      }
+
     }
 
   </script>
@@ -22,6 +29,7 @@
     .DefaultNotebook {
       z-index: 300;
     }
+
 
   </style>
   
