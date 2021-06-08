@@ -48,7 +48,7 @@
 <main class="Outline">
   {#if droppedNotes}
     <DropAreaOutline
-      items={$orderedOutlineNotes}
+      items={outlineNotes}
       bind:keyboardNote
       bind:requesting
       bind:disabled
