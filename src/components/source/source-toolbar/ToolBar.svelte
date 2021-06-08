@@ -114,6 +114,9 @@
       padding-right: 1rem;
     }
   }
+  .default-notebook-label {
+    font-size:0.8rem;
+  }
 </style>
 
 <nav class="ToolBar" {hidden} aria-labelledby="navigation-header">
@@ -232,7 +235,10 @@
   </ol>
   <ol>
     <li>{chapterTitle}</li>
-    <li class="defaultNotebook"><DefaultNotebookForm /></li>
+    <li class="defaultNotebook">
+      <div class="default-notebook-label">Default Notebook:</div>
+      <DefaultNotebookForm />
+    </li>
   </ol>
   <ol style="transform: translateX(10px);">
 

@@ -468,7 +468,7 @@
       use:dndzone={{ items, flipDurationMs, dragDisabled: disabled, dropFromOthersDisabled: disabled, dropTargetStyle }}
       on:consider={handleSort}
       on:finalize={handleDrop}>
-      {#each items as item, i (item.id)}
+      {#each items as item (item.shortId)}
         <li
           on:keydown={keyDown}
           id={item.shortId}

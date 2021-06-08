@@ -11,13 +11,14 @@
   let input;
   let awesomplete;
   $: if (input && list) {
-    awesomplete = new Awesomplete(input, { list, minChars: 0 });
+    awesomplete = new Awesomplete(input, { list, minChars: 0 , sort: false});
     input.addEventListener("awesomplete-selectcomplete", (event) => {
       change(input, event.text);
     });
   }
   $: if (awesomplete && list) {
     awesomplete.list = list;
+    
   }
 </script>
 
