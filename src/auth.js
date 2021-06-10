@@ -122,7 +122,7 @@ export function setup(app) {
 
           const returnTo = req.session.returnTo;
           delete req.session.returnTo;
-          res.redirect(returnTo || "/library/all/all");
+          res.redirect(returnTo || "/");
         });
       })(req, res, next);
     });
@@ -175,7 +175,7 @@ export function setup(app) {
     "/login",
     passport.authenticate(process.env.PASSPORT_STRATEGY),
     function(req, res, next) {
-      res.redirect("/library/all/all");
+      res.redirect("/");
     }
   );
   app.use("/logout", (req, res) => {
