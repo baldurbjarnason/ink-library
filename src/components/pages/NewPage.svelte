@@ -12,7 +12,7 @@
   export let open;
   export let ntbkClose;
 
-  const pageTypes = ["outline", "mindmap", "grouping"];
+  const pageTypes = ["outline", "mindmap", "affinity map"];
   async function submit(event) {
     event.preventDefault();
     ntbkClose();
