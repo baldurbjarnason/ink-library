@@ -3,7 +3,7 @@
   import { writable } from "svelte/store";
   import { title } from "../../stores/title.js";
   import { source$, chapter$ } from "../../../state/state";
-  import History from "../History.svelte";
+  import HistoryReadingInterface from "../HistoryReadingInterface.svelte";
   import { bookmarks$ } from "../../../state/models/Bookmark";
   import Chapter from "./source-chapter/Chapter.svelte";
   // import TitleBar from '../../../../components/source/source-titlebar/TitleBar.svelte';
@@ -140,7 +140,7 @@
     <nav class="TitleBar" aria-label="Publication">
       <ol>
         <li>
-          <History />
+          <HistoryReadingInterface />
         </li>
         <li>
           <span class="Title">{source.name}</span>
