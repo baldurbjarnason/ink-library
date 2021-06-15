@@ -7,6 +7,7 @@
   $: if (path === item.url) {
     selected = true;
   } else {
+    console.log(item)
     selected = false;
   }
   const url = getContext("url");
@@ -77,7 +78,12 @@
   {#if item.children && item.children.length}
     <details open>
       <summary>
+        {#if item.children[0] && item.children[0].url}
+        <span class="Level"><a href={item.url ? url(item.url) : url(item.children[0].url)}>
+        {item.label}</a></span>
+        {:else}
         <span class="Level">{item.label}</span>
+        {/if}
       </summary>
       <ol>
         {#each item.children as item}
