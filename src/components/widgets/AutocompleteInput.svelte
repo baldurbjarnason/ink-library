@@ -121,7 +121,6 @@
     id="input-{name}"
     {placeholder}
     {value}
-    autocomplete="off"
     on:change={change}
     bind:this={input}
     on:focus={() => {
