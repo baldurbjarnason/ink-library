@@ -5,17 +5,15 @@
     import { notebooks$ } from "../../../../state/state";
     import ArrowDropDown from "../../img/ArrowDropDown.svelte"
 
-    import AutocompleteInput from "../../widgets/AutocompleteInput.svelte";
-    export let dark = false;
     let items;
     $: items = $notebooks$ ? $notebooks$.items : [];
     $: items.unshift({id: 'none', name: '--no notebook--'})
-    function change(input, value) {
-      console.log(items)
-      if (!value || value.label==="--no notebook--") {
+    function change(e) {
+      let value = e.target.value;
+      if (!value || value ==="--no notebook--") {
         $defaultNotebook = null;
       } else {
-        const newNotebook = items.find(notebook => notebook.name === value.value)
+        const newNotebook = items.find(notebook => notebook.name === value)
         $defaultNotebook = newNotebook
       }
 
@@ -108,15 +106,6 @@
             {/each}
           </select>
         </label>
-
-        <!-- <AutocompleteInput
-          placeholder="Default notebook"
-          {dark}
-          name="new-notebooks"
-          value={$defaultNotebook ? $defaultNotebook.name : '--no notebook--'}
-          list={items.map(item => item.name)}
-          {change}>
-        </AutocompleteInput> -->
       </div>
   </div>
   
