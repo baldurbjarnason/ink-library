@@ -1,4 +1,7 @@
-
+Deployment June 17, 2021
+- highlights in outline can be edited
+- adding headers by pressing enter instead of dragging
+- faster outline loading
 - default notebook
 - titlebar in reading interface is sticky
 
