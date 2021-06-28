@@ -7,6 +7,7 @@
   import { page, refreshOutline } from "../../../stores";
   import { getToken } from "../../../getToken";
   import { goto } from "@sapper/app";
+  import IcoGoBack from "../../img/IcoGoBack.svelte"
 
   export let outlineInfo;
   export let notebook;
@@ -155,10 +156,50 @@
   .Name:hover :global(svg) {
     opacity: 1;
   }
+/* back button */
+a {
+         text-decoration: none;
+     }
+    .breadcrumbs {
+      margin-bottom: 10px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      display: flex;
+      grid-template-columns: max-content 1fr;
+      text-align: left;
+      align-items: center;
+      cursor: pointer;
+      width: max-content;
+    }
+    .breadcrumbs h5 {
+      color: #888888;
+      font-weight: 500;
+      margin: 0;
+      margin-left: 5px;
+    }
+    @media (max-width: 720px) {
+      .breadcrumbs {
+        margin-bottom: 0;
+        margin-top: 3px;
+        grid-template-columns: max-content;
+      }
+      .breadcrumbs h5 {
+        display: none;
+      }
+    }
+
 </style>
 
 <header>
+  {#if notebook && notebook.shortId}
+  <a class="breadcrumbs" href={`/notebooks/${notebook.shortId}`}>
+    <IcoGoBack />
+    <h5>Back</h5>
+  </a>
+  {:else}
   <History />
+  {/if}
   <div class="Title">
     {#if nameEdit}
       <div class="NameCont Edition">

@@ -306,7 +306,7 @@
     {/if}
   </li>
   <span class="Division Short" />
-  <ListStyleList {addParams} bind:filters />
+  <!--<ListStyleList {addParams} bind:filters />
   <li class="Tool List Filter Children">
     {#if filters.colour.length || filters.flags.length || filters.type.length}
       <span class="Notification" />
@@ -323,7 +323,7 @@
       </span>
       <FlagsListFilter {addArrParams} bind:filters />
     </ul>
-  </li>
+  </li> -->
   <span class="Division Short Last" />
   <li class="Tool Export">
     <Export />

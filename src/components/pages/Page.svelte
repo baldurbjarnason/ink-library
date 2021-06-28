@@ -13,7 +13,7 @@
 
   $: pageInfo = $pageItem;
   let activeModal = false;
-  const pageTypes = ["outline", "mindmap", "grouping"];
+  const pageTypes = ["outline", "mindmap", "affinity map"];
 
   async function remove() {
     let notebook = pageInfo.notebook.id;

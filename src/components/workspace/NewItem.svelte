@@ -14,6 +14,7 @@
     refreshDate,
     refreshInSource,
     refreshCollections,
+    refreshNotebooks,
     addedCollections,
     addedWorkspaces,
     refreshNotebook,

@@ -19,7 +19,7 @@
         return PageIcoOutline;
       case "mindmap":
         return PageIcoMindmap;
-      case "grouping":
+      case "affinity map":
         return PageIcoGrouping;
     }
   };
