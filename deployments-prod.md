@@ -1,3 +1,9 @@
+Deployment June 29, 2021
+- fixed so that we always load the dashboard by default
+- fixed back button in outline and reading interface
+- renamed a few things
+- notebooks refresh correctly in the dashboard
+
 Deployment June 17, 2021
 - highlights in outline can be edited
 - adding headers by pressing enter instead of dragging
