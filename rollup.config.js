@@ -11,6 +11,8 @@ import autoPreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
 import url from "@rollup/plugin-url";
 import path from "path";
+import { config as dotenvConfig } from "dotenv"
+dotenvConfig()
 
 const mode = process.env.NODE_ENV;
 const dev = mode === "development";
@@ -33,6 +35,7 @@ export default {
       replace({
         "process.browser": true,
         "process.env.NODE_ENV": JSON.stringify(mode),
+        "process.env.API_SERVER": '"' + process.env.API_SERVER + '"'
       }),
       svelte({
         emitCss: true,
