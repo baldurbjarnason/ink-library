@@ -14,6 +14,7 @@
   import NewOutlineNote from "./NewOutlineNote.svelte";
   import { page } from "../../../stores";
   import { goto } from "@sapper/app";
+  import { getToken } from "../../../getToken";
 
   export let addNewNote;
   export let filters;
@@ -35,6 +36,10 @@
       filters[filter] = filters[filter];
     } else filters[filter] = [...filters[filter], value];
   };
+  let downloadDocx = async () => {
+    const url = `${process.env.API_SERVER}outlines/${$page.params.outlineId}/docx`;
+    window.location.replace(url);
+  }
 </script>
 
 <style>
@@ -326,8 +331,10 @@
   </li> -->
   <span class="Division Short Last" />
   <li class="Tool Export">
+    <button
+    class="NewItem"
+    on:click={downloadDocx} />
     <Export />
     <p>Export</p>
-    <p class="Message">Coming soon!</p>
   </li>
 </ul>
