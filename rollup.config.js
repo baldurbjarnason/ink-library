@@ -15,11 +15,12 @@ import { config as dotenvConfig } from "dotenv"
 dotenvConfig()
 let api_url;
 
-//TODO: need to figure out why the api_server env variable does not work on dev. It works locally. 
+//TODO: need to figure out why the api_server env variable does not 
+// work on dev. It works locally. 
 if (process.env && process.env.API_SERVER) {
-  api_url = '"' + process.env.API_SERVER + '"'
+  api_url = '"' + process.env.API_SERVER + '"';
 } else {
-  api_url = "https://ink-server-dev-dot-thematic-cider-139815.appspot.com/"
+  api_url = "https://ink-server-dev-dot-thematic-cider-139815.appspot.com/";
 }
 
 const mode = process.env.NODE_ENV;
