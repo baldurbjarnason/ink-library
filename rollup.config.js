@@ -20,8 +20,9 @@ let api_url;
 if (process.env && process.env.API_SERVER) {
   api_url = '"' + process.env.API_SERVER + '"';
 } else {
-  api_url = "https://ink-server-dev-dot-thematic-cider-139815.appspot.com/";
+  api_url = '"' + "https://ink-server-dev-dot-thematic-cider-139815.appspot.com/" + '"';
 }
+
 
 const mode = process.env.NODE_ENV;
 const dev = mode === "development";
