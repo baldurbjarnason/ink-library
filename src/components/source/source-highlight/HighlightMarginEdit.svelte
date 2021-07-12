@@ -55,12 +55,15 @@
     return result;
   }
 
+  /*
+  Note (from Marie): I added the 'loaded' variable to avoid having this code run after the initial 
+  loading phase. The problem is that it was running when the text of the note was deleted (and the 
+  text would suddenly re-appear). Same if you tried to remove the last flag. So that code is run twice 
+  initially. Not sure why twice,  but that is why I am preventing it from running once loaded is equal
+  to 2
+  */
   $: if (annotation && !plaintext && loaded < 2) {
-
-      plaintext = getNoted(annotation);
-      
-      console.log('???', plaintext)
-
+      plaintext = getNoted(annotation); 
       loaded++;
     // if (noted) {
     //   window
@@ -85,7 +88,7 @@
     // }
   }
 
-  $: if (annotation && annotation.tags) {
+  $: if (annotation && annotation.tags && loaded < 2) {
     if (!colour) {
       colour = annotation.tags.find((tag) => tag.type === "colour");
     }
@@ -130,7 +133,6 @@
       .concat(selectedNotebooks, createdNotebooks)
       .filter((item) => item);
     let body;
-    console.log('updating?', plaintext)
     //if (plaintext) {
       // use textcontent
       const content = await window
@@ -155,7 +157,6 @@
       body = content;
     //}
     stopEditing();
-    console.log('body to send?', body)
     return note.update({ tags: flags.concat(colour), notebooks }, body);
   }
 </script>
@@ -279,7 +280,7 @@
                 const index = selectedFlags.indexOf(flag);
                 if (index !== -1) {
                   selectedFlags = selectedFlags.filter((old) => {
-                    return old !== flag;
+                    return old.shortId !== flag.shortId;
                   });
                 }
               }} />
@@ -327,6 +328,15 @@
           <div class="Flag Item">
             <IcoNotebook />
             <span class={notebook.name}>{notebook.name}</span>
+            <CloseIcon
+            click={() => {
+              const index = selectedNotebooks.indexOf(notebook);
+              if (index !== -1) {
+                selectedNotebooks = selectedNotebooks.filter((old) => {
+                  return old !== notebook;
+                });
+              }
+            }} />
           </div>
         {/each}
       {/if}
