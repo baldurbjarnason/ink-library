@@ -27,6 +27,7 @@
   let noteBookMenu;
   let highlight;
   let plaintext;
+  let loaded = 0;
   export let modal;
   export let note;
   export let annotation;
@@ -53,8 +54,14 @@
     }
     return result;
   }
-  $: if (annotation && !plaintext) {
-    plaintext = getNoted(annotation);
+
+  $: if (annotation && !plaintext && loaded < 2) {
+
+      plaintext = getNoted(annotation);
+      
+      console.log('???', plaintext)
+
+      loaded++;
     // if (noted) {
     //   window
     //     .fetch("/api/markdown", {
@@ -123,7 +130,8 @@
       .concat(selectedNotebooks, createdNotebooks)
       .filter((item) => item);
     let body;
-    if (plaintext) {
+    console.log('updating?', plaintext)
+    //if (plaintext) {
       // use textcontent
       const content = await window
         .fetch("/api/markdown", {
@@ -145,8 +153,9 @@
           return json.content;
         });
       body = content;
-    }
+    //}
     stopEditing();
+    console.log('body to send?', body)
     return note.update({ tags: flags.concat(colour), notebooks }, body);
   }
 </script>
