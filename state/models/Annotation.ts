@@ -139,6 +139,9 @@ export class Annotation {
   public async update(json, content?) {
     const { tags, notebooks, body } = json;
     const payload = Object.assign({}, this.annotation, { tags, notebooks });
+    console.log('payload', payload)
+    console.log('body', body)
+    console.log('content', content)
     if (body) {
       payload.body = this.annotation.body
         .filter((item) => {
@@ -161,6 +164,13 @@ export class Annotation {
           value: content,
           content,
         });
+    } else if (content === "") {
+      payload.body = this.annotation.body
+      .filter((item) => {
+        return (
+          item.purpose !== "commenting" && item.motivation !== "commenting"
+        );
+      })
     }
     payload.body = payload.body.map((item) => {
       if (item.purpose && !item.motivation) {
