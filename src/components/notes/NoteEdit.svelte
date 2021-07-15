@@ -128,7 +128,6 @@
       replaceSource = "";
       addNotebook = [];
       removeNotebook = [];
-
       await fetch(`/api/note/${id}`, {
         method: "PUT",
         credentials: "include",
@@ -144,14 +143,12 @@
         noteTest.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
-      goto(`notes/all/all/`);
     } catch (err) {
       console.error(err);
     }
   }
 
   async function remove() {
-    goto(`notes/all/all/`);
 
     try {
       await fetch(`/api/note/${noteTest.shortId}`, {
@@ -166,8 +163,11 @@
     } catch (err) {
       console.error(err);
     }
+    $refreshNotes = Date.now()
+  goto(`notes/all/all/`);
+console.log('??????')
   }
-  $: console.log(replaceSource, noteTest);
+
 </script>
 
 <style>
