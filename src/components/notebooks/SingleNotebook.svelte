@@ -4,7 +4,7 @@
   import History from "../History.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
   import IcoEdit from "../img/IcoEdit.svelte";
-  import { notebook, refreshNotebook, page } from "../../stores";
+  import { notebook, refreshNotebook, page, refreshNotebooks } from "../../stores";
   import DeletionModal from "../notes/Items/DeletionModal.svelte";
   import EditCoverImage from "./Tools/EditCoverImage.svelte";
   import NoteEdit from "./Tools/NoteEdit.svelte";
@@ -14,7 +14,6 @@
   let activeModal = false;
   let clickPage = false;
   async function remove() {
-    goto(`notebooks`);
 
     try {
       await fetch(`/api/notebooks/${$notebook.shortId}`, {
@@ -29,6 +28,9 @@
     } catch (err) {
       console.error(err);
     }
+    $refreshNotebooks = Date.now()
+    window.history.back()
+
   }
 
   let itemEdit,
