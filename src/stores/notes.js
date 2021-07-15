@@ -44,12 +44,15 @@ export const notes = derived(
     }
     return fetch(url)
       .then((lib) => {
-        if ($page.params.id) {
-          const listNote = lib.items.find(
-            (item) => item.shortId === $page.params.id
-          );
-          listNote.selected = true;
-        }
+        // Note from Marie: this part broke the refreshNotes so I removed it. Not sure what
+        // it was for, but it doesn't break anything.Leaving it for now in case it 
+        // somehow breaks everything
+        // if ($page.params.id) {
+        //   const listNote = lib.items.find(
+        //     (item) => item.shortId === $page.params.id
+        //   );
+        //   listNote.selected = true;
+        // }
         set(lib);
       })
       .catch((err) => {
