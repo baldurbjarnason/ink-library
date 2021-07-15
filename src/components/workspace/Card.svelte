@@ -7,13 +7,17 @@
     page,
     selectedItems,
     defaultNotebook,
+    refreshNotebooks,
     notebooks
   } from "../../stores";
+
   export let item = {};
   export let selecting;
   export let selection = function() {};
   export let selectAll;
   let selected = false;
+
+  $refreshNotebooks = Date.now()
 
   $: if (!selecting && selected) {
     selected = false;
