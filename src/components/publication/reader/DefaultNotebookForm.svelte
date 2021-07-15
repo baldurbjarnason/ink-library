@@ -8,8 +8,11 @@
     let items;
     $: items = $notebooks$ ? $notebooks$.items : [];
     $: if (!items.length || items[0].id !== 'none') items.unshift({id: 'none', name: '--no notebook--'})
-    function change(input, value) {
-      console.log(items)
+    function change(input) {
+      let value
+      if (input && input.target) {
+        value = input.target.value;
+      }
       if (!value || value.label==="--no notebook--") {
         $defaultNotebook = null;
       } else {
