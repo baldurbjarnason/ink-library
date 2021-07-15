@@ -142,7 +142,7 @@
     color: #fff;
     left: 20px;
     width: calc(100% - 40px);
-    top: 20px;
+    top: 50px;
     z-index: 3;
     border-radius: 30px;
     padding: 30px 40px;
