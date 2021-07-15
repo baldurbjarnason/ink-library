@@ -156,10 +156,11 @@
     } catch (err) {
       console.error(err);
     }
+    goto(`notebooks/${$page.params.id}`);
+
   }
 
   async function remove() {
-    goto(`notebooks/${$page.params.id}`);
 
     try {
       await fetch(`/api/note/${noteTest.shortId}`, {
@@ -174,6 +175,8 @@
     } catch (err) {
       console.error(err);
     }
+    goto(`notebooks/${$page.params.id}`);
+
   }
 </script>
 
