@@ -18,7 +18,6 @@ export const notebooks = derived(
     if ($page.query.returnTo) return;
     set({ type: "loading", items: [] });
     const query = Object.assign({}, $page.query);
-
     if ($searchNotebooks) {
       query.search = $searchNotebooks;
       if (parseInt(query.page) > 1) {
