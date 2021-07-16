@@ -120,6 +120,7 @@
     background-color: var(--workspace-color);
     color: #fff;
     left: 20px;
+    top: 20px;
     width: calc(100% - 40px);
     z-index: 3;
     border-radius: 30px;
