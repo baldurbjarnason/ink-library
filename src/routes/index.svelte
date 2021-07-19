@@ -238,7 +238,7 @@
   <div class="left">
     <nav class="Toolbar">
       <h1 out:send={{ key: 'h1' }} in:receive={{ key: 'h1' }}>
-        Happy {day} {currentUser}
+        Happy {day}
       </h1>
       <div class="Buttons">
         <NewNote ntbkOpen={false} />

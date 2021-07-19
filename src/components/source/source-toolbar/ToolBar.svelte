@@ -40,6 +40,9 @@
     align-items: center;
     margin: 0.125rem 0.25rem;
   }
+  .CloseSidebar {
+    margin-left: 4rem;
+  }
   .CloseSidebar :global(svg) {
     transform: rotate(180deg);
     transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -124,19 +127,7 @@
     Toolbar
   </h2>
   <ol style="transform: translateX(-10px);">
-    <li class="CloseSidebar" class:selected={$sidebar.hidden}>
-      <button
-        class="Button"
-        type="Button"
-        aria-label="Hide left sidebar"
-        on:click={() => {
-          const { hidden, tab } = $sidebar;
-          $sidebar = { hidden: !hidden, tab };
-        }}
-        aria-pressed={$sidebar.hidden ? 'true' : 'false'}>
-        <CloseSidebar />
-      </button>
-    </li>
+
     <li class:selected={$sidebar.tab === 'toc' && !$sidebar.hidden}>
       <button
         class="Button"
@@ -230,6 +221,19 @@
             3.73615)"
             fill="currentColor" />
         </svg>
+      </button>
+    </li>
+    <li class="CloseSidebar" class:selected={$sidebar.hidden}>
+      <button
+        class="Button"
+        type="Button"
+        aria-label="Hide left sidebar"
+        on:click={() => {
+          const { hidden, tab } = $sidebar;
+          $sidebar = { hidden: !hidden, tab };
+        }}
+        aria-pressed={$sidebar.hidden ? 'true' : 'false'}>
+        <CloseSidebar />
       </button>
     </li>
   </ol>
