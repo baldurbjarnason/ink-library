@@ -136,7 +136,7 @@
     align-items: center;
     justify-content: flex-start;
     flex-direction: column;
-    padding-top: 35%;
+    padding-top: 15%;
     transition: opacity 100ms cubic-bezier(0.39, 0.575, 0.565, 1);
     background-color: #ecf1f4;
   }
@@ -166,7 +166,7 @@
 </style>
 
 <div class="Pane" class:pasting>
-  {#if pasting}
+  <!-- {#if pasting} -->
     <div class="Text">
       <h3>Paste text to your source</h3>
 
@@ -207,7 +207,7 @@
     <div class="ButtonRow">
       <Button click={submit}>Save</Button>
     </div>
-  {:else}
+  <!-- {:else}
     <div class="Icon">
       <svg
         width="58"
@@ -232,5 +232,5 @@
     </div>
 
     <Button click={() => (pasting = true)}>Paste &amp; Edit</Button>
-  {/if}
+  {/if} -->
 </div>

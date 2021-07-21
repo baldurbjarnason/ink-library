@@ -20,7 +20,7 @@
   export let selection = function() {};
   export let note = {};
   export let selectAll;
-
+  let selectable = true;
   let selected = false;
 
   let noted, highlighed;
@@ -84,7 +84,7 @@
     selection();
   }
 
-  let selectable = true;
+  
   $: if ($selectedItems.size) {
     $selectedItems.forEach((obj) => {
       selectable =
@@ -99,7 +99,7 @@
     selectable =
       $page.path === "/" ||
       ($page.path.startsWith("/notebooks/") && $page.params.noteId) ||
-      ($page.path.startsWith("/notes/") && $page.params.id)
+      ($page.path.startsWith("/notes/") && $page.params.id) || $page.path.startsWith("/sources/")
         ? false
         : true;
   }

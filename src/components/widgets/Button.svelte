@@ -5,6 +5,7 @@
   export let disabled = false;
   export let type = "button";
   export let light = false;
+  export let value ="";
 </script>
 
 <style>
@@ -74,6 +75,7 @@
   <button
     class="Button"
     class:light
+    {value}
     {type}
     {hidden}
     {disabled}

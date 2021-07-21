@@ -57,7 +57,7 @@
     align-items: center;
     justify-content: flex-start;
     flex-direction: column;
-    padding-top: 35%;
+    padding-top: 15%;
     transition: opacity 100ms cubic-bezier(0.39, 0.575, 0.565, 1);
   }
   .Pane.uploading {
@@ -85,7 +85,6 @@
 </style>
 
 <div class="Pane" class:uploading>
-  {#if uploading}
     <UploadIcon />
 
     <div class="Text">
@@ -106,17 +105,4 @@
         </div>
       </form>
     </div>
-  {:else}
-    <UploadIcon />
-
-    <div class="Text">
-      <h3>Upload a file to your source</h3>
-      <p>
-        Click to upload your file. Processing may take a while after you upload.
-      </p>
-    </div>
-    <div class="ButtonRow">
-      <Button click={() => (uploading = true)}>Upload</Button>
-    </div>
-  {/if}
 </div>
