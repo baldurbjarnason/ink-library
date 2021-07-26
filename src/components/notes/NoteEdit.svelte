@@ -143,7 +143,7 @@
         noteTest.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
-     // window.history.back();
+      window.history.back();
     } catch (err) {
       console.error(err);
     }
