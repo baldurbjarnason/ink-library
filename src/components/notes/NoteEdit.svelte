@@ -136,13 +136,14 @@
           "Content-Type": "application/json",
           Accept: "application/json",
           "csrf-token": getToken(),
-        },
+        }
       });
 
       updateHighlight(
         noteTest.id,
         colour.replace("colour", "Colour").replace(" ", "")
       );
+      window.history.back();
     } catch (err) {
       console.error(err);
     }
@@ -165,7 +166,6 @@
     }
     $refreshNotes = Date.now()
   goto(`notes/all/all/`);
-console.log('??????')
   }
 
 </script>
