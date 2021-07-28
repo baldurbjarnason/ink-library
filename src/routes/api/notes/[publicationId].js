@@ -22,6 +22,7 @@ export async function get(req, res, next) {
         Authorization: `Bearer ${req.user.token}`,
       },
     }).json();
+    console.log('response?', response)
     res.json(response);
   } catch (err) {
     res.status(err.response.statusCode);
