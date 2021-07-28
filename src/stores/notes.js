@@ -63,3 +63,55 @@ export const notes = derived(
   },
   { type: "loading", items: [] }
 );
+
+
+export const sourceNotes = derived(
+  [page, refreshNotes, searchNotes],
+  ([$page, $refreshNotes, $searchNotes], set) => {
+    if (!process.browser) return;
+    if ($page.query.returnTo) return;
+    set({ type: "loading", items: [] });
+    const query = Object.assign({}, $page.query);
+    query.notMotivation = "bookmarking";
+
+    if ($searchNotes) {
+      query.search = $searchNotes;
+      if (parseInt(query.page) > 1) {
+        goto($page.path)
+      }
+      query.page = "1";
+    } else if ($page.query.search) {
+      query.search = $page.query.search;
+      if (parseInt(query.page) > 1) {
+        goto($page.path)
+      }
+      query.page = "1";
+    }
+
+    let url;
+    if (query) {
+      url = `/api/notes?${new URLSearchParams(query).toString()}`;
+    } else {
+      url = `/api/notes`;
+    }
+    return fetch(url)
+      .then((lib) => {
+        // Note from Marie: this part broke the refreshNotes so I removed it. Not sure what
+        // it was for, but it doesn't break anything.Leaving it for now in case it 
+        // somehow breaks everything
+        // if ($page.params.id) {
+        //   const listNote = lib.items.find(
+        //     (item) => item.shortId === $page.params.id
+        //   );
+        //   listNote.selected = true;
+        // }
+        set(lib);
+      })
+      .catch((err) => {
+        set({ type: "failed", items: [] });
+        error.set(err);
+        console.error(err);
+      });
+  },
+  { type: "loading", items: [] }
+);
