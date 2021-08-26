@@ -19,7 +19,6 @@
   $: if (source) {
     source$.next(source);
   }
-  $: console.log(chapter);
   $: if (chapter) {
     chapter$.next(chapter);
   }

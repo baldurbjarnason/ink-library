@@ -8,8 +8,12 @@
     import FlagRevisit from "../../img/FlagRevisit.svelte";
     import FlagToDo from "../../img/FlagToDo.svelte";
     import FlagUrgent from "../../img/FlagUrgent.svelte";
+    import IcoNotebook from "../../img/IcoNotebook.svelte"
+    import IcoTag from "../../source/source-highlight/IcoTag.svelte"
+    import CloseIcon from "../../source/source-highlight/CloseIcon.svelte"
     import IcoNewNote from "../../img/IcoNewNote.svelte";
-  
+    import HighlightNotebooks from "../../source/source-highlight/HighlightNotebooks.svelte"
+    import HighlightFlags from "../../source/source-highlight/HighlightFlags.svelte"
     import Button from "../../widgets/Button.svelte";
     import Closer from "../../widgets/Closer.svelte";
     import WhiteButton from "../../workspace/WhiteButton.svelte";
@@ -17,16 +21,33 @@
     import { tick } from "svelte";
     import NoteEditor from "../../widgets/NoteEditor.svelte";
     import { getToken } from "../../../getToken"
-    import { refreshNotes, refreshInNote, tags } from "../../../stores";
+    import { refreshNotes, refreshPublication, refreshSourceNotes, tags, defaultNotebook, notebooks } from "../../../stores";
+    //import { tags$ } from "../../../../state/tags.ts";
+
     import { stores } from "@sapper/app";
+
     const { page } = stores();
     export let note = { body: [], source: { name: "" } };
     export let source;
     let selectedFlags = [];
-   // export let open = false;
-  
+    let selectedNotebooks = [];
+
+    let noteBookMenu;
+    let colour;
+    let useDefault = true;
+    let notebooksList;
+    $: notebooksList = $notebooks ? $notebooks.items : [];
+    $: if($notebooks) {
+      notebooksList.unshift({name: ''})
+    }
+    
     const colours = ["colour1", "colour2", "colour3", "colour4"];
-  
+    let flags = []
+    $: if($tags.items) {
+      flags = $tags.items.filter(tag => tag.type === 'flag').map(tag => tag.name)
+      flags.unshift('')
+    }
+
     function assignIco(icon) {
       switch (icon) {
         case "further reading":
@@ -55,10 +76,22 @@
     let open = false;
 
     function click() {
-        console.log(source)
       open = !open;
       noteColour = noteColour = "colour1";
     }
+
+    async function createNotebook() {
+      console.log('$$$$$$$$', $notebooks, notebooksList)
+    }
+
+    function change(e) {
+      const index = selectedNotebooks.findIndex(x => x.name === e.target.value)
+      if (index === -1) {
+        let filterResults = notebooksList.filter(notebook => notebook.name === e.target.value)
+        selectedNotebooks = selectedNotebooks.concat(filterResults[0])
+      }
+    }
+
   
     async function close() {
       if (atNotebook) {
@@ -84,7 +117,14 @@
         const payload = Object.assign({}, note);
         payload.sourceId = source.shortId;
         let colourId = $tags.getIds([noteColour]);
-        payload._tags = [colourId].concat(selectedFlags.map((item) => item.id));
+        selectedFlags = selectedFlags.map(flag => flag.name)
+        // NOTE from Marie: not sure why the getIds function does not work here. 
+        let flagId = $tags.items.filter(tag => selectedFlags.indexOf(tag.name) > -1).map(tag => tag.id)
+        payload._tags = [colourId].concat(flagId);
+        payload.notebooks = selectedNotebooks;
+        if ($defaultNotebook && useDefault) {
+          payload.notebooks = payload.notebooks.concat($defaultNotebook)
+        }
         if (payload.body.find((body) => body.motivation === "commenting")) {
           const body = payload.body.find(
             (body) => body.motivation === "commenting"
@@ -98,10 +138,8 @@
           });
         }
   
-        let url = atNotebook
-          ? `/api/notebooks/${$page.params.id}/notes/`
-          : `/api/notes`;
-  console.log(payload)
+        let url = `/api/notes`;
+
         await window.fetch(url, {
           method: "POST",
           credentials: "include",
@@ -111,10 +149,9 @@
             "csrf-token": getToken(),
           },
         });
-  
-        if ($page.path === "/") $refreshInNote = Date.now();
-        else if (atNotebook) ntbkClose();
-        else $refreshNotes = Date.now();
+        selectedFlags = [];
+        selectedNotebooks = [];
+        $refreshSourceNotes = Date.now();
       } catch (err) {
         console.error(err);
       }
@@ -465,6 +502,28 @@
         font-weight: 600;
         color: var(--action);
     }
+    .dropdown  {
+      padding: 10px;
+      display: inline;
+    }
+
+    .Flag {
+      margin-right: 0.25rem;
+      color: black;
+      width: fit-content;
+      margin-top: 0.5rem;
+      background: var(--toolbar-background, #ddd);
+      box-sizing: border-box;
+      border-radius: 5px;
+      padding: 0.25rem 0.25rem;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      display: grid;
+      grid-template-columns: 24px 1fr 24px;
+    }
     
   </style>
   
@@ -486,7 +545,12 @@
                 value={colour} />
             </li>
           {/each}
+
+          
         </ul>
+        <br/>
+
+
         <div class="Editor {noteColour}">
           <NoteEditor bind:richtext={text} />
         </div>
@@ -503,6 +567,49 @@
         </ul>
         <WhiteButton>Create</WhiteButton>
         <Closer click={close} dark={true} />
+        <div class="dropdown">
+
+          <label>
+            <div class="LabelText">
+              <slot />
+            </div>
+            <!-- <ArrowDropDown /> -->
+            <span>select notebooks: </span>
+            <select name="notebooks" on:change={change} id="select-defaultNotebook" value=''>
+              {#each notebooksList as notebook}
+                <option value={notebook.name}>{notebook.name}</option>
+              {/each}
+            </select>
+          </label>
+          {#if $defaultNotebook && $defaultNotebook.name && useDefault}
+          <div class="Flag Item">
+            <IcoNotebook />
+            <span class={$defaultNotebook.name}>{$defaultNotebook.name}</span>
+            <CloseIcon
+              click={() => {
+                useDefault = false;
+              }} />
+          </div>
+      {/if}
+          {#if selectedNotebooks}
+          {#each selectedNotebooks as notebook}
+            <div class="Flag Item">
+              <IcoNotebook />
+              <span class={notebook.name}>{notebook.name}</span>
+              <CloseIcon
+                click={() => {
+                  const index = selectedNotebooks.indexOf(notebook);
+                  if (index !== -1) {
+                    selectedNotebooks = selectedNotebooks.filter((old) => {
+                      return old !== notebook;
+                    });
+                  }
+                }} />
+            </div>
+          {/each}
+        {/if}
+
+          </div>
       </form>
     </div>
 {:else}

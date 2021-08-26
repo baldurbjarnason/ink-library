@@ -11,7 +11,8 @@
   export let source;
   let uploading = false;
   let pasting = false;
-  let display = "upload"
+  let hasNotes = !!source.replies.length;
+  let display = hasNotes ? "notes" : "upload";
   // let Info
   // onMount(async () => {
   //   const module = await import('./EmptyInfo.svelte');
@@ -63,10 +64,10 @@
 <div class="NoSource">
   <div class="left-menu">
     <div class={display === 'upload' ? "left-menu-section active" : "left-menu-section"}>
-      <Button light={true} click={submit} value="upload">Upload File</Button>
+      <Button disabled={hasNotes} light={true} click={submit} value="upload">Upload File</Button>
     </div>
     <div class={display === 'paste' ? "left-menu-section active" : "left-menu-section"}>
-      <Button light={true} click={submit} value="paste">Copy-Paste content</Button>
+      <Button disabled={hasNotes} light={true} click={submit} value="paste">Copy-Paste content</Button>
     </div>
     <div class={display === "url" ? "left-menu-section active" : "left-menu-section"}>
       <Button light={true} click={submit} value="url">Url</Button>
