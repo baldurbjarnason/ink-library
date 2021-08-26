@@ -13,11 +13,13 @@ export const notebooks = derived(
   [page, refreshNotebooks, searchNotebooks],
   ([$page, $refreshNotebooks, $searchNotebooks], set) => {
     if (!process.browser) return;
+
     if (!$page.path || !($page.path.startsWith("/notebooks") || $page.path.startsWith("/sources")|| $page.path.startsWith("/library")|| $page.path.startsWith("/notes"))) return;
-    if ($page.params.id) return;
+    if ($page.params.id && !$page.path.startsWith("/sources")) return;
     if ($page.query.returnTo) return;
     set({ type: "loading", items: [] });
     const query = Object.assign({}, $page.query);
+
     if ($searchNotebooks) {
       query.search = $searchNotebooks;
       if (parseInt(query.page) > 1) {

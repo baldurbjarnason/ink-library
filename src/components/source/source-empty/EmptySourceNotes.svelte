@@ -2,6 +2,29 @@
     export let source;
     import NotesCard from "../../notes/NotesCard.svelte"
     import EmptySourceNewNote from "./EmptySourceNewNote.svelte"
+    import ArrowDropDown from "../../img/ArrowDropDown.svelte"
+
+   // import NewNoteToolbar from "./NewNoteToolbar.svelte"
+    import { sourceNotes, notebooks, defaultNotebook } from "../../../stores"
+   // import DefaultNotebookForm from "../../publication/reader/DefaultNotebookForm.svelte"
+   let items;
+    $: items = $notebooks ? $notebooks.items : [];
+    $: if (!items.length || items[0].id !== 'none') items.unshift({id: 'none', name: '--no notebook--'})
+    function change(input) {
+      let value
+      if (input && input.target) {
+        value = input.target.value;
+      }
+      if (!value || value.label==="--no notebook--") {
+        $defaultNotebook = null;
+      } else {
+        const newNotebook = items.find(notebook => notebook.name === value)
+        $defaultNotebook = newNotebook
+      }
+
+    }
+  let notes = [];
+  $: if ($sourceNotes.items) notes = $sourceNotes.items
   </script>
   
   <style>
@@ -14,12 +37,33 @@
       z-index: 0;
       grid-auto-rows: max-content;
     }
+    .DefaultNotebook {
+      padding: 10px 45px;
+    }
   </style>
   
+  <div>
+    <div class="DefaultNotebook">
+      <div>
+        <label>
+          <div class="LabelText">
+            <slot />
+            default notebook: 
+          </div>
+          <ArrowDropDown />
+          <select name="pubType" on:blur={change} id="select-defaultNotebook" value={$defaultNotebook ? $defaultNotebook.name : '--no notebook--'}>
+            {#each items as notebook}
+              <option value={notebook.name}>{notebook.name}</option>
+            {/each}
+          </select>
+        </label>
+      </div>
+  </div>
 <div class="EmptySourceNotes">
   <EmptySourceNewNote ntbkClose={true} {source} />
-  {#each source.replies as note }
+  {#each notes as note }
      <NotesCard {note} selecting={false} selectAll={false} />
   {/each}
+</div>
 </div>
   
