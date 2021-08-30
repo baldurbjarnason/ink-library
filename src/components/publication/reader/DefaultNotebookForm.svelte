@@ -97,7 +97,6 @@
   <!-- markup (zero or more items) goes here -->
   <div class="DefaultNotebook">
       <div>
-
         <label>
           <div class="LabelText">
             <slot />
