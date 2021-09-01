@@ -7,8 +7,9 @@
   import Button from "../../widgets/Button.svelte";
   import UploadIcon from "./UploadIcon.svelte";
   import EmptySourceNotes from "./EmptySourceNotes.svelte"
-
+  import UrlForm from "./UrlForm.svelte"
   export let source;
+  let leftDisplay = null;
   let uploading = false;
   let pasting = false;
   let hasNotes = !!source.replies.length;
@@ -20,7 +21,15 @@
   // });
   async function submit(event) {
     event.preventDefault();
-    display = event.target.value;
+    if (event.target.value === "url") {
+      leftDisplay = "url";
+    } else {
+      display = event.target.value;
+    }
+  }
+
+  function resetDisplay() {
+    leftDisplay = null;
   }
 </script>
 
@@ -30,7 +39,7 @@
     grid-column: 1 / -1;
     grid-row: 2 / -1;
     display: grid;
-    grid-template-columns: 250px auto;
+    grid-template-columns: 300px auto;
     grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
     min-height: 100vh;
   }
@@ -63,6 +72,9 @@
 
 <div class="NoSource">
   <div class="left-menu">
+    {#if leftDisplay === 'url'}
+    <UrlForm {source} {resetDisplay} />
+    {:else}
     <div class={display === 'upload' ? "left-menu-section active" : "left-menu-section"}>
       <Button disabled={hasNotes} light={true} click={submit} value="upload">Upload File</Button>
     </div>
@@ -75,6 +87,7 @@
     <div class={display === "notes" ? "left-menu-section active" : "left-menu-section"}>
       <Button light={true} click={submit} value="notes">Notes</Button>
     </div>
+    {/if}
 
   </div>
   <div>
