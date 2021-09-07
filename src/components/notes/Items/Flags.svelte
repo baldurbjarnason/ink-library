@@ -14,6 +14,7 @@
   export let assignFlags;
   export let selectedFlags;
   export let noteTest;
+  export let error = false;
 
   $: if (!selectedFlags && noteTest && noteTest.tags) assignFlags();
   $: if ($page.params.id) if (noteTest.tags) assignFlags();
@@ -118,6 +119,10 @@
   .flags::after {
     background: #cccccc;
   }
+  .flags.error {
+    border: 2px solid red;
+    background: #fffcfa;
+  }
   .flags.colour1 {
     border: 2px solid #fea95b;
     background: #fffcfa;
@@ -169,7 +174,7 @@
   }
 </style>
 
-<div class="flags {colour}">
+<div class="flags {error ? "error" : colour}">
   {#each flags as flag}
     <li>
       <input bind:group={selectedFlags} type="checkbox" value={flag} />

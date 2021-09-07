@@ -13,6 +13,7 @@
   import { getToken } from "../../getToken";
   import Button from "../widgets/Button.svelte";
   import DeletionModal from "./Items/DeletionModal.svelte";
+  import striptags from "striptags";
 
   export let dialog = false;
 
@@ -24,6 +25,7 @@
     addNotebook = [],
     text = "",
     removeNotebook = [],
+    error = false,
     activeModal = false;
 
   $: noteTest = $note;
@@ -35,6 +37,10 @@
         .map((tag) => tag.name)
         .toString() || "noColour";
   };
+
+  $: if (error && !highlight && striptags(text)!=="") {
+    error = false;
+  }
 
   $: if (!colour && noteTest.tags) assignColour();
   $: if ($page.params.id) if (noteTest.tags) assignColour();
@@ -82,7 +88,11 @@
 
   async function save() {
     try {
-      const payload = Object.assign({}, noteTest);
+      if (!highlight && striptags(text)==="") {
+        error = true;
+        console.log('error')
+      } else {
+        const payload = Object.assign({}, noteTest);
       payload.tags = [];
       payload._tags = $tags.getIds([colour].concat(selectedFlags));
 
@@ -144,6 +154,8 @@
         colour.replace("colour", "Colour").replace(" ", "")
       );
       window.history.back();
+      }
+
     } catch (err) {
       console.error(err);
     }
@@ -353,6 +365,10 @@
     border: 2px solid #9fe793 !important;
     border-bottom: 0;
   }
+  .Editor.error :global(.Editor) {
+    border: 2px solid red !important;
+    border-bottom: 0;
+  }
   .Editor :global(.Editor p),
   .Editor :global(.Editor span) {
     background: transparent !important;
@@ -369,6 +385,9 @@
   }
   .deletion :global(svg) {
     margin: 0 auto;
+  }
+  .error-message {
+    color: red;
   }
 </style>
 
@@ -412,16 +431,21 @@
     {/if}
     <section>
       <Colours bind:colour />
+
       {#if comment.content}
-        <div class="Editor {colour}">
+        <div class="Editor {error ? "error" : colour}">
           <NoteEditor html={comment.content} bind:richtext={text} />
         </div>
       {:else}
-        <div class="Editor {colour}">
+        <div class="Editor {error ? "error" : colour}">
           <NoteEditor html="" bind:richtext={text} />
         </div>
       {/if}
-      <Flags {colour} {assignFlags} {noteTest} bind:selectedFlags />
+      <Flags {colour} {error} {assignFlags} {noteTest} bind:selectedFlags />
+      {#if error}
+      <br/>
+      <div class="error-message">note cannot be empty</div>
+      {/if}
     </section>
     <span class:dialog>
       <Button click={save}>Save</Button>
