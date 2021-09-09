@@ -518,7 +518,7 @@
       <header>
         <div class="column" />
         <div class="info">
-          {#if highlighed.content && (!params['styles'] || (!Array.isArray(params['styles']) && params['styles'] !== 'highlight') || (Array.isArray(params['styles']) && !params['styles'].find((item) => item === 'highlight')))}
+          {#if highlighed && highlighed.content && (!params['styles'] || (!Array.isArray(params['styles']) && params['styles'] !== 'highlight') || (Array.isArray(params['styles']) && !params['styles'].find((item) => item === 'highlight')))}
             <p class="Highlight {noted && noted.content ? '' : 'noNote'}">
               {@html highlighed.content}
             </p>
