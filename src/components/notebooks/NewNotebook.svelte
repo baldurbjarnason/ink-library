@@ -428,6 +428,7 @@
         <input
           type="text"
           placeholder="Enter notebook title"
+          required=true
           bind:value={title} />
         <textarea
           placeholder="Add a description (optional)"
