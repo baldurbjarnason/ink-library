@@ -37,6 +37,10 @@
       z-index: 0;
       grid-auto-rows: max-content;
     }
+    .AddNoteForm {
+      padding: 20px calc(var(--base) * 2) 0 calc(var(--base) * 2);
+    }
+
     .DefaultNotebook {
       padding: 10px 45px;
     }
@@ -59,8 +63,11 @@
         </label>
       </div>
   </div>
-<div class="EmptySourceNotes">
+  <div class="AddNoteForm">
   <EmptySourceNewNote ntbkClose={true} {source} />
+</div>
+<div class="EmptySourceNotes">
+
   {#each notes as note }
      <NotesCard {note} selecting={false} selectAll={false} />
   {/each}
