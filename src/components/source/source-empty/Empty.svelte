@@ -13,7 +13,7 @@
   let uploading = false;
   let pasting = false;
   let hasNotes = !!source.replies.length;
-  let display = hasNotes ? "notes" : "upload";
+  let display = "notes";
   // let Info
   // onMount(async () => {
   //   const module = await import('./EmptyInfo.svelte');
@@ -72,9 +72,9 @@
 
 <div class="NoSource">
   <div class="left-menu">
-    {#if leftDisplay === 'url'}
-    <UrlForm {source} {resetDisplay} />
-    {:else}
+    <div class={display === "notes" ? "left-menu-section active" : "left-menu-section"}>
+      <Button light={true} click={submit} value="notes">Notes</Button>
+    </div>
     <div class={display === 'upload' ? "left-menu-section active" : "left-menu-section"}>
       <Button disabled={hasNotes} light={true} click={submit} value="upload">Upload File</Button>
     </div>
@@ -82,12 +82,8 @@
       <Button disabled={hasNotes} light={true} click={submit} value="paste">Copy-Paste content</Button>
     </div>
     <div class={display === "url" ? "left-menu-section active" : "left-menu-section"}>
-      <Button light={true} click={submit} value="url">Url</Button>
+      <Button light={true} click={submit} value="url">Enter Url</Button>
     </div>
-    <div class={display === "notes" ? "left-menu-section active" : "left-menu-section"}>
-      <Button light={true} click={submit} value="notes">Notes</Button>
-    </div>
-    {/if}
 
   </div>
   <div>

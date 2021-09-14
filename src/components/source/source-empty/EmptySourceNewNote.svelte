@@ -92,7 +92,6 @@
       }
     }
 
-  
     async function close() {
       if (atNotebook) {
         ntbkClose("cancel");
@@ -102,16 +101,30 @@
        // newToggle.querySelector("button").focus();
       }
     }
+
     let text;
     $: flagsArr = $tags.items.filter(
       (item) =>
         item.type === "flag" && (!item.name || !item.name.startsWith("colour"))
     );
-  
-    async function submit(event) {
+
+    async function submitAndClose(event) {
       event.preventDefault();
       if (!atNotebook) close();
       else ntbkClose();
+      await submit(event);
+    }
+
+    function reset() {
+      note = { body: [], source: { name: "" } };
+      selectedFlags = [];
+      selectedNotebooks = [];
+      text = "";
+
+    }
+  
+    async function submit(event) {
+      event.preventDefault();
       // Get all tags, filter through them to match name of adding tags, add ids as prop
       try {
         const payload = Object.assign({}, note);
@@ -139,7 +152,7 @@
         }
   
         let url = `/api/notes`;
-
+        reset()
         await window.fetch(url, {
           method: "POST",
           credentials: "include",
@@ -149,24 +162,24 @@
             "csrf-token": getToken(),
           },
         });
-        selectedFlags = [];
-        selectedNotebooks = [];
+        reset();
         $refreshSourceNotes = Date.now();
       } catch (err) {
         console.error(err);
       }
     }
+
     $: atNotebook =
       $page.path && $page.path.startsWith("/notebooks/") ? true : false;
   </script>
   
   <style>
     .NewBox {
-      position: absolute;
+      display: block;
       background-color: var(--workspace-color);
       color: #fff;
       left: 20px;
-      width: calc(100% - 40px);
+      width: 100%;
       top: 50px;
       z-index: 3;
       border-radius: 30px;
@@ -565,7 +578,9 @@
             </li>
           {/each}
         </ul>
-        <WhiteButton>Create</WhiteButton>
+        <WhiteButton click={submitAndClose}>Create and Close</WhiteButton>
+        <WhiteButton click={submit}>Create and Continue</WhiteButton>
+
         <Closer click={close} dark={true} />
         <div class="dropdown">
 
