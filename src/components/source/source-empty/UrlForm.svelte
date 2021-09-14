@@ -6,7 +6,7 @@
     export let source;
     export let resetDisplay;
 
-    let url = source.links.length ? source.links[0].url : null;
+    let url = source.links && source.links.length ? source.links[0].url : null;
     let editing = !url;
     async function submit(event) {
       event.preventDefault();
