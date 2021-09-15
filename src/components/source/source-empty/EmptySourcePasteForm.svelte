@@ -109,6 +109,7 @@
     margin: 0.5rem;
     font-size: 0.85rem;
   }
+
   .Text {
     margin: 2rem;
   }
@@ -126,17 +127,15 @@
   svg {
     width: 45px;
   }
-  textarea {
-    width: 100%;
-    height: auto;
-  }
+
   .Pane {
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     flex-direction: column;
-    padding-top: 15%;
+    padding-top: 5%;
+    height: 100%;
     transition: opacity 100ms cubic-bezier(0.39, 0.575, 0.565, 1);
     background-color: #ecf1f4;
   }
@@ -152,6 +151,9 @@
   }
   .ButtonRow {
     padding-top: 2rem;
+  }
+  .text-area {
+    width: 80%;
   }
   .Pane :global(.Editor) {
     background-color: white;
@@ -192,6 +194,7 @@
         bind:group={textType} />
       <label for="richText">Rich Text</label>
     </div>
+    <div class="text-area">
     {#if textType === 'richText'}
       <div>
         <EmptySourcePaster bind:richtext />
@@ -204,6 +207,7 @@
         rows="10"
         bind:value={plaintext} />
     {/if}
+  </div>
     <div class="ButtonRow">
       <Button click={submit}>Save</Button>
     </div>
