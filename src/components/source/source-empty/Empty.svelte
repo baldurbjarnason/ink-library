@@ -72,6 +72,9 @@
 
 <div class="NoSource">
   <div class="left-menu">
+    {#if leftDisplay === "url"}
+    <UrlForm {source} {resetDisplay} />
+    {:else}
     <div class={display === "notes" ? "left-menu-section active" : "left-menu-section"}>
       <Button light={true} click={submit} value="notes">Notes</Button>
     </div>
@@ -84,7 +87,7 @@
     <div class={display === "url" ? "left-menu-section active" : "left-menu-section"}>
       <Button light={true} click={submit} value="url">Enter Url</Button>
     </div>
-
+    {/if}
   </div>
   <div>
     {#if display === 'upload'}

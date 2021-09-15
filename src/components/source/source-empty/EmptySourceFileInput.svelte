@@ -12,6 +12,7 @@
   export let storageId = null;
   export let fileName = null;
   let original;
+  
   async function change(event) {
     working = true;
     file = event.target.files[0];
@@ -88,6 +89,7 @@
     line-height: 1rem;
     position: relative;
     text-align: center;
+    background-color: #dde8ed;
   }
   .input:hover {
     background: rgba(255, 255, 255, 0.1);

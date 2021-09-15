@@ -12,6 +12,7 @@
   let form;
   let storageId;
   let fileName;
+  $: console.log(fileName)
   async function submit(event) {
     event.preventDefault();
     if (!storageId) return;
@@ -101,7 +102,7 @@
 
         <FileInput name="newFile" type="file" bind:storageId bind:fileName />
         <div class="ButtonRow">
-          <Button click={submit}>Save</Button>
+          <Button disabled={!fileName} light={!fileName} click={submit}>Save</Button>
         </div>
       </form>
     </div>
