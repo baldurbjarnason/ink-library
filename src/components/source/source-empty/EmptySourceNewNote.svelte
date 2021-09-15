@@ -108,13 +108,6 @@
         item.type === "flag" && (!item.name || !item.name.startsWith("colour"))
     );
 
-    async function submitAndClose(event) {
-      event.preventDefault();
-      if (!atNotebook) close();
-      else ntbkClose();
-      await submit(event);
-    }
-
     function reset() {
       note = { body: [], source: { name: "" } };
       selectedFlags = [];
@@ -125,6 +118,8 @@
   
     async function submit(event) {
       event.preventDefault();
+      close();
+     // click();
       // Get all tags, filter through them to match name of adding tags, add ids as prop
       try {
         const payload = Object.assign({}, note);
@@ -162,6 +157,7 @@
             "csrf-token": getToken(),
           },
         });
+        click();
         reset();
         $refreshSourceNotes = Date.now();
       } catch (err) {
@@ -563,7 +559,6 @@
         </ul>
         <br/>
 
-
         <div class="Editor {noteColour}">
           <NoteEditor bind:richtext={text} />
         </div>
@@ -578,8 +573,7 @@
             </li>
           {/each}
         </ul>
-        <WhiteButton click={submitAndClose}>Create and Close</WhiteButton>
-        <WhiteButton click={submit}>Create and Continue</WhiteButton>
+        <WhiteButton click={submit}>Create</WhiteButton>
 
         <Closer click={close} dark={true} />
         <div class="dropdown">
