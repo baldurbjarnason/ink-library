@@ -10,23 +10,40 @@
   import FlagUrgent from "../img/FlagUrgent.svelte";
   import IcoNewNote from "../img/IcoNewNote.svelte";
   import striptags from "striptags";
-
+  import IcoNotebook from "../img/IcoNotebook.svelte"
+  import CloseIcon from "../source/source-highlight/CloseIcon.svelte"
   import Button from "../widgets/Button.svelte";
   import Closer from "../widgets/Closer.svelte";
   import WhiteButton from "../workspace/WhiteButton.svelte";
   import { send, receive } from "../../routes/_crossfade.js";
-  import { tick } from "svelte";
+  import { tick, onMount } from "svelte";
   import NoteEditor from "../widgets/NoteEditor.svelte";
   import { getToken } from "../../getToken";
-  import { refreshNotes, refreshInNote, tags } from "../../stores";
+  import { notebooks, refreshNotes, refreshInNote, tags, profileSources, library } from "../../stores";
   import { stores } from "@sapper/app";
+  import ListSources from "./Items/ListSources.svelte";
+
   const { page } = stores();
   export let note = { body: [], source: { name: "" } };
   let selectedFlags = [];
+  let selectedNotebooks = [];
+  let selectedSource;
   let error = false;
   const colours = ["colour1", "colour2", "colour3", "colour4"];
   $: if (error && striptags(text) !== "") {
     error = false;
+  }
+  let sources;
+  let notebooksList;
+    $: notebooksList = $notebooks ? $notebooks.items : [];
+    $: if($notebooks) {
+      notebooksList.unshift({name: ''})
+    }
+
+
+  $: if ($library) sources = $library.items;
+  $: if (sources && sources.length && sources[0].name) {
+    sources.unshift({name: ""})
   }
 
   function assignIco(icon) {
@@ -55,6 +72,13 @@
   let open = false;
   let newToggle;
   let noteColour = "colour1";
+
+  // if in a notebook, set that notebook by default, but make sure it can be removed
+  let initialNotebook = true;
+  $: if (atNotebook && notebooksList && notebooksList.length && initialNotebook) {
+    const notebook = notebooksList.find(x => x.shortId === $page.params.id)
+    selectedNotebooks.push(notebook)
+  }
 
   function click() {
     open = !open;
@@ -101,9 +125,16 @@
         });
       }
 
+      if (selectedSource) {
+        payload.sourceId = selectedSource.shortId
+      }
+      payload.notebooks = selectedNotebooks;
+
+
       let url = atNotebook
         ? `/api/notebooks/${$page.params.id}/notes/`
         : `/api/notes`;
+
 
       await window.fetch(url, {
         method: "POST",
@@ -124,6 +155,20 @@
     }
     
   }
+  function changeSource(event) {
+    event.preventDefault();
+    selectedSource = sources.find(source => source.shortId === event.target.value)
+  }
+
+  function changeNotebook(e) {
+    initialNotebook = false;
+      const index = selectedNotebooks.findIndex(x => x.name === e.target.value)
+      if (index === -1) {
+        let filterResults = notebooksList.filter(notebook => notebook.name === e.target.value)
+        selectedNotebooks = selectedNotebooks.concat(filterResults[0])
+      }
+    }
+
   $: atNotebook =
     $page.path && $page.path.startsWith("/notebooks/") ? true : false;
 </script>
@@ -476,10 +521,73 @@
     }
 
   }
+  #select-source {
+    width: 200px;    
+  }
+  .Flag {
+      margin-right: 0.25rem;
+      color: black;
+      width: fit-content;
+      margin-top: 0.5rem;
+      background: var(--toolbar-background, #ddd);
+      box-sizing: border-box;
+      border-radius: 5px;
+      padding: 0.25rem 0.25rem;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      display: grid;
+      grid-template-columns: 24px 1fr 24px;
+    }
+    .NewForm select {
+      font-size: .8rem;
+      background: var(--main-background-color);
+      border: 1px solid #dde8ed;
+      border-radius: 8px;
+      padding: 0 12px;
+    }
+
 </style>
 
 {#if open || atNotebook}
   <div class="NewBox newNote">
+    <div class="NewForm">
+    <span>select source: </span>
+    <select name="source" on:change={changeSource} id="select-source" value=''>
+      {#each sources as source}
+        <option value={source.shortId}>{source.name}</option>
+      {/each}
+    </select>
+  </div>
+  <div class="NewForm">
+  <span>add notebooks: </span>
+  <select name="notebooks" on:change={changeNotebook} id="select-notebooks" value=''>
+    {#each notebooksList as notebook}
+      <option value={notebook.name}>{notebook.name}</option>
+    {/each}
+  </select>
+  <br/>
+</div>
+{#if selectedNotebooks}
+{#each selectedNotebooks as notebook}
+  <span class="Flag Item">
+    <IcoNotebook />
+    <span class={notebook.name}>{notebook.name}</span>
+    <CloseIcon
+      click={() => {
+        initialNotebook = false;
+        const index = selectedNotebooks.indexOf(notebook);
+        if (index !== -1) {
+          selectedNotebooks = selectedNotebooks.filter((old) => {
+            return old !== notebook;
+          });
+        }
+      }} />
+  </span>
+{/each}
+{/if}
     <form
       id="newform"
       class="newForm"
@@ -514,6 +622,12 @@
       {#if error}
       <div class="error-message">note cannot be empty</div>
       {/if}
+      {#if selectedSource}
+      source: {selectedSource.name}
+      {/if}
+
+
+
       <WhiteButton>Create</WhiteButton>
       <Closer click={close} dark={true} />
     </form>
