@@ -3,11 +3,37 @@
     import { getToken } from "../../../getToken";
     import IcoGoBack from "../../img/IcoGoBack.svelte";
     import IcoEdit from "../../img/IcoEdit.svelte";
+    import { onMount } from "svelte"
     export let source;
     export let resetDisplay;
 
     let url = source.links && source.links.length ? source.links[0].url : null;
     let editing = !url;
+    let preview;
+
+    onMount(async () => {
+      if (url) {
+        preview = await getPreview(url);
+      }
+    })
+
+    async function getPreview(url) {
+      try {
+        const response = await fetch(`/api/urlPreview?url=${url}`, {
+          method: "GET",
+          credientials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "csrf-token": getToken(),
+          }
+        })
+        return await response.json();
+      } catch (err) {
+        return;
+      }
+    }
+
     async function submit(event) {
       event.preventDefault();
      let payload = source;
@@ -23,6 +49,7 @@
           },
           body: JSON.stringify(payload),
         });
+        preview = await getPreview(url)
       } catch (err) {
         console.error(err);
       }
@@ -49,6 +76,7 @@
       margin: 0;
       font-weight: bold;
       text-align: center;
+      font-size: 2rem;
     }
 
     input[type="submit"]:hover {
@@ -80,6 +108,26 @@
         outline: none;
         width: 80%;
     }
+    .preview-title {
+      font-weight: 500;
+      font-size: 1.5rem;
+      padding: 20px 10%;
+      text-align: left;
+    }
+    .preview-description {
+      text-align: left;
+      padding: 0 10%;
+    }
+    .preview-image {
+      float: left;
+      padding: 20px 10%;
+    }
+    .preview {
+      font-weight: 700;
+      font-size: 1.5rem;
+      padding: 20px;
+    }
+
   </style>
   
   <div class="Pane">
@@ -88,6 +136,20 @@
         {#if url && !editing}
         <a href={url}>{url}</a>
         <span on:click={openEdit}><IcoEdit /></span>
+          {#if preview}
+          <div class="preview-box">
+            <div class="preview">Preview: </div>
+            {#if preview.title} 
+            <div class="preview-title">{preview.title}</div>
+            {/if}
+            {#if preview.description}
+            <div class="preview-description">{preview.description}</div>
+            {/if}
+            {#if preview.images && preview.images.length}
+            <img class="preview-image" width="200" height="200" src={preview.images[0]} alt="preview"/>
+            {/if}
+          </div>
+          {/if}
         {/if}
         {#if editing}
         <form on:submit={submit}>
