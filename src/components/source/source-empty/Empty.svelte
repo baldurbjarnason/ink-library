@@ -21,16 +21,9 @@
   // });
   async function submit(event) {
     event.preventDefault();
-    if (event.target.value === "url") {
-      leftDisplay = "url";
-    } else {
-      display = event.target.value;
-    }
+    display = event.target.value;
   }
 
-  function resetDisplay() {
-    leftDisplay = null;
-  }
 </script>
 
 <style>
@@ -72,9 +65,7 @@
 
 <div class="NoSource">
   <div class="left-menu">
-    {#if leftDisplay === "url"}
-    <UrlForm {source} {resetDisplay} />
-    {:else}
+
     <div class={display === "notes" ? "left-menu-section active" : "left-menu-section"}>
       <Button light={true} click={submit} value="notes">Notes</Button>
     </div>
@@ -85,17 +76,20 @@
       <Button disabled={hasNotes} light={true} click={submit} value="paste">Copy-Paste content</Button>
     </div>
     <div class={display === "url" ? "left-menu-section active" : "left-menu-section"}>
-      <Button light={true} click={submit} value="url">Enter Url</Button>
+      <Button light={true} click={submit} value="url">Url</Button>
     </div>
-    {/if}
   </div>
   <div>
     {#if display === 'upload'}
       <EmptySourceUploadForm bind:uploading {source} />
     {:else if display === "paste"}
       <EmptySourcePasteForm bind:pasting {source} />
+    {:else if display==="url"}
+    <UrlForm {source} />
+
     {:else}
-      <EmptySourceNotes {source} />
+    <EmptySourceNotes {source} />
+
     {/if}
   </div>
 </div>
