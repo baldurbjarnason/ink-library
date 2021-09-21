@@ -2,12 +2,38 @@
     import Button from "../../widgets/Button.svelte";
     import { getToken } from "../../../getToken";
     import IcoGoBack from "../../img/IcoGoBack.svelte";
-    import IcoEdit from "../../img/IcoEdit.svelte"
+    import IcoEdit from "../../img/IcoEdit.svelte";
+    import { onMount } from "svelte"
     export let source;
     export let resetDisplay;
 
     let url = source.links && source.links.length ? source.links[0].url : null;
     let editing = !url;
+    let preview;
+
+    onMount(async () => {
+      if (url) {
+        preview = await getPreview(url);
+      }
+    })
+
+    async function getPreview(url) {
+      try {
+        const response = await fetch(`/api/urlPreview?url=${url}`, {
+          method: "GET",
+          credientials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "csrf-token": getToken(),
+          }
+        })
+        return await response.json();
+      } catch (err) {
+        return;
+      }
+    }
+
     async function submit(event) {
       event.preventDefault();
      let payload = source;
@@ -23,6 +49,7 @@
           },
           body: JSON.stringify(payload),
         });
+        preview = await getPreview(url)
       } catch (err) {
         console.error(err);
       }
@@ -49,44 +76,20 @@
       margin: 0;
       font-weight: bold;
       text-align: center;
+      font-size: 2rem;
     }
 
-    .breadcrumbs {
-        margin-bottom: 10px;
-        padding: 0;
-        border: none;
-        background: transparent;
-        display: flex;
-        grid-template-columns: max-content 1fr;
-        text-align: left;
-        align-items: center;
-        cursor: pointer;
-        width: max-content;
-        float: right;
-    }
-    .breadcrumbs h5 {
-        color: #888888;
-        font-weight: 500;
-        margin: 0;
-        margin-left: 5px;
-    }
-    @media (max-width: 720px) {
-        .breadcrumbs {
-        margin-bottom: 0;
-        margin-top: 3px;
-        grid-template-columns: max-content;
-        }
-        .breadcrumbs h5 {
-        display: none;
-        }
-    }
     input[type="submit"]:hover {
         background: var(--rc-dark);
     }
 
+    .url-input {
+      text-align: center;
+      margin: 0 5%;
+    }
     input {
         background: var(--main-background-color);
-        border: none;
+        border: auto;
         border-radius: 10px;
         padding: 0 20px;
         margin: 0 20px 10px 20px;
@@ -96,32 +99,66 @@
         
     }
     textarea {
-        background: var(--main-background-color);
+        background: white;
         border: none;
         border-radius: 10px;
         padding: 10px 20px;
         margin: 0 20px 10px 20px;
         color: var(--workspace-color);
         outline: none;
-        width: 250px;
+        width: 80%;
     }
+    .preview-title {
+      font-weight: 500;
+      font-size: 1.5rem;
+      padding: 20px 10%;
+      text-align: left;
+    }
+    .preview-description {
+      text-align: left;
+      padding: 0 10%;
+    }
+    .preview-image {
+      float: left;
+      padding: 20px 10%;
+    }
+    .preview {
+      font-weight: 700;
+      font-size: 1.5rem;
+      padding: 20px;
+    }
+
   </style>
   
   <div class="Pane">
-    <button class="breadcrumbs" on:click={close}>
-        <IcoGoBack />
-        <h5>Back</h5>
-      </button>        <h3>Url</h3>
+      <h3>Url</h3>
+      <div class="url-input">
         {#if url && !editing}
         <a href={url}>{url}</a>
         <span on:click={openEdit}><IcoEdit /></span>
+          {#if preview}
+          <div class="preview-box">
+            <div class="preview">Preview: </div>
+            {#if preview.title} 
+            <div class="preview-title">{preview.title}</div>
+            {/if}
+            {#if preview.description}
+            <div class="preview-description">{preview.description}</div>
+            {/if}
+            {#if preview.images && preview.images.length}
+            <img class="preview-image" width="200" height="200" src={preview.images[0]} alt="preview"/>
+            {/if}
+          </div>
+          {/if}
         {/if}
         {#if editing}
         <form on:submit={submit}>
         <textarea type=textarea bind:value={url}/>
+        <br/>
         <input type="submit" value="save" />
         </form>
         {/if}
+      </div>
 
 
   </div>
