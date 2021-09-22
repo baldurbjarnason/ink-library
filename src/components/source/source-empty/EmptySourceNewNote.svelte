@@ -31,6 +31,7 @@
     export let source;
     let selectedFlags = [];
     let selectedNotebooks = [];
+    let pageNumber;
 
     let noteBookMenu;
     let colour;
@@ -145,6 +146,8 @@
             content: text,
           });
         }
+
+        if (pageNumber) payload.json = {pages: pageNumber}
   
         let url = `/api/notes`;
         reset()
@@ -183,6 +186,9 @@
     }
     form {
       width: 100%;
+    }
+    .page-input {
+      width: 80px;
     }
     /* ------ Colours ------ */
     .colours {
@@ -573,6 +579,8 @@
             </li>
           {/each}
         </ul>
+        <labe>Pages: </labe><input class="page-input" type="text" bind:value={pageNumber} />
+
         <WhiteButton click={submit}>Create</WhiteButton>
 
         <Closer click={close} dark={true} />

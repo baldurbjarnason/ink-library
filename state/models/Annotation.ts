@@ -52,6 +52,7 @@ interface AnnotationJSON {
   shortId: string;
   target: any;
   sourceId: string;
+  json?: object;
   body: Array<any>;
   document?: string;
 }
@@ -90,7 +91,7 @@ export class Annotation {
       notebook.settings = {colour: '', coverImg: ''};
       return notebook;
     }); 
-
+    updated.json = json.json;
     updated.body = processed.body;
     if (tempId) {
       updateHighlight(tempId, updated.id, colour);
@@ -103,6 +104,7 @@ export class Annotation {
   public processCreate(json) {
     const { tags, notebooks, body } = json;
     const payload = Object.assign({}, this.annotation, { tags, notebooks });
+    payload.json = json.json;
     if (body) {
       payload.body = payload.body.concat(body);
     }
@@ -139,6 +141,7 @@ export class Annotation {
   public async update(json, content?) {
     const { tags, notebooks, body } = json;
     const payload = Object.assign({}, this.annotation, { tags, notebooks });
+    if (json.json && json.json.pages) payload.json = json.json;
     console.log('payload', payload)
     console.log('body', body)
     console.log('content', content)

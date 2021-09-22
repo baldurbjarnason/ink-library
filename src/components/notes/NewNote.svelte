@@ -22,6 +22,7 @@
   import { stores } from "@sapper/app";
   const { page } = stores();
   export let note = { body: [], source: { name: "" } };
+  let pageNumber;
   let selectedFlags = [];
   let error = false;
   const colours = ["colour1", "colour2", "colour3", "colour4"];
@@ -105,6 +106,8 @@
         ? `/api/notebooks/${$page.params.id}/notes/`
         : `/api/notes`;
 
+      if (pageNumber) payload.json = {pages: pageNumber}
+
       await window.fetch(url, {
         method: "POST",
         credentials: "include",
@@ -161,6 +164,9 @@
   }
   form {
     width: 100%;
+  }
+  .page-input {
+    width: 80px;
   }
   /* ------ Colours ------ */
   .colours {
@@ -514,6 +520,7 @@
       {#if error}
       <div class="error-message">note cannot be empty</div>
       {/if}
+      <labe>Pages: </labe><input class="page-input" type="text" bind:value={pageNumber} />
       <WhiteButton>Create</WhiteButton>
       <Closer click={close} dark={true} />
     </form>
