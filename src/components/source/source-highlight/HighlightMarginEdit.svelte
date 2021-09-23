@@ -162,7 +162,7 @@
       notebooks
     }
 
-    if (pageNumber) object.json = {pages: pageNumber}
+    if (pageNumber) object.json = Object.assign(object.json, {pages: pageNumber})
 
     stopEditing();
     return note.update(object, body);

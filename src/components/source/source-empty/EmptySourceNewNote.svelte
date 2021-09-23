@@ -147,7 +147,7 @@
           });
         }
 
-        if (pageNumber) payload.json = {pages: pageNumber}
+        if (pageNumber) payload.json = Object.assign(payload.json, {pages:pageNumber});
   
         let url = `/api/notes`;
         reset()

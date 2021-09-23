@@ -106,7 +106,7 @@
         ? `/api/notebooks/${$page.params.id}/notes/`
         : `/api/notes`;
 
-      if (pageNumber) payload.json = {pages: pageNumber}
+      if (pageNumber) payload.json = Object.assign(payload.json, {pages:pageNumber});
 
       await window.fetch(url, {
         method: "POST",

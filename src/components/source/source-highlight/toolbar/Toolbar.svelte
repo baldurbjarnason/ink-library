@@ -77,7 +77,7 @@
       json.notebooks = json.notebooks.concat($defaultNotebook)
     }
     if (pageNumber) {
-      json.json = {pages: pageNumber}
+      json.json = Object.assign(json.json, {pages: pageNumber})
     }
 
     if (plaintext) {
