@@ -25,7 +25,6 @@
   export let filters;
   export let keyboardNote;
   export let disabled;
-
   $: params = $page.query;
   let editing = false;
   const flipDurationMs = 300;
@@ -210,7 +209,8 @@
       body: items[index].body,
       json: items[index].json,
       tags: items[index].tags,
-      contextId: items[index].contextId
+      contextId: items[index].contextId,
+      source: items[index].source
     };
     if (note.fresh) {
       note["body"] = items[index].body;

@@ -120,12 +120,13 @@
     background-color: var(--workspace-color);
     color: #fff;
     left: 20px;
-    width: calc(100% - 40px);
     top: 20px;
+    width: calc(100% - 40px);
     z-index: 3;
     border-radius: 30px;
     padding: 30px 40px;
   }
+
   /* ------ Footer btns ------ */
   :global(.Button) {
     float: right;

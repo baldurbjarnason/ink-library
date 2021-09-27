@@ -5,6 +5,7 @@
   export let disabled = false;
   export let type = "button";
   export let light = false;
+  export let value ="";
 </script>
 
 <style>
@@ -39,7 +40,7 @@
     border: none;
   }
 
-  .Button:hover,
+  .Button:hover:enabled,
   .Button:link:hover,
   .Button:link:visited:hover,
   .Button:visited:hover,
@@ -64,6 +65,17 @@
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
     color: #002230;
   }
+  .Button:disabled {
+    color: grey;
+  }
+  .Button:hover:disabled,
+  .Button:disabled:link:hover,
+  .Button:disabled:link:visited:hover,
+  .Button:disabled:visited:hover,
+  .Button:disabled:link:visited:hover {
+    color: grey;
+
+  }
 </style>
 
 {#if href}
@@ -74,6 +86,7 @@
   <button
     class="Button"
     class:light
+    {value}
     {type}
     {hidden}
     {disabled}

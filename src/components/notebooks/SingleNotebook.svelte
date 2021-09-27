@@ -4,7 +4,7 @@
   import History from "../History.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
   import IcoEdit from "../img/IcoEdit.svelte";
-  import { notebook, refreshNotebook, page } from "../../stores";
+  import { notebook, refreshNotebook, page, refreshNotebooks } from "../../stores";
   import DeletionModal from "../notes/Items/DeletionModal.svelte";
   import EditCoverImage from "./Tools/EditCoverImage.svelte";
   import NoteEdit from "./Tools/NoteEdit.svelte";
@@ -13,8 +13,8 @@
 
   let activeModal = false;
   let clickPage = false;
+  let error = false;
   async function remove() {
-    goto(`notebooks`);
 
     try {
       await fetch(`/api/notebooks/${$notebook.shortId}`, {
@@ -29,6 +29,14 @@
     } catch (err) {
       console.error(err);
     }
+    $refreshNotebooks = Date.now()
+    window.history.back()
+
+  }
+  $: if (newValue === "" && itemEdit === "name") {
+    error = true;
+  } else {
+    error = false;
   }
 
   let itemEdit,
@@ -174,6 +182,10 @@
     color: var(--action);
     font-weight: 500;
   }
+  .error {
+      color: red !important;
+      border: 1px solid red;
+  }
   .Edition button {
     text-align: center;
     font-size: 0.75rem;
@@ -290,6 +302,7 @@
     height: 1px;
     float: left;
   }
+
   @media (max-width: 720px) {
     nav.Toolbar::before {
       content: none;
@@ -315,6 +328,7 @@
     .NotesEditor .notesList {
       display: none;
     }
+
   }
 </style>
 
@@ -353,12 +367,12 @@
               {#if itemEdit === 'name'}
                 <div class="NameCont Edition">
                   <input
-                    class="NameEdit"
-                    required
+                    class={error ? "error NameEdit" : "NameEdit"}
                     type="text"
                     use:init={$notebook.name}
-                    placeholder="Enter notebook title"
+                    placeholder="Name is required"
                     bind:value={newValue} />
+
                   <button
                     class="Cancel"
                     on:click={() => {

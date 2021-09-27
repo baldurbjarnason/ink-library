@@ -9,6 +9,7 @@
   import FlagToDo from "../img/FlagToDo.svelte";
   import FlagUrgent from "../img/FlagUrgent.svelte";
   import IcoNewNote from "../img/IcoNewNote.svelte";
+  import striptags from "striptags";
 
   import Button from "../widgets/Button.svelte";
   import Closer from "../widgets/Closer.svelte";
@@ -22,8 +23,11 @@
   const { page } = stores();
   export let note = { body: [], source: { name: "" } };
   let selectedFlags = [];
-
+  let error = false;
   const colours = ["colour1", "colour2", "colour3", "colour4"];
+  $: if (error && striptags(text) !== "") {
+    error = false;
+  }
 
   function assignIco(icon) {
     switch (icon) {
@@ -73,7 +77,10 @@
   );
 
   async function submit(event) {
-    event.preventDefault();
+    event.preventDefault()
+    if (striptags(text) === "") {
+      error = true;
+    } else {
     if (!atNotebook) close();
     else ntbkClose();
     // Get all tags, filter through them to match name of adding tags, add ids as prop
@@ -114,12 +121,17 @@
     } catch (err) {
       console.error(err);
     }
+    }
+    
   }
   $: atNotebook =
     $page.path && $page.path.startsWith("/notebooks/") ? true : false;
 </script>
 
 <style>
+  .error-message {
+    color: red;
+  }
   .new-button {
     justify-content: center;
     flex-direction: column;
@@ -142,7 +154,7 @@
     color: #fff;
     left: 20px;
     width: calc(100% - 40px);
-    top: 20px;
+    top: 50px;
     z-index: 3;
     border-radius: 30px;
     padding: 30px 40px;
@@ -256,6 +268,10 @@
     border-radius: 10px 10px 0 0;
     margin-top: 20px;
   }
+  .Editor.error :global(.Editor) {
+    border: 2px solid red;
+    border-bottom: 0;
+  }
   .Editor.colour1 :global(.Editor) {
     border: 2px solid #fea95b;
     border-bottom: 0;
@@ -327,6 +343,11 @@
     cursor: pointer;
     opacity: 0;
   }
+  .flags.error {
+    border: 2px solid red;
+    border-top: none;
+    background: #fffcfa;
+  }
   .flags.colour1 {
     border: 2px solid #fea95b;
     border-top: none;
@@ -359,6 +380,7 @@
   .flags.colour4::after {
     background: #eaf5e6;
   }
+
   .flags.colour1 input:checked ~ p {
     color: #d86801;
     border: none;
@@ -452,6 +474,7 @@
       margin: 0 0 15px 0;
       width: 100%;
     }
+
   }
 </style>
 
@@ -474,10 +497,10 @@
           </li>
         {/each}
       </ul>
-      <div class="Editor {noteColour}">
+      <div class="Editor {error ? "error" : noteColour}">
         <NoteEditor bind:richtext={text} />
       </div>
-      <ul class="flags {noteColour}">
+      <ul class="flags {error ? "error" : noteColour}">
         {#each flagsArr as flag}
           <li>
             <input type="checkbox" bind:group={selectedFlags} value={flag} />
@@ -488,6 +511,9 @@
           </li>
         {/each}
       </ul>
+      {#if error}
+      <div class="error-message">note cannot be empty</div>
+      {/if}
       <WhiteButton>Create</WhiteButton>
       <Closer click={close} dark={true} />
     </form>

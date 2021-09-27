@@ -24,7 +24,6 @@
     $page.path === "/notebooks/" || $page.path === "/notebooks" ? true : false;
   $: if (!selectable) {
     clearSelected();
-    console.log(selectable);
   }
 
   clearSelected();

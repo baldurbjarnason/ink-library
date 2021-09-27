@@ -14,14 +14,24 @@
     background-color: var(--reader-toolbar-background);
     border-bottom: 1px solid var(--reader-toolbar-border);
     color: var(--reader-toolbar-color);
-    display: flex;
+    display: grid;
+    grid-template-columns: 0.2fr 0.2fr 1fr 0.4fr;
     justify-content: space-between;
     align-items: center;
     position: sticky;
     top: 0;
     overflow: visible;
     z-index: 100;
-    height: 41px;
+    height: auto;
+  }
+  .section {
+    display: flex;
+  }
+  .middle {
+    margin: auto;
+  }
+  .left-center {
+    margin-left: auto;
   }
   ol {
     list-style: none;
@@ -30,7 +40,15 @@
     display: flex;
     padding: 0;
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.75rem;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    padding: 0;
     align-items: center;
     padding: 0 0.75rem;
   }
@@ -39,6 +57,13 @@
     justify-content: center;
     align-items: center;
     margin: 0.125rem 0.25rem;
+  }
+  .left {
+    display: flex;
+    
+  }
+  .CloseSidebar {
+    margin-left: auto;
   }
   .CloseSidebar :global(svg) {
     transform: rotate(180deg);
@@ -104,9 +129,7 @@
     outline: none;
     box-shadow: 0 0 0 3px #68d6d499;
   }
-  .defaultNotebook {
-    margin-left: 100px; /*To fix: should be floating right somehow*/
-  }
+
   @media (max-width: 720px) {
     .Button {
       font-size: 0.7rem;
@@ -120,23 +143,12 @@
 </style>
 
 <nav class="ToolBar" {hidden} aria-labelledby="navigation-header">
+  <div class="section left">
   <h2 class="visually-hidden" id="navigation-header" data-ink-private>
     Toolbar
   </h2>
-  <ol style="transform: translateX(-10px);">
-    <li class="CloseSidebar" class:selected={$sidebar.hidden}>
-      <button
-        class="Button"
-        type="Button"
-        aria-label="Hide left sidebar"
-        on:click={() => {
-          const { hidden, tab } = $sidebar;
-          $sidebar = { hidden: !hidden, tab };
-        }}
-        aria-pressed={$sidebar.hidden ? 'true' : 'false'}>
-        <CloseSidebar />
-      </button>
-    </li>
+  <ul style="transform: translateX(-10px);">
+
     <li class:selected={$sidebar.tab === 'toc' && !$sidebar.hidden}>
       <button
         class="Button"
@@ -232,17 +244,35 @@
         </svg>
       </button>
     </li>
-  </ol>
-  <ol>
-    <li>{chapterTitle}</li>
-    <li class="defaultNotebook">
-      <div class="default-notebook-label">Default Notebook:</div>
-      <DefaultNotebookForm />
+  </ul>
+</div>
+<div class="section left-center">
+  <ul>
+    <li class="CloseSidebar" class:selected={$sidebar.hidden}>
+      <button
+        class="Button"
+        type="Button"
+        aria-label="Hide left sidebar"
+        on:click={() => {
+          const { hidden, tab } = $sidebar;
+          $sidebar = { hidden: !hidden, tab };
+        }}
+        aria-pressed={$sidebar.hidden ? 'true' : 'false'}>
+        <CloseSidebar />
+      </button>
     </li>
-  </ol>
-  <ol style="transform: translateX(10px);">
+  </ul>
+  </div>
+  <div class="section middle">
+    {chapterTitle}
+    </div>
+    <div class="section right">
+    <ol class="defaultNotebook">
+      <li class="default-notebook-label">Default Notebook:</li>
+      <li>
+      <DefaultNotebookForm />
+      </li>
+    </ol>
+    </div>
 
-
-
-  </ol>
 </nav>
