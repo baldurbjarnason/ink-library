@@ -87,12 +87,16 @@
   }
 
   async function save() {
+
     try {
       if (!highlight && striptags(text)==="") {
         error = true;
         console.log('error')
       } else {
         const payload = Object.assign({}, noteTest);
+        if (payload.source) {
+          payload.sourceId = payload.source.shortId;
+        }
       payload.tags = [];
       payload._tags = $tags.getIds([colour].concat(selectedFlags));
 
