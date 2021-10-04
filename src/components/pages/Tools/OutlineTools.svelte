@@ -19,6 +19,8 @@
   export let addNewNote;
   export let filters;
   export let disabled;
+  // NOTE FROM MARIE: don't know why the api-server is wrong on production, but hard coding seems to fix it for now.
+  let server = process.env.NODE_ENV==="development" ? process.env.API_SERVER : "https://ink-api-dev-dot-thematic-cider-139815.appspot.com/" 
 
   let checkAll = () => {
     filters.type = [];
@@ -37,7 +39,7 @@
     } else filters[filter] = [...filters[filter], value];
   };
   let downloadDocx = async () => {
-    const url = `${process.env.API_SERVER}outlines/${$page.params.outlineId}/docx`;
+    const url = `${server}outlines/${$page.params.outlineId}/docx`;
     window.location.replace(url);
   }
 </script>
