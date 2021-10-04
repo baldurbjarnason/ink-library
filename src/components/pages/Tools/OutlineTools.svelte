@@ -20,7 +20,6 @@
   export let filters;
   export let disabled;
 
-  console.log(process.env.NODE_ENV)
   // NOTE FROM MARIE: don't know why the api-server is wrong on production, but hard coding seems to fix it for now.
   let server = process.env.NODE_ENV==="development" || "dev" ? process.env.API_SERVER : "https://ink-api-dev-dot-thematic-cider-139815.appspot.com/" 
 
