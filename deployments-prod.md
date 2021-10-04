@@ -1,3 +1,6 @@
+Deployment Oct 4, 2021
+- fixing problem with docx export on production
+
 Deployment Sept 27, 2021
 - error messages in notebook and note forms
 - source without file interface (notes, url)
