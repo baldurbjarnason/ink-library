@@ -98,8 +98,10 @@
         error = true;
       } else { 
         try {
-
       const payload = Object.assign({}, noteTest);
+      if (payload.source) {
+          payload.sourceId = payload.source.shortId;
+      }
       payload.tags = [];
       payload._tags = $tags.getIds([colour].concat(selectedFlags));
 
