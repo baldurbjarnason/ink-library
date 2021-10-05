@@ -1,3 +1,17 @@
+Deployment Oct 4, 2021
+- fixing problem with docx export on production
+
+Deployment Sept 27, 2021
+- error messages in notebook and note forms
+- source without file interface (notes, url)
+- moved close sidebar icon in reading interface
+- bug fix: note editing goes back to notes library
+- bug fix: fixed bugs with default notebook
+- bug fix: fixed missing source from note in outline
+- bug fix: note editing in reading interface: can remove/add notebooks and flags
+- bug fix: note editing in the reading interface allows emptying note
+- docx export of outlines
+
 Deployment June 29, 2021
 - fixed so that we always load the dashboard by default
 - fixed back button in outline and reading interface

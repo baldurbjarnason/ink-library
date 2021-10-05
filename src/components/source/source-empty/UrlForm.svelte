@@ -3,14 +3,16 @@
     import { getToken } from "../../../getToken";
     import IcoGoBack from "../../img/IcoGoBack.svelte";
     import IcoEdit from "../../img/IcoEdit.svelte";
+    import IcoNewTab from "../../img/IcoNewTab.svelte"
     import { onMount } from "svelte"
+
     export let source;
     export let resetDisplay;
 
     let url = source.links && source.links.length ? source.links[0].url : null;
     let editing = !url;
     let preview;
-
+$: console.log(preview)
     onMount(async () => {
       if (url) {
         preview = await getPreview(url);
@@ -134,7 +136,7 @@
       <h3>Url</h3>
       <div class="url-input">
         {#if url && !editing}
-        <a href={url}>{url}</a>
+        <IcoNewTab /><a href={url} target="_blank">{url}</a>
         <span on:click={openEdit}><IcoEdit /></span>
           {#if preview}
           <div class="preview-box">
