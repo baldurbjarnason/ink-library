@@ -292,6 +292,10 @@
     --toolbar-text: black;
     margin-right: 2rem;
   }
+  .pages {
+    margin: 10px 1rem 0 1rem;
+    text-align: right;
+  }
 </style>
 
 {#if $note && !$note.deleted}
@@ -385,6 +389,9 @@
           {/if}
 
         </div>
+        {#if annotation && annotation.json && annotation.json.pages}
+        <div class="pages">p.{annotation.json.pages}</div>
+        {/if}
         <div class="Footer">
           <div class="Tags">
             {#each flags as flag}

@@ -14,6 +14,7 @@
   import Button from "../widgets/Button.svelte";
   import DeletionModal from "./Items/DeletionModal.svelte";
   import striptags from "striptags";
+  import {onMount} from "svelte";
 
   export let dialog = false;
 
@@ -26,7 +27,8 @@
     text = "",
     removeNotebook = [],
     error = false,
-    activeModal = false;
+    activeModal = false,
+    pageNumber;
 
   $: noteTest = $note;
   /////////////////// Set colours
@@ -108,6 +110,7 @@
           content: text,
         });
       }
+      if (pageNumber) payload.json = Object.assign(payload.json, {pages:pageNumber});
 
       if (typeof replaceSource === "object")
         payload.sourceId = replaceSource.shortId;
@@ -138,6 +141,7 @@
       replaceSource = "";
       addNotebook = [];
       removeNotebook = [];
+      pageNumber = '';
       await fetch(`/api/note/${id}`, {
         method: "PUT",
         credentials: "include",
@@ -389,6 +393,9 @@
   .error-message {
     color: red;
   }
+  .page-input {
+    width: 80px;
+  }
 </style>
 
 <div class="Item">
@@ -445,6 +452,11 @@
       {#if error}
       <br/>
       <div class="error-message">note cannot be empty</div>
+      {/if}
+      {#if noteTest && noteTest.json}
+      pages: <input type="text" class="page-input" bind:value={noteTest.json.pages} placeholder="page(s)" />
+      {:else}
+      pages: <input type="text" class="page-input" bind:value={pageNumber} placeholder="page(s)" />
       {/if}
     </section>
     <span class:dialog>

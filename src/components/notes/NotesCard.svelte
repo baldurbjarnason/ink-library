@@ -427,6 +427,10 @@
   .colour4 .Bottom * {
     color: #589b4c;
   }
+  .pageNumber {
+    text-align: right;
+    font-size: 0.7rem;
+  }
 </style>
 
 <div
@@ -476,6 +480,9 @@
         <p class="empty">Add note...</p>
       {/if}
     </a>
+    {#if note.json && note.json.pages}
+    <div class="pageNumber">p.{note.json.pages}</div>
+    {/if}
   </div>
   <div class="Bottom">
     <ul class="Flags">

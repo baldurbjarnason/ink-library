@@ -28,6 +28,7 @@
   let plaintext;
   let hidden;
   let useDefault = true;
+  let pageNumber;
   
   $: if (colour) {
     setColour(colour, toolbar);
@@ -75,6 +76,10 @@
     if ($defaultNotebook && useDefault) {
       json.notebooks = json.notebooks.concat($defaultNotebook)
     }
+    if (pageNumber) {
+      json.json = Object.assign(json.json, {pages: pageNumber})
+    }
+
     if (plaintext) {
       const content = await window
         .fetch("/api/markdown", {
@@ -204,6 +209,11 @@
     border-radius: 100%;
     height: 16px;
     padding: 3px;
+  }
+  .page-input {
+    float: left;
+    margin-right: auto;
+    width: 80px;
   }
 </style>
 
@@ -341,6 +351,7 @@
   {#if openNote}
     <HighlightNoteField bind:plaintext />
     <div class="ButtonBar">
+      <input class="page-input" placeholder="page(s)" type="text" bind:value={pageNumber} />
       <HighlightButton click={() => createHighlight()}>Create</HighlightButton>
     </div>
   {/if}

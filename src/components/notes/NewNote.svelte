@@ -25,6 +25,7 @@
 
   const { page } = stores();
   export let note = { body: [], source: { name: "" } };
+  let pageNumber;
   let selectedFlags = [];
   let selectedNotebooks = [];
   let selectedSource;
@@ -135,6 +136,7 @@
         ? `/api/notebooks/${$page.params.id}/notes/`
         : `/api/notes`;
 
+      if (pageNumber) payload.json = Object.assign(payload.json, {pages:pageNumber});
 
       await window.fetch(url, {
         method: "POST",
@@ -206,6 +208,9 @@
   }
   form {
     width: 100%;
+  }
+  .page-input {
+    width: 80px;
   }
   /* ------ Colours ------ */
   .colours {
@@ -622,6 +627,7 @@
       {#if error}
       <div class="error-message">note cannot be empty</div>
       {/if}
+      <label>Pages: </label><input class="page-input" type="text" bind:value={pageNumber} />
       {#if selectedSource}
       source: {selectedSource.name}
       {/if}
