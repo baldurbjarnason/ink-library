@@ -1,9 +1,12 @@
 <script>
+
   import {
     selectedItems,
     refreshDate,
     addedCollections,
     addedWorkspaces,
+    addedNotebooks,
+    notebooks
   } from "../../stores";
   // import RiskyButton from "../widgets/RiskyButton.svelte";
   import SecondaryButton from "../widgets/SecondaryButton.svelte";
@@ -12,6 +15,7 @@
   import Input from "./Input.svelte";
   import { getToken } from "../../getToken";
   import AddCollections from "./AddCollections.svelte";
+  import AddNotebooks from "./AddNotebooks.svelte";
 
   export let endSelection = function() {};
   export let editing;
@@ -26,8 +30,11 @@
     body.items = Array.from($selectedItems);
     body.addedCollections = $addedCollections;
     body.addedWorkspaces = $addedWorkspaces;
+    body.addedNotebooks = $addedNotebooks;
     $addedWorkspaces = [];
     $addedCollections = [];
+    $addedNotebooks = [];
+
     endSelection();
     try {
       await fetch(target.action, {
@@ -70,12 +77,33 @@
 
   $: editSource = Array.from($selectedItems);
   let removeTag = [];
-  $: console.log(removeTag);
+  let removeNotebooks = [];
   let test = async (id) => {
     if (removeTag.some((getId) => getId === id)) return;
     removeTag = [...removeTag].concat(id);
     const body = { publicationId: editSource[0].shortId, collectionId: id };
 
+    try {
+      await fetch(`/api/publication/${editSource[0].shortId}/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "csrf-token": getToken(),
+        },
+        body: JSON.stringify(body),
+      });
+      $refreshDate = Date.now();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  let testNotebook = async (id) => {
+    if (removeNotebooks.some((getId) => getId === id)) return;
+    removeNotebooks = [...removeNotebooks].concat(id);
+    const body = { publicationId: editSource[0].shortId, notebookId: id };
     try {
       await fetch(`/api/publication/${editSource[0].shortId}/${id}`, {
         method: "DELETE",
@@ -238,6 +266,11 @@
       </ul>
     {/if}
   </div>
+
+  <div class="Notebooks">
+    <AddNotebooks />
+  </div>
+
   <span class="FooterButtons">
     <SecondaryButton
       click={() => {

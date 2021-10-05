@@ -8,7 +8,6 @@ export const post = async function post(req, res, next) {
   delete req.body._workspace;
   delete req.body.collection;
   delete req.body._tags;
-
   if (req.user && req.user.profile) {
     try {
       const response = await got
@@ -69,7 +68,7 @@ export async function get(req, res, next) {
       query.delete("orderBy");
     }
     query.delete("dir");
-    url = `${url}?${query.toString()}`;
+    url = `${url}?limit=50&${query.toString()}`;
     const response = await got(url, {
       headers: {
         Authorization: `Bearer ${req.user.token}`,

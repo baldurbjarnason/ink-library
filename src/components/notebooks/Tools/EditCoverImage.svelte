@@ -5,7 +5,6 @@
   export let currentCover;
   export let newValue;
   export let submit;
-
   let coverImgs = [
     "andrew-buchanan-s6GmUf009os",
     "ashkan-forouzani-B8j1vlRod0s",

@@ -7,12 +7,15 @@
   import DeletionModal from "./Items/DeletionModal.svelte";
   import DropDownFlags from "./Items/DropDownFlags.svelte";
   import DropDownColour from "./Items/DropDownColour.svelte";
+  import AddNotebooks from "../workspace/AddNotebooks.svelte"
   import DropDownColourNotebook from "../notebooks/Tools/DropDownColour.svelte";
   import { getToken } from "../../getToken";
   import {
     selectedItems,
     refreshNotes,
+    addedNotebooks,
     refreshNotebooks,
+    refreshNotebook,
     refreshDate,
     tags,
     page,
@@ -57,10 +60,35 @@
 
     const body = createObj();
     endSelection();
+    // if ($addedNotebooks.length > 0) {
+    //   const notebook = $addedNotebooks[0];
+    //   const noteIdsArray = body.items.map(item => item.shortId)
+    //   const noteIds = noteIdsArray.join(',')
+    //   try {
+    //   await window.fetch(
+    //     `/api/notebooks/${notebook.shortId}/notes/${noteIds}`,
+    //     {
+    //       method: "PUT",
+    //       credentials: "include",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "csrf-token": getToken(),
+    //       },
+    //     }
+    //   );
+    //   $refreshNotebook = { id: notebook.shortId, time: Date.now() };
+    //   $refreshNotebooks = Date.now();
+    // } catch (err) {
+    //   console.error(err);
+    // }
+    // }
+
+
 
     const updateUrl =
       type === "source" ? "/api/batch-update" : `/api/note${url}sbatch-update`;
     try {
+      body.notebooks = $addedNotebooks
       await fetch(updateUrl, {
         method: "PUT",
         credentials: "include",
@@ -344,6 +372,7 @@
         {:else}
           <DropDownColour bind:colour />
           <DropDownFlags bind:selectedFlags />
+          <AddNotebooks />
           <span />
           <span class="FooterButtons">
             <SecondaryButton

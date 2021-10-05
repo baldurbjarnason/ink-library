@@ -27,6 +27,7 @@ export async function get(req, res, next) {
     return res.json(JSON.parse(err.response.body));
   }
 }
+
 // This needs to filter by workspace
 export async function put(req, res, next) {
   const url = `${process.env.API_SERVER}notebooks/${req.params.notebookId}/notes/${req.params.noteId}`;
@@ -41,7 +42,6 @@ export async function put(req, res, next) {
     });
     return res.sendStatus(response.statusCode);
   } catch (err) {
-    console.log(err);
     res.status(err.response.statusCode);
     return res.json(JSON.parse(err.response.body));
   }

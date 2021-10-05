@@ -24,7 +24,6 @@
     $page.path === "/notebooks/" || $page.path === "/notebooks" ? true : false;
   $: if (!selectable) {
     clearSelected();
-    console.log(selectable);
   }
 
   clearSelected();
@@ -151,5 +150,5 @@
     }} />
 {/if}
 {#if items && items.length}
-  <PaginationButtons itemsLenght={items.length} />
+  <PaginationButtons itemsLenght={items.length} totalItems={$notebooks.totalItems}/>
 {/if}

@@ -14,6 +14,7 @@
     refreshDate,
     refreshInSource,
     refreshCollections,
+    refreshNotebooks,
     addedCollections,
     addedWorkspaces,
     refreshNotebook,
@@ -83,8 +84,8 @@
       date = new Date(form.yearPublished, form.monthPublished-1 || 0, form.datePublished || 1);
     }
 
-
     let source = {
+      storageId: form.storageId,
       name: form.name,
       type: form.type,
       pagination: form.pagination,
@@ -141,13 +142,13 @@
     event.preventDefault();
     editForm = true;
     formData = selectedToForm(selected)
-    console.log(formData)
   }
 
   async function submitSource(event) {
     event.preventDefault();
     const body = Object.fromEntries(new URLSearchParams(new FormData(event.target)).entries());
     formData.type = body.pubType || formData.type;
+    formData.storageId = body.storageId
     body.addedCollections = $addedCollections;
     body.addedWorkspaces = $addedWorkspaces;
         $addedWorkspaces = [];

@@ -5,6 +5,7 @@
     addedCollections,
     addedWorkspaces,
     workspaces,
+    notebooks
   } from "../../stores";
   import Closer from "../widgets/Closer.svelte";
   import AutocompleteInput from "../widgets/AutocompleteInput.svelte";
@@ -141,5 +142,10 @@
           small={true} />
       </span>
     {/each}
+
+
   </div>
+
+  
 {/if}
+

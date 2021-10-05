@@ -196,7 +196,7 @@
             in:receive|local={{ key: 'nav-marker' }} />
         {/if}
         <NavSource />
-        Library
+        Sources
       </a>
     </li>
     <li>

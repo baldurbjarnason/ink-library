@@ -85,7 +85,12 @@ export class Annotation {
       colour = "Colour1";
     }
     updated.tags = json.tags;
-    updated.notebooks = json.notebooks;
+    updated.notebooks = json.notebooks.map(notebook => {
+      notebook.status = 'active'
+      notebook.settings = {colour: '', coverImg: ''};
+      return notebook;
+    }); 
+
     updated.body = processed.body;
     if (tempId) {
       updateHighlight(tempId, updated.id, colour);
@@ -134,6 +139,9 @@ export class Annotation {
   public async update(json, content?) {
     const { tags, notebooks, body } = json;
     const payload = Object.assign({}, this.annotation, { tags, notebooks });
+    console.log('payload', payload)
+    console.log('body', body)
+    console.log('content', content)
     if (body) {
       payload.body = this.annotation.body
         .filter((item) => {
@@ -156,6 +164,13 @@ export class Annotation {
           value: content,
           content,
         });
+    } else if (content === "") {
+      payload.body = this.annotation.body
+      .filter((item) => {
+        return (
+          item.purpose !== "commenting" && item.motivation !== "commenting"
+        );
+      })
     }
     payload.body = payload.body.map((item) => {
       if (item.purpose && !item.motivation) {

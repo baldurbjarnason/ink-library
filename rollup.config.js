@@ -11,6 +11,18 @@ import autoPreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
 import url from "@rollup/plugin-url";
 import path from "path";
+import { config as dotenvConfig } from "dotenv"
+dotenvConfig()
+let api_url;
+
+//TODO: need to figure out why the api_server env variable does not 
+// work on dev. It works locally. 
+if (process.env && process.env.API_SERVER) {
+  api_url = '"' + process.env.API_SERVER + '"';
+} else {
+  api_url = '"' + "https://ink-server-dev-dot-thematic-cider-139815.appspot.com/" + '"';
+}
+
 
 const mode = process.env.NODE_ENV;
 const dev = mode === "development";
@@ -33,6 +45,7 @@ export default {
       replace({
         "process.browser": true,
         "process.env.NODE_ENV": JSON.stringify(mode),
+        "process.env.API_SERVER": api_url
       }),
       svelte({
         emitCss: true,

@@ -1,16 +1,23 @@
 <script>
   import ItemStacks from "./ItemStacks.svelte";
+  import IcoNotebook from "../img/IcoNotebook.svelte"
   import {
     addSelected,
     removeSelected,
     page,
     selectedItems,
+    defaultNotebook,
+    refreshNotebooks,
+    notebooks
   } from "../../stores";
+
   export let item = {};
   export let selecting;
   export let selection = function() {};
   export let selectAll;
   let selected = false;
+
+  $refreshNotebooks = Date.now()
 
   $: if (!selecting && selected) {
     selected = false;
@@ -64,6 +71,15 @@
   } else {
     selectable = true;
   }
+
+  function setDefaultNotebook(event) {
+    event.preventDefault;
+    if ($page.path.startsWith("/notebooks/")) {
+      $defaultNotebook = $notebooks.items.find(item => item.shortId === $page.params.id)
+    } else {
+      $defaultNotebook = null;
+    }
+  } 
 </script>
 
 <style>
@@ -82,6 +98,18 @@
     -webkit-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     -moz-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.03);
+  }
+  .Flags {
+    line-height: 0.8rem;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+  .Flags li {
+    display: inline-table;
+    margin-right: 7px;
   }
   a {
     cursor: pointer;
@@ -204,7 +232,7 @@
 </style>
 
 <div class="Item" class:selected>
-  <a href="sources/{item.shortId}">_</a>
+  <a href="sources/{item.shortId}" on:click={setDefaultNotebook}>_</a>
   {#if selectable}
     <input
       class="BulkSelector"
@@ -233,5 +261,14 @@
         <ItemStacks {item} {selected} />
       {/if}
     </div>
+    {#if item.notebooks && item.notebooks.length >0}
+    <ul class="Flags">
+      {#each item.notebooks as notebook}
+        <li>
+          <p><IcoNotebook/> {notebook.name}</p>
+        </li>
+      {/each}
+    </ul>
+    {/if}
   </footer>
 </div>

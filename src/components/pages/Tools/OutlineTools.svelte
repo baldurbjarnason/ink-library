@@ -14,10 +14,14 @@
   import NewOutlineNote from "./NewOutlineNote.svelte";
   import { page } from "../../../stores";
   import { goto } from "@sapper/app";
+  import { getToken } from "../../../getToken";
 
   export let addNewNote;
   export let filters;
   export let disabled;
+
+  // NOTE FROM MARIE: don't know why the api-server is wrong on production, but hard coding seems to fix it for now.
+  let server = process.env.NODE_ENV==="development" || "dev" ? process.env.API_SERVER : "https://ink-api-dev-dot-thematic-cider-139815.appspot.com/" 
 
   let checkAll = () => {
     filters.type = [];
@@ -35,6 +39,10 @@
       filters[filter] = filters[filter];
     } else filters[filter] = [...filters[filter], value];
   };
+  let downloadDocx = async () => {
+    const url = `${server}outlines/${$page.params.outlineId}/docx`;
+    window.location.replace(url);
+  }
 </script>
 
 <style>
@@ -306,7 +314,7 @@
     {/if}
   </li>
   <span class="Division Short" />
-  <ListStyleList {addParams} bind:filters />
+  <!--<ListStyleList {addParams} bind:filters />
   <li class="Tool List Filter Children">
     {#if filters.colour.length || filters.flags.length || filters.type.length}
       <span class="Notification" />
@@ -323,11 +331,13 @@
       </span>
       <FlagsListFilter {addArrParams} bind:filters />
     </ul>
-  </li>
+  </li> -->
   <span class="Division Short Last" />
   <li class="Tool Export">
+    <button
+    class="NewItem"
+    on:click={downloadDocx} />
     <Export />
     <p>Export</p>
-    <p class="Message">Coming soon!</p>
   </li>
 </ul>

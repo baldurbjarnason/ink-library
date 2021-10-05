@@ -2,10 +2,11 @@
   import { page } from "../stores";
   import { goto } from "@sapper/app";
   export let itemsLenght;
+  export let totalItems;
 
   let changePage = (e) => {
     let queries = Object.assign({}, $page.query);
-    let dir = e.target.ariaLabel === "Next" ? 1 : -1;
+    let dir = e.target.value === "Next" ? 1 : -1;
 
     if (!queries.page) queries["page"] = 2;
     else if (dir < 1 && parseInt(queries.page) < 3) delete queries.page;
@@ -15,7 +16,8 @@
     goto(`${$page.path}${mark}${new URLSearchParams(queries).toString()}`);
   };
 
-  $: nextDisabled = itemsLenght === 10 ? false : true;
+  $: numberOfPages = totalItems ? Math.ceil(totalItems / 50) : 100
+  $: nextDisabled = itemsLenght === 50 ? false : true; //TODO: fix this to use the numberOfPages
   $: prevDisabled =
     $page.query.page || parseInt($page.query.page) < 2 ? false : true;
 </script>
@@ -65,11 +67,11 @@
     aria-label="Prev">
     ›
   </button>
-  <p>{$page.query.page || 1}</p>
+  <p>{$page.query.page || 1} / {numberOfPages}</p>
   <button
     class:nextDisabled
     on:click={nextDisabled ? '' : changePage}
-    aria-label="Next">
+    aria-label="Next" value="Next">
     ›
   </button>
 </div>

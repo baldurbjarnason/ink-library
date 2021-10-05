@@ -11,12 +11,13 @@
   import IcoFlag from "../../../img/IcoFlag.svelte";
   import CloseIcon from "../CloseIcon.svelte";
   import { notebooks$, source$, chapter$ } from "../../../../../state/state";
-  import { chapterURL$ } from "../../../../../state/state-urls";
-  import { refresh } from "../../../../../state/refresh";
-  import { toolbar$ } from "../../../../../state/models/SelectionToolbar";
+  import { chapterURL$, notebooksURL$ } from "../../../../../state/state-urls";
+  import { refresh, refreshAll } from "../../../../../state/refresh";
+  import { toolbar$ } from "../../../../../state/controllers/SelectionToolbar";
   import { tags$ } from "../../../../../state/tags";
   import { setColour } from "../setColour.js";
   import { getToken } from "../../../../getToken";
+  import { defaultNotebook } from "../../../../stores"
 
   let toolbar;
   let colour;
@@ -26,6 +27,8 @@
   let noteBookMenu;
   let plaintext;
   let hidden;
+  let useDefault = true;
+  
   $: if (colour) {
     setColour(colour, toolbar);
   } else if (toolbar) {
@@ -58,10 +61,20 @@
     }
   }
   async function createHighlight() {
+    createdNotebooks = createdNotebooks.map(notebook => {
+      notebook.settings = {
+        coverImg: "mike-c-s-7HlJkjH3k60"
+      }
+      return notebook
+    })
+
     const json = {
       tags: createdFlags.concat(selectedFlags),
       notebooks: createdNotebooks.concat(selectedNotebooks),
     };
+    if ($defaultNotebook && useDefault) {
+      json.notebooks = json.notebooks.concat($defaultNotebook)
+    }
     if (plaintext) {
       const content = await window
         .fetch("/api/markdown", {
@@ -80,6 +93,7 @@
           }
         })
         .then((json) => {
+
           return json.content;
         });
       json.body = [
@@ -98,14 +112,22 @@
       json.tags = json.tags.concat(colour);
     }
     hidden = true;
+    useDefault = true;
     try {
       await $toolbar$.highlight($source$, $chapter$, json);
     } catch (err) {
       console.error(err);
     }
-    // refresh($chapterURL$);
-    // reset state
+
+    if (createdNotebooks.length > 0) {
+      //TODO: fix this to remove the timeout. If I don't put it, the list of notebooks doesn't refresh right away
+      setTimeout(function() { refresh("/api/notebooks") }, 500);
+    }
+
+    
+
     reset();
+
   }
   function reset() {
     selectedFlags = [];
@@ -209,7 +231,14 @@
     <li>
       <HighlightNotebooks
         {colour}
-        notebooks={$notebooks$ ? $notebooks$.items : []}
+        notebooks={$notebooks$ ? $notebooks$.items.filter(item => {
+          if ($defaultNotebook && useDefault) {
+            return item.id !== $defaultNotebook.id
+          } else {
+            return item.name !== '--no notebook--'
+          } 
+          
+          }) : []}
         bind:selectedNotebooks
         bind:noteBookMenu
         create={createNotebook} />
@@ -223,7 +252,7 @@
         }} />
     </li>
   </ol>
-  {#if (selectedFlags && selectedFlags.length !== 0) || (selectedNotebooks && selectedNotebooks.length !== 0) || createdNotebooks.length !== 0 || createdFlags.length !== 0}
+  {#if (selectedFlags && selectedFlags.length !== 0) || (selectedNotebooks && selectedNotebooks.length !== 0) || createdNotebooks.length !== 0 || createdFlags.length !== 0 || (defaultNotebook && useDefault)}
     <div class="Flags">
       {#if selectedFlags}
         {#each selectedFlags as flag}
@@ -280,6 +309,16 @@
           </div>
         {/each}
       {/if}
+      {#if $defaultNotebook && $defaultNotebook.name && useDefault}
+        <div class="Flag Item">
+          <IcoNotebook />
+          <span class={$defaultNotebook.name}>{$defaultNotebook.name}</span>
+          <CloseIcon
+            click={() => {
+              useDefault = false;
+            }} />
+        </div>
+    {/if}
       {#if selectedNotebooks}
         {#each selectedNotebooks as notebook}
           <div class="Flag Item">

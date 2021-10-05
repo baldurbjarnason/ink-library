@@ -9,20 +9,28 @@
   import FlagToDo from "../../img/FlagToDo.svelte";
   import FlagUrgent from "../../img/FlagUrgent.svelte";
   import NavSource from "../../img/NavSource.svelte";
-  import { page, refreshOutline } from "../../../stores";
+  import { page, refreshOutline, outlineNotesList } from "../../../stores";
   import IcoDelete from "../../img/IcoDelete.svelte";
   import { getToken } from "../../../getToken";
   import NoteEditor from "../../widgets/NoteEditor.svelte";
   export let item;
   export let editing = false;
   export let requesting = false;
+  import SmallLoader from "../../SmallLoader.svelte"
 
   $: note = item;
-  let noteEdition;
-  $: if (editing === item.shortId && !noteEdition) {
-    noteEdition = item.body.find((note) => note.motivation === "commenting");
-    noteEdition = noteEdition ? noteEdition.content : "";
+
+  let noteEditions;
+  $: if (editing === item.shortId && !noteEditions) {
+    noteEditions = item.body.map(item => item.content);
+    noteEditions = item.body.sort((a,b) => {
+      return a.motivation !== 'highlighting'
+    });
+    if (noteEditions.length === 1 && noteEditions[0].motivation === 'highlighting') {
+      noteEditions.push({content: '', motivation: 'commenting'})
+    }
   }
+
 
   function assignIco(icon) {
     switch (icon) {
@@ -69,39 +77,76 @@
     editing = false;
   };
 
+  let UpdateOutlineNote = (note) => {
+    let list = $outlineNotesList;
+    list = list.map(item => {
+      if (item.shortId === note.shortId) {
+        return Object.assign({}, item, note, {display: 'pending'});
+      } else {
+        return item;
+      }
+    })
+    $outlineNotesList = list;
+  }
+
+  async function handleResponse(status, note) {
+    let list = $outlineNotesList;
+
+    if (status === 201 || status === 200) {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'ok'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+    } else {
+      list = list.map(item => {
+        if (item.shortId === note.shortId) {
+          item.display = 'error'
+        }
+        return item;
+      })
+      $outlineNotesList = list;
+      setTimeout(() => {
+        $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
+      }, 3000)
+
+    }
+    
+  }
+
   let Save = async () => {
     requesting = true;
-    const payload = Object.assign({}, { body: item.body });
-    if (payload.body[0].motivation === "commenting")
-      payload.body[0].content = noteEdition;
-    else {
-      if (!payload.body[1]) {
-        payload.body = [
-          ...payload.body,
-          { content: noteEdition, motivation: "commenting", language: "null" },
-        ];
-      } else {
-        payload.body[1].content = noteEdition;
-      }
-    }
+    // const payload = Object.assign({}, { body: item.body });
+    // payload.body = noteEditions.map((editedNote, i) => {
 
-    payload["shortId"] = item.shortId;
+    //   payload.body[i].content = editedNote.content;
+    //   return Object.assign(payload.body[i], { content: editedNote.content })
+    // })
+
+    // payload["shortId"] = item.shortId;
+
+    // update the local list of outline notes
+    UpdateOutlineNote(note)
 
     try {
-      await fetch(
+      fetch(
         `/api/pages/${$page.params.pageId}/outlines/${$page.params.outlineId}/notes`,
         {
           method: "PATCH",
           credentials: "include",
-          body: JSON.stringify(payload),
+          body: JSON.stringify(item),
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
             "csrf-token": getToken(),
           },
         }
-      );
-      $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
+      ).then(async (res) => {
+        await handleResponse(res.status, note)
+      });
+     // $refreshOutline = { id: $page.params.outlineId, time: Date.now() };
       requesting = false;
       editing = false;
     } catch (err) {
@@ -198,6 +243,13 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
   }
+  .highlighting {
+    padding: 5px;
+    margin-right: 20px;
+    border-radius: 5px;
+    background-color: white;
+  }
+
   /* -------------- Note -------------- */
   .Note,
   .Highlight {
@@ -214,7 +266,9 @@
   .colour1 {
     background: #fcefe7;
   }
+
   .colour1 header .column,
+  .colour1 .OutlineEdit .column,
   .colour1 .OutlineFlags li,
   .colour1 ~ .Cancel:hover,
   .colour1 ~ .Cancel::before,
@@ -222,6 +276,11 @@
   .colour1 ~ footer button.Save {
     background: #d86801;
   }
+
+  .colour1 .highlighting {
+    border: #d86801 solid;
+  }
+
   /* ------------ Colour 2 ------------ */
   .colour2 {
     background: #faebf4;
@@ -234,6 +293,11 @@
   .colour2 ~ footer button.Save {
     background: #c0004e;
   }
+
+  .colour2 .highlighting {
+    border: #c0004e solid;
+  }
+
   /* ------------ Colour 3 ------------ */
   .colour3 {
     background: #e2f7fb;
@@ -246,6 +310,10 @@
   .colour3 ~ footer button.Save {
     background: #0693b2;
   }
+  .colour3 .highlighting {
+    border: #0693b2 solid;
+  }
+
   /* ------------ Colour 4 ------------ */
   .colour4 {
     background: #e7f3e3;
@@ -258,6 +326,11 @@
   .colour4 ~ footer button.Save {
     background: #589b4c;
   }
+
+  .colour4 .highlighting {
+    border: #589b4c solid;
+  }
+
   /* ------------ No colour ------------ */
   .NoColour {
     background: transparent;
@@ -265,6 +338,9 @@
   .NoColour header .column,
   .NoColour .OutlineFlags li {
     background: #888888;
+  }
+  .NoColour .highlighting {
+    border: #888888 solid;
   }
 
   .OutlineFlags {
@@ -403,11 +479,20 @@
     font-size: 0.75rem;
     line-height: 0.9rem;
   }
+  .loader {
+    float:left;
+  }
 </style>
 
 {#if editing === item.shortId}
   <div class="Item OutlineEdit {noteColour}">
-    <NoteEditor bind:richtext={noteEdition} html={noteEdition} />
+    {#if noteEditions}
+    {#each noteEditions as edition}
+    <div class={edition.motivation}>
+    <NoteEditor bind:richtext={edition.content} html={edition.content} />
+  </div>
+    {/each}
+    {/if}
   </div>
   <button class="Cancel" on:click={Cancel} />
   <footer>
@@ -423,11 +508,17 @@
     }}
     class="Item {noteColour}
     {noted && (highlighed || note.source) ? 'two' : ''}">
+    {#if note.display === 'pending'}
+    <div class="loader"><SmallLoader /></div>
+    {/if}
+    {#if note.display === 'error'}
+    ERROR!!!
+    {/if}
     {#if highlighed || note.source}
       <header>
         <div class="column" />
         <div class="info">
-          {#if highlighed.content && (!params['styles'] || (!Array.isArray(params['styles']) && params['styles'] !== 'highlight') || (Array.isArray(params['styles']) && !params['styles'].find((item) => item === 'highlight')))}
+          {#if highlighed && highlighed.content && (!params['styles'] || (!Array.isArray(params['styles']) && params['styles'] !== 'highlight') || (Array.isArray(params['styles']) && !params['styles'].find((item) => item === 'highlight')))}
             <p class="Highlight {noted && noted.content ? '' : 'noNote'}">
               {@html highlighed.content}
             </p>

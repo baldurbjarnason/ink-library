@@ -1,7 +1,10 @@
 <script>
   import NavSource from "../../img/NavSource.svelte";
-  import { page, addSelected, removeSelected } from "../../../stores";
+  import { page, addSelected, selectedItems, removeSelected } from "../../../stores";
   export let note = {};
+  export let selection = function() {}
+  let selected = false
+  export let selecting;
 
   let noted, highlighed, plainHighlight, plainComment;
   $: colour = note.tags.find((colour) => colour.type === "colour") || "";
@@ -10,6 +13,8 @@
     noted = note.body.find((item) => item.motivation === "commenting");
     highlighed = note.body.find((item) => item.motivation === "highlighting");
   }
+
+  $: if (!selecting && selected) selected = false;
 
   $: if (highlighed)
     plainHighlight = new DOMParser()
@@ -20,6 +25,9 @@
     plainComment = new DOMParser()
       .parseFromString(noted.content, "text/html")
       .querySelector("body").textContent;
+      
+  $: if (selected && note.id) addSelected(note);
+    else removeSelected(note);
 </script>
 
 <style>
@@ -93,6 +101,44 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
   }
+
+  .BulkSelector {
+    position: absolute;
+    left: 0;
+    top: auto;
+    width: 40px;
+    height: 40px;
+    -webkit-appearance: none;
+    /* You need to set border to none as well as inputs in Mobile Safari's default stylesheet have a border */
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  .BulkSelector::before,
+  .BulkSelector::after {
+    content: "";
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    position: absolute;
+    transition: all 0.25s ease-out;
+  }
+  .BulkSelector::before {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #888888;
+    background: #ffffff;
+  }
+  .BulkSelector::after {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+  }
+  .BulkSelector:checked::after {
+    background: #888888;
+  }
+
   /* -------------- Note -------------- */
   .Note,
   .Highlight {
@@ -109,6 +155,7 @@
   }
   /* ------------ No colour ------------ */
   .Item {
+    padding-left: 35px;
     border: 1px solid #cccccc;
   }
   .Item header .column {
@@ -149,7 +196,14 @@
   {plainComment && (plainHighlight || note.source) ? 'two' : ''}">
   {#if plainHighlight || note.source}
     <header>
-      <div class="column" />
+      <!-- bulk add to outline -->
+      <!-- <input
+      class="BulkSelector"
+      type="checkbox"
+      bind:checked={selected}
+      on:click={() => selection()} /> -->
+      <div class="column" /> 
+      
       <div class="info">
         {#if plainHighlight}
           <p class="Highlight {noted && noted.content ? '' : 'noNote'}">
@@ -166,6 +220,12 @@
     </header>
   {/if}
   {#if plainComment}
+    <!-- bulk add to outline -->
+  <!-- <input
+  class="BulkSelector"
+  type="checkbox"
+  bind:checked={selected}
+  on:click={() => selection()} /> -->
     <p class="Note">{plainComment}</p>
   {/if}
 </div>

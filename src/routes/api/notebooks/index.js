@@ -2,7 +2,6 @@ import got from "got";
 
 export const post = async function post(req, res, next) {
   if (!req.user || !req.user.profile) return res.sendStatus(401);
-
   if (req.user && req.user.profile) {
     try {
       const response = await got
@@ -36,7 +35,7 @@ export async function get(req, res, next) {
       query.delete("orderBy");
     }
     query.delete("dir");
-    url = `${url}?${query.toString()}`;
+    url = `${url}?limit=50&${query.toString()}`;
     const response = await got(url, {
       headers: {
         Authorization: `Bearer ${req.user.token}`,

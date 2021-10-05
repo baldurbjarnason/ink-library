@@ -1,7 +1,7 @@
 <script>
-  import { page } from "../../stores";
+  import { page, outlineNotesList, outline } from "../../stores";
   import { goto } from "@sapper/app";
-  import { pageItem, outline, refreshOutline } from "../../stores";
+  import { pageItem, refreshOutline, orderedOutlineNotes } from "../../stores";
   import DropAreaOutline from "./DropAreaOutline.svelte";
   import NotesColumn from "./NotesColumn.svelte";
   import NotesCard from "../notes/NotesCard.svelte";
@@ -25,10 +25,12 @@
     list: false,
   };
 
+
+
   $: notebookNotes = $pageNotes.items;
   $: outlineId =
     $outline && $outline.shortId ? $outline.shortId : $page.params.outlineId;
-  $: outlineNotes = $outline.notes;
+  $: outlineNotes = $orderedOutlineNotes;
   $: outlineInfo = $outline;
   $: droppedNotes = $outline.type === "loading" ? "loading" : outlineNotes;
 </script>
@@ -46,7 +48,7 @@
 <main class="Outline">
   {#if droppedNotes}
     <DropAreaOutline
-      items={droppedNotes}
+      items={outlineNotes}
       bind:keyboardNote
       bind:requesting
       bind:disabled

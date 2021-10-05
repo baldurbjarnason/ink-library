@@ -6,17 +6,19 @@
   export let dark = false;
   export let type = "text";
   export let list = false;
+  export let value;
   export let change = () => {};
   let input;
   let awesomplete;
   $: if (input && list) {
-    awesomplete = new Awesomplete(input, { list, minChars: 0 });
+    awesomplete = new Awesomplete(input, { list, minChars: 0 , sort: false});
     input.addEventListener("awesomplete-selectcomplete", (event) => {
       change(input, event.text);
     });
   }
   $: if (awesomplete && list) {
     awesomplete.list = list;
+    
   }
 </script>
 
@@ -118,7 +120,7 @@
     {name}
     id="input-{name}"
     {placeholder}
-    autocomplete="off"
+    {value}
     on:change={change}
     bind:this={input}
     on:focus={() => {

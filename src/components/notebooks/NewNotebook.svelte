@@ -8,7 +8,7 @@
   import { send, receive } from "../../routes/_crossfade.js";
   import { tick } from "svelte";
   import { getToken } from "../../getToken";
-  import { refreshNotebooks } from "../../stores";
+  import { refreshNotebooks, refreshInNtbk } from "../../stores";
 
   let modal = false;
   let open = false;
@@ -79,6 +79,7 @@
             "csrf-token": getToken(),
           },
         });
+        $refreshInNtbk = Date.now();
         $refreshNotebooks = Date.now();
       } catch (err) {
         console.error(err);
@@ -427,6 +428,7 @@
         <input
           type="text"
           placeholder="Enter notebook title"
+          required=true
           bind:value={title} />
         <textarea
           placeholder="Add a description (optional)"

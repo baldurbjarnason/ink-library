@@ -9,6 +9,7 @@
   import FlagToDo from "../img/FlagToDo.svelte";
   import FlagUrgent from "../img/FlagUrgent.svelte";
   import NavSource from "../img/NavSource.svelte";
+  import IcoNotebook from "../img/IcoNotebook.svelte"
   import {
     page,
     addSelected,
@@ -19,7 +20,7 @@
   export let selection = function() {};
   export let note = {};
   export let selectAll;
-
+  let selectable = true;
   let selected = false;
 
   let noted, highlighed;
@@ -34,6 +35,8 @@
   $: colour = note.tags
     ? note.tags.find((flag) => flag.name.startsWith("colour"))
     : "";
+
+  $: notebooks = note.notebooks || [];
 
   function assignIco(icon) {
     switch (icon) {
@@ -81,7 +84,7 @@
     selection();
   }
 
-  let selectable = true;
+  
   $: if ($selectedItems.size) {
     $selectedItems.forEach((obj) => {
       selectable =
@@ -96,7 +99,7 @@
     selectable =
       $page.path === "/" ||
       ($page.path.startsWith("/notebooks/") && $page.params.noteId) ||
-      ($page.path.startsWith("/notes/") && $page.params.id)
+      ($page.path.startsWith("/notes/") && $page.params.id) || $page.path.startsWith("/sources/")
         ? false
         : true;
   }
@@ -493,5 +496,13 @@
         })}
       </p>
     </section>
+    <ul class="Flags">
+      {#each notebooks as notebook}
+        <li>
+          <IcoNotebook/>
+          <p>{notebook.name}</p>
+        </li>
+      {/each}
+    </ul>
   </div>
 </div>

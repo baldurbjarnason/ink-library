@@ -20,6 +20,7 @@
       orderBy: type.split("-")[0],
       dir,
     });
+    config.page = 1;
     const url = `${path}?${new URLSearchParams(config).toString()}`;
     if (query.orderBy !== config.orderBy || query.dir !== config.dir) {
       goto(url);

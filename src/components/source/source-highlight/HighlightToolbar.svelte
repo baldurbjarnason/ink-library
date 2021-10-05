@@ -11,8 +11,9 @@
   import IcoFlag from "../../img/IcoFlag.svelte";
   import CloseIcon from "./CloseIcon.svelte";
   import { onDestroy } from "svelte";
+  import { defaultNotebook } from "../../../stores"
   import { notebooks$, source$, chapter$ } from "../../../../state/state";
-  import { chapterURL$ } from "../../../../state/state-urls";
+  import { chapterURL$, notebooksURL$ } from "../../../../state/state-urls";
   import { refresh } from "../../../../state/refresh";
   import { createPopper } from "@popperjs/core";
   import { selectionHighlight$ } from "../../../../state/models/Selection";
@@ -90,7 +91,7 @@
   });
   let colour;
   let selectedFlags;
-  let selectedNotebooks;
+  let selectedNotebooks = [$defaultNotebook];
   let flagMenu;
   let noteBookMenu;
   let highlight;
@@ -175,7 +176,7 @@
             "csrf-token": getToken(),
           },
           body: plaintext,
-        })
+        }) 
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -184,6 +185,7 @@
           }
         })
         .then((json) => {
+
           return json.content;
         });
       json.body = [
@@ -279,7 +281,7 @@
     if (!event.target.closest('nav.HighlightToolbar') && (!$selectionHighlight$ || $selectionHighlight$.selection.isCollapsed) && range) {
       range = null;
       selectedFlags = [];
-      selectedNotebooks = [];
+      selectedNotebooks = [$defaultNotebook];
       plaintext = '';
       openNote = false;
       colour = '';

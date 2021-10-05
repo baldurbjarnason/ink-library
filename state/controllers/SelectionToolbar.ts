@@ -1,8 +1,11 @@
 import { map } from "rxjs/operators";
 import { selection } from "../selection";
-import { clearTemporaryHighlight, highlightRange } from "./highlightRange";
-import { highlightToAnnotation } from "./highlightToAnnotation";
-import { Annotation } from "./Annotation";
+import {
+  clearTemporaryHighlight,
+  highlightRange,
+} from "../models/highlightRange";
+import { highlightToAnnotation } from "../models/highlightToAnnotation";
+import { Annotation } from "../models/Annotation";
 import { BehaviorSubject } from "rxjs";
 
 const selection$ = selection().pipe(

@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import { source$, chapter$ } from "../../../../../state/state";
   import { createPopper } from "@popperjs/core";
-  import { toolbar$ } from "../../../../../state/models/SelectionToolbar";
+  import { toolbar$ } from "../../../../../state/controllers/SelectionToolbar";
 
   export let toolbar;
   export let hidden;

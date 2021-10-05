@@ -3,7 +3,7 @@
   import { writable } from "svelte/store";
   import { title } from "../../stores/title.js";
   import { source$, chapter$ } from "../../../state/state";
-  import History from "../History.svelte";
+  import HistoryReadingInterface from "../HistoryReadingInterface.svelte";
   import { bookmarks$ } from "../../../state/models/Bookmark";
   import Chapter from "./source-chapter/Chapter.svelte";
   // import TitleBar from '../../../../components/source/source-titlebar/TitleBar.svelte';
@@ -13,13 +13,12 @@
   import MainInfo from "./source-info/Info.svelte";
   // import EmptySource from "../../../../components/publication/EmptySource.svelte";
   import { stores } from "@sapper/app";
-  import { find } from "rxjs/operators";
+  import DefaultNotebookForm from "../publication/reader/DefaultNotebookForm.svelte"
   export let chapter;
   export let source;
   $: if (source) {
     source$.next(source);
   }
-  $: console.log(chapter);
   $: if (chapter) {
     chapter$.next(chapter);
   }
@@ -101,12 +100,16 @@
   .Publication.Info {
     grid-template-rows: max-content max-content minmax(100vh, auto);
   }
+  .Header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
   .TitleBar {
     width: 100%;
     margin: 0;
     padding: 0;
     background-color: var(--all-workspace);
-    position: sticky;
     top: 0;
     z-index: 99;
   }
@@ -131,10 +134,12 @@
 <div
   class="Publication TabSelected {$page.path.endsWith('info') ? 'Info' : ''}">
   {#if $source$ && $chapter$}
+  <div class="Header">
+
     <nav class="TitleBar" aria-label="Publication">
       <ol>
         <li>
-          <History />
+          <HistoryReadingInterface />
         </li>
         <li>
           <span class="Title">{source.name}</span>
@@ -187,6 +192,8 @@
       <MainInfo />
     </InfoModal>
     <ToolBar {sidebar} {chapterTitle} />
+    </div>
+
     <Chapter
       {chapter}
       sourceNotes={$bookmarks$}
