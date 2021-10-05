@@ -21,7 +21,12 @@
   export let disabled;
 
   // NOTE FROM MARIE: don't know why the api-server is wrong on production, but hard coding seems to fix it for now.
-  let server = process.env.NODE_ENV==="development" || "dev" ? process.env.API_SERVER : "https://ink-api-dev-dot-thematic-cider-139815.appspot.com/" 
+  let server
+  if ($page && $page.host === 'app.rebus.ink' ) {
+    server = "https://ink-api-dev-dot-thematic-cider-139815.appspot.com/" 
+  } else {
+    server = 'https://ink-server-dev-dot-thematic-cider-139815.appspot.com' 
+  }
 
   let checkAll = () => {
     filters.type = [];
@@ -40,7 +45,7 @@
     } else filters[filter] = [...filters[filter], value];
   };
   let downloadDocx = async () => {
-    const url = `${server}outlines/${$page.params.outlineId}/docx`;
+    const url = `${server}/outlines/${$page.params.outlineId}/docx`;
     window.location.replace(url);
   }
 </script>
