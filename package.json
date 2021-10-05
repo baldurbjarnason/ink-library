@@ -88,7 +88,7 @@
     "passport-auth0": "^1.3.3",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
-    "postcss": "^7.0.32",
+    "postcss": "^7.0.36",
     "postcss-calc": "^7.0.3",
     "postcss-easy-import": "^3.0.0",
     "postcss-reporter": "^6.0.1",
