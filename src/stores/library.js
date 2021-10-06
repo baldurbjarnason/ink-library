@@ -10,7 +10,7 @@ export const searchStore = writable()
 
 export const library = derived([page, refreshDate, searchStore], ([$page, $refreshDate, $searchStore], set) => {
   if (!process.browser) return
-  if (!$page.path || !($page.path.startsWith('/library') || $page.path.startsWith('/notes') || $page.path.startsWith('/notebooks'))) return
+  if (!$page.path || !($page.path === "/"  || $page.path.startsWith('/library') || $page.path.startsWith('/notes') || $page.path.startsWith('/notebooks'))) return
   if ($page.query.returnTo) return
   set({ type: 'loading', items: [] })
   const query = Object.assign({}, $page.query)

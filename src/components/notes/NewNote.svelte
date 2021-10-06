@@ -15,13 +15,11 @@
   import Button from "../widgets/Button.svelte";
   import Closer from "../widgets/Closer.svelte";
   import WhiteButton from "../workspace/WhiteButton.svelte";
-  import { send, receive } from "../../routes/_crossfade.js";
-  import { tick, onMount } from "svelte";
+  import { tick } from "svelte";
   import NoteEditor from "../widgets/NoteEditor.svelte";
   import { getToken } from "../../getToken";
   import { notebooks, refreshNotes, refreshInNote, tags, profileSources, library } from "../../stores";
   import { stores } from "@sapper/app";
-  import ListSources from "./Items/ListSources.svelte";
 
   const { page } = stores();
   export let note = { body: [], source: { name: "" } };
@@ -136,7 +134,7 @@
         ? `/api/notebooks/${$page.params.id}/notes/`
         : `/api/notes`;
 
-      if (pageNumber) payload.json = Object.assign(payload.json, {pages:pageNumber});
+      if (pageNumber) payload.json = Object.assign({}, payload.json, {pages:pageNumber});
 
       await window.fetch(url, {
         method: "POST",
@@ -147,6 +145,9 @@
           "csrf-token": getToken(),
         },
       });
+
+      selectedNotebooks = [];
+      selectedSource = null;
 
       if ($page.path === "/") $refreshInNote = Date.now();
       else if (atNotebook) ntbkClose();
@@ -537,7 +538,7 @@
       background: var(--toolbar-background, #ddd);
       box-sizing: border-box;
       border-radius: 5px;
-      padding: 0.25rem 0.25rem;
+      padding: 0.25rem 0.5rem;
       font-size: 11px;
       display: flex;
       align-items: center;
@@ -545,6 +546,18 @@
       font-weight: 600;
       display: grid;
       grid-template-columns: 24px 1fr 24px;
+      grid-template-rows: 25px auto;
+
+    }
+
+    .Flag :global(svg) {
+      color: var(--toolbar-text, #000);
+      margin-right: 0.5rem;
+      width: 16px;
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 100%;
+      height: 16px;
+      padding: 3px;
     }
     .NewForm select {
       font-size: .8rem;
