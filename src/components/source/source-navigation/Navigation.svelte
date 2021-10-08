@@ -12,8 +12,10 @@
   function goPrevious() {
     if (!previousDisabled) {
       let url = $page.path
-      const lastIndex = url.lastIndexOf("/");
+      let storage = $page.params.storage
+      const lastIndex = url.indexOf(storage) + storage.length;
       url = url.substring(0, lastIndex);
+      console.log(url)
       goto(url + "/" + chapter.navigation.previous.url)
     }
 
@@ -22,7 +24,8 @@
   function goNext() {
     if (!nextDisabled) {
       let url = $page.path
-      const lastIndex = url.lastIndexOf("/");
+      let storage = $page.params.storage
+      const lastIndex = url.indexOf(storage) + storage.length;
       url = url.substring(0, lastIndex);
       goto(url + "/" + chapter.navigation.next.url)
     }
