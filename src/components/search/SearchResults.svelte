@@ -8,10 +8,10 @@
   </style>
   
 <div>
-    search results!!!
     {#if $searchResults.notes}
         {#each $searchResults.notes.items as note}
             <NotesCard {note} />
+            <br/>
         {/each}
     {/if}
 </div>
