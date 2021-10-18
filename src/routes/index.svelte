@@ -298,6 +298,7 @@
     </div>
     {/if}
   </div>
+  {#if !$searchResults}
   <div
     class="Sources {!items.length && $insource.type !== 'loading' ? 'align' : null}"
     style={`grid-template-rows: repeat(${items.length > 5 ? 5 : items.length + 1}, max-content);`}>    
@@ -314,4 +315,5 @@
       {/each}
     {/if}
   </div>
+  {/if}
 </div>
