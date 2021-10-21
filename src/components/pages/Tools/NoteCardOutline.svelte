@@ -128,8 +128,8 @@
 
     // update the local list of outline notes
     if (pageNumber) {
-      item.json = Object.assign(item.json, {pages: pageNumber})
-      note.json = Object.assign(note.json, {pages: pageNumber})
+      item.json = Object.assign({}, item.json, {pages: pageNumber})
+      note.json = Object.assign({}, note.json, {pages: pageNumber})
     }
     UpdateOutlineNote(note)
 

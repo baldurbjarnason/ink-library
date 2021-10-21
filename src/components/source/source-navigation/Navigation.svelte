@@ -70,8 +70,10 @@
     border-radius: 5px;
   }
   .NavigationBar .nav-button {
-    width: 30px;
-    padding: 0;
+    width: 100px;
+    padding: 5px;
+    font-size: 1rem;
+    margin: 5px auto;
   }
   .disabled {
     opacity: 0.3;
@@ -81,9 +83,7 @@
     margin: 0;
     line-height: 15px;
   }
-  button[aria-label="Prev"] {
-    transform: rotate(180deg);
-  }
+
   #top {
     font-size: 1rem;
     height: 30px;
@@ -98,18 +98,19 @@
         on:click={goPrevious} 
         aria-label="Prev" 
         class={previousDisabled ? "nav-button disabled" : "nav-button"}>
-        ›
+        &lt; &#32; &#32; Previous
         </button>
  
         <p>    
-          <button id="top" on:click={backToTop}>back to top</button>
+          <button id="top" on:click={backToTop}>Back to Top</button>
         </p>
 
         <button
         on:click={goNext} 
         aria-label="Next" 
         class={nextDisabled ? "nav-button disabled": "nav-button"}>
-        ›
+        
+        Next &#32; &#32; &gt;
         </button>
 
   </nav>
