@@ -25,6 +25,7 @@
     //import { tags$ } from "../../../../state/tags.ts";
 
     import { stores } from "@sapper/app";
+    import striptags from "striptags";
 
     const { page } = stores();
     export let note = { body: [], source: { name: "" } };
@@ -32,7 +33,10 @@
     let selectedFlags = [];
     let selectedNotebooks = [];
     let pageNumber;
-
+    let error = false;
+    $: if (error && striptags(text) !== "") {
+      error = false;
+    }
     let noteBookMenu;
     let colour;
     let useDefault = true;
@@ -119,10 +123,14 @@
   
     async function submit(event) {
       event.preventDefault();
-      close();
      // click();
       // Get all tags, filter through them to match name of adding tags, add ids as prop
-      try {
+      if (striptags(text) === "") {
+        error = true;
+      } else {
+        close();
+
+        try {
         const payload = Object.assign({}, note);
         payload.sourceId = source.shortId;
         let colourId = $tags.getIds([noteColour]);
@@ -147,7 +155,7 @@
           });
         }
 
-        if (pageNumber) payload.json = Object.assign(payload.json, {pages:pageNumber});
+        if (pageNumber) payload.json = Object.assign({}, payload.json, {pages:pageNumber});
   
         let url = `/api/notes`;
         reset()
@@ -166,6 +174,9 @@
       } catch (err) {
         console.error(err);
       }
+      }
+      
+
     }
 
     $: atNotebook =
@@ -173,6 +184,10 @@
   </script>
   
   <style>
+    .error-message {
+      color: red;
+    }
+
     .NewBox {
       display: block;
       background-color: var(--workspace-color);
@@ -189,6 +204,7 @@
     }
     .page-input {
       width: 80px;
+      border-radius: 30px;
     }
     /* ------ Colours ------ */
     .colours {
@@ -296,6 +312,10 @@
       border-radius: 10px 10px 0 0;
       margin-top: 20px;
     }
+    .Editor.error :global(.Editor) {
+      border: 2px solid red;
+      border-bottom: 0;
+    }
     .Editor.colour1 :global(.Editor) {
       border: 2px solid #fea95b;
       border-bottom: 0;
@@ -366,6 +386,11 @@
       padding: 0;
       cursor: pointer;
       opacity: 0;
+    }
+    .flags.error {
+      border: 2px solid red;
+      border-top: none;
+      background: #fffcfa;
     }
     .flags.colour1 {
       border: 2px solid #fea95b;
@@ -539,6 +564,11 @@
       display: grid;
       grid-template-columns: 24px 1fr 24px;
     }
+
+    .options {
+      display: grid;
+      grid-template-columns: 150px 350px 150px;
+    }
     
   </style>
   
@@ -549,6 +579,8 @@
         class="newForm"
         action="/api/create-publication"
         on:submit={submit}>
+
+        <div class="options">
         <ul class="colours">
           {#each colours as colour}
             <li>
@@ -560,15 +592,37 @@
                 value={colour} />
             </li>
           {/each}
-
-          
         </ul>
+
+        <div>
+          <label>
+            <div class="LabelText">
+              <slot />
+            </div>
+            <!-- <ArrowDropDown /> -->
+            <span>Select Notebooks: </span>
+            <select name="notebooks" on:change={change} id="select-defaultNotebook" value=''>
+              {#each notebooksList as notebook}
+                <option value={notebook.name}>{notebook.name}</option>
+              {/each}
+            </select>
+          </label>
+
+        </div>
+
+        <div>
+          Pages: <input class="page-input" type="text" bind:value={pageNumber} />
+
+        </div>
+
+        
+      </div>
         <br/>
 
-        <div class="Editor {noteColour}">
+        <div class="Editor {error ? "error" : noteColour}">
           <NoteEditor bind:richtext={text} />
         </div>
-        <ul class="flags {noteColour}">
+        <ul class="flags {error ? "error" : noteColour}">
           {#each flagsArr as flag}
             <li>
               <input type="checkbox" bind:group={selectedFlags} value={flag} />
@@ -579,25 +633,17 @@
             </li>
           {/each}
         </ul>
-        <labe>Pages: </labe><input class="page-input" type="text" bind:value={pageNumber} />
+
+        {#if error}
+        <div class="error-message">note cannot be empty</div>
+        {/if}
 
         <WhiteButton click={submit}>Create</WhiteButton>
 
         <Closer click={close} dark={true} />
         <div class="dropdown">
 
-          <label>
-            <div class="LabelText">
-              <slot />
-            </div>
-            <!-- <ArrowDropDown /> -->
-            <span>select notebooks: </span>
-            <select name="notebooks" on:change={change} id="select-defaultNotebook" value=''>
-              {#each notebooksList as notebook}
-                <option value={notebook.name}>{notebook.name}</option>
-              {/each}
-            </select>
-          </label>
+
           {#if $defaultNotebook && $defaultNotebook.name && useDefault}
           <div class="Flag Item">
             <IcoNotebook />

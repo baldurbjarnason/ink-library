@@ -114,7 +114,7 @@
           content: text,
         });
       }
-      if (pageNumber) payload.json = Object.assign(payload.json, {pages:pageNumber});
+      if (pageNumber) payload.json = Object.assign({}, payload.json, {pages:pageNumber});
 
       if (typeof replaceSource === "object")
         payload.sourceId = replaceSource.shortId;

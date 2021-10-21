@@ -212,6 +212,7 @@
   }
   .page-input {
     width: 80px;
+    border-radius: 30px;
   }
   /* ------ Colours ------ */
   .colours {
@@ -566,51 +567,23 @@
       border-radius: 8px;
       padding: 0 12px;
     }
+    .options {
+      display: grid;
+      grid-template-columns: 150px 350px 350px 200px;
+    }
 
 </style>
 
 {#if open || atNotebook}
   <div class="NewBox newNote">
-    <div class="NewForm">
-    <span>select source: </span>
-    <select name="source" on:change={changeSource} id="select-source" value=''>
-      {#each sources as source}
-        <option value={source.shortId}>{source.name}</option>
-      {/each}
-    </select>
-  </div>
-  <div class="NewForm">
-  <span>add notebooks: </span>
-  <select name="notebooks" on:change={changeNotebook} id="select-notebooks" value=''>
-    {#each notebooksList as notebook}
-      <option value={notebook.name}>{notebook.name}</option>
-    {/each}
-  </select>
-  <br/>
-</div>
-{#if selectedNotebooks}
-{#each selectedNotebooks as notebook}
-  <span class="Flag Item">
-    <IcoNotebook />
-    <span class={notebook.name}>{notebook.name}</span>
-    <CloseIcon
-      click={() => {
-        initialNotebook = false;
-        const index = selectedNotebooks.indexOf(notebook);
-        if (index !== -1) {
-          selectedNotebooks = selectedNotebooks.filter((old) => {
-            return old !== notebook;
-          });
-        }
-      }} />
-  </span>
-{/each}
-{/if}
+
+
     <form
       id="newform"
       class="newForm"
       action="/api/create-publication"
       on:submit={submit}>
+      <div class="options">
       <ul class="colours">
         {#each colours as colour}
           <li>
@@ -623,6 +596,27 @@
           </li>
         {/each}
       </ul>
+      <div class="NewForm">
+        <span>Select Source: </span>
+        <select name="source" on:change={changeSource} id="select-source" value=''>
+          {#each sources as source}
+            <option value={source.shortId}>{source.name}</option>
+          {/each}
+        </select>
+      </div>
+      <div class="NewForm">
+      <span>Add Notebooks: </span>
+      <select name="notebooks" on:change={changeNotebook} id="select-notebooks" value=''>
+        {#each notebooksList as notebook}
+          <option value={notebook.name}>{notebook.name}</option>
+        {/each}
+      </select>
+      <br/>
+    </div>
+    <div>
+      <label>Pages: </label><input class="page-input" type="text" bind:value={pageNumber} />
+    </div>
+  </div>
       <div class="Editor {error ? "error" : noteColour}">
         <NoteEditor bind:richtext={text} />
       </div>
@@ -640,9 +634,36 @@
       {#if error}
       <div class="error-message">note cannot be empty</div>
       {/if}
-      <label>Pages: </label><input class="page-input" type="text" bind:value={pageNumber} />
       {#if selectedSource}
-      source: {selectedSource.name}
+      Source: 
+      <span class="Flag Item">
+        <IcoNotebook />
+        <span>{selectedSource.name}</span>
+        <CloseIcon
+          click={() => {
+            selectedSource = null;
+          }} />
+      </span>
+
+      {/if}
+
+      {#if selectedNotebooks}
+      {#each selectedNotebooks as notebook}
+        <span class="Flag Item">
+          <IcoNotebook />
+          <span class={notebook.name}>{notebook.name}</span>
+          <CloseIcon
+            click={() => {
+              initialNotebook = false;
+              const index = selectedNotebooks.indexOf(notebook);
+              if (index !== -1) {
+                selectedNotebooks = selectedNotebooks.filter((old) => {
+                  return old !== notebook;
+                });
+              }
+            }} />
+        </span>
+      {/each}
       {/if}
 
 
