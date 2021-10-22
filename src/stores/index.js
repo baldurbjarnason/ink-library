@@ -27,6 +27,7 @@ export { profileNotebooks } from './profile/notebooks'
 export { profileNotes } from './profile/notes'
 export { profileSources } from './profile/sources'
 export { refreshReader, reader } from './profile/reader'
+export { searchResults } from './search'
 
 export const selectedItems = writable(new Set());
 

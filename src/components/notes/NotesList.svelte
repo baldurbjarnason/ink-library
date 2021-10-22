@@ -15,7 +15,6 @@
   let items;
 
   $: if ($notes) items = $notes.items;
-  $: console.log('notes????', items)
   $: query = Object.assign({}, $page.query) || "";
   $: if ((query.notebook || query.flag || query.colour) && !clicked)
     filterOn = true;
