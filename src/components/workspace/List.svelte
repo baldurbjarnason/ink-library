@@ -242,7 +242,5 @@
     }} />
 {/if}
 {#if items && items.length}
-{$library.totalItems}
-{$library.page}
   <PaginationButtons itemsLenght={items.length} totalItems={$library.totalItems} />
 {/if}
