@@ -12,7 +12,6 @@
   import Item from "../components/workspace/Item.svelte";
   import Loader from "../components/Loader.svelte";
   import Search from "../components/search/Search.svelte"
-  import SearchResults from "../components/search/SearchResults.svelte"
   import { stores } from "@sapper/app";
   const { session } = stores();
 
@@ -96,6 +95,7 @@
     display: grid;
     gap: 30px;
     padding: 30px 20px;
+    margin-top: 30px;
   }
   .align {
     background: #f9fbfc;
@@ -243,16 +243,12 @@
         Happy {day}
       </h1>
       <div class="Buttons">
-        <NewNote ntbkOpen={false} />
         <NewItem ntbkOpen={false} />
+        <NewNote ntbkOpen={false} />
         <NewNotebook />
       </div>
-      <Search />
     </nav>
 
-    {#if $searchResults}
-      <SearchResults />
-    {:else}
 
     <div class="contNotes">
       <h5>Recent notes</h5>
@@ -296,9 +292,10 @@
         {/if}
       </div>
     </div>
-    {/if}
   </div>
-  {#if !$searchResults}
+  <div class="right-column">
+    <Search />
+
   <div
     class="Sources {!items.length && $insource.type !== 'loading' ? 'align' : null}"
     style={`grid-template-rows: repeat(${items.length > 5 ? 5 : items.length + 1}, max-content);`}>    
@@ -315,5 +312,5 @@
       {/each}
     {/if}
   </div>
-  {/if}
+  </div>
 </div>

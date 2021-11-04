@@ -2,6 +2,7 @@
   import { send, receive } from "../routes/_crossfade.js";
   import NavSource from "./img/NavSource.svelte";
   import NavNotes from "./img/NavNotes.svelte";
+  import NavSearch from "./img/NavSearch.svelte"
   import NavNotebook from "./img/NavNotebook.svelte";
   import IcoAvatar from "./img/IcoAvatar.svelte";
   export let params;
@@ -227,6 +228,22 @@
         {/if}
         <NavNotebook />
         Notebooks
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="/search"
+        class:selected={params.segment === 'search'}
+        aria-current={params.segment === 'search' ? 'page' : null}>
+        {#if params.segment === 'search'}
+          <span
+            class="marker"
+            out:send|local|local={{ key: 'nav-marker' }}
+            in:receive|local={{ key: 'nav-marker' }} />
+        {/if}
+        <NavSearch />
+        Search
       </a>
     </li>
     <li style="display: none;">

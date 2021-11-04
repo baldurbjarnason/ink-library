@@ -69,7 +69,7 @@
           : false;
     });
   } else {
-    selectable = true;
+    selectable = $page.path.startsWith("/search") ? false : true;
   }
 
   function setDefaultNotebook(event) {
