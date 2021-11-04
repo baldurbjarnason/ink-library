@@ -99,7 +99,7 @@
     selectable =
       $page.path === "/" ||
       ($page.path.startsWith("/notebooks/") && $page.params.noteId) ||
-      ($page.path.startsWith("/notes/") && $page.params.id) || $page.path.startsWith("/sources/")
+      ($page.path.startsWith("/notes/") && $page.params.id) || $page.path.startsWith("/sources/") || $page.path.startsWith("/search")
         ? false
         : true;
   }
