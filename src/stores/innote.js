@@ -12,7 +12,7 @@ export const innote = derived([page, refreshInNote], ([$page, $refreshInNote], s
     if ($page.query.returnTo) return
     set({ type: 'loading', items: [] })
 
-    return fetch(`/api/notes`)
+    return fetch(`/api/notes?notMotivation=bookmarking`)
         .then(acc => {
             set(acc)
         })
