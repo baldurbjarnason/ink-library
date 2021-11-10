@@ -1,8 +1,21 @@
 <script>
-  import {searchResults} from "../../stores"
+  import {searchResults, sourceSearched} from "../../stores"
   import NotesCard from "../notes/NotesCard.svelte"
   import Card from "../workspace/Card.svelte"
   import NotebookCard from "../notebooks/NotebookCard.svelte"
+
+let isEmpty = false;
+
+$: if ($searchResults && 
+    $searchResults.sources &&
+    $searchResults.sources.totalItems === 0 &&
+    $searchResults.notes &&
+    $searchResults.notes.totalItems === 0 && 
+    $searchResults.notebooks &&
+    $searchResults.notebooks.totalItems === 0) {
+        isEmpty = true;
+    }
+
 </script>
   
   <style>
@@ -19,10 +32,16 @@
   h2 {
       padding-left: 20px;
   }
+  .noResults {
+      padding-left: 20px;
+  }
   </style>
   
 <div>
-
+    {#if isEmpty}
+    <div class="noResults" >No results found.</div>
+    {:else}
+    
     {#if $searchResults && $searchResults.sources}
     <h2 id="sources">Sources</h2>
         <div class="Cards">
@@ -49,6 +68,7 @@
                 <NotebookCard {notebook} selecting={false} selectAll={false} />
             {/each}
         </div>
+    {/if}
     {/if}
 </div>
   

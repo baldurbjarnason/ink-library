@@ -1,15 +1,15 @@
 <script>
   import { getToken } from "../../getToken";
-  import { searchResults } from "../../stores"
+  import { searchResults, search } from "../../stores"
   import { goto } from "@sapper/app";
 
-    let search = "";
+  $search = '';
 
     async function submit(e) {
         e.preventDefault();
-
-        let requestBody = {
-            search,
+        if ($search.trim().length) {
+          let requestBody = {
+            search: $search,
             includeNotes: true,
             includeSources: true,
             includeNotebooks: true
@@ -26,6 +26,8 @@
         });
         $searchResults = await result.json()
         goto('/search')
+        }
+        
     }
    
   </script>
@@ -108,7 +110,7 @@
                 required
                 name="search"
                 placeholder="search"   
-                bind:value={search} />
+                bind:value={$search} />
                 <svg
                 width="34"
                 height="34"
