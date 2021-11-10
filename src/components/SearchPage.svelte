@@ -1,15 +1,15 @@
 <script>
     import { getToken } from "../getToken";
-    import { searchResults, notebooks } from "../stores"
+    import { searchResults, notebooks, search } from "../stores"
     import ArrowDropDown from "./img/ArrowDropDown.svelte"
     import SearchResults from "./search/SearchResults.svelte"
-  
-       let notebookItems = [];
+
+
+    let notebookItems = [];
        $: if($notebooks.type !== "loading") {
            notebookItems = $notebooks.items
        }
 
-      let search = "";
       let includeNotes = true;
       let includeSources = true;
       let includeNotebooks = true;
@@ -64,7 +64,7 @@
           e.preventDefault();
   
           let requestBody = {
-              search,
+              search: $search,
               includeNotes,
               includeSources,
               includeNotebooks
@@ -213,7 +213,7 @@
   
       function closeSearch(e) {
           e.preventDefault()
-          search = "";
+          $search = "";
           includeNotes = true;
           includeSources = true;
           includeNotebooks = true;
@@ -396,6 +396,7 @@
   }
   .submit-button {
       height: 60px;
+      width: 200px;
       margin-left: 15px;
       font-size: 120%;
       border-radius: 50px;
@@ -407,19 +408,24 @@
     font-weight: 600;
     padding: 40px 20px 0px 20px;
   }
+  .first-line {
+    display: grid;
+    grid-template-columns: 650px 200px;
+  }
   
     </style>
     <h2>Advanced Search</h2>
-    
      <div>
          <form on:submit={submit}>
+            <div class="first-line">
+
           <div class="SearchBox">
 
               <input 
                   type="search" 
                   placeholder="search"
                   class="search-field"   
-                  bind:value={search} />
+                  bind:value={$search} />
                 <svg
                   width="34"
                   height="34"
@@ -445,8 +451,9 @@
           </div>
           <input 
           type="submit"
-          value="Submit"
+          value="Search"
           class="Button submit-button" />
+        </div>
           <br/><br/><br/>
               <div class="second-line">
  
