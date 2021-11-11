@@ -197,14 +197,15 @@
       top: 50px;
       z-index: 3;
       border-radius: 30px;
-      padding: 30px 40px;
+      padding: 30px 40px 30px 40px;
     }
+
     form {
       width: 100%;
     }
     .page-input {
       width: 80px;
-      border-radius: 30px;
+      border-radius: 5px;
     }
     /* ------ Colours ------ */
     .colours {
@@ -654,7 +655,7 @@
               }} />
           </div>
       {/if}
-          {#if selectedNotebooks}
+      <div>
           {#each selectedNotebooks as notebook}
             <div class="Flag Item">
               <IcoNotebook />
@@ -670,8 +671,7 @@
                 }} />
             </div>
           {/each}
-        {/if}
-
+        </div>
           </div>
       </form>
     </div>
