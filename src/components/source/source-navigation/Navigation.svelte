@@ -64,15 +64,17 @@
     display: grid;
     text-align: center;
     color: #ffffff;
-    font-size: 1.5rem;
-    font-weight: 300;
+
     cursor: pointer;
     border-radius: 5px;
+    font-family: var(--sans-fonts);
+    font-size: 0.9rem;
+    font-weight: 500;
+    height: 30px;
   }
   .NavigationBar .nav-button {
     width: 100px;
     padding: 5px;
-    font-size: 1rem;
     margin: 5px auto;
   }
   .disabled {
@@ -84,8 +86,8 @@
     line-height: 15px;
   }
 
+
   #top {
-    font-size: 1rem;
     height: 30px;
     align-items:center;
     
