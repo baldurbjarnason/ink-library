@@ -1,12 +1,20 @@
 <script>
   import { getToken } from "../../getToken";
-  import { searchResults, search } from "../../stores"
+  import { searchResults, search, 
+    isEmpty, sourcesEmpty, notesEmpty, 
+    notebooksEmpty } from "../../stores"
   import { goto } from "@sapper/app";
 
   $search = '';
 
     async function submit(e) {
         e.preventDefault();
+
+        $isEmpty = false;
+        $sourcesEmpty = false;
+        $notesEmpty = false;
+        $notebooksEmpty = false;
+
         if ($search.trim().length) {
           let requestBody = {
             search: $search,
@@ -25,6 +33,26 @@
             },
         });
         $searchResults = await result.json()
+
+        if ($searchResults && 
+          (!$searchResults.sources || 
+          $searchResults.sources.totalItems === 0)) {
+            $sourcesEmpty = true;
+          }
+          if ($searchResults && 
+          (!$searchResults.notes || 
+          $searchResults.notes.totalItems === 0)) {
+            $notesEmpty = true;
+          }
+          if ($searchResults && 
+          (!$searchResults.notebooks || 
+          $searchResults.notebooks.totalItems === 0)) {
+            $notebooksEmpty = true;
+          }
+        if ($sourcesEmpty && $notesEmpty && $notebooksEmpty) {
+          $isEmpty = true;
+        }
+
         goto('/search')
         }
         
