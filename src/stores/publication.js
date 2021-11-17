@@ -6,7 +6,14 @@ import { fetch } from "./fetch.js";
 export const refreshPublication = writable({ id: null, time: Date.now() });
 
 const publicationId = derived(page, ($page, set) => {
-  set($page.params.publicationId || null);
+  console.log($page)
+  if ($page.params.id) {
+      set($page.params.id)
+    } else {
+      set($page.params.publicationId || null);
+
+    }
+
 });
 
 const publicationWorkspace = derived(page, $page => $page.params.workspace);
@@ -96,6 +103,7 @@ export const publication = derived(
       $refreshPublication.id !== $publicationId ||
       !$publicationId
     ) {
+      console.log('^^^^^^^^^^^^', $publicationId)
       set({ type: "loading", items: [], tags: [], keywords: [], replies: [] });
     }
     if (!process.browser || !$publicationId) return;

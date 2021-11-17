@@ -5,7 +5,6 @@
   import EmptySourcePaster from "./EmptySourcePaster.svelte"
   // import { onMount } from 'svelte';
   import Button from "../../widgets/Button.svelte";
-  import Image from "../source-multimedia/Image.svelte"
   import UploadIcon from "./UploadIcon.svelte";
   import EmptySourceNotes from "./EmptySourceNotes.svelte"
   import UrlForm from "./UrlForm.svelte"
@@ -15,7 +14,6 @@
   let pasting = false;
   let hasNotes = !!source.replies.length;
   let display = "notes";
-  let isImage = false;
   // let Info
   // onMount(async () => {
   //   const module = await import('./EmptyInfo.svelte');
@@ -24,13 +22,6 @@
   async function submit(event) {
     event.preventDefault();
     display = event.target.value;
-  }
-
-  // is this an image?
-  $: if (source && source.links && source.links[0] && source.links[0].url) {
-    if (source.links[0].url.includes('jpg')) {
-      isImage = true;
-    }
   }
 
 </script>
@@ -72,10 +63,6 @@
 <!-- 
 <svelte:component this={Info} /> -->
 
-{#if isImage}
-<Image {source} />
-{:else}
-
 
 <div class="NoSource">
   <div class="left-menu">
@@ -107,4 +94,3 @@
     {/if}
   </div>
 </div>
-{/if}

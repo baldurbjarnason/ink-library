@@ -1,8 +1,16 @@
-<script lang="ts">
-
+<script>
+    import {publication, page} from "../../../stores"
     import EmptySourceNotes from "../source-empty/EmptySourceNotes.svelte"
-    export let source;
-  
+    import TitleBar from "../source-titlebar/TitleBar.svelte";
+
+  let url;
+  let source = {};
+  $: if ($publication && $publication.json) {
+    source = $publication
+    const readerId = $publication.readerId.split('/').pop();
+    url = `https://storage.cloud.google.com/ink-frontend-server-dev-uploads/readers/${readerId}/${$publication.json.storageId}?authuser=1`
+  }
+
   </script>
   
   <style>
@@ -14,6 +22,7 @@
       grid-template-columns: 600px auto;
       grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
       min-height: 100vh;
+      padding-top: 30px;
     }
 
     .left-menu {
@@ -24,18 +33,33 @@
         display: block;
         margin: 30px auto 0 auto;
     }
-    
+    .TitleBar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
   
   </style>
-  
+
+  <div>
+      <div class="TitleBar">
+        <TitleBar name={source ? source.name : ""} {source} />
+      </div>
   <div class="NoSource">
+
     <div class="left-menu">
-      <img src={source.links[0].url} alt="linked" />
+      {#if url}
+      <img src={url} alt="linked" />
+      {/if}
+
     </div>
     <div>
 
-      <EmptySourceNotes {source} />
+      <EmptySourceNotes {source} pages={false} />
   
     </div>
+  </div>
   </div>
   
