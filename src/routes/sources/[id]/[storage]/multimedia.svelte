@@ -1,12 +1,12 @@
 <script context="module">
-import Image from "../../../../components/source/source-multimedia/Image.svelte"
+import Multimedia from "../../../../components/source/source-multimedia/Multimedia.svelte"
 //import { source$, chapter$, sourceNotes$ } from "../../../../../state/state";
 import { publication } from "../../../../stores";
 
 </script>
 
   <div>
-    <Image {$publication} />
+    <Multimedia {$publication} />
   </div>
   
   

@@ -13,7 +13,8 @@
       return this.redirect(302, `${path}/processing`)
     } else if (source.resources && source.resources[0] && 
       source.resources[0].encodingFormat &&
-      source.resources[0].encodingFormat.startsWith('image')) {
+      (source.resources[0].encodingFormat.startsWith('image') || 
+      source.resources[0].encodingFormat.startsWith('audio'))) {
       return this.redirect(302, `${path}/multimedia`)
     } else if (source._unsupported) {
       return this.redirect(302, `${path}/unsupported`)

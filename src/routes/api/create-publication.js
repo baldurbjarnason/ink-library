@@ -26,7 +26,8 @@ export async function post(req, res, next) {
   } else if (req.body.storageId) {
 
     if (req.body.uploadType && 
-      req.body.uploadType.startsWith('image')) {
+      (req.body.uploadType.startsWith('image') || 
+      req.body.uploadType.startsWith('audio'))) {
         links = [
           {
             rel: ["alternate", "enclosure"],

@@ -56,7 +56,8 @@ export async function get(req, res, next) {
 
               if (response.links && response.links[0] && 
                 response.links[0].encodingFormat && 
-                response.links[0].encodingFormat.startsWith('image')) {
+                (response.links[0].encodingFormat.startsWith('image') || 
+                response.links[0].encodingFormat.startsWith('audio'))) {
                   response._multimedia = true;
               } else {
                 // console.log("publication unsupported")
