@@ -1,3 +1,9 @@
+Deployment Nov 18, 2021
+- fix bug with source navigation
+- advanced search
+- page numbers in notes
+- fixed bug where bookmarks were showing up as notes on dashboard
+
 Deployment Oct 4, 2021
 - fixing problem with docx export on production
 

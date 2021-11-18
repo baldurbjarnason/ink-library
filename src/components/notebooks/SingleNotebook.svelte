@@ -4,6 +4,7 @@
   import History from "../History.svelte";
   import NavNotebook from "../img/NavNotebook.svelte";
   import IcoEdit from "../img/IcoEdit.svelte";
+  import IcoGoBack from "../img/IcoGoBack.svelte";
   import { notebook, refreshNotebook, page, refreshNotebooks } from "../../stores";
   import DeletionModal from "../notes/Items/DeletionModal.svelte";
   import EditCoverImage from "./Tools/EditCoverImage.svelte";
@@ -330,14 +331,50 @@
     }
 
   }
+  /* back button */
+a {
+         text-decoration: none;
+     }
+    .breadcrumbs {
+      margin-bottom: 10px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      display: flex;
+      grid-template-columns: max-content 1fr;
+      text-align: left;
+      align-items: center;
+      cursor: pointer;
+      width: max-content;
+    }
+    .breadcrumbs h5 {
+      color: #888888;
+      font-weight: 500;
+      margin: 0;
+      margin-left: 5px;
+    }
+    @media (max-width: 720px) {
+      .breadcrumbs {
+        margin-bottom: 0;
+        margin-top: 3px;
+        grid-template-columns: max-content;
+      }
+      .breadcrumbs h5 {
+        display: none;
+      }
+    }
+
 </style>
 
 {#if !$page.params.noteId}
   <nav class="Toolbar">
     <section>
       <div class="Header">
-        <History />
-        <h5
+        <a class="breadcrumbs" href={`/notebooks`}>
+          <IcoGoBack />
+          <h5>Back</h5>
+        </a>
+                <h5
           class="Delete"
           on:click={() => {
             activeModal = true;

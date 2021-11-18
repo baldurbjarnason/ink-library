@@ -17,9 +17,8 @@
   export let editing = false;
   export let requesting = false;
   import SmallLoader from "../../SmallLoader.svelte"
-
+  let pageNumber;
   $: note = item;
-
   let noteEditions;
   $: if (editing === item.shortId && !noteEditions) {
     noteEditions = item.body.map(item => item.content);
@@ -128,6 +127,10 @@
     // payload["shortId"] = item.shortId;
 
     // update the local list of outline notes
+    if (pageNumber) {
+      item.json = Object.assign({}, item.json, {pages: pageNumber})
+      note.json = Object.assign({}, note.json, {pages: pageNumber})
+    }
     UpdateOutlineNote(note)
 
     try {
@@ -482,6 +485,17 @@
   .loader {
     float:left;
   }
+  .pages {
+    text-align: right;
+    font-size: 0.7rem;
+  }
+  .page-input {
+    width: 80px;
+    float: right;
+  }
+  .page-input-section {
+    text-align: right;
+  }
 </style>
 
 {#if editing === item.shortId}
@@ -493,6 +507,15 @@
   </div>
     {/each}
     {/if}
+    <div class="page-input-section">
+
+    {#if note && note.json && note.json.pages}
+    page(s): <input type="text" class="page-input" bind:value={note.json.pages} />
+    {:else}
+    pages(s): <input type="text" class="page-input" bind:value={pageNumber} />
+    {/if}
+  </div>
+
   </div>
   <button class="Cancel" on:click={Cancel} />
   <footer>
@@ -537,6 +560,10 @@
         {@html noted.content}
       </p>
     {/if}
+    {#if note && note.json && note.json.pages}
+    <div class="pages">p.{note.json.pages}</div>
+    {/if}
+
     <ul class="OutlineFlags">
       {#each note.tags as flag}
         {#if flag.type === 'flag'}

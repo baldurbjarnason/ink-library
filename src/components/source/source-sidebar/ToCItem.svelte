@@ -7,7 +7,6 @@
   $: if (path === item.url) {
     selected = true;
   } else {
-    console.log(item)
     selected = false;
   }
   const url = getContext("url");

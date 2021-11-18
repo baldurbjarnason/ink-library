@@ -12,11 +12,19 @@
   export let storageId = null;
   export let fileName = null;
   let original;
+  let error = false;
   
   async function change(event) {
     working = true;
     file = event.target.files[0];
-    fileName = file.name
+
+    if (file.type !== "application/epub+zip" && file.type !== "application/pdf") {
+      error = true;
+      working = false;
+      fileName = undefined; // to disable the save button
+    } else {
+      error = false;
+      fileName = file.name
     let url;
     let body;
     let fileType;
@@ -66,6 +74,7 @@
       done = false;
       failed = true;
     }
+    }
   }
 </script>
 
@@ -90,6 +99,11 @@
     position: relative;
     text-align: center;
     background-color: #dde8ed;
+  }
+  .error-input {
+    border: 2px solid red !important;
+    box-shadow: 0 0 0 2px red !important;
+
   }
   .input:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -122,6 +136,12 @@
     animation-duration: 250ms;
     animation-name: loaded;
   }
+  .error {
+    color: red;
+
+    font-size: 0.8rem;
+  }
+
   @keyframes loaded {
     from {
       transform: scale(0.25);
@@ -195,7 +215,7 @@ Upload URL endpoint should take content type as a parameter and return a {public
   {#if original}
     <input type="hidden" name="uploadURL" value={original} />
   {/if}
-  <div class="input" class:done class:failed class:working>
+  <div class={ error ? "input error-input" : "input"} class:done class:failed class:working>
     {#if file}{file.name}{:else}Upload a file{/if}
     <input
       type="file"
@@ -206,4 +226,9 @@ Upload URL endpoint should take content type as a parameter and return a {public
       class="visually-hidden"
       on:change={change} />
   </div>
+  <div class="error">
+  {#if error}
+  file type not supported. Epub / PDF only.
+  {/if}
+</div>
 </label>

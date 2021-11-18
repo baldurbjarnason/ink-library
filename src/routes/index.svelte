@@ -1,6 +1,6 @@
 <script>
   import { send, receive } from "./_crossfade.js";
-  import { innote, insource, inntbk } from "../stores";
+  import { innote, insource, inntbk, searchResults } from "../stores";
   import NotesCard from "../components/notes/NotesCard.svelte";
   import NotebookCard from "../components/notebooks/NotebookCard.svelte";
   import NewNote from "../components/notes/NewNote.svelte";
@@ -11,6 +11,7 @@
   import NoSources from "../components/img/NoSources.svelte";
   import Item from "../components/workspace/Item.svelte";
   import Loader from "../components/Loader.svelte";
+  import Search from "../components/search/Search.svelte"
   import { stores } from "@sapper/app";
   const { session } = stores();
 
@@ -21,6 +22,7 @@
   $: if ($insource) items = $insource.items;
   $: if ($inntbk) itemsNtbk = $inntbk.items;
 
+  $: console.log($searchResults)
   let date = new Date(),
     weekday = [
       "Sunday",
@@ -32,8 +34,7 @@
       "Saturday",
     ];
   let day = weekday[date.getDay()];
-  // $: console.log($session.user);
-  $: currentUser = $session.user.name.givenName || "!";
+  
 </script>
 
 <style>
@@ -94,6 +95,7 @@
     display: grid;
     gap: 30px;
     padding: 30px 20px;
+    margin-top: 30px;
   }
   .align {
     background: #f9fbfc;
@@ -241,11 +243,13 @@
         Happy {day}
       </h1>
       <div class="Buttons">
-        <NewNote ntbkOpen={false} />
         <NewItem ntbkOpen={false} />
+        <NewNote ntbkOpen={false} />
         <NewNotebook />
       </div>
     </nav>
+
+
     <div class="contNotes">
       <h5>Recent notes</h5>
       <div
@@ -289,9 +293,12 @@
       </div>
     </div>
   </div>
+  <div class="right-column">
+    <Search />
+
   <div
     class="Sources {!items.length && $insource.type !== 'loading' ? 'align' : null}"
-    style={`grid-template-rows: repeat(${items.length > 5 ? 5 : items.length + 1}, max-content);`}>
+    style={`grid-template-rows: repeat(${items.length > 5 ? 5 : items.length + 1}, max-content);`}>    
     <h5>Recent sources</h5>
     {#if $insource.type === 'loading'}
       <Loader />
@@ -304,5 +311,6 @@
         <NoSources />
       {/each}
     {/if}
+  </div>
   </div>
 </div>
