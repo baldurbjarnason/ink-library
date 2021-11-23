@@ -32,7 +32,6 @@
     type = payload.type;
     storageId = payload.storageId;
     original = payload.original;
-    console.log(payload)
     try {
       working = true;
       await fetch(url, {

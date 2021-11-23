@@ -6,7 +6,6 @@ import { fetch } from "./fetch.js";
 export const refreshPublication = writable({ id: null, time: Date.now() });
 
 const publicationId = derived(page, ($page, set) => {
-  console.log($page)
   if ($page.params.id) {
       set($page.params.id)
     } else {
@@ -103,7 +102,6 @@ export const publication = derived(
       $refreshPublication.id !== $publicationId ||
       !$publicationId
     ) {
-      console.log('^^^^^^^^^^^^', $publicationId)
       set({ type: "loading", items: [], tags: [], keywords: [], replies: [] });
     }
     if (!process.browser || !$publicationId) return;
