@@ -4,6 +4,7 @@
     import TitleBar from "../source-titlebar/TitleBar.svelte";
     import Image from "./Image.svelte"
     import Audio from "./Audio.svelte"
+    import Video from "./Video.svelte"
 
   let url, type;
   let source = {};
@@ -15,11 +16,20 @@
         } else if ($publication.links[0].encodingFormat.startsWith('audio')) {
             type = "audio"
         }
+        source = $publication
+      const readerId = $publication.readerId.split('/').pop();
+      url = `https://storage.googleapis.com/ink-frontend-server-dev-uploads/readers/${readerId}/${$publication.json.storageId}`
+    } else if ($publication.links && $publication.links[0] 
+    && $publication.links[0].url && ($publication.links[0].url.startsWith('https://youtu') ||
+    $publication.links[0].url.startsWith('https://www.youtu'))) {
+      
+      type = "video"
+      let youtubeId = $publication.links[0].url.split('/').pop();
+      if (youtubeId.startsWith('watch?')) youtubeId = youtubeId.substring(8)
+      url = `https://www.youtube.com/embed/${youtubeId}`;
     }
 
-    source = $publication
-    const readerId = $publication.readerId.split('/').pop();
-    url = `https://storage.googleapis.com/ink-frontend-server-dev-uploads/readers/${readerId}/${$publication.json.storageId}`
+    
   }
 
   </script>
@@ -65,6 +75,8 @@
       <Image {url} publication={$publication} />
       {:else if url && type==="audio"}
       <Audio {url} />
+      {:else if type === "video"}
+      <Video {url} />
       {/if}
 
     </div>

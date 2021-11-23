@@ -1,0 +1,30 @@
+<script context="module">
+	export async function preload({params, query, path}) {
+    const res = await this.fetch(`/api/sources/${params.id}`);
+    const source = await res.json()
+    if (source.json.storageId) {
+      return this.redirect(302, `/sources/${params.id}/${source.json.storageId}`)
+    } else {
+      return {source}
+    }
+    // return {source}
+  }
+</script>
+
+<script>
+  import Multimedia from '../../../components/source/source-multimedia/Multimedia.svelte'
+  import {title} from '../../../stores/title.js'
+  import {stores} from "@sapper/app";
+  export let source
+  const {page} = stores()
+  if (source.name) {
+    $title = source.name + " - Rebus Ink"
+  }
+</script>
+
+<style>
+  /* your styles go here */
+</style>
+
+<!-- markup (zero or more items) goes here -->
+<Multimedia page={$page} {source} />
