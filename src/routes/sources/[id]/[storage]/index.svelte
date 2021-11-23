@@ -6,7 +6,6 @@
       return this.error(res.status, res.statusText)
     }
     const source = await res.json()
-    console.log(source)
     if (source.readingOrder[0] && source.readingOrder[0].url) {
       return this.redirect(302, `${path}/${source.readingOrder[0].url}`)
     } else if (source._processing) {
