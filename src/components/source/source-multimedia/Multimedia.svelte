@@ -26,10 +26,25 @@
       type = "video"
       let youtubeId = $publication.links[0].url.split('/').pop();
       if (youtubeId.startsWith('watch?')) youtubeId = youtubeId.substring(8)
+
+      // remove things like channel information from url
+      let index = youtubeId.indexOf('&')
+      console.log(index)
+      if (index > -1) {
+        youtubeId = youtubeId.substring(0, index)
+      }
+
       url = `https://www.youtube.com/embed/${youtubeId}`;
+
+    } else if ($publication.links && $publication.links[0] 
+    && $publication.links[0].url && $publication.links[0].url.startsWith('https://vimeo')) {
+
+      type = "video"
+      let vimeoId = $publication.links[0].url.split('/').pop();
+      
+      url = `https://player.vimeo.com/video/${vimeoId}`
     }
 
-    
   }
 
   </script>
