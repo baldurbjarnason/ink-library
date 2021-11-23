@@ -1,9 +1,10 @@
 <script>
-    import {publication, page} from "../../../stores"
+    import {publication} from "../../../stores"
     import EmptySourceNotes from "../source-empty/EmptySourceNotes.svelte"
     import TitleBar from "../source-titlebar/TitleBar.svelte";
     import Image from "./Image.svelte"
     import Audio from "./Audio.svelte"
+
   let url, type;
   let source = {};
   $: if ($publication && $publication.json) {
@@ -18,10 +19,8 @@
 
     source = $publication
     const readerId = $publication.readerId.split('/').pop();
-    url = `https://storage.cloud.google.com/ink-frontend-server-dev-uploads/readers/${readerId}/${$publication.json.storageId}?authuser=1`
+    url = `https://storage.googleapis.com/ink-frontend-server-dev-uploads/readers/${readerId}/${$publication.json.storageId}`
   }
-
-  $: console.log($publication)
 
   </script>
   
@@ -46,13 +45,13 @@
         margin: 30px auto 0 auto;
     }
     .TitleBar {
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-  
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+    
   </style>
 
   <div>
@@ -63,7 +62,7 @@
 
     <div class="left-menu">
       {#if url && type==="image"}
-      <Image {url}/>
+      <Image {url} publication={$publication} />
       {:else if url && type==="audio"}
       <Audio {url} />
       {/if}

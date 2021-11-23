@@ -6,7 +6,7 @@ import { publication } from "../../../../stores";
 </script>
 
   <div>
-    <Multimedia {$publication} />
+    <Multimedia />
   </div>
   
   

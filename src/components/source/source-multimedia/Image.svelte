@@ -1,18 +1,17 @@
 <script>
   export let url;
+  export let publication
 
 
   </script>
   
   <style>
-    /* your styles go here */
 
     img {
         display: block;
         margin: 30px auto 0 auto;
     }
 
-  
   </style>
 
   <div>
