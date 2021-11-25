@@ -16,7 +16,6 @@
         } else if ($publication.links[0].encodingFormat.startsWith('audio')) {
             type = "audio"
         }
-        source = $publication
       const readerId = $publication.readerId.split('/').pop();
       url = `https://storage.googleapis.com/ink-frontend-server-dev-uploads/readers/${readerId}/${$publication.json.storageId}`
     } else if ($publication.links && $publication.links[0] 
@@ -44,6 +43,8 @@
       
       url = `https://player.vimeo.com/video/${vimeoId}`
     }
+
+    source = $publication
 
   }
 
