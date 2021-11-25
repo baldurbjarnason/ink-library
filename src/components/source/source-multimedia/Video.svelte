@@ -10,7 +10,8 @@
       iframe {
           display: block;
           margin: 30px auto 0 auto;
-
+          width: 80%;
+          height: 400px;
       }
   
     </style>
@@ -18,7 +19,7 @@
     <div>
   
         {#if url}
-        <iframe src={url} width="420" height="315"></iframe>
+        <iframe src={url}></iframe>
         {/if}
   
     </div>

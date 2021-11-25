@@ -16,7 +16,6 @@
     </style>
   
     <div>
-  
         {#if url}
         <audio controls src={url}>
             <track src={url} kind="captions" />
