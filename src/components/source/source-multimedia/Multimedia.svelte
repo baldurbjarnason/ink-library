@@ -53,11 +53,8 @@
   <style>
     /* your styles go here */
     .NoSource {
-      grid-column: 1 / -1;
-      grid-row: 2 / -1;
       display: grid;
       grid-template-columns: 600px auto;
-      grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
       min-height: 100vh;
       padding-top: 30px;
     }
@@ -66,41 +63,36 @@
       background: lightgrey;
     }
 
-    img {
-        display: block;
-        margin: 30px auto 0 auto;
-    }
     .TitleBar {
       width: 100%;
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
     }
     
   </style>
 
   <div>
-      <div class="TitleBar">
-        <TitleBar name={source ? source.name : ""} {source} />
+    <div class="TitleBar">
+      <TitleBar name={source ? source.name : ""} {source} />
+    </div>
+    <div class="NoSource">
+
+      <div class="left-menu">
+        {#if url && type==="image"}
+        <Image {url} publication={$publication} />
+        {:else if url && type==="audio"}
+        <Audio {url} />
+        {:else if type === "video"}
+        <Video {url} />
+        {/if}
+
       </div>
-  <div class="NoSource">
-
-    <div class="left-menu">
-      {#if url && type==="image"}
-      <Image {url} publication={$publication} />
-      {:else if url && type==="audio"}
-      <Audio {url} />
-      {:else if type === "video"}
-      <Video {url} />
-      {/if}
+    
+      <div>
+        <EmptySourceNotes {source} pages={false} />
+      </div>
 
     </div>
-    <div>
-
-      <EmptySourceNotes {source} pages={false} />
-  
-    </div>
-  </div>
   </div>
   

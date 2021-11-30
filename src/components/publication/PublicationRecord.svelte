@@ -6,7 +6,6 @@
   import MainReading from "./reader/MainReading.svelte";
   import MainInfo from "./SourceInfo/MainInfo.svelte";
   import EmptySource from "./EmptySource.svelte";
-  import Image from "../source/source-multimedia/Image.svelte"
   import { publicationStores } from "../../stores/utilities/publicationStores.js";
   import { stores } from "@sapper/app";
   const { page } = stores();
@@ -83,8 +82,6 @@
     {:else if !$publication._empty}
       <ToolBar root={readerBody} />
       <MainReading bind:readerBody />
-    {:else if $publication._multimedia}
-      <Image source={$publication} />
     {:else}
       <EmptySource />
     {/if}
