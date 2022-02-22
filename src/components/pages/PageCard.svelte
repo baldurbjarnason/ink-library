@@ -26,9 +26,9 @@
   } else {
     selectable = true;
   }
-  $: outline = item.noteContexts[0];
-  $: pageItems = $pages.items.find((element) => element.name === item.name);
-  $: noteContexts = pageItems ? pageItems.noteContexts : [];
+
+  $: outline = item;
+  $: noteContexts = $pages.items.find((element) => element.name === item.name);
 </script>
 
 <style>
@@ -150,7 +150,7 @@
 
 <div class="Item">
   <a
-    href={outline ? `pages/${item.shortId}/outlines/${outline.shortId}?notebook=${item.notebookId}` : $page.path}>
+    href={outline ? `outlines/${outline.shortId}?notebook=${item.notebookId}` : $page.path}>
     _
   </a>
   {#if selectable}
