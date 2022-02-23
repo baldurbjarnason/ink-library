@@ -1,7 +1,5 @@
 <script>
-    import Button from "../../widgets/Button.svelte";
     import { getToken } from "../../../getToken";
-    import IcoGoBack from "../../img/IcoGoBack.svelte";
     import IcoEdit from "../../img/IcoEdit.svelte";
     import IcoNewTab from "../../img/IcoNewTab.svelte"
     import { onMount } from "svelte"
@@ -12,7 +10,6 @@
     let url = source.links && source.links.length ? source.links[0].url : null;
     let editing = !url;
     let preview;
-$: console.log(preview)
     onMount(async () => {
       if (url) {
         preview = await getPreview(url);

@@ -23,18 +23,37 @@ export async function post(req, res, next) {
       },
     ];
   } else if (req.body.storageId) {
-    links = [
-      {
-        rel: ["alternate", "enclosure"],
-        encodingFormat: "application/json",
-        url: `/api/download/${req.body.storageId}`,
-      },
-      {
-        rel: "contents",
-        encodingFormat: "application/json",
-        url: `/api/toc/${req.body.storageId}`,
-      },
-    ];
+
+    if (req.body.uploadType && 
+      (req.body.uploadType.startsWith('image') || 
+      req.body.uploadType.startsWith('audio'))) {
+        links = [
+          {
+            rel: ["alternate", "enclosure"],
+            encodingFormat: req.body.uploadType,
+            url: `/api/download/${req.body.storageId}`,
+          },
+          {
+            rel: "contents",
+            encodingFormat: req.body.uploadType,
+            url: `/api/toc/${req.body.storageId}`,
+          },
+        ];
+    } else {
+      links = [
+        {
+          rel: ["alternate", "enclosure"],
+          encodingFormat: "application/json",
+          url: `/api/download/${req.body.storageId}`,
+        },
+        {
+          rel: "contents",
+          encodingFormat: "application/json",
+          url: `/api/toc/${req.body.storageId}`,
+        },
+      ];
+    }
+
     // if publication add another alternate with a publication manifest media type.
   }
   const body = {
@@ -73,29 +92,7 @@ export async function post(req, res, next) {
           });
         }
       }
-      // Check workspace, if there is one, add
-      if (req.body.addWorkspace && req.body.addWorkspace !== "all") {
-        await got
-          .put(`${response.id}tags/${req.body.addWorkspace}`, {
-            headers: {
-              "content-type": "application/ld+json",
-              Authorization: `Bearer ${req.user.token}`,
-            },
-          })
-          .json();
-      }
-      if (req.body.addedWorkspaces && req.body.addedWorkspaces !== "all") {
-        for (const workspace of req.body.addedWorkspaces) {
-          await got
-            .put(`${response.id}tags/${workspace.id}`, {
-              headers: {
-                "content-type": "application/ld+json",
-                Authorization: `Bearer ${req.user.token}`,
-              },
-            })
-            .json();
-        }
-      }
+
       if (req.body.addedCollections && req.body.addedCollections.length !== 0) {
         for (const coll of req.body.addedCollections) {
           await got

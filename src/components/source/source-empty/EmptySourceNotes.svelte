@@ -1,12 +1,11 @@
 <script lang="ts">
     export let source;
+    export let pages = true;
     import NotesCard from "../../notes/NotesCard.svelte"
     import EmptySourceNewNote from "./EmptySourceNewNote.svelte"
     import ArrowDropDown from "../../img/ArrowDropDown.svelte"
 
-   // import NewNoteToolbar from "./NewNoteToolbar.svelte"
     import { sourceNotes, notebooks, defaultNotebook } from "../../../stores"
-   // import DefaultNotebookForm from "../../publication/reader/DefaultNotebookForm.svelte"
    let items;
     $: items = $notebooks ? $notebooks.items : [];
     $: if (!items.length || items[0].id !== 'none') items.unshift({id: 'none', name: '--no notebook--'})
@@ -64,7 +63,7 @@
       </div>
   </div>
   <div class="AddNoteForm">
-  <EmptySourceNewNote ntbkClose={true} {source} />
+  <EmptySourceNewNote ntbkClose={true} {source} {pages} />
 </div>
 <div class="EmptySourceNotes">
 

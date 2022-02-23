@@ -7,8 +7,6 @@
   import HighlightNoteField from "./HighlightNoteField.svelte";
   import HighlightNotebooks from "./HighlightNotebooks.svelte";
   import { getToken } from "../../../getToken";
-  import HighlightSelectedFlags from "./HighlightSelectedFlags.svelte";
-  import HighlightNoteButton from "./HighlightNoteButton.svelte";
   import { assignIco } from "../source-margin/assignIco.js";
   import IcoNotebook from "../../img/IcoNotebook.svelte";
   import IcoTag from "./IcoTag.svelte";
@@ -28,6 +26,7 @@
   let highlight;
   let plaintext;
   let loaded = 0;
+  let pageNumber;
   export let modal;
   export let note;
   export let annotation;
@@ -156,8 +155,15 @@
         });
       body = content;
     //}
+    let object = {
+      tags: flags.concat(colour),
+      notebooks
+    }
+
+    if (pageNumber) object.json = Object.assign({}, object.json, {pages: pageNumber})
+
     stopEditing();
-    return note.update({ tags: flags.concat(colour), notebooks }, body);
+    return note.update(object, body);
   }
 </script>
 
@@ -229,6 +235,15 @@
   }
   .ButtonBar :global(svg) {
     color: var(--toolbar-text, #000);
+  }
+  .page-input {
+    height: 20px;
+    width: 80px;
+    font-size: 0.6rem;
+  }
+  .pages {
+    font-size: 0.6rem;
+    text-align: right;
   }
 </style>
 
@@ -343,6 +358,12 @@
     </div>
   {/if}
   <HighlightNoteField bind:plaintext />
+  <div class="pages">
+    {#if annotation && annotation.json}
+    pages: <input type="text" class="page-input" bind:value={annotation.json.pages} placeholder="page(s)" />
+    {:else}
+    pages: <input type="text" class="page-input" bind:value={pageNumber} placeholder="page(s)" />
+    {/if}</div>
   <div class="ButtonBar">
     <HighlightTextButton
       click={() => {

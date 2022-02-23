@@ -6,10 +6,15 @@ import { fetch } from "./fetch.js";
 export const refreshPublication = writable({ id: null, time: Date.now() });
 
 const publicationId = derived(page, ($page, set) => {
-  set($page.params.publicationId || null);
+  if ($page.params.id) {
+      set($page.params.id)
+    } else {
+      set($page.params.publicationId || null);
+
+    }
+
 });
 
-const publicationWorkspace = derived(page, $page => $page.params.workspace);
 
 const publicationStack = derived(page, $page => $page.params.collection);
 
@@ -20,7 +25,6 @@ export const publicationNotes = derived(
     publicationId,
     refreshPublication,
     notesSearch,
-    publicationWorkspace,
     publicationStack
   ],
   (
@@ -28,7 +32,6 @@ export const publicationNotes = derived(
       $publicationId,
       $refreshPublication,
       $notesSearch,
-      $publicationWorkspace,
       $publicationStack
     ],
     set
@@ -41,9 +44,6 @@ export const publicationNotes = derived(
     const query = new URLSearchParams({ orderBy: "updated" });
     if ($notesSearch) {
       query.append("search", $notesSearch);
-    }
-    if ($publicationWorkspace && $publicationWorkspace !== "all") {
-      query.append("workspace", $publicationWorkspace);
     }
     if ($publicationStack && $publicationStack !== "all") {
       query.append("stack", $publicationStack);
@@ -116,7 +116,6 @@ export const publicationStacks = derived(
   [publication, collections],
   ([$publication, $collections], set) => {
     const tags = $publication.tags
-      .filter(tag => tag.type !== "workspace")
       .map(tag => $collections.find(item => item.id === tag.id));
     set(new Set(tags));
   },

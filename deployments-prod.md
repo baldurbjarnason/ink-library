@@ -1,3 +1,14 @@
+Deployment Dec 13, 2021
+- Multimedia support (photo and audio uploads, video links)
+- Enforce file type in uploads in create source forms
+- improve search to better handle empty results
+
+Deployment Nov 18, 2021
+- fix bug with source navigation
+- advanced search
+- page numbers in notes
+- fixed bug where bookmarks were showing up as notes on dashboard
+
 Deployment Oct 4, 2021
 - fixing problem with docx export on production
 

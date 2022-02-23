@@ -5,11 +5,14 @@
     toc?: any;
     book?: any;
     contents?: string;
+    navigation?: object
   }
   import Sidebar from "../source-sidebar/Sidebar.svelte";
   import MarginNotes from "../source-margin/MarginNotes.svelte";
   import { nodes } from "../../../../state/nodes";
   import { stores } from "@sapper/app";
+  import Navigation from "../source-navigation/Navigation.svelte"
+
   const { preloading } = stores();
   let loading;
   $: loading = $preloading;
@@ -195,6 +198,8 @@
     {#if chapter}
       {@html chapter.contents}
     {/if}
+
+    <Navigation {chapter} />
   </div>
   <MarginNotes root={readerBody} bookmarks={sourceNotes} />
 </div>

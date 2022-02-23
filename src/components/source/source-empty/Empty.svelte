@@ -2,10 +2,7 @@
   import EmptySourcePasteForm from "./EmptySourcePasteForm.svelte";
   import EmptySourceUploadForm from "./EmptySourceUploadForm.svelte";
   import TitleBar from "../source-titlebar/TitleBar.svelte";
-  import EmptySourcePaster from "./EmptySourcePaster.svelte"
-  // import { onMount } from 'svelte';
   import Button from "../../widgets/Button.svelte";
-  import UploadIcon from "./UploadIcon.svelte";
   import EmptySourceNotes from "./EmptySourceNotes.svelte"
   import UrlForm from "./UrlForm.svelte"
   export let source;
@@ -35,14 +32,16 @@
     grid-template-columns: 300px auto;
     grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
     min-height: 100vh;
+    padding-top: 50px;
   }
-  /* .TitleBar {
+  .TitleBar {
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-  } */
+    z-index: 999;
+  }
   .left-menu {
     background: lightgrey;
   }
@@ -62,6 +61,7 @@
 </div>
 <!-- 
 <svelte:component this={Info} /> -->
+
 
 <div class="NoSource">
   <div class="left-menu">
