@@ -146,7 +146,7 @@
     "sapper": "^0.29.1",
     "sirv": "^0.4.6",
     "snowpack": "^3.0.10",
-    "svelte": "^3.35.0",
+    "svelte": "^3.49.0",
     "svelte-check": "^1.2.5",
     "svelte-dnd-action": "^0.6.22",
     "svelte-preprocess": "^4.6.9",
